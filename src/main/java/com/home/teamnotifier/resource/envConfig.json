@@ -1,0 +1,24 @@
+{
+  "environments": [
+    {
+      "environmentID": 1,
+      "name": "name",
+      "applicationServers": [
+        {
+          "applicationServerId": 1488,
+          "name": "appServerName",
+          "applications": [
+            {
+              "name": "flexprot",
+              "occupationInfo": {
+                "userId": 15,
+                "startTime": 1523
+              },
+              "subscibersIds": [12,15,14]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
