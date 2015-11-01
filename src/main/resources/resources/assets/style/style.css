@@ -1,0 +1,30 @@
+html, body {
+height: 100%;
+overflow:hidden;
+}
+h2 {
+align:center;
+}
+#tableContainer-1 {
+height: 100%;
+width: 100%;
+display: table;
+}
+#tableContainer-2 {
+vertical-align: middle;
+display: table-cell;
+height: 100%;
+}
+#content-table {
+ma
+rgin: 0 auto;
+align: center;
+width: 800px;
+text-align:center;
+vertical-align:middle;
+table-layout: fixed;
+}
+#status {
+<!--align: left;-->
+<!--font-size: 11pt;-->
+}
