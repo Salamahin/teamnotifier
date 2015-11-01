@@ -3,17 +3,14 @@ package com.home.teamnotifier.domains;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "SharedResource")
-public class SharedResourceDomain {
+@Table(schema = "teamnotifier")
+public class User {
   @Id
   @GeneratedValue(strategy=GenerationType.AUTO)
   private Integer id;
 
   @Column
   private String name;
-
-  @ManyToOne
-  private AppServerDomain appServer;
 
   public Integer getId() {
     return id;
@@ -29,13 +26,5 @@ public class SharedResourceDomain {
 
   public void setName(final String name) {
     this.name = name;
-  }
-
-  public AppServerDomain getAppServer() {
-    return appServer;
-  }
-
-  public void setAppServer(final AppServerDomain appServer) {
-    this.appServer = appServer;
   }
 }

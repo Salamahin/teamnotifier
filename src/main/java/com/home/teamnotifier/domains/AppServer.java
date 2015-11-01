@@ -1,11 +1,10 @@
 package com.home.teamnotifier.domains;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
-@Table(name = "Environment")
-public class EnvironmentDomain {
+@Table (schema = "teamnotifier")
+public class AppServer implements DataObject {
   @Id
   @GeneratedValue(strategy=GenerationType.AUTO)
   private Integer id;
@@ -13,9 +12,10 @@ public class EnvironmentDomain {
   @Column
   private String name;
 
-  @OneToMany
-  private List<AppServerDomain> appServers;
+  @ManyToOne
+  private Environment environment;
 
+  @Override
   public Integer getId() {
     return id;
   }
@@ -32,11 +32,11 @@ public class EnvironmentDomain {
     this.name = name;
   }
 
-  public List<AppServerDomain> getAppServers() {
-    return appServers;
+  public Environment getEnvironment() {
+    return environment;
   }
 
-  public void setAppServers(final List<AppServerDomain> appServers) {
-    this.appServers = appServers;
+  public void setEnvironment(final Environment environment) {
+    this.environment = environment;
   }
 }
