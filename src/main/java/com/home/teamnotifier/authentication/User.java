@@ -1,17 +1,16 @@
 package com.home.teamnotifier.authentication;
 
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import lombok.Value;
 import java.security.Principal;
 
-@ToString
-@EqualsAndHashCode
-@Value
 public class User implements Principal {
-  String userName;
+  private final String userName;
 
-  String userSurname;
+  private final String userSurname;
+
+  public User(final String userName, final String userSurname) {
+    this.userName = userName;
+    this.userSurname = userSurname;
+  }
 
   @Override
   public String getName() {

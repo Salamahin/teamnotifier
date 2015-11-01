@@ -53,11 +53,6 @@
             <artifactId>hibernate-core</artifactId>
             <version>5.0.3.Final</version>
         </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.16.6</version>
-        </dependency>
         <!--testing-->
         <dependency>
             <groupId>junit</groupId>

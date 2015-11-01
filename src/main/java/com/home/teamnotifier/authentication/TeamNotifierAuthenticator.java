@@ -1,6 +1,7 @@
 package com.home.teamnotifier.authentication;
 
 import com.google.common.base.Optional;
+import com.google.inject.Inject;
 import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.Authenticator;
 import io.dropwizard.auth.basic.BasicCredentials;
@@ -8,6 +9,7 @@ import io.dropwizard.auth.basic.BasicCredentials;
 public class TeamNotifierAuthenticator implements Authenticator<BasicCredentials, User> {
   private final UserGateway userGateway;
 
+  @Inject
   public TeamNotifierAuthenticator(final UserGateway userGateway) {
     this.userGateway = userGateway;
   }
