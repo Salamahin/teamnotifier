@@ -1,10 +1,11 @@
-package com.home.teamnotifier.dataobjects;
+package com.home.teamnotifier.domains;
 
 import javax.persistence.*;
 import java.util.List;
 
-@Entity(name = "Environment")
-public class EnvironmentDataObject implements DatabaseObject {
+@Entity
+@Table(name = "Environment")
+public class EnvironmentDomain {
   @Id
   @GeneratedValue(strategy=GenerationType.AUTO)
   private Integer id;
@@ -13,9 +14,8 @@ public class EnvironmentDataObject implements DatabaseObject {
   private String name;
 
   @OneToMany
-  private List<AppServerDataObject> appServers;
+  private List<AppServerDomain> appServers;
 
-  @Override
   public Integer getId() {
     return id;
   }
@@ -32,11 +32,11 @@ public class EnvironmentDataObject implements DatabaseObject {
     this.name = name;
   }
 
-  public List<AppServerDataObject> getAppServers() {
+  public List<AppServerDomain> getAppServers() {
     return appServers;
   }
 
-  public void setAppServers(final List<AppServerDataObject> appServers) {
+  public void setAppServers(final List<AppServerDomain> appServers) {
     this.appServers = appServers;
   }
 }

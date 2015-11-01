@@ -1,9 +1,10 @@
-package com.home.teamnotifier.dataobjects;
+package com.home.teamnotifier.domains;
 
 import javax.persistence.*;
 
-@Entity(name = "ApplicationServer")
-public class AppServerDataObject implements DatabaseObject {
+@Entity
+@Table(name = "AppServer")
+public class AppServerDomain {
   @Id
   @GeneratedValue(strategy=GenerationType.AUTO)
   private Integer id;
@@ -12,9 +13,8 @@ public class AppServerDataObject implements DatabaseObject {
   private String name;
 
   @ManyToOne
-  private EnvironmentDataObject environment;
+  private EnvironmentDomain environment;
 
-  @Override
   public Integer getId() {
     return id;
   }
@@ -31,11 +31,11 @@ public class AppServerDataObject implements DatabaseObject {
     this.name = name;
   }
 
-  public EnvironmentDataObject getEnvironment() {
+  public EnvironmentDomain getEnvironment() {
     return environment;
   }
 
-  public void setEnvironment(final EnvironmentDataObject environment) {
+  public void setEnvironment(final EnvironmentDomain environment) {
     this.environment = environment;
   }
 }

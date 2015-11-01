@@ -1,9 +1,10 @@
-package com.home.teamnotifier.dataobjects;
+package com.home.teamnotifier.domains;
 
 import javax.persistence.*;
 
-@Entity(name = "SharedResource")
-public class SharedResourceDataObject implements DatabaseObject {
+@Entity
+@Table(name = "SharedResource")
+public class SharedResourceDomain {
   @Id
   @GeneratedValue(strategy=GenerationType.AUTO)
   private Integer id;
@@ -12,9 +13,8 @@ public class SharedResourceDataObject implements DatabaseObject {
   private String name;
 
   @ManyToOne
-  private AppServerDataObject appServer;
+  private AppServerDomain appServer;
 
-  @Override
   public Integer getId() {
     return id;
   }
@@ -31,11 +31,11 @@ public class SharedResourceDataObject implements DatabaseObject {
     this.name = name;
   }
 
-  public AppServerDataObject getAppServer() {
+  public AppServerDomain getAppServer() {
     return appServer;
   }
 
-  public void setAppServer(final AppServerDataObject appServer) {
+  public void setAppServer(final AppServerDomain appServer) {
     this.appServer = appServer;
   }
 }
