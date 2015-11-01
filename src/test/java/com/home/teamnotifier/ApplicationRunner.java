@@ -1,7 +1,6 @@
 package com.home.teamnotifier;
 
 import com.google.common.io.Resources;
-import com.home.teamnotifier.NotifierApplication;
 
 public class ApplicationRunner
 {
