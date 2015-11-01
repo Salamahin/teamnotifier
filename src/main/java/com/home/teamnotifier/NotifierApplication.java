@@ -13,7 +13,6 @@ import javax.servlet.ServletRegistration;
 
 public class NotifierApplication extends Application<NotifierConfiguration>
 {
-
   private GuiceBundle<NotifierConfiguration> applicationInjector;
 
   @Override

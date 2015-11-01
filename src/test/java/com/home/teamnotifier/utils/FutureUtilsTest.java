@@ -36,8 +36,7 @@ public class FutureUtilsTest {
 
         @SuppressWarnings("unchecked") ArrayList<CompletableFuture<Integer>> futures = Lists.newArrayList(f1, f2);
 
-        final List<Integer> integers = FutureUtils.allAsList(futures, executor)
-                .join();
+        final List<Integer> integers = FutureUtils.allAsList(futures, executor).join();
 
         assertThat(integers)
                 .contains(1)
