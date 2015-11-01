@@ -1,21 +1,25 @@
 package com.home.teamnotifier;
 
-import com.google.common.collect.ImmutableSet;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import com.google.inject.*;
-import com.home.teamnotifier.resource.*;
-import com.typesafe.config.*;
-import org.slf4j.*;
+import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
+import com.home.teamnotifier.authentication.HardcodedUserGateway;
+import com.home.teamnotifier.authentication.UserGateway;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import javax.inject.Singleton;
-import java.util.Set;
-import java.util.concurrent.*;
-import static java.util.stream.Collectors.toSet;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 public class NotifierModule extends AbstractModule {
   private static final Logger LOGGER = LoggerFactory.getLogger(NotifierModule.class);
 
   @Override
   protected void configure() {
+    bind(UserGateway.class).to(HardcodedUserGateway.class);
   }
 
   @Provides
@@ -49,27 +53,27 @@ public class NotifierModule extends AbstractModule {
     }
   }
 
-  @Provides
-  @Singleton
-  Set<Environment> environments(final Config config) {
-    final ImmutableSet.Builder<Environment> builder = ImmutableSet.builder();
-
-    config.getConfigList("environment").stream()
-        .map(c -> new Environment(c.getString("name"), readServersConfigForEnvironment(c)))
-        .forEach(builder::add);
-
-    return builder.build();
-  }
-
-  private Set<AppServer> readServersConfigForEnvironment(final Config environmentConfig) {
-    return environmentConfig.getConfigList("appServer").stream()
-        .map(c -> new AppServer(c.getString("name"), readApplicationsForAppServer(c)))
-        .collect(toSet());
-  }
-
-  private Set<SharedApplication> readApplicationsForAppServer(final Config appServerConfig) {
-    return appServerConfig.getConfigList("application").stream()
-        .map(c -> new SharedApplication(c.getString("name")))
-        .collect(toSet());
-  }
+  //  @Provides
+  //  @Singleton
+  //  Set<Environment> environments(final Config config) {
+  //    final ImmutableSet.Builder<Environment> builder = ImmutableSet.builder();
+  //
+  //    config.getConfigList("environment").stream()
+  //        .map(c -> new Environment(c.getString("name"), readServersConfigForEnvironment(c)))
+  //        .forEach(builder::add);
+  //
+  //    return builder.build();
+  //  }
+  //
+  //  private Set<AppServer> readServersConfigForEnvironment(final Config environmentConfig) {
+  //    return environmentConfig.getConfigList("appServer").stream()
+  //        .map(c -> new AppServer(c.getString("name"), readApplicationsForAppServer(c)))
+  //        .collect(toSet());
+  //  }
+  //
+  //  private Set<SharedApplication> readApplicationsForAppServer(final Config appServerConfig) {
+  //    return appServerConfig.getConfigList("application").stream()
+  //        .map(c -> new SharedApplication(c.getString("name")))
+  //        .collect(toSet());
+  //  }
 }

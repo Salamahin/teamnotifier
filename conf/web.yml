@@ -1,7 +1,5 @@
 server:
-  rootPath: /notificator/*
-  gzip:
-      bufferSize: 50KiB
+  rootPath: /teamnotifier/*
   applicationConnectors:
     - type: http
       port: 7998
@@ -15,12 +13,12 @@ server:
 logging:
 
   # The default level of all loggers. Can be OFF, ERROR, WARN, INFO, DEBUG, TRACE, or ALL.
-  level: DEBUG
+  level: INFO
 
   # Logger-specific levels.
   loggers:
 
-    org.tsystems.wmstk.utils.notificator: ALL
+    org.tsystems.wmstk.utils.teamnotifier: ALL
 
   appenders:
     - type: console
