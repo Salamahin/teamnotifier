@@ -6,6 +6,7 @@ import java.util.List;
 @Entity(name = "Environment")
 public class EnvironmentDataObject implements DatabaseObject {
   @Id
+  @GeneratedValue(strategy=GenerationType.AUTO)
   private Integer id;
 
   @Column

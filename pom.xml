@@ -58,7 +58,7 @@
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
+            <artifactId>hibernate-entitymanager</artifactId>
             <version>5.0.3.Final</version>
         </dependency>
     </dependencies>

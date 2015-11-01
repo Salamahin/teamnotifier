@@ -4,8 +4,8 @@ import javax.persistence.*;
 
 @Entity(name = "SharedResource")
 public class SharedResourceDataObject implements DatabaseObject {
-
   @Id
+  @GeneratedValue(strategy=GenerationType.AUTO)
   private Integer id;
 
   @Column

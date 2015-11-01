@@ -24,7 +24,8 @@ public final class FutureUtils {
         .mapToObj(i -> f.get(i).thenAcceptAsync(values::add, executor))
         .collect(toList());
 
-    final CompletableFuture<Void>[] futuresArray = toGenericArray(resultFutures);
+    final CompletableFuture<Void>[] futuresArray = createGenericArray(resultFutures);
+    resultFutures.toArray(futuresArray);
 
     return CompletableFuture
         .allOf(futuresArray)
@@ -32,7 +33,7 @@ public final class FutureUtils {
   }
 
   @SuppressWarnings("unchecked")
-  private static CompletableFuture<Void>[] toGenericArray(
+  private static CompletableFuture<Void>[] createGenericArray(
       final List<CompletableFuture<Void>> futures) {
     /**
      * Hack to create generic array in order to use

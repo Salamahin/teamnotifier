@@ -5,6 +5,7 @@ import javax.persistence.*;
 @Entity(name = "ApplicationServer")
 public class AppServerDataObject implements DatabaseObject {
   @Id
+  @GeneratedValue(strategy=GenerationType.AUTO)
   private Integer id;
 
   @Column
