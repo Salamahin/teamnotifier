@@ -20,7 +20,8 @@ abstract class AbstractDAO<T extends DatabaseObject> implements DAO<T> {
   }
 
   @Override
-  public void createOrUpdate(final T entity) {
+  public T createOrUpdate(final T entity) {
+    return manager.merge(entity);
   }
 
   @Override
