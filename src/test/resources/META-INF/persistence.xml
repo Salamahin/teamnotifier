@@ -16,7 +16,7 @@
         <properties>
             <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>
             <property name="javax.persistence.jdbc.url"
-                      value="jdbc:h2:~/test;DB_CLOSE_DELAY=-1;INIT=create schema IF NOT EXISTS teamnotifier"/>
+                      value="jdbc:h2:mem:teamnotifier_test;DB_CLOSE_DELAY=-1;INIT=create schema IF NOT EXISTS teamnotifier"/>
             <property name="hibernate.hbm2ddl.auto" value="create"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
         </properties>
