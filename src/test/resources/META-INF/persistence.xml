@@ -8,16 +8,16 @@
     <persistence-unit name="teamnotifier" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-        <class>com.home.teamnotifier.domains.AppServer</class>
-        <class>com.home.teamnotifier.domains.Environment</class>
-        <class>com.home.teamnotifier.domains.SharedResource</class>
-        <class>com.home.teamnotifier.domains.User</class>
+        <class>com.home.teamnotifier.db.AppServer</class>
+        <class>com.home.teamnotifier.db.Environment</class>
+        <class>com.home.teamnotifier.db.SharedResource</class>
+        <class>com.home.teamnotifier.db.User</class>
 
         <properties>
             <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>
             <property name="javax.persistence.jdbc.url"
                       value="jdbc:h2:~/test;DB_CLOSE_DELAY=-1;INIT=create schema IF NOT EXISTS teamnotifier"/>
-            <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
+            <property name="hibernate.hbm2ddl.auto" value="create"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
         </properties>
     </persistence-unit>

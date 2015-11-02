@@ -1,4 +1,4 @@
-package com.home.teamnotifier.domains;
+package com.home.teamnotifier.db;
 
 import javax.persistence.*;
 

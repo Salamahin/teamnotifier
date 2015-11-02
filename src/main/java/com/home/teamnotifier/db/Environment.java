@@ -1,4 +1,4 @@
-package com.home.teamnotifier.domains;
+package com.home.teamnotifier.db;
 
 import javax.persistence.*;
 import java.util.List;
@@ -13,7 +13,7 @@ public class Environment implements DataObject {
   @Column
   private String name;
 
-  @OneToMany
+  @OneToMany(mappedBy = "environment")
   private List<AppServer> appServers;
 
   @Override

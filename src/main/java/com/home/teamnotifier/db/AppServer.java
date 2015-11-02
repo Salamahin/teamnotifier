@@ -1,6 +1,7 @@
-package com.home.teamnotifier.domains;
+package com.home.teamnotifier.db;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table (schema = "teamnotifier")
@@ -14,6 +15,9 @@ public class AppServer implements DataObject {
 
   @ManyToOne
   private Environment environment;
+
+  @OneToMany(mappedBy = "appServer")
+  private List<SharedResource> resources;
 
   @Override
   public Integer getId() {
@@ -38,5 +42,13 @@ public class AppServer implements DataObject {
 
   public void setEnvironment(final Environment environment) {
     this.environment = environment;
+  }
+
+  public List<SharedResource> getResources() {
+    return resources;
+  }
+
+  public void setResources(final List<SharedResource> resources) {
+    this.resources = resources;
   }
 }
