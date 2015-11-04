@@ -20,7 +20,7 @@ public class ResourceMonitor {
 
   }
 
-  public List<Environment> getStatus(final String securityToken) {
-    return null;
+  public List<Environment> status() {
+    throw new IllegalStateException("not implemented");
   }
 }
