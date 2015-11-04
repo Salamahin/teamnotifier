@@ -11,15 +11,15 @@ import java.util.Set;
     setterVisibility = JsonAutoDetect.Visibility.NONE,
     creatorVisibility = JsonAutoDetect.Visibility.NONE)
 @JsonTypeName("AppServer")
-public class AppServer {
+public class AppServerInfo {
   private final String name;
 
-  private final Set<SharedResource> resources;
+  private final Set<SharedResourceInfo> resources;
 
   @JsonCreator
-  public AppServer(
+  public AppServerInfo(
       @JsonProperty("name") final String name,
-      @JsonProperty("resources") final Set<SharedResource> resources) {
+      @JsonProperty("resources") final Set<SharedResourceInfo> resources) {
     this.name = name;
     this.resources = resources;
   }

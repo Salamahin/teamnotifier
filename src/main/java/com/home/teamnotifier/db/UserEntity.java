@@ -10,16 +10,16 @@ public class UserEntity {
   @GeneratedValue(strategy=GenerationType.AUTO)
   private Integer id;
 
-  @Column
+  @Column(nullable = false, unique = true)
   private String name;
 
-  @Column
+  @Column(nullable = false)
   private String passHash;
 
-  @OneToMany(mappedBy = "appServer")
+  @OneToMany(mappedBy = "appServer", fetch = FetchType.EAGER)
   private List<SubscriptionEntity> subscriptions;
 
-  @OneToMany(mappedBy = "occupier")
+  @OneToMany(mappedBy = "occupier", fetch = FetchType.EAGER)
   private List<SharedResourceEntity> occupiedResources;
 
   public List<SharedResourceEntity> getOccupiedResources() {

@@ -10,13 +10,13 @@ public class SharedResourceEntity implements DataObject {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Integer id;
 
-  @Column
+  @Column(nullable = false)
   private String name;
 
-  @ManyToOne
+  @ManyToOne(optional = false)
   private AppServerEntity appServer;
 
-  @ManyToOne
+  @ManyToOne(optional = true)
   private UserEntity occupier;
 
   @Column

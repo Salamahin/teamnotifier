@@ -10,16 +10,16 @@ public class AppServerEntity implements DataObject {
   @GeneratedValue(strategy=GenerationType.AUTO)
   private Integer id;
 
-  @Column
+  @Column(nullable = false)
   private String name;
 
-  @ManyToOne
+  @ManyToOne(optional = false)
   private EnvironmentEntity environment;
 
-  @OneToMany(mappedBy = "appServer")
+  @OneToMany(mappedBy = "appServer", fetch = FetchType.EAGER)
   private List<SharedResourceEntity> resources;
 
-  @OneToMany(mappedBy = "appServer")
+  @OneToMany(mappedBy = "appServer", fetch = FetchType.EAGER)
   private List<SubscriptionEntity> subscriptions;
 
   public List<SubscriptionEntity> getSubscriptions() {

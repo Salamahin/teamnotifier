@@ -10,11 +10,11 @@ import com.fasterxml.jackson.annotation.*;
     setterVisibility = JsonAutoDetect.Visibility.NONE,
     creatorVisibility = JsonAutoDetect.Visibility.NONE)
 @JsonTypeName("SharedResource")
-public class SharedResource {
+public class SharedResourceInfo {
   private final String name;
 
   @JsonCreator
-  public SharedResource(@JsonProperty("name") final String name) {
+  public SharedResourceInfo(@JsonProperty("name") final String name) {
     this.name = name;
   }
 

@@ -15,10 +15,6 @@ public final class TransactionHelper {
     entityManager = managerFactory.createEntityManager();
   }
 
-  private static class InstanceHolder {
-    private static final TransactionHelper INSTANCE = new TransactionHelper();
-  }
-
   public <U> U transaction(Function<EntityManager, U> function) {
     final U result;
 

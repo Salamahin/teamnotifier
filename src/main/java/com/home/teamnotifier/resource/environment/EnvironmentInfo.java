@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import java.util.List;
+import java.util.Set;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonAutoDetect(
@@ -14,12 +14,24 @@ import java.util.List;
     isGetterVisibility = JsonAutoDetect.Visibility.NONE,
     setterVisibility = JsonAutoDetect.Visibility.NONE,
     creatorVisibility = JsonAutoDetect.Visibility.NONE)
-@JsonTypeName("Environments")
-public class Environments {
-  private final List<Environment> environments;
+@JsonTypeName("EnvironmentInfo")
+public class EnvironmentInfo {
+  private final String name;
+
+  private final Set<AppServerInfo> servers;
 
   @JsonCreator
-  public Environments(@JsonProperty("environments") final List<Environment> environments) {
-    this.environments = environments;
+  public EnvironmentInfo(@JsonProperty("name") final String name,
+      @JsonProperty("servers") final Set<AppServerInfo> servers) {
+    this.name = name;
+    this.servers = servers;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public Set<AppServerInfo> getServers() {
+    return servers;
   }
 }

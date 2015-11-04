@@ -7,7 +7,6 @@ import com.home.teamnotifier.authentication.User;
 import com.home.teamnotifier.routine.ResourceMonitor;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
-import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.Authenticator;
 import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
 import io.dropwizard.auth.basic.BasicCredentials;
@@ -33,11 +32,11 @@ public class EnvironmentRestServiceTest {
   public void authorizedUserCanGetAccessToTeamEnvResource()
   throws Exception {
     final String pass = BaseEncoding.base64().encode("omg:pass".getBytes());
-    final Environments environments = rule.getJerseyTest()
+    final EnvironmentsInfo environments = rule.getJerseyTest()
         .target(ENV_PATH)
         .request(MediaType.APPLICATION_JSON_TYPE)
         .header("Authorization", "Bearer " + pass)
-        .get(Environments.class);
+        .get(EnvironmentsInfo.class);
     assertThat(environments).isNotNull();
   }
 

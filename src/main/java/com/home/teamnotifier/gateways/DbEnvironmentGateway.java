@@ -18,16 +18,16 @@ public class DbEnvironmentGateway implements EnvironmentGateway {
   }
 
   @Override
-  public Environments status() {
-    return new Environments(
+  public EnvironmentsInfo status() {
+    return new EnvironmentsInfo(
         loadListFromDb().stream()
             .map(this::toEnvironment)
             .collect(Collectors.toList())
     );
   }
 
-  private Environment toEnvironment(EnvironmentEntity entity) {
-    return new Environment(
+  private EnvironmentInfo toEnvironment(EnvironmentEntity entity) {
+    return new EnvironmentInfo(
         entity.getName(),
         entity.getAppServers().stream()
             .map(this::toAppSever)
@@ -35,8 +35,8 @@ public class DbEnvironmentGateway implements EnvironmentGateway {
     );
   }
 
-  private AppServer toAppSever(final AppServerEntity entity) {
-    return new AppServer(
+  private AppServerInfo toAppSever(final AppServerEntity entity) {
+    return new AppServerInfo(
         entity.getName(),
         entity.getResources().stream()
             .map(this::toResource)
@@ -44,8 +44,8 @@ public class DbEnvironmentGateway implements EnvironmentGateway {
     );
   }
 
-  private SharedResource toResource(final SharedResourceEntity sharedResourceEntity) {
-    return new SharedResource(sharedResourceEntity.getName());
+  private SharedResourceInfo toResource(final SharedResourceEntity sharedResourceEntity) {
+    return new SharedResourceInfo(sharedResourceEntity.getName());
   }
 
   private List<EnvironmentEntity> loadListFromDb() {

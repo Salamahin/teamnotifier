@@ -10,10 +10,10 @@ public class EnvironmentEntity implements DataObject {
   @GeneratedValue(strategy=GenerationType.AUTO)
   private Integer id;
 
-  @Column
+  @Column(nullable = false, unique = true)
   private String name;
 
-  @OneToMany(mappedBy = "environment")
+  @OneToMany(mappedBy = "environment", fetch = FetchType.EAGER)
   private List<AppServerEntity> appServers;
 
   @Override

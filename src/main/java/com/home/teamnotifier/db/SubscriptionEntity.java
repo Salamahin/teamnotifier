@@ -9,10 +9,10 @@ public class SubscriptionEntity implements DataObject {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Integer id;
 
-  @ManyToOne
+  @ManyToOne(optional = false)
   private AppServerEntity appServer;
 
-  @ManyToOne
+  @ManyToOne(optional = false)
   private UserEntity subscriber;
 
   public AppServerEntity getAppServer() {

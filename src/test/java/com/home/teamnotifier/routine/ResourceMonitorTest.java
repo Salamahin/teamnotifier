@@ -1,6 +1,6 @@
 package com.home.teamnotifier.routine;
 
-import com.home.teamnotifier.resource.environment.Environment;
+import com.home.teamnotifier.resource.environment.EnvironmentInfo;
 import org.junit.*;
 import java.util.*;
 import static org.mockito.Mockito.*;
@@ -20,7 +20,7 @@ public class ResourceMonitorTest {
   @Test
   public void testCanGetFullStatus()
   throws Exception {
-    final List<Environment> environmentList = monitor.getStatus(userId);
+    final List<EnvironmentInfo> environmentList = monitor.getStatus(userId);
   }
 
   @Test

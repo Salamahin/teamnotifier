@@ -16,15 +16,15 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 @JsonTypeName("UserInfo")
 public class UserInfo {
 
-  private final String name;
+  private final int id;
 
-  private final String surname;
+  private final String name;
 
   @JsonCreator
   public UserInfo(
-      @JsonProperty("name") String name,
-      @JsonProperty("surname") String surname) {
+      @JsonProperty("id") int id,
+      @JsonProperty("name") String name) {
     this.name = name;
-    this.surname = surname;
+    this.id = id;
   }
 }

@@ -26,9 +26,9 @@ public class EnvironmentRestService {
 
   @GET
   @RolesAllowed({TeamNotifierRoles.USER})
-  public Environments getServerInfo(@Auth User user) {
-    final List<Environment> status = resourceMonitor.getStatus(user.getId());
-    return new Environments(status);
+  public EnvironmentsInfo getServerInfo(@Auth User user) {
+    final List<EnvironmentInfo> status = resourceMonitor.getStatus(user.getId());
+    return new EnvironmentsInfo(status);
   }
 
   @POST

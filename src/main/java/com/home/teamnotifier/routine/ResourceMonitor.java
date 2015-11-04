@@ -1,6 +1,6 @@
 package com.home.teamnotifier.routine;
 
-import com.home.teamnotifier.resource.environment.Environment;
+import com.home.teamnotifier.resource.environment.EnvironmentInfo;
 import java.util.*;
 
 public class ResourceMonitor {
@@ -40,7 +40,7 @@ public class ResourceMonitor {
     fireNotification();
   }
 
-  public List<Environment> getStatus(final int userId) {
+  public List<EnvironmentInfo> getStatus(final int userId) {
     return null;
   }
 }
