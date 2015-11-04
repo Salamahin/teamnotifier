@@ -1,5 +1,6 @@
-package com.home.teamnotifier.authentication;
+package com.home.teamnotifier.gateways;
 
+import com.home.teamnotifier.authentication.User;
 import com.home.teamnotifier.db.TransactionHelper;
 import java.util.Optional;
 
@@ -10,8 +11,7 @@ public class DbUserGateway implements UserGateway {
   public User userById(final Integer userId) {
     final com.home.teamnotifier.db.User storedUser =
         transactionHelper.transaction(em -> em.find(com.home.teamnotifier.db.User.class, userId));
-    if(storedUser == null)
-    return null;
+    if (storedUser == null) { return null; }
 
     return new User(storedUser.getName(), storedUser.getSurname());
   }

@@ -1,5 +1,6 @@
-package com.home.teamnotifier.authentication;
+package com.home.teamnotifier.gateways;
 
+import com.home.teamnotifier.authentication.User;
 import java.util.Optional;
 
 public class HardcodedUserGateway implements UserGateway {

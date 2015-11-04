@@ -1,10 +1,7 @@
 package com.home.teamnotifier;
 
-import com.home.teamnotifier.db.*;
 import com.hubspot.dropwizard.guice.GuiceBundle;
 import io.dropwizard.assets.AssetsBundle;
-import io.dropwizard.db.PooledDataSourceFactory;
-import io.dropwizard.hibernate.HibernateBundle;
 
 final class Bundles {
   private Bundles() {

@@ -9,17 +9,19 @@ server:
   requestLog:
       appenders: []
 
-# Logging settings.
 logging:
-
-  # The default level of all loggers. Can be OFF, ERROR, WARN, INFO, DEBUG, TRACE, or ALL.
   level: INFO
-
-  # Logger-specific levels.
   loggers:
-
-    org.tsystems.wmstk.utils.teamnotifier: ALL
-
+    com.home.teamnotifier: DEBUG
+    org.hibernate.SQL:
+      level: DEBUG
   appenders:
     - type: console
-      logFormat: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    - type: file
+      threshold: INFO
+      logFormat: "%-6level [%d{HH:mm:ss.SSS}] [%t] %logger{5} - %X{code} %msg %n"
+      currentLogFilename: teamnotifier.log
+      archivedLogFilenamePattern: teamnotifier-%d{yyyy-MM-dd}-%i.log.gz
+      archivedFileCount: 7
+      timeZone: UTC
+      maxFileSize: 10MB
