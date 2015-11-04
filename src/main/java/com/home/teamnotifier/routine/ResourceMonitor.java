@@ -4,25 +4,26 @@ import com.home.teamnotifier.resource.Environment;
 import java.util.*;
 
 public class ResourceMonitor {
-  private final List<Integer> reservedApplications;
+  private final Set<Integer> reservedApplications;
 
   public ResourceMonitor() {
-    reservedApplications = new ArrayList<>();
+    reservedApplications = new HashSet<>();
   }
 
-  public void reserve(final String securityToken, final int applicationId) {
-    fireNotification();
-    if(reservedApplications.contains(applicationId))
+  public void reserve(final int userId, final int applicationId) {
+    if (reservedApplications.contains(applicationId)) {
       throw new AlreadyReserved();
+    }
 
     reservedApplications.add(applicationId);
+    fireNotification();
   }
 
-  public void subscribe(final String securityToken, final int serverId) {
+  public void subscribe(final int userId, final int serverId) {
 
   }
 
-  public void unsubscribe(final String securityToken, final int serverId) {
+  public void unsubscribe(final int userId, final int serverId) {
 
   }
 
@@ -30,7 +31,16 @@ public class ResourceMonitor {
 
   }
 
-  public List<Environment> getStatus(final String securityToken) {
+  public void free(final int userId, final int applicationId) {
+    if (!reservedApplications.contains(applicationId)) {
+      throw new NotReserved();
+    }
+
+    reservedApplications.remove(applicationId);
+    fireNotification();
+  }
+
+  public List<Environment> getStatus(final int userId) {
     return null;
   }
 }
