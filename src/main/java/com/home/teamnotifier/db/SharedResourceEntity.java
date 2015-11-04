@@ -5,7 +5,7 @@ import java.time.*;
 
 @Entity
 @Table(schema = "teamnotifier")
-public class SharedResource implements DataObject {
+public class SharedResourceEntity implements DataObject {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Integer id;
@@ -14,7 +14,7 @@ public class SharedResource implements DataObject {
   private String name;
 
   @ManyToOne
-  private AppServer appServer;
+  private AppServerEntity appServer;
 
   @ManyToOne
   private UserEntity occupier;
@@ -55,11 +55,11 @@ public class SharedResource implements DataObject {
     this.name = name;
   }
 
-  public AppServer getAppServer() {
+  public AppServerEntity getAppServer() {
     return appServer;
   }
 
-  public void setAppServer(final AppServer appServer) {
+  public void setAppServer(final AppServerEntity appServer) {
     this.appServer = appServer;
   }
 }

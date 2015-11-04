@@ -1,12 +1,19 @@
 package com.home.teamnotifier.gateways;
 
 import com.google.common.base.Preconditions;
+import com.google.inject.Inject;
 import com.home.teamnotifier.authentication.User;
 import com.home.teamnotifier.db.*;
 import java.util.Optional;
 
 public class DbUserGateway implements UserGateway {
-  private final TransactionHelper transactionHelper = TransactionHelper.getInstance();
+
+  private final TransactionHelper transactionHelper;
+
+  @Inject
+  public DbUserGateway(final TransactionHelper transactionHelper) {
+    this.transactionHelper = transactionHelper;
+  }
 
   @Override
   public User userById(final Integer userId) {

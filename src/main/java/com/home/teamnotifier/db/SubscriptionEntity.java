@@ -4,22 +4,22 @@ import javax.persistence.*;
 
 @Entity
 @Table(schema = "teamnotifier")
-public class Subscription implements DataObject {
+public class SubscriptionEntity implements DataObject {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Integer id;
 
   @ManyToOne
-  private AppServer appServer;
+  private AppServerEntity appServer;
 
   @ManyToOne
   private UserEntity subscriber;
 
-  public AppServer getAppServer() {
+  public AppServerEntity getAppServer() {
     return appServer;
   }
 
-  public void setAppServer(final AppServer appServer) {
+  public void setAppServer(final AppServerEntity appServer) {
     this.appServer = appServer;
   }
 

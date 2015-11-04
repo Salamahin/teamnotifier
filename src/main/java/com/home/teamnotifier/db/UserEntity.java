@@ -13,26 +13,29 @@ public class UserEntity {
   @Column
   private String name;
 
+  @Column
+  private String passHash;
+
   @OneToMany(mappedBy = "appServer")
-  private List<Subscription> subscriptions;
+  private List<SubscriptionEntity> subscriptions;
 
   @OneToMany(mappedBy = "occupier")
-  private List<SharedResource> occupiedResources;
+  private List<SharedResourceEntity> occupiedResources;
 
-  public List<SharedResource> getOccupiedResources() {
+  public List<SharedResourceEntity> getOccupiedResources() {
     return occupiedResources;
   }
 
   public void setOccupiedResources(
-      final List<SharedResource> occupiedResources) {
+      final List<SharedResourceEntity> occupiedResources) {
     this.occupiedResources = occupiedResources;
   }
 
-  public List<Subscription> getSubscriptions() {
+  public List<SubscriptionEntity> getSubscriptions() {
     return subscriptions;
   }
 
-  public void setSubscriptions(final List<Subscription> subscriptions) {
+  public void setSubscriptions(final List<SubscriptionEntity> subscriptions) {
     this.subscriptions = subscriptions;
   }
 
@@ -50,5 +53,13 @@ public class UserEntity {
 
   public void setName(final String name) {
     this.name = name;
+  }
+
+  public String getPassHash() {
+    return passHash;
+  }
+
+  public void setPassHash(final String passHash) {
+    this.passHash = passHash;
   }
 }

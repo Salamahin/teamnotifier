@@ -8,9 +8,9 @@
     <persistence-unit name="teamnotifier" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-        <class>com.home.teamnotifier.db.AppServer</class>
-        <class>com.home.teamnotifier.db.Environment</class>
-        <class>com.home.teamnotifier.db.SharedResource</class>
+        <class>com.home.teamnotifier.db.AppServerEntity</class>
+        <class>com.home.teamnotifier.db.EnvironmentEntity</class>
+        <class>com.home.teamnotifier.db.SharedResourceEntity</class>
 
         <properties>
             <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>

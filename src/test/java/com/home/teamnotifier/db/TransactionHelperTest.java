@@ -11,13 +11,13 @@ public class TransactionHelperTest {
   @Test
   public void testStoredObjectHasNotNullId()
   throws Exception {
-    final SharedResource resource = newResourceWithRandomName();
-    final SharedResource persistetResource = store(resource);
+    final SharedResourceEntity resource = newResourceWithRandomName();
+    final SharedResourceEntity persistetResource = store(resource);
     assertThat(persistetResource.getId()).isNotNull();
   }
 
-  private SharedResource newResourceWithRandomName() {
-    final SharedResource resource = new SharedResource();
+  private SharedResourceEntity newResourceWithRandomName() {
+    final SharedResourceEntity resource = new SharedResourceEntity();
     resource.setName(getRandomName());
     return resource;
   }
@@ -31,7 +31,7 @@ public class TransactionHelperTest {
   @Test
   public void testDbStoresObjectAfterUpdate()
   throws Exception {
-    AppServer persistedServer = newPersistedServerWithRandomName();
+    AppServerEntity persistedServer = newPersistedServerWithRandomName();
 
     final String oldName = persistedServer.getName();
     final Integer oldId = persistedServer.getId();
@@ -46,8 +46,8 @@ public class TransactionHelperTest {
     assertThat(persistedServer.getName()).isEqualTo(newName);
   }
 
-  private AppServer newPersistedServerWithRandomName() {
-    final AppServer server = new AppServer();
+  private AppServerEntity newPersistedServerWithRandomName() {
+    final AppServerEntity server = new AppServerEntity();
     server.setName(getRandomName());
     return store(server);
   }
@@ -60,7 +60,7 @@ public class TransactionHelperTest {
   public void testFindPersistedEntity()
   throws Exception {
     final int persistedServerId = newPersistedServerWithRandomName().getId();
-    final AppServer persistedServer = find(AppServer.class, persistedServerId);
+    final AppServerEntity persistedServer = find(AppServerEntity.class, persistedServerId);
     assertThat(persistedServer.getName()).isNotNull();
   }
 
@@ -71,9 +71,9 @@ public class TransactionHelperTest {
   @Test
   public void testRemovePersistedEntity()
   throws Exception {
-    final AppServer persistedServer = newPersistedServerWithRandomName();
+    final AppServerEntity persistedServer = newPersistedServerWithRandomName();
     remove(persistedServer);
-    final AppServer findedServer = find(AppServer.class, persistedServer.getId());
+    final AppServerEntity findedServer = find(AppServerEntity.class, persistedServer.getId());
     assertThat(findedServer).isNull();
   }
 
@@ -87,6 +87,6 @@ public class TransactionHelperTest {
   @Before
   public void setUp()
   throws Exception {
-    transactionHelper = TransactionHelper.getInstance();
+    transactionHelper = new TransactionHelper();
   }
 }

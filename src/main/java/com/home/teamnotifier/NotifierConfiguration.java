@@ -26,9 +26,4 @@ public class NotifierConfiguration extends Configuration
   public ExecutorsConfiguration getExecutorsConfiguration() {
     return executorsConfiguration;
   }
-
-  @JsonProperty(value = "executors")
-  public void setExecutorsConfiguration(final ExecutorsConfiguration executorsConfiguration) {
-    this.executorsConfiguration = executorsConfiguration;
-  }
 }

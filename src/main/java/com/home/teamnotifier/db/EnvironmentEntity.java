@@ -5,7 +5,7 @@ import java.util.List;
 
 @Entity
 @Table (schema = "teamnotifier")
-public class Environment implements DataObject {
+public class EnvironmentEntity implements DataObject {
   @Id
   @GeneratedValue(strategy=GenerationType.AUTO)
   private Integer id;
@@ -14,7 +14,7 @@ public class Environment implements DataObject {
   private String name;
 
   @OneToMany(mappedBy = "environment")
-  private List<AppServer> appServers;
+  private List<AppServerEntity> appServers;
 
   @Override
   public Integer getId() {
@@ -33,11 +33,11 @@ public class Environment implements DataObject {
     this.name = name;
   }
 
-  public List<AppServer> getAppServers() {
+  public List<AppServerEntity> getAppServers() {
     return appServers;
   }
 
-  public void setAppServers(final List<AppServer> appServers) {
+  public void setAppServers(final List<AppServerEntity> appServers) {
     this.appServers = appServers;
   }
 }

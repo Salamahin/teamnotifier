@@ -1,7 +1,6 @@
 package com.home.teamnotifier.resource.environment;
 
 import com.fasterxml.jackson.annotation.*;
-import java.util.Set;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonAutoDetect(
@@ -10,17 +9,16 @@ import java.util.Set;
     isGetterVisibility = JsonAutoDetect.Visibility.NONE,
     setterVisibility = JsonAutoDetect.Visibility.NONE,
     creatorVisibility = JsonAutoDetect.Visibility.NONE)
-@JsonTypeName("AppServer")
-public class AppServer {
+@JsonTypeName("SharedResource")
+public class SharedResource {
   private final String name;
 
-  private final Set<SharedResource> resources;
-
   @JsonCreator
-  public AppServer(
-      @JsonProperty("name") final String name,
-      @JsonProperty("resources") final Set<SharedResource> resources) {
+  public SharedResource(@JsonProperty("name") final String name) {
     this.name = name;
-    this.resources = resources;
+  }
+
+  public String getName() {
+    return name;
   }
 }

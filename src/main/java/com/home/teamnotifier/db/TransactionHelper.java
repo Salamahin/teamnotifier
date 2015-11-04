@@ -1,20 +1,18 @@
 package com.home.teamnotifier.db;
 
 import org.slf4j.*;
+import javax.inject.Inject;
 import javax.persistence.*;
 import java.util.function.Function;
 
 public final class TransactionHelper {
   private final EntityManager entityManager;
 
-  private TransactionHelper() {
+  @Inject
+  public TransactionHelper() {
     EntityManagerFactory managerFactory = Persistence
         .createEntityManagerFactory("teamnotifier");
     entityManager = managerFactory.createEntityManager();
-  }
-
-  public static TransactionHelper getInstance() {
-    return InstanceHolder.INSTANCE;
   }
 
   private static class InstanceHolder {
@@ -30,8 +28,8 @@ public final class TransactionHelper {
       entityManager.flush();
       entityManager.getTransaction().commit();
     } catch (Exception exc) {
-      entityManager.getTransaction().rollback();
       entityManager.flush();
+      entityManager.getTransaction().rollback();
       throw exc;
     }
 

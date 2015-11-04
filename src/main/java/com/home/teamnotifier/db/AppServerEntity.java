@@ -5,7 +5,7 @@ import java.util.List;
 
 @Entity
 @Table (schema = "teamnotifier")
-public class AppServer implements DataObject {
+public class AppServerEntity implements DataObject {
   @Id
   @GeneratedValue(strategy=GenerationType.AUTO)
   private Integer id;
@@ -14,19 +14,19 @@ public class AppServer implements DataObject {
   private String name;
 
   @ManyToOne
-  private Environment environment;
+  private EnvironmentEntity environment;
 
   @OneToMany(mappedBy = "appServer")
-  private List<SharedResource> resources;
+  private List<SharedResourceEntity> resources;
 
   @OneToMany(mappedBy = "appServer")
-  private List<Subscription> subscriptions;
+  private List<SubscriptionEntity> subscriptions;
 
-  public List<Subscription> getSubscriptions() {
+  public List<SubscriptionEntity> getSubscriptions() {
     return subscriptions;
   }
 
-  public void setSubscriptions(final List<Subscription> subscriptions) {
+  public void setSubscriptions(final List<SubscriptionEntity> subscriptions) {
     this.subscriptions = subscriptions;
   }
 
@@ -47,19 +47,19 @@ public class AppServer implements DataObject {
     this.name = name;
   }
 
-  public Environment getEnvironment() {
+  public EnvironmentEntity getEnvironment() {
     return environment;
   }
 
-  public void setEnvironment(final Environment environment) {
+  public void setEnvironment(final EnvironmentEntity environment) {
     this.environment = environment;
   }
 
-  public List<SharedResource> getResources() {
+  public List<SharedResourceEntity> getResources() {
     return resources;
   }
 
-  public void setResources(final List<SharedResource> resources) {
+  public void setResources(final List<SharedResourceEntity> resources) {
     this.resources = resources;
   }
 }
