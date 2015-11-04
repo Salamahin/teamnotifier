@@ -5,7 +5,7 @@ import java.util.List;
 
 @Entity
 @Table(schema = "teamnotifier")
-public class User {
+public class UserEntity {
   @Id
   @GeneratedValue(strategy=GenerationType.AUTO)
   private Integer id;

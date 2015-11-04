@@ -23,8 +23,7 @@ public class UserInfo {
   @JsonCreator
   public UserInfo(
       @JsonProperty("name") String name,
-      @JsonProperty("surname") String surname
-  ) {
+      @JsonProperty("surname") String surname) {
     this.name = name;
     this.surname = surname;
   }

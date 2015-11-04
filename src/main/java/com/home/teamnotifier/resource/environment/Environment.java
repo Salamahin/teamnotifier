@@ -1,4 +1,4 @@
-package com.home.teamnotifier.resource;
+package com.home.teamnotifier.resource.environment;
 
 import com.google.common.collect.*;
 import java.util.*;
