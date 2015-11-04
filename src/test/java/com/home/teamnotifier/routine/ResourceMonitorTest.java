@@ -23,7 +23,7 @@
 //  @Test
 //  public void testCanGetFullStatus()
 //  throws Exception {
-//    final List<Environment> environmentList = monitor.getStatus(securityToken);
+//    final List<Environment> environmentList = monitor.status(securityToken);
 //  }
 //
 //  @Test

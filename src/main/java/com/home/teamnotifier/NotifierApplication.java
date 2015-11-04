@@ -2,6 +2,7 @@ package com.home.teamnotifier;
 
 import com.google.inject.Injector;
 import com.home.teamnotifier.authentication.TeamNotifierAuthenticator;
+import com.home.teamnotifier.authentication.TeamNotifierAuthorizer;
 import com.home.teamnotifier.authentication.User;
 import com.home.teamnotifier.web.socket.BroadcastServlet;
 import com.home.teamnotifier.web.socket.ClientManager;
@@ -14,6 +15,7 @@ import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.validation.valuehandling.OptionalValidatedValueUnwrapper;
+import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import javax.servlet.ServletRegistration;
 
 public class NotifierApplication extends Application<NotifierConfiguration> {
@@ -36,8 +38,9 @@ public class NotifierApplication extends Application<NotifierConfiguration> {
     environment.jersey().register(new AuthDynamicFeature(
         new BasicCredentialAuthFilter.Builder<User>()
             .setAuthenticator(injector.getInstance(TeamNotifierAuthenticator.class))
-            .setRealm("SUPER SECRET STUFF")
+            .setAuthorizer(new TeamNotifierAuthorizer())
             .buildAuthFilter()));
+    environment.jersey().register(RolesAllowedDynamicFeature.class);
     //If you want to use @Auth to inject a custom Principal type into your resource
     environment.jersey().register(new AuthValueFactoryProvider.Binder<>(User.class));
   }
