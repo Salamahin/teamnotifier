@@ -1,6 +1,7 @@
 package com.home.teamnotifier.db;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(schema = "teamnotifier")
@@ -14,6 +15,29 @@ public class User {
 
   @Column
   private String surname;
+
+  @OneToMany(mappedBy = "appServer")
+  private List<Subscription> subscriptions;
+
+  @OneToMany(mappedBy = "occupier")
+  private List<SharedResource> occupiedResources;
+
+  public List<SharedResource> getOccupiedResources() {
+    return occupiedResources;
+  }
+
+  public void setOccupiedResources(
+      final List<SharedResource> occupiedResources) {
+    this.occupiedResources = occupiedResources;
+  }
+
+  public List<Subscription> getSubscriptions() {
+    return subscriptions;
+  }
+
+  public void setSubscriptions(final List<Subscription> subscriptions) {
+    this.subscriptions = subscriptions;
+  }
 
   public Integer getId() {
     return id;

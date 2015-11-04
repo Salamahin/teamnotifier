@@ -1,6 +1,7 @@
 package com.home.teamnotifier.db;
 
 import javax.persistence.*;
+import java.time.*;
 
 @Entity
 @Table(schema = "teamnotifier")
@@ -14,6 +15,28 @@ public class SharedResource implements DataObject {
 
   @ManyToOne
   private AppServer appServer;
+
+  @ManyToOne
+  private User occupier;
+
+  @Column
+  private LocalDateTime occupationStartTime;
+
+  public LocalDateTime getOccupationStartTime() {
+    return occupationStartTime;
+  }
+
+  public void setOccupationStartTime(final LocalDateTime occupationStartTime) {
+    this.occupationStartTime = occupationStartTime;
+  }
+
+  public User getOccupier() {
+    return occupier;
+  }
+
+  public void setOccupier(final User occupier) {
+    this.occupier = occupier;
+  }
 
   @Override
   public Integer getId() {

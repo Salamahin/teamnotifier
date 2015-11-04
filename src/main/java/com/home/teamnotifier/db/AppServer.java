@@ -19,6 +19,17 @@ public class AppServer implements DataObject {
   @OneToMany(mappedBy = "appServer")
   private List<SharedResource> resources;
 
+  @OneToMany(mappedBy = "appServer")
+  private List<Subscription> subscriptions;
+
+  public List<Subscription> getSubscriptions() {
+    return subscriptions;
+  }
+
+  public void setSubscriptions(final List<Subscription> subscriptions) {
+    this.subscriptions = subscriptions;
+  }
+
   @Override
   public Integer getId() {
     return id;

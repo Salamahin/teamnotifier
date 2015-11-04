@@ -21,7 +21,10 @@ public class UserInfo {
   private final String surname;
 
   @JsonCreator
-  public UserInfo(@JsonProperty("name") String name, @JsonProperty("surname") String surname) {
+  public UserInfo(
+      @JsonProperty("name") String name,
+      @JsonProperty("surname") String surname
+  ) {
     this.name = name;
     this.surname = surname;
   }
