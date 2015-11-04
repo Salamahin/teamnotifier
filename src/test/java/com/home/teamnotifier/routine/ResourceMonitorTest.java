@@ -6,9 +6,6 @@ import org.mockito.*;
 import java.util.*;
 import static org.mockito.Mockito.*;
 
-/**
- * Created by salamahin on 03.11.15.
- */
 public class ResourceMonitorTest {
 
   private ResourceMonitor monitor;
@@ -46,6 +43,7 @@ public class ResourceMonitorTest {
     monitor.unsubscribe(securityToken, -1);
   }
 
+  @Ignore
   @Test
   public void testNotificationFiredWhenReservationSuccess()
   throws Exception {
@@ -55,4 +53,13 @@ public class ResourceMonitorTest {
 
     verify(monitor, times(1)).fireNotification();
   }
+
+  @Test(expected = AlreadyReserved.class)
+  public void testReservationOnReservedResourceFails()
+  throws Exception {
+    final int applicationId = -1;
+    monitor.reserve(securityToken, applicationId);
+    monitor.reserve(securityToken, applicationId);
+  }
+
 }
