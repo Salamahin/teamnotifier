@@ -3,17 +3,20 @@ package com.home.teamnotifier.authentication;
 import java.security.Principal;
 
 public class User implements Principal {
-  private final String userName;
+  private final String name;
+  private final int id;
 
-  private final String userSurname;
+  public User(final int id, final String name) {
+    this.id = id;
+    this.name = name;
+  }
 
-  public User(final String userName, final String userSurname) {
-    this.userName = userName;
-    this.userSurname = userSurname;
+  public int getId() {
+    return id;
   }
 
   @Override
   public String getName() {
-    return userName;
+    return name;
   }
 }

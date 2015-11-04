@@ -1,10 +1,11 @@
-package com.home.teamnotifier.resource.auth;
+package com.home.teamnotifier.resource.environment;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import java.util.Set;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonAutoDetect(
@@ -13,18 +14,24 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
     isGetterVisibility = JsonAutoDetect.Visibility.NONE,
     setterVisibility = JsonAutoDetect.Visibility.NONE,
     creatorVisibility = JsonAutoDetect.Visibility.NONE)
-@JsonTypeName("UserInfo")
-public class UserInfo {
-
+@JsonTypeName("Environment")
+public class Environment {
   private final String name;
 
-  private final String surname;
+  private final Set<AppServer> servers;
 
   @JsonCreator
-  public UserInfo(
-      @JsonProperty("name") String name,
-      @JsonProperty("surname") String surname) {
+  public Environment(@JsonProperty("name") final String name,
+      @JsonProperty("servers") final Set<AppServer> servers) {
     this.name = name;
-    this.surname = surname;
+    this.servers = servers;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public Set<AppServer> getServers() {
+    return servers;
   }
 }

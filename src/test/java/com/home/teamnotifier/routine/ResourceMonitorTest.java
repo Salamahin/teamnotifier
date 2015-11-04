@@ -1,6 +1,6 @@
 package com.home.teamnotifier.routine;
 
-import com.home.teamnotifier.resource.Environment;
+import com.home.teamnotifier.resource.environment.Environment;
 import org.junit.*;
 import java.util.*;
 import static org.mockito.Mockito.*;

@@ -13,7 +13,7 @@ public class Subscription implements DataObject {
   private AppServer appServer;
 
   @ManyToOne
-  private User subscriber;
+  private UserEntity subscriber;
 
   public AppServer getAppServer() {
     return appServer;
@@ -23,11 +23,11 @@ public class Subscription implements DataObject {
     this.appServer = appServer;
   }
 
-  public User getSubscriber() {
+  public UserEntity getSubscriber() {
     return subscriber;
   }
 
-  public void setSubscriber(final User subscriber) {
+  public void setSubscriber(final UserEntity subscriber) {
     this.subscriber = subscriber;
   }
 

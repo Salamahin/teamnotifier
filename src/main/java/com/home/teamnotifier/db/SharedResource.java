@@ -17,7 +17,7 @@ public class SharedResource implements DataObject {
   private AppServer appServer;
 
   @ManyToOne
-  private User occupier;
+  private UserEntity occupier;
 
   @Column
   private LocalDateTime occupationStartTime;
@@ -30,11 +30,11 @@ public class SharedResource implements DataObject {
     this.occupationStartTime = occupationStartTime;
   }
 
-  public User getOccupier() {
+  public UserEntity getOccupier() {
     return occupier;
   }
 
-  public void setOccupier(final User occupier) {
+  public void setOccupier(final UserEntity occupier) {
     this.occupier = occupier;
   }
 

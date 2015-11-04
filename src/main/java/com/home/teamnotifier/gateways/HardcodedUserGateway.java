@@ -11,6 +11,6 @@ public class HardcodedUserGateway implements UserGateway {
 
   @Override
   public User userById(final Integer userId) {
-    return new User("hardcodedName", "hardcodedSurname");
+    return new User(userId, "hardcodedSurname");
   }
 }

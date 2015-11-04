@@ -1,6 +1,6 @@
 package com.home.teamnotifier.routine;
 
-import com.home.teamnotifier.resource.Environment;
+import com.home.teamnotifier.resource.environment.Environment;
 import java.util.*;
 
 public class ResourceMonitor {
