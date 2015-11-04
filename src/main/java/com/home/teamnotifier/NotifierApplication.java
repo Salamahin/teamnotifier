@@ -26,6 +26,8 @@ public class NotifierApplication extends Application<NotifierConfiguration> {
     bootstrap.addBundle(new AssetsBundle("/assets", "/"));
     applicationInjector = GuiceBundle.<NotifierConfiguration>newBuilder()
         .addModule(new NotifierModule())
+        .setConfigClass(NotifierConfiguration.class)
+        .enableAutoConfig(getClass().getPackage().getName())
         .build();
     bootstrap.addBundle(applicationInjector);
   }

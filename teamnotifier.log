@@ -145,3 +145,86 @@ INFO   [20:50:49.838] [Thread-11] o.e.j.s.ServerConnector -  Stopped application
 INFO   [20:50:49.860] [Thread-11] o.e.j.s.ServerConnector -  Stopped admin@3b7b05a8{HTTP/1.1}{0.0.0.0:7999} 
 INFO   [20:50:49.863] [Thread-11] o.e.j.s.h.ContextHandler -  Stopped i.d.j.MutableServletContextHandler@5d51e129{/,null,UNAVAILABLE} 
 INFO   [20:50:49.878] [Thread-11] o.e.j.s.h.ContextHandler -  Stopped i.d.j.MutableServletContextHandler@2f00f851{/,null,UNAVAILABLE} 
+INFO   [21:51:48.615] [main] o.e.j.u.log -  Logging initialized @3483ms 
+INFO   [21:51:48.764] [main] i.d.a.AssetsBundle -  Registering AssetBundle with name: assets for path /* 
+INFO   [21:51:48.977] [main] i.d.s.ServerFactory -  Starting NotifierApplication 
+INFO   [21:51:48.988] [main] i.d.s.DefaultServerFactory -  Registering jersey handler with root path prefix: / 
+INFO   [21:51:49.006] [main] i.d.s.DefaultServerFactory -  Registering admin handler with root path prefix: / 
+INFO   [21:51:49.053] [main] o.e.j.s.SetUIDListener -  Opened application@3c017078{HTTP/1.1}{0.0.0.0:7998} 
+INFO   [21:51:49.054] [main] o.e.j.s.SetUIDListener -  Opened admin@51827393{HTTP/1.1}{0.0.0.0:7999} 
+INFO   [21:51:49.059] [main] o.e.j.s.Server -  jetty-9.2.13.v20150730 
+WARN   [21:51:49.501] [main] o.g.j.i.i.Providers -  A provider io.dropwizard.validation.valuehandling.OptionalValidatedValueUnwrapper registered in SERVER runtime does not implement any provider interfaces applicable in the SERVER runtime. Due to constraint configuration problems the provider io.dropwizard.validation.valuehandling.OptionalValidatedValueUnwrapper will be ignored.  
+INFO   [21:51:49.751] [main] i.d.j.DropwizardResourceConfig -  The following paths were found for the configured resources:
+
+    NONE
+ 
+INFO   [21:51:49.755] [main] o.e.j.s.h.ContextHandler -  Started i.d.j.MutableServletContextHandler@7dd611c8{/,null,AVAILABLE} 
+INFO   [21:51:49.765] [main] i.d.s.AdminEnvironment -  tasks = 
+
+    POST    /tasks/log-level (io.dropwizard.servlets.tasks.LogConfigurationTask)
+    POST    /tasks/gc (io.dropwizard.servlets.tasks.GarbageCollectionTask)
+ 
+WARN   [21:51:49.765] [main] i.d.s.AdminEnvironment -  
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!    THIS APPLICATION HAS NO HEALTHCHECKS. THIS MEANS YOU WILL NEVER KNOW      !
+!     IF IT DIES IN PRODUCTION, WHICH MEANS YOU WILL NEVER KNOW IF YOU'RE      !
+!    LETTING YOUR USERS DOWN. YOU SHOULD ADD A HEALTHCHECK FOR EACH OF YOUR    !
+!         APPLICATION'S DEPENDENCIES WHICH FULLY (BUT LIGHTLY) TESTS IT.       !
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
+INFO   [21:51:49.777] [main] o.e.j.s.h.ContextHandler -  Started i.d.j.MutableServletContextHandler@716e431d{/,null,AVAILABLE} 
+INFO   [21:51:49.789] [main] o.e.j.s.ServerConnector -  Started application@3c017078{HTTP/1.1}{0.0.0.0:7998} 
+INFO   [21:51:49.790] [main] o.e.j.s.ServerConnector -  Started admin@51827393{HTTP/1.1}{0.0.0.0:7999} 
+INFO   [21:51:49.790] [main] o.e.j.s.Server -  Started @4660ms 
+INFO   [21:51:53.177] [Thread-11] o.e.j.s.ServerConnector -  Stopped application@3c017078{HTTP/1.1}{0.0.0.0:7998} 
+INFO   [21:51:53.178] [Thread-11] o.e.j.s.ServerConnector -  Stopped admin@51827393{HTTP/1.1}{0.0.0.0:7999} 
+INFO   [21:51:53.180] [Thread-11] o.e.j.s.h.ContextHandler -  Stopped i.d.j.MutableServletContextHandler@716e431d{/,null,UNAVAILABLE} 
+INFO   [21:51:53.203] [Thread-11] o.e.j.s.h.ContextHandler -  Stopped i.d.j.MutableServletContextHandler@7dd611c8{/,null,UNAVAILABLE} 
+INFO   [22:23:38.765] [main] o.e.j.u.log -  Logging initialized @3280ms 
+INFO   [22:23:38.912] [main] i.d.a.AssetsBundle -  Registering AssetBundle with name: assets for path /* 
+INFO   [22:23:38.996] [main] c.h.d.g.AutoConfig -  Added resource class: class com.home.teamnotifier.resource.environment.EnvironmentRestService 
+INFO   [22:23:39.094] [main] i.d.s.ServerFactory -  Starting NotifierApplication 
+INFO   [22:23:39.110] [main] i.d.s.DefaultServerFactory -  Registering jersey handler with root path prefix: / 
+INFO   [22:23:39.141] [main] i.d.s.DefaultServerFactory -  Registering admin handler with root path prefix: / 
+INFO   [22:23:39.219] [main] o.e.j.s.SetUIDListener -  Opened application@3c017078{HTTP/1.1}{0.0.0.0:7998} 
+INFO   [22:23:39.219] [main] o.e.j.s.SetUIDListener -  Opened admin@51827393{HTTP/1.1}{0.0.0.0:7999} 
+INFO   [22:23:39.227] [main] o.e.j.s.Server -  jetty-9.2.13.v20150730 
+WARN   [22:23:39.708] [main] o.g.j.i.i.Providers -  A provider io.dropwizard.validation.valuehandling.OptionalValidatedValueUnwrapper registered in SERVER runtime does not implement any provider interfaces applicable in the SERVER runtime. Due to constraint configuration problems the provider io.dropwizard.validation.valuehandling.OptionalValidatedValueUnwrapper will be ignored.  
+INFO   [22:23:40.170] [main] i.d.j.DropwizardResourceConfig -  The following paths were found for the configured resources:
+
+    GET     /teamnotifier/1.0/environment (com.home.teamnotifier.resource.environment.EnvironmentRestService)
+    DELETE  /teamnotifier/1.0/environment/application/reserve/{applicationId} (com.home.teamnotifier.resource.environment.EnvironmentRestService)
+    POST    /teamnotifier/1.0/environment/application/reserve/{applicationId} (com.home.teamnotifier.resource.environment.EnvironmentRestService)
+    DELETE  /teamnotifier/1.0/environment/server/reserve/{serverId} (com.home.teamnotifier.resource.environment.EnvironmentRestService)
+    POST    /teamnotifier/1.0/environment/server/subscribe/{serverId} (com.home.teamnotifier.resource.environment.EnvironmentRestService)
+ 
+INFO   [22:23:40.175] [main] o.e.j.s.h.ContextHandler -  Started i.d.j.MutableServletContextHandler@e57e5d6{/,null,AVAILABLE} 
+INFO   [22:23:40.184] [main] i.d.s.AdminEnvironment -  tasks = 
+
+    POST    /tasks/log-level (io.dropwizard.servlets.tasks.LogConfigurationTask)
+    POST    /tasks/gc (io.dropwizard.servlets.tasks.GarbageCollectionTask)
+ 
+WARN   [22:23:40.185] [main] i.d.s.AdminEnvironment -  
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!    THIS APPLICATION HAS NO HEALTHCHECKS. THIS MEANS YOU WILL NEVER KNOW      !
+!     IF IT DIES IN PRODUCTION, WHICH MEANS YOU WILL NEVER KNOW IF YOU'RE      !
+!    LETTING YOUR USERS DOWN. YOU SHOULD ADD A HEALTHCHECK FOR EACH OF YOUR    !
+!         APPLICATION'S DEPENDENCIES WHICH FULLY (BUT LIGHTLY) TESTS IT.       !
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
+INFO   [22:23:40.194] [main] o.e.j.s.h.ContextHandler -  Started i.d.j.MutableServletContextHandler@59072e9d{/,null,AVAILABLE} 
+INFO   [22:23:40.201] [main] o.e.j.s.ServerConnector -  Started application@3c017078{HTTP/1.1}{0.0.0.0:7998} 
+INFO   [22:23:40.202] [main] o.e.j.s.ServerConnector -  Started admin@51827393{HTTP/1.1}{0.0.0.0:7999} 
+INFO   [22:23:40.202] [main] o.e.j.s.Server -  Started @4719ms 
+INFO   [22:23:44.432] [Thread-11] o.e.j.s.ServerConnector -  Stopped application@3c017078{HTTP/1.1}{0.0.0.0:7998} 
+INFO   [22:23:44.456] [Thread-11] o.e.j.s.ServerConnector -  Stopped admin@51827393{HTTP/1.1}{0.0.0.0:7999} 
+INFO   [22:23:44.459] [Thread-11] o.e.j.s.h.ContextHandler -  Stopped i.d.j.MutableServletContextHandler@59072e9d{/,null,UNAVAILABLE} 
+INFO   [22:23:44.470] [Thread-11] o.e.j.s.h.ContextHandler -  Stopped i.d.j.MutableServletContextHandler@e57e5d6{/,null,UNAVAILABLE} 
+INFO   [22:37:05.038] [main] o.e.j.u.log -  Logging initialized @3141ms 
+INFO   [22:37:05.156] [main] i.d.a.AssetsBundle -  Registering AssetBundle with name: assets for path /* 
+INFO   [22:37:05.213] [main] c.h.d.g.AutoConfig -  Added resource class: class com.home.teamnotifier.resource.environment.EnvironmentRestService 
+INFO   [22:38:57.304] [main] o.e.j.u.log -  Logging initialized @3759ms 
+INFO   [22:38:57.451] [main] i.d.a.AssetsBundle -  Registering AssetBundle with name: assets for path /* 
+INFO   [22:38:57.523] [main] c.h.d.g.AutoConfig -  Added resource class: class com.home.teamnotifier.resource.environment.EnvironmentRestService 

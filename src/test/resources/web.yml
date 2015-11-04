@@ -19,9 +19,12 @@ logging:
     - type: console
     - type: file
       threshold: INFO
-      logFormat: "%-6level [%d{HH:mm:ss.SSS}] [%t] %logger{5} - %X{code} %msg %n"
+      logFormat: '%-6level [%d{HH:mm:ss.SSS}] [%t] %logger{5} - %X{code} %msg %n'
       currentLogFilename: teamnotifier.log
       archivedLogFilenamePattern: teamnotifier-%d{yyyy-MM-dd}-%i.log.gz
       archivedFileCount: 7
       timeZone: UTC
       maxFileSize: 10MB
+
+executors:
+  poolSize: 20
