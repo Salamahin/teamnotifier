@@ -13,8 +13,7 @@ logging:
   level: INFO
   loggers:
     com.home.teamnotifier: DEBUG
-    org.hibernate:
-      level: WARN
+    org.hibernate: WARN
   appenders:
     - type: console
     - type: file

@@ -1,7 +1,7 @@
 package com.home.teamnotifier.resource.environment;
 
 import com.fasterxml.jackson.annotation.*;
-import java.util.List;
+import java.util.*;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonAutoDetect(
@@ -17,5 +17,18 @@ public class EnvironmentsInfo {
   @JsonCreator
   public EnvironmentsInfo(@JsonProperty("environments") final List<EnvironmentInfo> environments) {
     this.environments = environments;
+  }
+
+  @Override
+  public boolean equals(final Object o) {
+    if (this == o) { return true; }
+    if (o == null || getClass() != o.getClass()) { return false; }
+    final EnvironmentsInfo that = (EnvironmentsInfo) o;
+    return Objects.equals(environments, that.environments);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(environments);
   }
 }

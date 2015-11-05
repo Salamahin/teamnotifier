@@ -2,7 +2,7 @@ package com.home.teamnotifier.resource.environment;
 
 import com.fasterxml.jackson.annotation.*;
 import com.google.common.collect.ImmutableSet;
-import java.util.Set;
+import java.util.*;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonAutoDetect(
@@ -25,5 +25,19 @@ public class EnvironmentInfo {
   ) {
     this.name = name;
     this.servers = ImmutableSet.copyOf(servers);
+  }
+
+  @Override
+  public boolean equals(final Object o) {
+    if (this == o) { return true; }
+    if (o == null || getClass() != o.getClass()) { return false; }
+    final EnvironmentInfo that = (EnvironmentInfo) o;
+    return Objects.equals(name, that.name) &&
+        Objects.equals(servers, that.servers);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(name, servers);
   }
 }

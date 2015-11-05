@@ -1,25 +1,26 @@
 {
+  "type": "Environments",
   "environments": [
     {
-      "environmentID": 1,
-      "name": "name",
-      "applicationServers": [
+      "type": "EnvironmentInfo",
+      "name": "environment",
+      "servers": [
         {
-          "applicationServerId": 1488,
-          "name": "appServerName",
-          "applications": [
+          "type": "AppServer",
+          "name": "server",
+          "resources": [
             {
-              "name": "flexprot",
+              "type": "SharedResource",
+              "name": "resource",
               "occupationInfo": {
-                "userId": 15,
-                "startTime": 1523
-              },
-              "subscibersIds": [
-                12,
-                15,
-                14
-              ]
+                "type": "OccupationInfo",
+                "userName": "user",
+                "occupationTime": "2015-11-05T23:44:40.220"
+              }
             }
+          ],
+          "subscribers": [
+            "user"
           ]
         }
       ]

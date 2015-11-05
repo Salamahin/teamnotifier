@@ -1,6 +1,7 @@
 package com.home.teamnotifier.resource.environment;
 
 import com.fasterxml.jackson.annotation.*;
+import java.util.Objects;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonAutoDetect(
@@ -9,7 +10,7 @@ import com.fasterxml.jackson.annotation.*;
     isGetterVisibility = JsonAutoDetect.Visibility.NONE,
     setterVisibility = JsonAutoDetect.Visibility.NONE,
     creatorVisibility = JsonAutoDetect.Visibility.NONE)
-@JsonTypeName("SharedResource")
+@JsonTypeName("OccupationInfo")
 public class OccupationInfo {
   private final String userName;
 
@@ -22,5 +23,18 @@ public class OccupationInfo {
   ) {
     this.userName = userName;
     this.occupationTime = occupationTime;
+  }
+
+  @Override
+  public boolean equals(final Object o) {
+    if (this == o) { return true; }
+    if (o == null || getClass() != o.getClass()) { return false; }
+    final OccupationInfo info = (OccupationInfo) o;
+    return Objects.equals(userName, info.userName);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(userName);
   }
 }

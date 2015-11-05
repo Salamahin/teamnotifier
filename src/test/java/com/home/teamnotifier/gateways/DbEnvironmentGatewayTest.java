@@ -1,14 +1,13 @@
 package com.home.teamnotifier.gateways;
 
 import com.fasterxml.jackson.databind.*;
-import com.google.common.io.Files;
 import com.home.teamnotifier.db.*;
 import com.home.teamnotifier.resource.environment.EnvironmentsInfo;
 import io.dropwizard.jackson.Jackson;
 import org.junit.*;
-import java.io.File;
-import java.nio.charset.Charset;
 import static com.home.teamnotifier.gateways.Commons.*;
+import static io.dropwizard.testing.FixtureHelpers.fixture;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DbEnvironmentGatewayTest {
 
@@ -39,9 +38,10 @@ public class DbEnvironmentGatewayTest {
   }
 
   @Test
-  public void testOutputJson()
+  public void testDeserializedFromJson()
   throws Exception {
     final EnvironmentsInfo status = gateway.status();
-    Files.write(MAPPER.writeValueAsString(status), new File("out"), Charset.defaultCharset());
+    assertThat(MAPPER.readValue(fixture("fixtures/envConfig.json"), EnvironmentsInfo.class))
+        .isEqualTo(status);
   }
 }
