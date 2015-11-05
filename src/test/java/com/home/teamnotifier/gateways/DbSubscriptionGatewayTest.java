@@ -16,20 +16,22 @@ public class DbSubscriptionGatewayTest {
   @Test
   public void testSubscribe()
   throws Exception {
-    final Integer serverId = environmentEntity.getAppServers().get(0).getId();
+    final AppServerEntity serverEntity = environmentEntity.getAppServers().get(0);
+    final Integer serverId = serverEntity.getId();
 
-    assertThat(subscripbtion.getSubscribers(serverId)).isEmpty();
+    assertThat(serverEntity.getSubscriptions()).isEmpty();
     subscripbtion.subscribe(userEntity.getName(), serverId);
-    assertThat(subscripbtion.getSubscribers(serverId)).isNotEmpty();
+    assertThat(serverEntity.getSubscriptions()).isNotEmpty();
   }
 
   @Test
   public void testUnsubscribe()
   throws Exception {
-    final Integer serverId = environmentEntity.getAppServers().get(0).getId();
+    final AppServerEntity serverEntity = environmentEntity.getAppServers().get(0);
+    final Integer serverId = serverEntity.getId();
     subscripbtion.subscribe(userEntity.getName(), serverId);
     subscripbtion.unsubscribe(userEntity.getName(), serverId);
-    assertThat(subscripbtion.getSubscribers(serverId)).isEmpty();
+    assertThat(serverEntity.getSubscriptions()).isEmpty();
   }
 
   @Test

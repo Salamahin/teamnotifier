@@ -125,28 +125,6 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
     if (!freeSuccess(userName, applicationId)) { throw new NotReserved(); }
   }
 
-  @Override
-  public List<UserInfo> getSubscribers(final int serverId) {
-    return transactionHelper.transaction(em -> getUserEntitiesSubscribedOnServer(serverId, em))
-        .stream()
-        .map(eu -> new UserInfo(eu.getId(), eu.getName()))
-        .collect(toList());
-  }
-
-  private List<UserEntity> getUserEntitiesSubscribedOnServer(int serverId, EntityManager em) {
-    final AppServerEntity serverEntity = em.find(AppServerEntity.class, serverId);
-
-    final CriteriaBuilder cb = em.getCriteriaBuilder();
-    final CriteriaQuery<UserEntity> cq = cb.createQuery(UserEntity.class);
-    final Root<SubscriptionEntity> _subscription = cq.from(SubscriptionEntity.class);
-
-    final CriteriaQuery<UserEntity> find = cq
-        .select(_subscription.get("subscriberEntity"))
-        .where(cb.equal(_subscription.get("appServerEntity"), serverEntity));
-
-    return em.createQuery(find).getResultList();
-  }
-
   private boolean freeSuccess(final String userName, final int applicationId) {
     return transactionHelper.transaction(em -> {
       final SharedResourceEntity resourceEntity = em

@@ -13,6 +13,4 @@ public interface SubscriptionGateway {
 
   void free(final String userName, final int applicationId)
   throws NotReserved;
-
-  List<UserInfo> getSubscribers(final int serverId);
 }
