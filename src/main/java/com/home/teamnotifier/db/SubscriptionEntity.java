@@ -2,34 +2,62 @@ package com.home.teamnotifier.db;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(schema = "teamnotifier")
+@Table(schema="teamnotifier", name = "Subscription")
 public class SubscriptionEntity implements Serializable
 {
   @Id
-  private Integer appServerId;
+  @GeneratedValue(strategy=GenerationType.AUTO)
+  private Integer id;
 
-  @Id
-  private Integer subscriberId;
+  @ManyToOne(optional=false)
+  private AppServerEntity appServerEntity;
 
-  public Integer getAppServerId()
+  @ManyToOne(optional=false)
+  private UserEntity subscriberEntity;
+
+  @Column(nullable = false)
+  private LocalDateTime timestamp;
+
+  public UserEntity getSubscriber()
   {
-    return appServerId;
+    return subscriberEntity;
   }
 
-  public void setAppServerId(Integer appServerId)
+  public AppServerEntity getAppServer()
   {
-    this.appServerId=appServerId;
+    return appServerEntity;
   }
 
-  public Integer getSubscriberId()
+  public void setSubscriber(UserEntity subscriber)
   {
-    return subscriberId;
+    subscriberEntity=subscriber;
   }
 
-  public void setSubscriberId(Integer subscriberId)
+  public void setAppServer(AppServerEntity appServer)
   {
-    this.subscriberId=subscriberId;
+    appServerEntity=appServer;
+  }
+
+  public LocalDateTime getTimestamp()
+  {
+    return timestamp;
+  }
+
+  public void setTimestamp(LocalDateTime timestamp)
+  {
+    this.timestamp=timestamp;
+  }
+
+  public Integer getId()
+  {
+    return id;
+  }
+
+  public void setId(Integer id)
+  {
+    this.id=id;
   }
 }

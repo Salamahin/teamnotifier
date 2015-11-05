@@ -4,10 +4,13 @@ import com.home.teamnotifier.db.AppServerEntity;
 import com.home.teamnotifier.db.EnvironmentEntity;
 import com.home.teamnotifier.db.TransactionHelper;
 import com.home.teamnotifier.db.UserEntity;
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.UUID;
+
+import static org.assertj.core.api.Assertions.*;
 
 /**
  * Created by dgoloshc on 05.11.2015.
@@ -60,13 +63,20 @@ public class DbSubscriptionGatewayTest
   @Test
   public void testSubscribe() throws Exception
   {
-    subscripbtion.subscribe(userEntity.getName(), environmentEntity.getAppServers().get(0).getId());
+    final Integer serverId=environmentEntity.getAppServers().get(0).getId();
+
+    assertThat(subscripbtion.getSubscribers(serverId)).isEmpty();
+    subscripbtion.subscribe(userEntity.getName(), serverId);
+    assertThat(subscripbtion.getSubscribers(serverId)).isNotEmpty();
   }
 
   @Test
   public void testUnsubscribe() throws Exception
   {
-
+    final Integer serverId=environmentEntity.getAppServers().get(0).getId();
+    subscripbtion.subscribe(userEntity.getName(), serverId);
+    subscripbtion.unsubscribe(userEntity.getName(), serverId);
+    assertThat(subscripbtion.getSubscribers(serverId)).isEmpty();
   }
 
   @Test

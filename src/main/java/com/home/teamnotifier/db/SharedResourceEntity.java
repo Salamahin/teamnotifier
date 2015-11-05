@@ -5,7 +5,7 @@ import java.io.Serializable;
 import java.time.*;
 
 @Entity
-@Table(schema = "teamnotifier")
+@Table(schema = "teamnotifier", name = "SharedResource")
 public class SharedResourceEntity implements Serializable
 {
   @Id
