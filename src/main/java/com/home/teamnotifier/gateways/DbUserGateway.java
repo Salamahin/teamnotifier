@@ -21,7 +21,7 @@ public class DbUserGateway implements UserGateway
 
   @Override public UserCredentials userCredentials(final String userName)
   {
-    UserEntity entity=getEntityByName(userName);
+    final UserEntity entity=getEntityByName(userName);
     if (entity != null)
       return new UserCredentials(entity.getName(), entity.getPassHash());
     else

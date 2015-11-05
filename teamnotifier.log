@@ -1,197 +1,15 @@
-INFO   [20:16:53.902] [main] o.e.j.u.log -  Logging initialized @3682ms 
-INFO   [20:16:53.994] [main] i.d.a.AssetsBundle -  Registering AssetBundle with name: assets for path /* 
-INFO   [20:16:54.347] [main] o.h.j.i.u.LogHelper -  HHH000204: Processing PersistenceUnitInfo [
-	name: teamnotifier
-	...] 
-INFO   [20:16:54.520] [main] o.h.Version -  HHH000412: Hibernate Core {5.0.3.Final} 
-INFO   [20:16:54.523] [main] o.h.c.Environment -  HHH000206: hibernate.properties not found 
-INFO   [20:16:54.526] [main] o.h.c.Environment -  HHH000021: Bytecode provider name : javassist 
-INFO   [20:16:54.579] [main] o.h.a.c.Version -  HCANN000001: Hibernate Commons Annotations {5.0.0.Final} 
-WARN   [20:16:54.779] [main] o.h.e.j.c.i.DriverManagerConnectionProviderImpl -  HHH000402: Using Hibernate built-in connection pool (not for production use!) 
-INFO   [20:16:54.787] [main] o.h.e.j.c.i.DriverManagerConnectionProviderImpl -  HHH000401: using driver [org.h2.Driver] at URL [jdbc:h2:mem:teamnotifier_test;DB_CLOSE_DELAY=-1;INIT=create schema IF NOT EXISTS teamnotifier] 
-INFO   [20:16:54.787] [main] o.h.e.j.c.i.DriverManagerConnectionProviderImpl -  HHH000046: Connection properties: {} 
-INFO   [20:16:54.788] [main] o.h.e.j.c.i.DriverManagerConnectionProviderImpl -  HHH000006: Autocommit mode: false 
-INFO   [20:16:54.792] [main] o.h.e.j.c.i.DriverManagerConnectionProviderImpl -  HHH000115: Hibernate connection pool size: 20 (min=1) 
-INFO   [20:16:55.092] [main] o.h.d.Dialect -  HHH000400: Using dialect: org.hibernate.dialect.H2Dialect 
-INFO   [20:17:48.661] [main] o.e.j.u.log -  Logging initialized @3381ms 
-INFO   [20:17:48.776] [main] i.d.a.AssetsBundle -  Registering AssetBundle with name: assets for path /* 
-INFO   [20:17:49.140] [main] o.h.j.i.u.LogHelper -  HHH000204: Processing PersistenceUnitInfo [
-	name: teamnotifier
-	...] 
-INFO   [20:17:49.283] [main] o.h.Version -  HHH000412: Hibernate Core {5.0.3.Final} 
-INFO   [20:17:49.301] [main] o.h.c.Environment -  HHH000206: hibernate.properties not found 
-INFO   [20:17:49.304] [main] o.h.c.Environment -  HHH000021: Bytecode provider name : javassist 
-INFO   [20:17:49.366] [main] o.h.a.c.Version -  HCANN000001: Hibernate Commons Annotations {5.0.0.Final} 
-WARN   [20:17:49.528] [main] o.h.e.j.c.i.DriverManagerConnectionProviderImpl -  HHH000402: Using Hibernate built-in connection pool (not for production use!) 
-INFO   [20:17:49.534] [main] o.h.e.j.c.i.DriverManagerConnectionProviderImpl -  HHH000401: using driver [org.h2.Driver] at URL [jdbc:h2:mem:teamnotifier_test;DB_CLOSE_DELAY=-1;INIT=create schema IF NOT EXISTS teamnotifier] 
-INFO   [20:17:49.535] [main] o.h.e.j.c.i.DriverManagerConnectionProviderImpl -  HHH000046: Connection properties: {} 
-INFO   [20:17:49.536] [main] o.h.e.j.c.i.DriverManagerConnectionProviderImpl -  HHH000006: Autocommit mode: false 
-INFO   [20:17:49.543] [main] o.h.e.j.c.i.DriverManagerConnectionProviderImpl -  HHH000115: Hibernate connection pool size: 20 (min=1) 
-INFO   [20:17:49.869] [main] o.h.d.Dialect -  HHH000400: Using dialect: org.hibernate.dialect.H2Dialect 
-INFO   [20:19:01.162] [main] o.e.j.u.log -  Logging initialized @3175ms 
-INFO   [20:19:01.265] [main] i.d.a.AssetsBundle -  Registering AssetBundle with name: assets for path /* 
-INFO   [20:19:01.600] [main] o.h.j.i.u.LogHelper -  HHH000204: Processing PersistenceUnitInfo [
-	name: teamnotifier
-	...] 
-INFO   [20:19:01.780] [main] o.h.Version -  HHH000412: Hibernate Core {5.0.3.Final} 
-INFO   [20:19:01.783] [main] o.h.c.Environment -  HHH000206: hibernate.properties not found 
-INFO   [20:19:01.802] [main] o.h.c.Environment -  HHH000021: Bytecode provider name : javassist 
-INFO   [20:19:01.874] [main] o.h.a.c.Version -  HCANN000001: Hibernate Commons Annotations {5.0.0.Final} 
-WARN   [20:19:02.053] [main] o.h.e.j.c.i.DriverManagerConnectionProviderImpl -  HHH000402: Using Hibernate built-in connection pool (not for production use!) 
-INFO   [20:19:02.058] [main] o.h.e.j.c.i.DriverManagerConnectionProviderImpl -  HHH000401: using driver [org.h2.Driver] at URL [jdbc:h2:mem:teamnotifier_test;DB_CLOSE_DELAY=-1;INIT=create schema IF NOT EXISTS teamnotifier] 
-INFO   [20:19:02.059] [main] o.h.e.j.c.i.DriverManagerConnectionProviderImpl -  HHH000046: Connection properties: {} 
-INFO   [20:19:02.059] [main] o.h.e.j.c.i.DriverManagerConnectionProviderImpl -  HHH000006: Autocommit mode: false 
-INFO   [20:19:02.068] [main] o.h.e.j.c.i.DriverManagerConnectionProviderImpl -  HHH000115: Hibernate connection pool size: 20 (min=1) 
-INFO   [20:19:02.371] [main] o.h.d.Dialect -  HHH000400: Using dialect: org.hibernate.dialect.H2Dialect 
-INFO   [20:41:44.611] [main] o.e.j.u.log -  Logging initialized @4215ms 
-INFO   [20:41:44.794] [main] i.d.a.AssetsBundle -  Registering AssetBundle with name: assets for path /* 
-INFO   [20:41:45.312] [main] o.h.j.i.u.LogHelper -  HHH000204: Processing PersistenceUnitInfo [
-	name: teamnotifier
-	...] 
-INFO   [20:41:45.469] [main] o.h.Version -  HHH000412: Hibernate Core {5.0.3.Final} 
-INFO   [20:41:45.472] [main] o.h.c.Environment -  HHH000206: hibernate.properties not found 
-INFO   [20:41:45.475] [main] o.h.c.Environment -  HHH000021: Bytecode provider name : javassist 
-INFO   [20:41:45.558] [main] o.h.a.c.Version -  HCANN000001: Hibernate Commons Annotations {5.0.0.Final} 
-WARN   [20:41:45.746] [main] o.h.e.j.c.i.DriverManagerConnectionProviderImpl -  HHH000402: Using Hibernate built-in connection pool (not for production use!) 
-INFO   [20:41:45.749] [main] o.h.e.j.c.i.DriverManagerConnectionProviderImpl -  HHH000401: using driver [org.h2.Driver] at URL [jdbc:h2:mem:teamnotifier_test;DB_CLOSE_DELAY=-1;INIT=create schema IF NOT EXISTS teamnotifier] 
-INFO   [20:41:45.750] [main] o.h.e.j.c.i.DriverManagerConnectionProviderImpl -  HHH000046: Connection properties: {} 
-INFO   [20:41:45.750] [main] o.h.e.j.c.i.DriverManagerConnectionProviderImpl -  HHH000006: Autocommit mode: false 
-INFO   [20:41:45.753] [main] o.h.e.j.c.i.DriverManagerConnectionProviderImpl -  HHH000115: Hibernate connection pool size: 20 (min=1) 
-INFO   [20:41:45.981] [main] o.h.d.Dialect -  HHH000400: Using dialect: org.hibernate.dialect.H2Dialect 
-INFO   [20:42:25.778] [main] o.e.j.u.log -  Logging initialized @3198ms 
-INFO   [20:42:25.875] [main] i.d.a.AssetsBundle -  Registering AssetBundle with name: assets for path /* 
-INFO   [20:42:26.226] [main] o.h.j.i.u.LogHelper -  HHH000204: Processing PersistenceUnitInfo [
-	name: teamnotifier
-	...] 
-INFO   [20:42:26.389] [main] o.h.Version -  HHH000412: Hibernate Core {5.0.3.Final} 
-INFO   [20:42:26.394] [main] o.h.c.Environment -  HHH000206: hibernate.properties not found 
-INFO   [20:42:26.400] [main] o.h.c.Environment -  HHH000021: Bytecode provider name : javassist 
-INFO   [20:42:26.489] [main] o.h.a.c.Version -  HCANN000001: Hibernate Commons Annotations {5.0.0.Final} 
-WARN   [20:42:26.676] [main] o.h.e.j.c.i.DriverManagerConnectionProviderImpl -  HHH000402: Using Hibernate built-in connection pool (not for production use!) 
-INFO   [20:42:26.680] [main] o.h.e.j.c.i.DriverManagerConnectionProviderImpl -  HHH000401: using driver [org.h2.Driver] at URL [jdbc:h2:mem:teamnotifier_test;DB_CLOSE_DELAY=-1;INIT=create schema IF NOT EXISTS teamnotifier] 
-INFO   [20:42:26.681] [main] o.h.e.j.c.i.DriverManagerConnectionProviderImpl -  HHH000046: Connection properties: {} 
-INFO   [20:42:26.681] [main] o.h.e.j.c.i.DriverManagerConnectionProviderImpl -  HHH000006: Autocommit mode: false 
-INFO   [20:42:26.688] [main] o.h.e.j.c.i.DriverManagerConnectionProviderImpl -  HHH000115: Hibernate connection pool size: 20 (min=1) 
-INFO   [20:42:27.017] [main] o.h.d.Dialect -  HHH000400: Using dialect: org.hibernate.dialect.H2Dialect 
-INFO   [20:43:48.011] [main] o.e.j.u.log -  Logging initialized @3579ms 
-INFO   [20:43:48.126] [main] i.d.a.AssetsBundle -  Registering AssetBundle with name: assets for path /* 
-INFO   [20:43:48.285] [main] i.d.s.ServerFactory -  Starting NotifierApplication 
-INFO   [20:43:48.301] [main] i.d.s.DefaultServerFactory -  Registering jersey handler with root path prefix: / 
-INFO   [20:43:48.324] [main] i.d.s.DefaultServerFactory -  Registering admin handler with root path prefix: / 
-INFO   [20:43:48.376] [main] o.e.j.s.SetUIDListener -  Opened application@2c306a57{HTTP/1.1}{0.0.0.0:7998} 
-INFO   [20:43:48.376] [main] o.e.j.s.SetUIDListener -  Opened admin@773e2eb5{HTTP/1.1}{0.0.0.0:7999} 
-INFO   [20:43:48.383] [main] o.e.j.s.Server -  jetty-9.2.13.v20150730 
-WARN   [20:43:48.919] [main] o.g.j.i.i.Providers -  A provider io.dropwizard.validation.valuehandling.OptionalValidatedValueUnwrapper registered in SERVER runtime does not implement any provider interfaces applicable in the SERVER runtime. Due to constraint configuration problems the provider io.dropwizard.validation.valuehandling.OptionalValidatedValueUnwrapper will be ignored.  
-INFO   [20:43:49.137] [main] i.d.j.DropwizardResourceConfig -  The following paths were found for the configured resources:
-
-    NONE
- 
-INFO   [20:43:49.143] [main] o.e.j.s.h.ContextHandler -  Started i.d.j.MutableServletContextHandler@17690e14{/,null,AVAILABLE} 
-INFO   [20:43:49.151] [main] i.d.s.AdminEnvironment -  tasks = 
-
-    POST    /tasks/log-level (io.dropwizard.servlets.tasks.LogConfigurationTask)
-    POST    /tasks/gc (io.dropwizard.servlets.tasks.GarbageCollectionTask)
- 
-WARN   [20:43:49.152] [main] i.d.s.AdminEnvironment -  
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!    THIS APPLICATION HAS NO HEALTHCHECKS. THIS MEANS YOU WILL NEVER KNOW      !
-!     IF IT DIES IN PRODUCTION, WHICH MEANS YOU WILL NEVER KNOW IF YOU'RE      !
-!    LETTING YOUR USERS DOWN. YOU SHOULD ADD A HEALTHCHECK FOR EACH OF YOUR    !
-!         APPLICATION'S DEPENDENCIES WHICH FULLY (BUT LIGHTLY) TESTS IT.       !
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
-INFO   [20:43:49.161] [main] o.e.j.s.h.ContextHandler -  Started i.d.j.MutableServletContextHandler@10c07b8d{/,null,AVAILABLE} 
-INFO   [20:43:49.167] [main] o.e.j.s.ServerConnector -  Started application@2c306a57{HTTP/1.1}{0.0.0.0:7998} 
-INFO   [20:43:49.168] [main] o.e.j.s.ServerConnector -  Started admin@773e2eb5{HTTP/1.1}{0.0.0.0:7999} 
-INFO   [20:43:49.168] [main] o.e.j.s.Server -  Started @4738ms 
-INFO   [20:43:54.319] [Thread-11] o.e.j.s.ServerConnector -  Stopped application@2c306a57{HTTP/1.1}{0.0.0.0:7998} 
-INFO   [20:43:54.322] [Thread-11] o.e.j.s.ServerConnector -  Stopped admin@773e2eb5{HTTP/1.1}{0.0.0.0:7999} 
-INFO   [20:43:54.325] [Thread-11] o.e.j.s.h.ContextHandler -  Stopped i.d.j.MutableServletContextHandler@10c07b8d{/,null,UNAVAILABLE} 
-INFO   [20:43:54.360] [Thread-11] o.e.j.s.h.ContextHandler -  Stopped i.d.j.MutableServletContextHandler@17690e14{/,null,UNAVAILABLE} 
-INFO   [20:50:44.734] [main] o.e.j.u.log -  Logging initialized @3408ms 
-INFO   [20:50:44.866] [main] i.d.a.AssetsBundle -  Registering AssetBundle with name: assets for path /* 
-INFO   [20:50:45.097] [main] i.d.s.ServerFactory -  Starting NotifierApplication 
-INFO   [20:50:45.111] [main] i.d.s.DefaultServerFactory -  Registering jersey handler with root path prefix: / 
-INFO   [20:50:45.143] [main] i.d.s.DefaultServerFactory -  Registering admin handler with root path prefix: / 
-INFO   [20:50:45.204] [main] o.e.j.s.SetUIDListener -  Opened application@1436a7ab{HTTP/1.1}{0.0.0.0:7998} 
-INFO   [20:50:45.206] [main] o.e.j.s.SetUIDListener -  Opened admin@3b7b05a8{HTTP/1.1}{0.0.0.0:7999} 
-INFO   [20:50:45.213] [main] o.e.j.s.Server -  jetty-9.2.13.v20150730 
-WARN   [20:50:45.648] [main] o.g.j.i.i.Providers -  A provider io.dropwizard.validation.valuehandling.OptionalValidatedValueUnwrapper registered in SERVER runtime does not implement any provider interfaces applicable in the SERVER runtime. Due to constraint configuration problems the provider io.dropwizard.validation.valuehandling.OptionalValidatedValueUnwrapper will be ignored.  
-INFO   [20:50:45.834] [main] i.d.j.DropwizardResourceConfig -  The following paths were found for the configured resources:
-
-    NONE
- 
-INFO   [20:50:45.842] [main] o.e.j.s.h.ContextHandler -  Started i.d.j.MutableServletContextHandler@2f00f851{/,null,AVAILABLE} 
-INFO   [20:50:45.852] [main] i.d.s.AdminEnvironment -  tasks = 
-
-    POST    /tasks/log-level (io.dropwizard.servlets.tasks.LogConfigurationTask)
-    POST    /tasks/gc (io.dropwizard.servlets.tasks.GarbageCollectionTask)
- 
-WARN   [20:50:45.856] [main] i.d.s.AdminEnvironment -  
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!    THIS APPLICATION HAS NO HEALTHCHECKS. THIS MEANS YOU WILL NEVER KNOW      !
-!     IF IT DIES IN PRODUCTION, WHICH MEANS YOU WILL NEVER KNOW IF YOU'RE      !
-!    LETTING YOUR USERS DOWN. YOU SHOULD ADD A HEALTHCHECK FOR EACH OF YOUR    !
-!         APPLICATION'S DEPENDENCIES WHICH FULLY (BUT LIGHTLY) TESTS IT.       !
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
-INFO   [20:50:45.864] [main] o.e.j.s.h.ContextHandler -  Started i.d.j.MutableServletContextHandler@5d51e129{/,null,AVAILABLE} 
-INFO   [20:50:45.870] [main] o.e.j.s.ServerConnector -  Started application@1436a7ab{HTTP/1.1}{0.0.0.0:7998} 
-INFO   [20:50:45.870] [main] o.e.j.s.ServerConnector -  Started admin@3b7b05a8{HTTP/1.1}{0.0.0.0:7999} 
-INFO   [20:50:45.871] [main] o.e.j.s.Server -  Started @4547ms 
-INFO   [20:50:49.838] [Thread-11] o.e.j.s.ServerConnector -  Stopped application@1436a7ab{HTTP/1.1}{0.0.0.0:7998} 
-INFO   [20:50:49.860] [Thread-11] o.e.j.s.ServerConnector -  Stopped admin@3b7b05a8{HTTP/1.1}{0.0.0.0:7999} 
-INFO   [20:50:49.863] [Thread-11] o.e.j.s.h.ContextHandler -  Stopped i.d.j.MutableServletContextHandler@5d51e129{/,null,UNAVAILABLE} 
-INFO   [20:50:49.878] [Thread-11] o.e.j.s.h.ContextHandler -  Stopped i.d.j.MutableServletContextHandler@2f00f851{/,null,UNAVAILABLE} 
-INFO   [21:51:48.615] [main] o.e.j.u.log -  Logging initialized @3483ms 
-INFO   [21:51:48.764] [main] i.d.a.AssetsBundle -  Registering AssetBundle with name: assets for path /* 
-INFO   [21:51:48.977] [main] i.d.s.ServerFactory -  Starting NotifierApplication 
-INFO   [21:51:48.988] [main] i.d.s.DefaultServerFactory -  Registering jersey handler with root path prefix: / 
-INFO   [21:51:49.006] [main] i.d.s.DefaultServerFactory -  Registering admin handler with root path prefix: / 
-INFO   [21:51:49.053] [main] o.e.j.s.SetUIDListener -  Opened application@3c017078{HTTP/1.1}{0.0.0.0:7998} 
-INFO   [21:51:49.054] [main] o.e.j.s.SetUIDListener -  Opened admin@51827393{HTTP/1.1}{0.0.0.0:7999} 
-INFO   [21:51:49.059] [main] o.e.j.s.Server -  jetty-9.2.13.v20150730 
-WARN   [21:51:49.501] [main] o.g.j.i.i.Providers -  A provider io.dropwizard.validation.valuehandling.OptionalValidatedValueUnwrapper registered in SERVER runtime does not implement any provider interfaces applicable in the SERVER runtime. Due to constraint configuration problems the provider io.dropwizard.validation.valuehandling.OptionalValidatedValueUnwrapper will be ignored.  
-INFO   [21:51:49.751] [main] i.d.j.DropwizardResourceConfig -  The following paths were found for the configured resources:
-
-    NONE
- 
-INFO   [21:51:49.755] [main] o.e.j.s.h.ContextHandler -  Started i.d.j.MutableServletContextHandler@7dd611c8{/,null,AVAILABLE} 
-INFO   [21:51:49.765] [main] i.d.s.AdminEnvironment -  tasks = 
-
-    POST    /tasks/log-level (io.dropwizard.servlets.tasks.LogConfigurationTask)
-    POST    /tasks/gc (io.dropwizard.servlets.tasks.GarbageCollectionTask)
- 
-WARN   [21:51:49.765] [main] i.d.s.AdminEnvironment -  
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!    THIS APPLICATION HAS NO HEALTHCHECKS. THIS MEANS YOU WILL NEVER KNOW      !
-!     IF IT DIES IN PRODUCTION, WHICH MEANS YOU WILL NEVER KNOW IF YOU'RE      !
-!    LETTING YOUR USERS DOWN. YOU SHOULD ADD A HEALTHCHECK FOR EACH OF YOUR    !
-!         APPLICATION'S DEPENDENCIES WHICH FULLY (BUT LIGHTLY) TESTS IT.       !
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
-INFO   [21:51:49.777] [main] o.e.j.s.h.ContextHandler -  Started i.d.j.MutableServletContextHandler@716e431d{/,null,AVAILABLE} 
-INFO   [21:51:49.789] [main] o.e.j.s.ServerConnector -  Started application@3c017078{HTTP/1.1}{0.0.0.0:7998} 
-INFO   [21:51:49.790] [main] o.e.j.s.ServerConnector -  Started admin@51827393{HTTP/1.1}{0.0.0.0:7999} 
-INFO   [21:51:49.790] [main] o.e.j.s.Server -  Started @4660ms 
-INFO   [21:51:53.177] [Thread-11] o.e.j.s.ServerConnector -  Stopped application@3c017078{HTTP/1.1}{0.0.0.0:7998} 
-INFO   [21:51:53.178] [Thread-11] o.e.j.s.ServerConnector -  Stopped admin@51827393{HTTP/1.1}{0.0.0.0:7999} 
-INFO   [21:51:53.180] [Thread-11] o.e.j.s.h.ContextHandler -  Stopped i.d.j.MutableServletContextHandler@716e431d{/,null,UNAVAILABLE} 
-INFO   [21:51:53.203] [Thread-11] o.e.j.s.h.ContextHandler -  Stopped i.d.j.MutableServletContextHandler@7dd611c8{/,null,UNAVAILABLE} 
-INFO   [22:23:38.765] [main] o.e.j.u.log -  Logging initialized @3280ms 
-INFO   [22:23:38.912] [main] i.d.a.AssetsBundle -  Registering AssetBundle with name: assets for path /* 
-INFO   [22:23:38.996] [main] c.h.d.g.AutoConfig -  Added resource class: class com.home.teamnotifier.resource.environment.EnvironmentRestService 
-INFO   [22:23:39.094] [main] i.d.s.ServerFactory -  Starting NotifierApplication 
-INFO   [22:23:39.110] [main] i.d.s.DefaultServerFactory -  Registering jersey handler with root path prefix: / 
-INFO   [22:23:39.141] [main] i.d.s.DefaultServerFactory -  Registering admin handler with root path prefix: / 
-INFO   [22:23:39.219] [main] o.e.j.s.SetUIDListener -  Opened application@3c017078{HTTP/1.1}{0.0.0.0:7998} 
-INFO   [22:23:39.219] [main] o.e.j.s.SetUIDListener -  Opened admin@51827393{HTTP/1.1}{0.0.0.0:7999} 
-INFO   [22:23:39.227] [main] o.e.j.s.Server -  jetty-9.2.13.v20150730 
-WARN   [22:23:39.708] [main] o.g.j.i.i.Providers -  A provider io.dropwizard.validation.valuehandling.OptionalValidatedValueUnwrapper registered in SERVER runtime does not implement any provider interfaces applicable in the SERVER runtime. Due to constraint configuration problems the provider io.dropwizard.validation.valuehandling.OptionalValidatedValueUnwrapper will be ignored.  
-INFO   [22:23:40.170] [main] i.d.j.DropwizardResourceConfig -  The following paths were found for the configured resources:
+INFO   [22:05:36.075] [main] o.e.j.u.log -  Logging initialized @4369ms 
+INFO   [22:05:36.378] [main] i.d.a.AssetsBundle -  Registering AssetBundle with name: assets for path /* 
+INFO   [22:05:36.444] [main] c.h.d.g.AutoConfig -  Added resource class: class com.home.teamnotifier.resource.environment.EnvironmentRestService 
+WARN   [22:05:37.432] [main] o.h.e.j.c.i.DriverManagerConnectionProviderImpl -  HHH000402: Using Hibernate built-in connection pool (not for production use!) 
+INFO   [22:05:39.757] [main] i.d.s.ServerFactory -  Starting NotifierApplication 
+INFO   [22:05:39.776] [main] i.d.s.DefaultServerFactory -  Registering jersey handler with root path prefix: / 
+INFO   [22:05:39.822] [main] i.d.s.DefaultServerFactory -  Registering admin handler with root path prefix: / 
+INFO   [22:05:39.888] [main] o.e.j.s.SetUIDListener -  Opened application@51e754e1{HTTP/1.1}{0.0.0.0:7998} 
+INFO   [22:05:39.889] [main] o.e.j.s.SetUIDListener -  Opened admin@26865482{HTTP/1.1}{0.0.0.0:7999} 
+INFO   [22:05:39.892] [main] o.e.j.s.Server -  jetty-9.2.13.v20150730 
+WARN   [22:05:40.311] [main] o.g.j.i.i.Providers -  A provider io.dropwizard.validation.valuehandling.OptionalValidatedValueUnwrapper registered in SERVER runtime does not implement any provider interfaces applicable in the SERVER runtime. Due to constraint configuration problems the provider io.dropwizard.validation.valuehandling.OptionalValidatedValueUnwrapper will be ignored.  
+INFO   [22:05:40.625] [main] i.d.j.DropwizardResourceConfig -  The following paths were found for the configured resources:
 
     GET     /teamnotifier/1.0/environment (com.home.teamnotifier.resource.environment.EnvironmentRestService)
     DELETE  /teamnotifier/1.0/environment/application/reserve/{applicationId} (com.home.teamnotifier.resource.environment.EnvironmentRestService)
@@ -199,13 +17,13 @@ INFO   [22:23:40.170] [main] i.d.j.DropwizardResourceConfig -  The following pat
     DELETE  /teamnotifier/1.0/environment/server/reserve/{serverId} (com.home.teamnotifier.resource.environment.EnvironmentRestService)
     POST    /teamnotifier/1.0/environment/server/subscribe/{serverId} (com.home.teamnotifier.resource.environment.EnvironmentRestService)
  
-INFO   [22:23:40.175] [main] o.e.j.s.h.ContextHandler -  Started i.d.j.MutableServletContextHandler@e57e5d6{/,null,AVAILABLE} 
-INFO   [22:23:40.184] [main] i.d.s.AdminEnvironment -  tasks = 
+INFO   [22:05:40.628] [main] o.e.j.s.h.ContextHandler -  Started i.d.j.MutableServletContextHandler@34c62fdf{/,null,AVAILABLE} 
+INFO   [22:05:40.633] [main] i.d.s.AdminEnvironment -  tasks = 
 
     POST    /tasks/log-level (io.dropwizard.servlets.tasks.LogConfigurationTask)
     POST    /tasks/gc (io.dropwizard.servlets.tasks.GarbageCollectionTask)
  
-WARN   [22:23:40.185] [main] i.d.s.AdminEnvironment -  
+WARN   [22:05:40.634] [main] i.d.s.AdminEnvironment -  
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !    THIS APPLICATION HAS NO HEALTHCHECKS. THIS MEANS YOU WILL NEVER KNOW      !
@@ -214,73 +32,11 @@ WARN   [22:23:40.185] [main] i.d.s.AdminEnvironment -
 !         APPLICATION'S DEPENDENCIES WHICH FULLY (BUT LIGHTLY) TESTS IT.       !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
-INFO   [22:23:40.194] [main] o.e.j.s.h.ContextHandler -  Started i.d.j.MutableServletContextHandler@59072e9d{/,null,AVAILABLE} 
-INFO   [22:23:40.201] [main] o.e.j.s.ServerConnector -  Started application@3c017078{HTTP/1.1}{0.0.0.0:7998} 
-INFO   [22:23:40.202] [main] o.e.j.s.ServerConnector -  Started admin@51827393{HTTP/1.1}{0.0.0.0:7999} 
-INFO   [22:23:40.202] [main] o.e.j.s.Server -  Started @4719ms 
-INFO   [22:23:44.432] [Thread-11] o.e.j.s.ServerConnector -  Stopped application@3c017078{HTTP/1.1}{0.0.0.0:7998} 
-INFO   [22:23:44.456] [Thread-11] o.e.j.s.ServerConnector -  Stopped admin@51827393{HTTP/1.1}{0.0.0.0:7999} 
-INFO   [22:23:44.459] [Thread-11] o.e.j.s.h.ContextHandler -  Stopped i.d.j.MutableServletContextHandler@59072e9d{/,null,UNAVAILABLE} 
-INFO   [22:23:44.470] [Thread-11] o.e.j.s.h.ContextHandler -  Stopped i.d.j.MutableServletContextHandler@e57e5d6{/,null,UNAVAILABLE} 
-INFO   [22:37:05.038] [main] o.e.j.u.log -  Logging initialized @3141ms 
-INFO   [22:37:05.156] [main] i.d.a.AssetsBundle -  Registering AssetBundle with name: assets for path /* 
-INFO   [22:37:05.213] [main] c.h.d.g.AutoConfig -  Added resource class: class com.home.teamnotifier.resource.environment.EnvironmentRestService 
-INFO   [22:38:57.304] [main] o.e.j.u.log -  Logging initialized @3759ms 
-INFO   [22:38:57.451] [main] i.d.a.AssetsBundle -  Registering AssetBundle with name: assets for path /* 
-INFO   [22:38:57.523] [main] c.h.d.g.AutoConfig -  Added resource class: class com.home.teamnotifier.resource.environment.EnvironmentRestService 
-INFO   [23:53:47.918] [main] o.e.j.u.log -  Logging initialized @3602ms 
-INFO   [23:53:48.082] [main] i.d.a.AssetsBundle -  Registering AssetBundle with name: assets for path /* 
-INFO   [23:53:48.148] [main] c.h.d.g.AutoConfig -  Added resource class: class com.home.teamnotifier.resource.environment.EnvironmentRestService 
-INFO   [23:53:48.526] [main] o.h.j.i.u.LogHelper -  HHH000204: Processing PersistenceUnitInfo [
-	name: teamnotifier
-	...] 
-INFO   [23:53:48.797] [main] o.h.Version -  HHH000412: Hibernate Core {5.0.3.Final} 
-INFO   [23:53:48.803] [main] o.h.c.Environment -  HHH000206: hibernate.properties not found 
-INFO   [23:53:48.812] [main] o.h.c.Environment -  HHH000021: Bytecode provider name : javassist 
-INFO   [23:53:48.923] [main] o.h.a.c.Version -  HCANN000001: Hibernate Commons Annotations {5.0.0.Final} 
-WARN   [23:53:49.128] [main] o.h.e.j.c.i.DriverManagerConnectionProviderImpl -  HHH000402: Using Hibernate built-in connection pool (not for production use!) 
-INFO   [23:53:49.134] [main] o.h.e.j.c.i.DriverManagerConnectionProviderImpl -  HHH000401: using driver [org.h2.Driver] at URL [jdbc:h2:mem:teamnotifier_test;DB_CLOSE_DELAY=-1;INIT=create schema IF NOT EXISTS teamnotifier] 
-INFO   [23:53:49.135] [main] o.h.e.j.c.i.DriverManagerConnectionProviderImpl -  HHH000046: Connection properties: {} 
-INFO   [23:53:49.135] [main] o.h.e.j.c.i.DriverManagerConnectionProviderImpl -  HHH000006: Autocommit mode: false 
-INFO   [23:53:49.141] [main] o.h.e.j.c.i.DriverManagerConnectionProviderImpl -  HHH000115: Hibernate connection pool size: 20 (min=1) 
-INFO   [23:53:49.419] [main] o.h.d.Dialect -  HHH000400: Using dialect: org.hibernate.dialect.H2Dialect 
-INFO   [23:53:50.596] [main] o.h.t.h.SchemaExport -  HHH000227: Running hbm2ddl schema export 
-INFO   [23:53:50.647] [main] o.h.t.h.SchemaExport -  HHH000230: Schema export complete 
-INFO   [23:53:50.812] [main] i.d.s.ServerFactory -  Starting NotifierApplication 
-INFO   [23:53:50.834] [main] i.d.s.DefaultServerFactory -  Registering jersey handler with root path prefix: / 
-INFO   [23:53:50.890] [main] i.d.s.DefaultServerFactory -  Registering admin handler with root path prefix: / 
-INFO   [23:53:50.984] [main] o.e.j.s.SetUIDListener -  Opened application@1946384{HTTP/1.1}{0.0.0.0:7998} 
-INFO   [23:53:50.984] [main] o.e.j.s.SetUIDListener -  Opened admin@6ac4c3f7{HTTP/1.1}{0.0.0.0:7999} 
-INFO   [23:53:50.991] [main] o.e.j.s.Server -  jetty-9.2.13.v20150730 
-WARN   [23:53:51.740] [main] o.g.j.i.i.Providers -  A provider io.dropwizard.validation.valuehandling.OptionalValidatedValueUnwrapper registered in SERVER runtime does not implement any provider interfaces applicable in the SERVER runtime. Due to constraint configuration problems the provider io.dropwizard.validation.valuehandling.OptionalValidatedValueUnwrapper will be ignored.  
-INFO   [23:53:52.103] [main] i.d.j.DropwizardResourceConfig -  The following paths were found for the configured resources:
-
-    GET     /teamnotifier/1.0/environment (com.home.teamnotifier.resource.environment.EnvironmentRestService)
-    DELETE  /teamnotifier/1.0/environment/application/reserve/{applicationId} (com.home.teamnotifier.resource.environment.EnvironmentRestService)
-    POST    /teamnotifier/1.0/environment/application/reserve/{applicationId} (com.home.teamnotifier.resource.environment.EnvironmentRestService)
-    DELETE  /teamnotifier/1.0/environment/server/reserve/{serverId} (com.home.teamnotifier.resource.environment.EnvironmentRestService)
-    POST    /teamnotifier/1.0/environment/server/subscribe/{serverId} (com.home.teamnotifier.resource.environment.EnvironmentRestService)
- 
-INFO   [23:53:52.107] [main] o.e.j.s.h.ContextHandler -  Started i.d.j.MutableServletContextHandler@78c74647{/,null,AVAILABLE} 
-INFO   [23:53:52.114] [main] i.d.s.AdminEnvironment -  tasks = 
-
-    POST    /tasks/log-level (io.dropwizard.servlets.tasks.LogConfigurationTask)
-    POST    /tasks/gc (io.dropwizard.servlets.tasks.GarbageCollectionTask)
- 
-WARN   [23:53:52.115] [main] i.d.s.AdminEnvironment -  
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!    THIS APPLICATION HAS NO HEALTHCHECKS. THIS MEANS YOU WILL NEVER KNOW      !
-!     IF IT DIES IN PRODUCTION, WHICH MEANS YOU WILL NEVER KNOW IF YOU'RE      !
-!    LETTING YOUR USERS DOWN. YOU SHOULD ADD A HEALTHCHECK FOR EACH OF YOUR    !
-!         APPLICATION'S DEPENDENCIES WHICH FULLY (BUT LIGHTLY) TESTS IT.       !
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
-INFO   [23:53:52.123] [main] o.e.j.s.h.ContextHandler -  Started i.d.j.MutableServletContextHandler@23e61112{/,null,AVAILABLE} 
-INFO   [23:53:52.129] [main] o.e.j.s.ServerConnector -  Started application@1946384{HTTP/1.1}{0.0.0.0:7998} 
-INFO   [23:53:52.134] [main] o.e.j.s.ServerConnector -  Started admin@6ac4c3f7{HTTP/1.1}{0.0.0.0:7999} 
-INFO   [23:53:52.136] [main] o.e.j.s.Server -  Started @7821ms 
-INFO   [23:55:48.800] [Thread-12] o.e.j.s.ServerConnector -  Stopped application@1946384{HTTP/1.1}{0.0.0.0:7998} 
-INFO   [23:55:48.808] [Thread-12] o.e.j.s.ServerConnector -  Stopped admin@6ac4c3f7{HTTP/1.1}{0.0.0.0:7999} 
-INFO   [23:55:48.811] [Thread-12] o.e.j.s.h.ContextHandler -  Stopped i.d.j.MutableServletContextHandler@23e61112{/,null,UNAVAILABLE} 
-INFO   [23:55:48.833] [Thread-12] o.e.j.s.h.ContextHandler -  Stopped i.d.j.MutableServletContextHandler@78c74647{/,null,UNAVAILABLE} 
+INFO   [22:05:40.640] [main] o.e.j.s.h.ContextHandler -  Started i.d.j.MutableServletContextHandler@18a98913{/,null,AVAILABLE} 
+INFO   [22:05:40.645] [main] o.e.j.s.ServerConnector -  Started application@51e754e1{HTTP/1.1}{0.0.0.0:7998} 
+INFO   [22:05:40.647] [main] o.e.j.s.ServerConnector -  Started admin@26865482{HTTP/1.1}{0.0.0.0:7999} 
+INFO   [22:05:40.647] [main] o.e.j.s.Server -  Started @8943ms 
+INFO   [22:05:45.587] [Thread-12] o.e.j.s.ServerConnector -  Stopped application@51e754e1{HTTP/1.1}{0.0.0.0:7998} 
+INFO   [22:05:45.593] [Thread-12] o.e.j.s.ServerConnector -  Stopped admin@26865482{HTTP/1.1}{0.0.0.0:7999} 
+INFO   [22:05:45.597] [Thread-12] o.e.j.s.h.ContextHandler -  Stopped i.d.j.MutableServletContextHandler@18a98913{/,null,UNAVAILABLE} 
+INFO   [22:05:45.615] [Thread-12] o.e.j.s.h.ContextHandler -  Stopped i.d.j.MutableServletContextHandler@34c62fdf{/,null,UNAVAILABLE} 
