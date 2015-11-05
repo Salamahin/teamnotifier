@@ -1,11 +1,14 @@
 package com.home.teamnotifier.db;
 
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table (schema = "teamnotifier")
-public class EnvironmentEntity implements DataObject {
+public class EnvironmentEntity implements Serializable
+{
   @Id
   @GeneratedValue(strategy=GenerationType.AUTO)
   private Integer id;
@@ -13,10 +16,9 @@ public class EnvironmentEntity implements DataObject {
   @Column(nullable = false, unique = true)
   private String name;
 
-  @OneToMany(mappedBy = "environment", fetch = FetchType.EAGER)
-  private List<AppServerEntity> appServers;
+  @OneToMany(mappedBy = "environment", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  private List<AppServerEntity> appServers = new ArrayList<>();
 
-  @Override
   public Integer getId() {
     return id;
   }

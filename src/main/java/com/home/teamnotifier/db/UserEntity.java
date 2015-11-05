@@ -1,11 +1,14 @@
 package com.home.teamnotifier.db;
 
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(schema = "teamnotifier")
-public class UserEntity {
+public class UserEntity implements Serializable
+{
   @Id
   @GeneratedValue(strategy=GenerationType.AUTO)
   private Integer id;
@@ -16,11 +19,11 @@ public class UserEntity {
   @Column(nullable = false)
   private String passHash;
 
-  @OneToMany(mappedBy = "appServer", fetch = FetchType.EAGER)
-  private List<SubscriptionEntity> subscriptions;
+  @OneToMany(mappedBy = "subscriberId", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  private List<SubscriptionEntity> subscriptions = new ArrayList<>();
 
-  @OneToMany(mappedBy = "occupier", fetch = FetchType.EAGER)
-  private List<SharedResourceEntity> occupiedResources;
+  @OneToMany(mappedBy = "occupier", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  private List<SharedResourceEntity> occupiedResources = new ArrayList<>();
 
   public List<SharedResourceEntity> getOccupiedResources() {
     return occupiedResources;

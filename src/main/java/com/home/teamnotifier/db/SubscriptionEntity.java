@@ -1,38 +1,35 @@
 package com.home.teamnotifier.db;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(schema = "teamnotifier")
-public class SubscriptionEntity implements DataObject {
+public class SubscriptionEntity implements Serializable
+{
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private Integer id;
+  private Integer appServerId;
 
-  @ManyToOne(optional = false)
-  private AppServerEntity appServer;
+  @Id
+  private Integer subscriberId;
 
-  @ManyToOne(optional = false)
-  private UserEntity subscriber;
-
-  public AppServerEntity getAppServer() {
-    return appServer;
+  public Integer getAppServerId()
+  {
+    return appServerId;
   }
 
-  public void setAppServer(final AppServerEntity appServer) {
-    this.appServer = appServer;
+  public void setAppServerId(Integer appServerId)
+  {
+    this.appServerId=appServerId;
   }
 
-  public UserEntity getSubscriber() {
-    return subscriber;
+  public Integer getSubscriberId()
+  {
+    return subscriberId;
   }
 
-  public void setSubscriber(final UserEntity subscriber) {
-    this.subscriber = subscriber;
-  }
-
-  @Override
-  public Integer getId() {
-    return id;
+  public void setSubscriberId(Integer subscriberId)
+  {
+    this.subscriberId=subscriberId;
   }
 }

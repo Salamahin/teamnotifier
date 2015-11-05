@@ -1,12 +1,14 @@
 package com.home.teamnotifier;
 
-import com.google.inject.*;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Stage;
 import com.home.teamnotifier.authentication.TeamNotifierAuthenticator;
 import com.home.teamnotifier.authentication.TeamNotifierAuthorizer;
 import com.home.teamnotifier.authentication.User;
 import com.home.teamnotifier.web.socket.BroadcastServlet;
 import com.home.teamnotifier.web.socket.ClientManager;
-import com.hubspot.dropwizard.guice.*;
+import com.hubspot.dropwizard.guice.GuiceBundle;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.auth.AuthDynamicFeature;
@@ -16,8 +18,8 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.validation.valuehandling.OptionalValidatedValueUnwrapper;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
+
 import javax.servlet.ServletRegistration;
-import java.util.List;
 
 public class NotifierApplication extends Application<NotifierConfiguration> {
   private GuiceBundle<NotifierConfiguration> applicationInjector;

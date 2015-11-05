@@ -50,7 +50,7 @@ public class EnvironmentRestServiceTest {
 
   private ResourceTestRule ruleee() {
     final ResourceMonitor resourceMonitor = mock(ResourceMonitor.class);
-    when(resourceMonitor.getStatus(1)).thenReturn(emptyList());
+    when(resourceMonitor.getStatus("omg")).thenReturn(emptyList());
 
     return ResourceTestRule
         .builder()
@@ -70,7 +70,7 @@ public class EnvironmentRestServiceTest {
   private Authenticator<BasicCredentials, User> authenticator() {
     return credentials -> {
       if (credentials.getUsername().equals("omg")) {
-        return Optional.of(new User(1, "best"));
+        return Optional.of(new User("best"));
       } else {
         return Optional.absent();
       }

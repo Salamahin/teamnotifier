@@ -4,15 +4,9 @@ import java.security.Principal;
 
 public class User implements Principal {
   private final String name;
-  private final int id;
 
-  public User(final int id, final String name) {
-    this.id = id;
+  public User(final String name) {
     this.name = name;
-  }
-
-  public int getId() {
-    return id;
   }
 
   @Override

@@ -1,11 +1,13 @@
 package com.home.teamnotifier.db;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.*;
 
 @Entity
 @Table(schema = "teamnotifier")
-public class SharedResourceEntity implements DataObject {
+public class SharedResourceEntity implements Serializable
+{
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Integer id;
@@ -38,7 +40,6 @@ public class SharedResourceEntity implements DataObject {
     this.occupier = occupier;
   }
 
-  @Override
   public Integer getId() {
     return id;
   }

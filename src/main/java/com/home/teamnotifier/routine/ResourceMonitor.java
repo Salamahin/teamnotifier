@@ -10,7 +10,7 @@ public class ResourceMonitor {
     reservedApplications = new HashSet<>();
   }
 
-  public void reserve(final int userId, final int applicationId) {
+  public void reserve(final String userName, final int applicationId) {
     if (reservedApplications.contains(applicationId)) {
       throw new AlreadyReserved();
     }
@@ -19,11 +19,11 @@ public class ResourceMonitor {
     fireNotification();
   }
 
-  public void subscribe(final int userId, final int serverId) {
+  public void subscribe(final String userName, final int serverId) {
 
   }
 
-  public void unsubscribe(final int userId, final int serverId) {
+  public void unsubscribe(final String userName, final int serverId) {
 
   }
 
@@ -31,7 +31,7 @@ public class ResourceMonitor {
 
   }
 
-  public void free(final int userId, final int applicationId) {
+  public void free(final String userName, final int applicationId) {
     if (!reservedApplications.contains(applicationId)) {
       throw new NotReserved();
     }
@@ -40,7 +40,7 @@ public class ResourceMonitor {
     fireNotification();
   }
 
-  public List<EnvironmentInfo> getStatus(final int userId) {
+  public List<EnvironmentInfo> getStatus(final String userName) {
     return null;
   }
 }

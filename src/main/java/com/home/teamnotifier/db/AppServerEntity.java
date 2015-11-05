@@ -1,11 +1,14 @@
 package com.home.teamnotifier.db;
 
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table (schema = "teamnotifier")
-public class AppServerEntity implements DataObject {
+public class AppServerEntity implements Serializable
+{
   @Id
   @GeneratedValue(strategy=GenerationType.AUTO)
   private Integer id;
@@ -16,21 +19,20 @@ public class AppServerEntity implements DataObject {
   @ManyToOne(optional = false)
   private EnvironmentEntity environment;
 
-  @OneToMany(mappedBy = "appServer", fetch = FetchType.EAGER)
-  private List<SharedResourceEntity> resources;
+  @OneToMany(mappedBy = "appServer", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  private List<SharedResourceEntity> resources = new ArrayList<>();
+//
+//  @OneToMany(mappedBy = "appServerId", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+//  private List<SubscriptionEntity> subscriptions = new ArrayList<>();
 
-  @OneToMany(mappedBy = "appServer", fetch = FetchType.EAGER)
-  private List<SubscriptionEntity> subscriptions;
+//  public List<SubscriptionEntity> getSubscriptions() {
+//    return subscriptions;
+//  }
+//
+//  public void setSubscriptions(final List<SubscriptionEntity> subscriptions) {
+//    this.subscriptions = subscriptions;
+//  }
 
-  public List<SubscriptionEntity> getSubscriptions() {
-    return subscriptions;
-  }
-
-  public void setSubscriptions(final List<SubscriptionEntity> subscriptions) {
-    this.subscriptions = subscriptions;
-  }
-
-  @Override
   public Integer getId() {
     return id;
   }

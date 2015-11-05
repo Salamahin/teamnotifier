@@ -1,8 +1,8 @@
 package com.home.teamnotifier.gateways;
 
 public interface SubscriptionGateway {
-  void subscribe(final int userId, final int serverId);
-  void unsubscribe(final int userId, final int serverId);
-  void reserve(final int userId, final int applicationId);
-  void free(final int userId, final int applicationId);
+  void subscribe(final String userName, final int serverId);
+  void unsubscribe(final String userName, final int serverId);
+  void reserve(final String userName, final int applicationId);
+  void free(final String userName, final int applicationId);
 }

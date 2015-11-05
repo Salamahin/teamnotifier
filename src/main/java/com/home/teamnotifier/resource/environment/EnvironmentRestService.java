@@ -4,13 +4,9 @@ import com.home.teamnotifier.authentication.TeamNotifierRoles;
 import com.home.teamnotifier.authentication.User;
 import com.home.teamnotifier.routine.ResourceMonitor;
 import io.dropwizard.auth.Auth;
+
 import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
@@ -27,7 +23,7 @@ public class EnvironmentRestService {
   @GET
   @RolesAllowed({TeamNotifierRoles.USER})
   public EnvironmentsInfo getServerInfo(@Auth User user) {
-    final List<EnvironmentInfo> status = resourceMonitor.getStatus(user.getId());
+    final List<EnvironmentInfo> status = resourceMonitor.getStatus(user.getName());
     return new EnvironmentsInfo(status);
   }
 

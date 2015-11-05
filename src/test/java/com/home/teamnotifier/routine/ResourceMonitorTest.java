@@ -8,32 +8,32 @@ import static org.mockito.Mockito.*;
 public class ResourceMonitorTest {
 
   private ResourceMonitor monitor;
-  private int userId;
+  private String userName;
 
   @Before
   public void setUp()
   throws Exception {
     monitor = new ResourceMonitor();
-    userId = -1;
+    userName= "userName";
   }
 
   @Test
   public void testCanGetFullStatus()
   throws Exception {
-    final List<EnvironmentInfo> environmentList = monitor.getStatus(userId);
+    final List<EnvironmentInfo> environmentList = monitor.getStatus(userName);
   }
 
   @Test
   public void testCanUnsubscribe()
   throws Exception {
-    monitor.unsubscribe(userId, -1);
+    monitor.unsubscribe(userName, -1);
   }
 
   @Test
   public void testNotificationFiredWhenReservationSuccess()
   throws Exception {
     monitor = spy(ResourceMonitor.class);
-    monitor.reserve(userId, -1);
+    monitor.reserve(userName, -1);
 
     verify(monitor, times(1)).fireNotification();
   }
@@ -43,8 +43,8 @@ public class ResourceMonitorTest {
   throws Exception {
     monitor = spy(ResourceMonitor.class);
     final int applicationId = -1;
-    monitor.reserve(userId, applicationId);
-    monitor.free(userId, applicationId);
+    monitor.reserve(userName, applicationId);
+    monitor.free(userName, applicationId);
 
     verify(monitor, times(2)).fireNotification();
   }
@@ -53,23 +53,23 @@ public class ResourceMonitorTest {
   public void testReservationOnReservedResourceFails()
   throws Exception {
     final int applicationId = -1;
-    monitor.reserve(userId, applicationId);
-    monitor.reserve(userId, applicationId);
+    monitor.reserve(userName, applicationId);
+    monitor.reserve(userName, applicationId);
   }
 
   @Test
   public void testReserveResourceAfterFree()
   throws Exception {
     final int applicationId = -1;
-    monitor.reserve(userId, applicationId);
-    monitor.free(userId, applicationId);
-    monitor.reserve(userId, applicationId);
+    monitor.reserve(userName, applicationId);
+    monitor.free(userName, applicationId);
+    monitor.reserve(userName, applicationId);
   }
 
   @Test(expected = NotReserved.class)
   public void testFreeNotReservedFails()
   throws Exception {
     final int applicationId = -1;
-    monitor.free(userId, applicationId);
+    monitor.free(userName, applicationId);
   }
 }
