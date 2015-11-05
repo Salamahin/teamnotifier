@@ -25,4 +25,11 @@ public class DbUserGatewayTest {
     assertThat(credentials.getUserName()).isEqualTo(user.getName());
     assertThat(credentials.getPassHash()).isEqualTo(user.getPassHash());
   }
+
+  @Test
+  public void testIncorrectLoginReturnsNull()
+  throws Exception {
+    final UserCredentials credentials = userGateway.userCredentials(getRandomString());
+    assertThat(credentials).isNull();
+  }
 }

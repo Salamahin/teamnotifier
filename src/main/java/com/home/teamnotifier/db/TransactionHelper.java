@@ -1,11 +1,13 @@
 package com.home.teamnotifier.db;
 
+import org.slf4j.*;
 import javax.inject.Inject;
 import javax.persistence.*;
 import java.util.concurrent.Semaphore;
 import java.util.function.Function;
 
 public final class TransactionHelper {
+  private static final Logger LOG = LoggerFactory.getLogger(TransactionHelper.class);
   private static final Semaphore MUTEX = new Semaphore(1, true);
 
   private final EntityManager entityManager;
