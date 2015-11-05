@@ -1,6 +1,7 @@
-package com.home.teamnotifier.routine;
+package com.home.teamnotifier.resource;
 
 import com.home.teamnotifier.gateways.*;
+import com.home.teamnotifier.resource.ResourceMonitor;
 import com.home.teamnotifier.resource.environment.EnvironmentInfo;
 import org.junit.*;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.home.teamnotifier.routine;
+package com.home.teamnotifier.resource;
 
 import com.home.teamnotifier.gateways.*;
 import com.home.teamnotifier.resource.environment.EnvironmentInfo;

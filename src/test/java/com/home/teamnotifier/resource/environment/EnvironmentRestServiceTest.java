@@ -3,7 +3,7 @@ package com.home.teamnotifier.resource.environment;
 import com.google.common.base.Optional;
 import com.google.common.io.BaseEncoding;
 import com.home.teamnotifier.authentication.*;
-import com.home.teamnotifier.routine.ResourceMonitor;
+import com.home.teamnotifier.resource.ResourceMonitor;
 import io.dropwizard.auth.*;
 import io.dropwizard.auth.basic.*;
 import io.dropwizard.testing.junit.ResourceTestRule;

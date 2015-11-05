@@ -1,7 +1,6 @@
 package com.home.teamnotifier.resource.environment;
 
 import com.fasterxml.jackson.annotation.*;
-import java.time.LocalDateTime;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonAutoDetect(
@@ -14,12 +13,12 @@ import java.time.LocalDateTime;
 public class OccupationInfo {
   private final String userName;
 
-  private final LocalDateTime occupationTime;
+  private final String occupationTime;
 
   @JsonCreator
   public OccupationInfo(
       @JsonProperty("userName") final String userName,
-      @JsonProperty("occupationTime") final LocalDateTime occupationTime
+      @JsonProperty("occupationTime") final String occupationTime
   ) {
     this.userName = userName;
     this.occupationTime = occupationTime;

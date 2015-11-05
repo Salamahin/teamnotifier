@@ -67,7 +67,7 @@ public class DbEnvironmentGateway implements EnvironmentGateway {
     if (sharedResourceEntity.getOccupier() != null) {
       info = new OccupationInfo(
           sharedResourceEntity.getOccupier().getName(),
-          sharedResourceEntity.getOccupationStartTime()
+          sharedResourceEntity.getOccupationStartTime().toString()
       );
     }
     return new SharedResourceInfo(sharedResourceEntity.getName(), info);

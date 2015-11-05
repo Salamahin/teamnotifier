@@ -1,13 +1,11 @@
 package com.home.teamnotifier.gateways;
 
-import com.home.teamnotifier.db.*;
+import com.home.teamnotifier.db.UserEntity;
 import org.junit.*;
-import java.util.UUID;
+import static com.home.teamnotifier.gateways.Commons.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DbUserGatewayTest {
-
-  private TransactionHelper helper;
 
   private DbUserGateway userGateway;
 
@@ -16,20 +14,8 @@ public class DbUserGatewayTest {
   @Before
   public void setUp()
   throws Exception {
-    helper = new TransactionHelper();
-    userGateway = new DbUserGateway(helper);
-    user = createPersistedUser();
-  }
-
-  private UserEntity createPersistedUser() {
-    final UserEntity entity = new UserEntity();
-    entity.setName(getRandomString());
-    entity.setPassHash(getRandomString());
-    return helper.transaction(em -> em.merge(entity));
-  }
-
-  private String getRandomString() {
-    return UUID.randomUUID().toString();
+    userGateway = new DbUserGateway(HELPER);
+    user = createPersistedUserWithRandomPassHash(getRandomString());
   }
 
   @Test
