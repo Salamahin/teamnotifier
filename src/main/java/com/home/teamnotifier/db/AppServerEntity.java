@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table (schema = "teamnotifier", name = "AppServer")
+@Table (schema = "teamnotifier")
 public class AppServerEntity implements Serializable
 {
   @Id

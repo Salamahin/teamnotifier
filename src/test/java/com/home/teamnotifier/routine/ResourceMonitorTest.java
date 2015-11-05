@@ -1,5 +1,7 @@
 package com.home.teamnotifier.routine;
 
+import com.home.teamnotifier.gateways.AlreadyReserved;
+import com.home.teamnotifier.gateways.NotReserved;
 import com.home.teamnotifier.resource.environment.EnvironmentInfo;
 import org.junit.*;
 import java.util.*;

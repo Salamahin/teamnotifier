@@ -1,21 +1,23 @@
 package com.home.teamnotifier.gateways;
 
 import com.google.inject.Inject;
-import com.home.teamnotifier.db.AppServerEntity;
-import com.home.teamnotifier.db.SubscriptionEntity;
-import com.home.teamnotifier.db.TransactionHelper;
-import com.home.teamnotifier.db.UserEntity;
+import com.home.teamnotifier.db.*;
 import com.home.teamnotifier.resource.auth.UserInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 
 public class DbSubscriptionGateway implements SubscriptionGateway
 {
+  private static final Logger LOG=LoggerFactory.getLogger(DbSubscriptionGateway.class);
+
   private final TransactionHelper transactionHelper;
 
   @Inject
@@ -101,12 +103,43 @@ public class DbSubscriptionGateway implements SubscriptionGateway
     });
   }
 
-  @Override public void reserve(final String userName, int applicationId)
+  @Override public void reserve(final String userName, int applicationId) throws AlreadyReserved
   {
-
+    final boolean success=reservationSuccess(userName, applicationId);
+    if(!success)
+      throw new AlreadyReserved();
   }
 
-  @Override public void free(final String userName, int applicationId)
+  private Boolean reservationSuccess(String userName, int applicationId)
+  {
+    return transactionHelper.transaction(em -> {
+      final SharedResourceEntity resourceEntity=em.find(SharedResourceEntity.class, applicationId);
+      final Optional<UserEntity> occupier=Optional.of(resourceEntity)
+          .map(SharedResourceEntity::getOccupier);
+
+      if (occupier.isPresent())
+      {
+        LOG.debug("Failed to reserve resource {}:{}:{} by {}: already reserved by {}",
+            resourceEntity.getAppServer().getEnvironment().getName(),
+            resourceEntity.getAppServer().getName(),
+            resourceEntity.getName(),
+            userName,
+            occupier.get().getName()
+        );
+        return false;
+      }
+
+      final UserEntity newOccupier=getUserEntity(userName, em);
+      resourceEntity.setOccupier(newOccupier);
+      resourceEntity.setOccupationStartTime(LocalDateTime.now());
+
+      em.merge(resourceEntity);
+
+      return true;
+    });
+  }
+
+  @Override public void free(final String userName, int applicationId) throws NotReserved
   {
 
   }

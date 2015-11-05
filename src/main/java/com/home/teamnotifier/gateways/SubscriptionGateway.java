@@ -8,6 +8,6 @@ public interface SubscriptionGateway {
   List<UserInfo> getSubscribers(final int serverId);
   void subscribe(final String userName, final int serverId);
   void unsubscribe(final String userName, final int serverId);
-  void reserve(final String userName, final int applicationId);
-  void free(final String userName, final int applicationId);
+  void reserve(final String userName, final int applicationId) throws AlreadyReserved;
+  void free(final String userName, final int applicationId) throws NotReserved;
 }

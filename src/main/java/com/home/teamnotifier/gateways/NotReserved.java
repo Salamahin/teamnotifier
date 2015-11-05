@@ -1,4 +1,4 @@
-package com.home.teamnotifier.routine;
+package com.home.teamnotifier.gateways;
 
 public class NotReserved extends RuntimeException {
 }
