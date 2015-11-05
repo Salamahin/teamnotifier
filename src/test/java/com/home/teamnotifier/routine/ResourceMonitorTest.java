@@ -1,23 +1,16 @@
 package com.home.teamnotifier.routine;
 
-import com.home.teamnotifier.gateways.AlreadyReserved;
-import com.home.teamnotifier.gateways.NotReserved;
+import com.home.teamnotifier.gateways.*;
 import com.home.teamnotifier.resource.environment.EnvironmentInfo;
 import org.junit.*;
-import java.util.*;
+import java.util.List;
 import static org.mockito.Mockito.*;
 
 public class ResourceMonitorTest {
 
   private ResourceMonitor monitor;
-  private String userName;
 
-  @Before
-  public void setUp()
-  throws Exception {
-    monitor = new ResourceMonitor();
-    userName= "userName";
-  }
+  private String userName;
 
   @Test
   public void testCanGetFullStatus()
@@ -73,5 +66,12 @@ public class ResourceMonitorTest {
   throws Exception {
     final int applicationId = -1;
     monitor.free(userName, applicationId);
+  }
+
+  @Before
+  public void setUp()
+  throws Exception {
+    monitor = new ResourceMonitor();
+    userName = "userName";
   }
 }

@@ -2,15 +2,13 @@ package com.home.teamnotifier.db;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Entity
-@Table (schema = "teamnotifier")
-public class EnvironmentEntity implements Serializable
-{
+@Table(schema = "teamnotifier")
+public class EnvironmentEntity implements Serializable {
   @Id
-  @GeneratedValue(strategy=GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private Integer id;
 
   @Column(nullable = false, unique = true)

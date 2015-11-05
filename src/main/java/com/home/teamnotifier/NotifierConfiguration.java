@@ -5,8 +5,17 @@ import io.dropwizard.Configuration;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-public class NotifierConfiguration extends Configuration
-{
+public class NotifierConfiguration extends Configuration {
+  @Valid
+  @NotNull
+  private ExecutorsConfiguration executorsConfiguration;
+
+  @JsonProperty(value = "executors")
+  public ExecutorsConfiguration getExecutorsConfiguration() {
+    return executorsConfiguration;
+  }
+
+
   public static class ExecutorsConfiguration {
     @Valid
     @NotNull
@@ -16,14 +25,5 @@ public class NotifierConfiguration extends Configuration
     public Integer getPoolSize() {
       return poolSize;
     }
-  }
-
-  @Valid
-  @NotNull
-  private ExecutorsConfiguration executorsConfiguration;
-
-  @JsonProperty(value = "executors")
-  public ExecutorsConfiguration getExecutorsConfiguration() {
-    return executorsConfiguration;
   }
 }

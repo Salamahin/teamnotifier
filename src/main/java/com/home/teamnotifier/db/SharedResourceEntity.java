@@ -2,12 +2,11 @@ package com.home.teamnotifier.db;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(schema = "teamnotifier")
-public class SharedResourceEntity implements Serializable
-{
+public class SharedResourceEntity implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Integer id;

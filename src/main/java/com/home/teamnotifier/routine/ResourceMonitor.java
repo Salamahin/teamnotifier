@@ -1,7 +1,6 @@
 package com.home.teamnotifier.routine;
 
-import com.home.teamnotifier.gateways.AlreadyReserved;
-import com.home.teamnotifier.gateways.NotReserved;
+import com.home.teamnotifier.gateways.*;
 import com.home.teamnotifier.resource.environment.EnvironmentInfo;
 import java.util.*;
 
@@ -21,15 +20,15 @@ public class ResourceMonitor {
     fireNotification();
   }
 
+  void fireNotification() {
+
+  }
+
   public void subscribe(final String userName, final int serverId) {
 
   }
 
   public void unsubscribe(final String userName, final int serverId) {
-
-  }
-
-  void fireNotification() {
 
   }
 

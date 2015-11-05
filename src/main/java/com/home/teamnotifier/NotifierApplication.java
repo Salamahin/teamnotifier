@@ -1,24 +1,16 @@
 package com.home.teamnotifier;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Stage;
-import com.home.teamnotifier.authentication.TeamNotifierAuthenticator;
-import com.home.teamnotifier.authentication.TeamNotifierAuthorizer;
-import com.home.teamnotifier.authentication.User;
-import com.home.teamnotifier.web.socket.BroadcastServlet;
-import com.home.teamnotifier.web.socket.ClientManager;
+import com.google.inject.*;
+import com.home.teamnotifier.authentication.*;
+import com.home.teamnotifier.web.socket.*;
 import com.hubspot.dropwizard.guice.GuiceBundle;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
-import io.dropwizard.auth.AuthDynamicFeature;
-import io.dropwizard.auth.AuthValueFactoryProvider;
+import io.dropwizard.auth.*;
 import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
-import io.dropwizard.setup.Bootstrap;
-import io.dropwizard.setup.Environment;
+import io.dropwizard.setup.*;
 import io.dropwizard.validation.valuehandling.OptionalValidatedValueUnwrapper;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
-
 import javax.servlet.ServletRegistration;
 
 public class NotifierApplication extends Application<NotifierConfiguration> {
@@ -44,7 +36,7 @@ public class NotifierApplication extends Application<NotifierConfiguration> {
     environment.jersey().register(new AuthDynamicFeature(
         new BasicCredentialAuthFilter.Builder<User>()
             .setAuthenticator(injector.getInstance(TeamNotifierAuthenticator.class))
-            .setAuthorizer(new TeamNotifierAuthorizer())
+            .setAuthorizer(new TrivialAuthorizer())
             .buildAuthFilter()));
     environment.jersey().register(RolesAllowedDynamicFeature.class);
     //If you want to use @Auth to inject a custom Principal type into your resource

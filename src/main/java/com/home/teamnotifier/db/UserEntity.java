@@ -2,15 +2,12 @@ package com.home.teamnotifier.db;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(schema = "teamnotifier")
-public class UserEntity implements Serializable
-{
+public class UserEntity implements Serializable {
   @Id
-  @GeneratedValue(strategy=GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private Integer id;
 
   @Column(nullable = false, unique = true)
@@ -19,28 +16,28 @@ public class UserEntity implements Serializable
   @Column(nullable = false)
   private String passHash;
 
-//  @OneToMany(mappedBy = "subscriberEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-//  private List<SubscriptionEntity> subscriptions = new ArrayList<>();
-//
-//  @OneToMany(mappedBy = "occupier", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-//  private List<SharedResourceEntity> occupiedResources = new ArrayList<>();
+  //  @OneToMany(mappedBy = "subscriberEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  //  private List<SubscriptionEntity> subscriptions = new ArrayList<>();
+  //
+  //  @OneToMany(mappedBy = "occupier", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  //  private List<SharedResourceEntity> occupiedResources = new ArrayList<>();
 
-//  public List<SharedResourceEntity> getOccupiedResources() {
-//    return occupiedResources;
-//  }
-//
-//  public void setOccupiedResources(
-//      final List<SharedResourceEntity> occupiedResources) {
-//    this.occupiedResources = occupiedResources;
-//  }
-//
-//  public List<SubscriptionEntity> getSubscriptions() {
-//    return subscriptions;
-//  }
-//
-//  public void setSubscriptions(final List<SubscriptionEntity> subscriptions) {
-//    this.subscriptions = subscriptions;
-//  }
+  //  public List<SharedResourceEntity> getOccupiedResources() {
+  //    return occupiedResources;
+  //  }
+  //
+  //  public void setOccupiedResources(
+  //      final List<SharedResourceEntity> occupiedResources) {
+  //    this.occupiedResources = occupiedResources;
+  //  }
+  //
+  //  public List<SubscriptionEntity> getSubscriptions() {
+  //    return subscriptions;
+  //  }
+  //
+  //  public void setSubscriptions(final List<SubscriptionEntity> subscriptions) {
+  //    this.subscriptions = subscriptions;
+  //  }
 
   public Integer getId() {
     return id;

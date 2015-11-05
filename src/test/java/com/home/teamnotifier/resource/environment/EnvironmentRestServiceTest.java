@@ -2,24 +2,18 @@ package com.home.teamnotifier.resource.environment;
 
 import com.google.common.base.Optional;
 import com.google.common.io.BaseEncoding;
-import com.home.teamnotifier.authentication.TeamNotifierAuthorizer;
-import com.home.teamnotifier.authentication.User;
+import com.home.teamnotifier.authentication.*;
 import com.home.teamnotifier.routine.ResourceMonitor;
-import io.dropwizard.auth.AuthDynamicFeature;
-import io.dropwizard.auth.AuthValueFactoryProvider;
-import io.dropwizard.auth.Authenticator;
-import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
-import io.dropwizard.auth.basic.BasicCredentials;
+import io.dropwizard.auth.*;
+import io.dropwizard.auth.basic.*;
 import io.dropwizard.testing.junit.ResourceTestRule;
-import static java.util.Collections.emptyList;
-import static org.assertj.core.api.StrictAssertions.assertThat;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import org.glassfish.jersey.test.grizzly.GrizzlyWebTestContainerFactory;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
+import javax.ws.rs.core.*;
+import static java.util.Collections.emptyList;
+import static org.assertj.core.api.StrictAssertions.assertThat;
 import static org.mockito.Mockito.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 public class EnvironmentRestServiceTest {
 
@@ -57,7 +51,7 @@ public class EnvironmentRestServiceTest {
         .setTestContainerFactory(new GrizzlyWebTestContainerFactory())
         .addProvider(new AuthDynamicFeature(new BasicCredentialAuthFilter.Builder<User>()
             .setAuthenticator(authenticator())
-            .setAuthorizer(new TeamNotifierAuthorizer())
+            .setAuthorizer(new TrivialAuthorizer())
             .setRealm("realm")
             .setPrefix("Bearer")
             .buildAuthFilter()))

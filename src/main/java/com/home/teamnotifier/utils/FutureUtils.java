@@ -1,9 +1,8 @@
 package com.home.teamnotifier.utils;
 
-import static java.util.stream.Collectors.toList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
+import java.util.concurrent.*;
+import static java.util.stream.Collectors.toList;
 
 public final class FutureUtils {
   private FutureUtils() {

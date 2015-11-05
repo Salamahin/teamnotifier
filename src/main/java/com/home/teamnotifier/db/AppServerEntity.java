@@ -2,15 +2,13 @@ package com.home.teamnotifier.db;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Entity
-@Table (schema = "teamnotifier")
-public class AppServerEntity implements Serializable
-{
+@Table(schema = "teamnotifier")
+public class AppServerEntity implements Serializable {
   @Id
-  @GeneratedValue(strategy=GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private Integer id;
 
   @Column(nullable = false)
@@ -21,17 +19,17 @@ public class AppServerEntity implements Serializable
 
   @OneToMany(mappedBy = "appServer", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   private List<SharedResourceEntity> resources = new ArrayList<>();
-//
-//  @OneToMany(mappedBy = "appServerId", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-//  private List<SubscriptionEntity> subscriptions = new ArrayList<>();
+  //
+  //  @OneToMany(mappedBy = "appServerId", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  //  private List<SubscriptionEntity> subscriptions = new ArrayList<>();
 
-//  public List<SubscriptionEntity> getSubscriptions() {
-//    return subscriptions;
-//  }
-//
-//  public void setSubscriptions(final List<SubscriptionEntity> subscriptions) {
-//    this.subscriptions = subscriptions;
-//  }
+  //  public List<SubscriptionEntity> getSubscriptions() {
+  //    return subscriptions;
+  //  }
+  //
+  //  public void setSubscriptions(final List<SubscriptionEntity> subscriptions) {
+  //    this.subscriptions = subscriptions;
+  //  }
 
   public Integer getId() {
     return id;

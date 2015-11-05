@@ -1,10 +1,8 @@
 package com.home.teamnotifier.resource.environment;
 
-import com.home.teamnotifier.authentication.TeamNotifierRoles;
-import com.home.teamnotifier.authentication.User;
+import com.home.teamnotifier.authentication.*;
 import com.home.teamnotifier.routine.ResourceMonitor;
 import io.dropwizard.auth.Auth;
-
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -18,13 +16,6 @@ public class EnvironmentRestService {
 
   public EnvironmentRestService(final ResourceMonitor resourceMonitor) {
     this.resourceMonitor = resourceMonitor;
-  }
-
-  @GET
-  @RolesAllowed({TeamNotifierRoles.USER})
-  public EnvironmentsInfo getServerInfo(@Auth User user) {
-    final List<EnvironmentInfo> status = resourceMonitor.getStatus(user.getName());
-    return new EnvironmentsInfo(status);
   }
 
   @POST
@@ -45,5 +36,12 @@ public class EnvironmentRestService {
   @DELETE
   @Path("/server/reserve/{serverId}")
   public void unsubscribe(@PathParam("serverId") Integer serverId) {
+  }
+
+  @GET
+  @RolesAllowed({TeamNotifierRoles.USER})
+  public EnvironmentsInfo getServerInfo(@Auth User user) {
+    final List<EnvironmentInfo> status = resourceMonitor.getStatus(user.getName());
+    return new EnvironmentsInfo(status);
   }
 }

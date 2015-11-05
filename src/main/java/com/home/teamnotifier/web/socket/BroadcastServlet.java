@@ -1,73 +1,60 @@
 package com.home.teamnotifier.web.socket;
 
-import org.eclipse.jetty.websocket.api.Session;
-import org.eclipse.jetty.websocket.api.WebSocketListener;
-import org.eclipse.jetty.websocket.servlet.WebSocketServlet;
-import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.eclipse.jetty.websocket.api.*;
+import org.eclipse.jetty.websocket.servlet.*;
+import org.slf4j.*;
 
-public class BroadcastServlet extends WebSocketServlet
-{
+public class BroadcastServlet extends WebSocketServlet {
   private final ClientManager clientManager;
 
-  public BroadcastServlet(final ClientManager clientManager)
-  {
-    this.clientManager=clientManager;
+  public BroadcastServlet(final ClientManager clientManager) {
+    this.clientManager = clientManager;
   }
 
   @Override
-  public void configure(WebSocketServletFactory factory)
-  {
+  public void configure(WebSocketServletFactory factory) {
     factory.register(WebSocketHandler.class);
     factory.setCreator((req, resp) -> new WebSocketHandler(clientManager));
   }
 
-  private static class WebSocketHandler implements WebSocketListener
-  {
+  private static class WebSocketHandler implements WebSocketListener {
 
-    private static final Logger LOGGER=LoggerFactory.getLogger(WebSocketHandler.class);
-
-    private Session session;
+    private static final Logger LOGGER = LoggerFactory.getLogger(WebSocketHandler.class);
 
     private final ClientManager manager;
 
-    public WebSocketHandler(final ClientManager manager)
-    {
-      this.manager=manager;
+    private Session session;
+
+    public WebSocketHandler(final ClientManager manager) {
+      this.manager = manager;
     }
 
     @Override
-    public void onWebSocketConnect(Session session)
-    {
-      this.session=session;
-      manager.addNewClientBySession(session);
-      LOGGER.info("Socket connected: {}", Integer.toHexString(session.hashCode()));
-    }
-
-    @Override
-    public void onWebSocketBinary(final byte[] payload, final int offset, final int len)
-    {
+    public void onWebSocketBinary(final byte[] payload, final int offset, final int len) {
          /* do nothing */
     }
 
     @Override
-    public void onWebSocketClose(int statusCode, String reason)
-    {
+    public void onWebSocketClose(int statusCode, String reason) {
       manager.removeClientBySession(session);
       LOGGER.info("Socket closed: [{}] {}", statusCode, reason);
     }
 
     @Override
-    public void onWebSocketError(Throwable cause)
-    {
+    public void onWebSocketConnect(Session session) {
+      this.session = session;
+      manager.addNewClientBySession(session);
+      LOGGER.info("Socket connected: {}", Integer.toHexString(session.hashCode()));
+    }
+
+    @Override
+    public void onWebSocketError(Throwable cause) {
       manager.removeClientBySession(session);
       LOGGER.error("Websocket error", cause);
     }
 
     @Override
-    public void onWebSocketText(final String message)
-    {
+    public void onWebSocketText(final String message) {
       LOGGER.info("Websocket text: {}", message);
     }
   }

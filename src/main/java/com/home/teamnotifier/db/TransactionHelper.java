@@ -1,6 +1,5 @@
 package com.home.teamnotifier.db;
 
-import org.slf4j.*;
 import javax.inject.Inject;
 import javax.persistence.*;
 import java.util.function.Function;

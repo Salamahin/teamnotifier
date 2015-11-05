@@ -7,7 +7,7 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.util.List;
 import java.util.stream.Collectors;
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.toSet;
 
 public class DbEnvironmentGateway implements EnvironmentGateway {
   private final TransactionHelper transactionHelper;
@@ -24,6 +24,17 @@ public class DbEnvironmentGateway implements EnvironmentGateway {
             .map(this::toEnvironment)
             .collect(Collectors.toList())
     );
+  }
+
+  private List<EnvironmentEntity> loadListFromDb() {
+    return transactionHelper.transaction(em -> {
+      final CriteriaBuilder cb = em.getCriteriaBuilder();
+      final CriteriaQuery<EnvironmentEntity> cq = cb.createQuery(EnvironmentEntity.class);
+      final Root<EnvironmentEntity> rootEntry = cq.from(EnvironmentEntity.class);
+      final CriteriaQuery<EnvironmentEntity> all = cq.select(rootEntry);
+      final TypedQuery<EnvironmentEntity> allQuery = em.createQuery(all);
+      return allQuery.getResultList();
+    });
   }
 
   private EnvironmentInfo toEnvironment(EnvironmentEntity entity) {
@@ -46,16 +57,5 @@ public class DbEnvironmentGateway implements EnvironmentGateway {
 
   private SharedResourceInfo toResource(final SharedResourceEntity sharedResourceEntity) {
     return new SharedResourceInfo(sharedResourceEntity.getName());
-  }
-
-  private List<EnvironmentEntity> loadListFromDb() {
-    return transactionHelper.transaction(em -> {
-      final CriteriaBuilder cb = em.getCriteriaBuilder();
-      final CriteriaQuery<EnvironmentEntity> cq = cb.createQuery(EnvironmentEntity.class);
-      final Root<EnvironmentEntity> rootEntry = cq.from(EnvironmentEntity.class);
-      final CriteriaQuery<EnvironmentEntity> all = cq.select(rootEntry);
-      final TypedQuery<EnvironmentEntity> allQuery = em.createQuery(all);
-      return allQuery.getResultList();
-    });
   }
 }

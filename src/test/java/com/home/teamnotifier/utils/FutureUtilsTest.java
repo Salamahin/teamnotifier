@@ -1,14 +1,11 @@
 package com.home.teamnotifier.utils;
 
 import com.google.common.collect.Lists;
-import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.function.Supplier;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class FutureUtilsTest {
 

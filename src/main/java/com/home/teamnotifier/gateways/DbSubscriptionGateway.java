@@ -3,15 +3,11 @@ package com.home.teamnotifier.gateways;
 import com.google.inject.Inject;
 import com.home.teamnotifier.db.*;
 import com.home.teamnotifier.resource.auth.UserInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import org.slf4j.*;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-
+import java.util.*;
 import static java.util.stream.Collectors.toList;
 
 public class DbSubscriptionGateway implements SubscriptionGateway {
@@ -22,28 +18,6 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
   @Inject
   public DbSubscriptionGateway(final TransactionHelper transactionHelper) {
     this.transactionHelper = transactionHelper;
-  }
-
-  @Override
-  public List<UserInfo> getSubscribers(final int serverId) {
-    return transactionHelper.transaction(em -> getUserEntitiesSubscribedOnServer(serverId, em))
-        .stream()
-        .map(eu -> new UserInfo(eu.getId(), eu.getName()))
-        .collect(toList());
-  }
-
-  private List<UserEntity> getUserEntitiesSubscribedOnServer(int serverId, EntityManager em) {
-    final AppServerEntity serverEntity = em.find(AppServerEntity.class, serverId);
-
-    final CriteriaBuilder cb = em.getCriteriaBuilder();
-    final CriteriaQuery<UserEntity> cq = cb.createQuery(UserEntity.class);
-    final Root<SubscriptionEntity> _subscription = cq.from(SubscriptionEntity.class);
-
-    final CriteriaQuery<UserEntity> find = cq
-        .select(_subscription.get("subscriberEntity"))
-        .where(cb.equal(_subscription.get("appServerEntity"), serverEntity));
-
-    return em.createQuery(find).getResultList();
   }
 
   @Override
@@ -139,6 +113,28 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
   public void free(final String userName, int applicationId)
   throws NotReserved {
     if (!freeSuccess(userName, applicationId)) { throw new NotReserved(); }
+  }
+
+  @Override
+  public List<UserInfo> getSubscribers(final int serverId) {
+    return transactionHelper.transaction(em -> getUserEntitiesSubscribedOnServer(serverId, em))
+        .stream()
+        .map(eu -> new UserInfo(eu.getId(), eu.getName()))
+        .collect(toList());
+  }
+
+  private List<UserEntity> getUserEntitiesSubscribedOnServer(int serverId, EntityManager em) {
+    final AppServerEntity serverEntity = em.find(AppServerEntity.class, serverId);
+
+    final CriteriaBuilder cb = em.getCriteriaBuilder();
+    final CriteriaQuery<UserEntity> cq = cb.createQuery(UserEntity.class);
+    final Root<SubscriptionEntity> _subscription = cq.from(SubscriptionEntity.class);
+
+    final CriteriaQuery<UserEntity> find = cq
+        .select(_subscription.get("subscriberEntity"))
+        .where(cb.equal(_subscription.get("appServerEntity"), serverEntity));
+
+    return em.createQuery(find).getResultList();
   }
 
   private boolean freeSuccess(final String userName, final int applicationId) {
