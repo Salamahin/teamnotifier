@@ -29,10 +29,12 @@ public class DbEnvironmentGateway implements EnvironmentGateway {
   private List<EnvironmentEntity> loadListFromDb() {
     return transactionHelper.transaction(em -> {
       final CriteriaBuilder cb = em.getCriteriaBuilder();
+
       final CriteriaQuery<EnvironmentEntity> cq = cb.createQuery(EnvironmentEntity.class);
       final Root<EnvironmentEntity> rootEntry = cq.from(EnvironmentEntity.class);
       final CriteriaQuery<EnvironmentEntity> all = cq.select(rootEntry);
       final TypedQuery<EnvironmentEntity> allQuery = em.createQuery(all);
+
       return allQuery.getResultList();
     });
   }

@@ -11,7 +11,7 @@ public class SubscriptionEntity implements Serializable {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Integer id;
 
-  @ManyToOne(optional = false)
+  @ManyToOne(optional = false, cascade = CascadeType.ALL)
   private AppServerEntity appServerEntity;
 
   @ManyToOne(optional = false)

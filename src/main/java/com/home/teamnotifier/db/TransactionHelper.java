@@ -2,9 +2,12 @@ package com.home.teamnotifier.db;
 
 import javax.inject.Inject;
 import javax.persistence.*;
+import java.util.concurrent.Semaphore;
 import java.util.function.Function;
 
 public final class TransactionHelper {
+  private static final Semaphore MUTEX = new Semaphore(1, true);
+
   private final EntityManager entityManager;
 
   @Inject
@@ -18,6 +21,7 @@ public final class TransactionHelper {
     final U result;
 
     try {
+      MUTEX.acquire();
       entityManager.getTransaction().begin();
       result = function.apply(entityManager);
       entityManager.flush();
@@ -25,7 +29,9 @@ public final class TransactionHelper {
     } catch (Exception exc) {
       entityManager.flush();
       entityManager.getTransaction().rollback();
-      throw exc;
+      throw new TransactionError(exc);
+    } finally {
+      MUTEX.release();
     }
 
     return result;

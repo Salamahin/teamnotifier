@@ -30,7 +30,11 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
       entity.setAppServer(appServerEntity);
       entity.setSubscriber(userEntity);
       entity.setTimestamp(LocalDateTime.now());
-      em.persist(entity);
+
+      appServerEntity.getSubscriptions().add(entity);
+
+      em.merge(appServerEntity);
+      em.merge(entity);
 
       return null;
     });
@@ -67,7 +71,13 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
 
       delete = delete.where(predicate);
 
+      final Iterator<SubscriptionEntity> it = serverEntity.getSubscriptions().iterator();
+      while (it.hasNext()) {
+        if(Objects.equals(userName, it.next().getSubscriber().getName()))
+          it.remove();
+      }
       em.createQuery(delete).executeUpdate();
+      em.merge(serverEntity);
 
       return null;
     });
