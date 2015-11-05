@@ -19,17 +19,13 @@ public class AppServerEntity implements Serializable {
 
   @OneToMany(mappedBy = "appServer", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   private List<SharedResourceEntity> resources = new ArrayList<>();
-  //
-  //  @OneToMany(mappedBy = "appServerId", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-  //  private List<SubscriptionEntity> subscriptions = new ArrayList<>();
 
-  //  public List<SubscriptionEntity> getSubscriptions() {
-  //    return subscriptions;
-  //  }
-  //
-  //  public void setSubscriptions(final List<SubscriptionEntity> subscriptions) {
-  //    this.subscriptions = subscriptions;
-  //  }
+  @OneToMany(mappedBy = "appServerEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  private List<SubscriptionEntity> subscriptions = new ArrayList<>();
+
+  public List<SubscriptionEntity> getSubscriptions() {
+    return subscriptions;
+  }
 
   public Integer getId() {
     return id;

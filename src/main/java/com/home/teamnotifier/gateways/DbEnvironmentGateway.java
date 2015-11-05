@@ -5,7 +5,7 @@ import com.home.teamnotifier.db.*;
 import com.home.teamnotifier.resource.environment.*;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import static java.util.stream.Collectors.toSet;
 
@@ -47,15 +47,29 @@ public class DbEnvironmentGateway implements EnvironmentGateway {
   }
 
   private AppServerInfo toAppSever(final AppServerEntity entity) {
+    final Set<String> subscribersNames = entity.getSubscriptions().stream()
+        .map(s -> s.getSubscriber().getName())
+        .collect(toSet());
+
+    final Set<SharedResourceInfo> resources = entity.getResources().stream()
+        .map(this::toResource)
+        .collect(toSet());
+
     return new AppServerInfo(
         entity.getName(),
-        entity.getResources().stream()
-            .map(this::toResource)
-            .collect(toSet())
+        resources,
+        subscribersNames
     );
   }
 
   private SharedResourceInfo toResource(final SharedResourceEntity sharedResourceEntity) {
-    return new SharedResourceInfo(sharedResourceEntity.getName());
+    OccupationInfo info = null;
+    if (sharedResourceEntity.getOccupier() != null) {
+      info = new OccupationInfo(
+          sharedResourceEntity.getOccupier().getName(),
+          sharedResourceEntity.getOccupationStartTime()
+      );
+    }
+    return new SharedResourceInfo(sharedResourceEntity.getName(), info);
   }
 }
