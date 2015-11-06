@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import static com.home.teamnotifier.gateways.DbGatewayCommons.*;
 import static java.util.stream.Collectors.toList;
 
 public class DbSubscriptionGateway implements SubscriptionGateway
@@ -32,7 +33,7 @@ public class DbSubscriptionGateway implements SubscriptionGateway
   {
     final AppServerEntity serverEntity=transactionHelper.transaction(em -> {
       final UserEntity userEntity=getUserEntity(userName, em);
-      AppServerEntity appServerEntity=getAppServerEntity(serverId, em);
+      final AppServerEntity appServerEntity=getAppServerEntity(serverId, em);
 
       appServerEntity.subscribe(userEntity);
 
@@ -43,17 +44,6 @@ public class DbSubscriptionGateway implements SubscriptionGateway
         .map(SubscriptionData::getUserName)
         .filter(u -> !Objects.equals(u, userName))
         .collect(toList());
-  }
-
-  private UserEntity getUserEntity(final String userName, final EntityManager em)
-  {
-    final CriteriaBuilder cb=em.getCriteriaBuilder();
-    final CriteriaQuery<UserEntity> cq=cb.createQuery(UserEntity.class);
-    final Root<UserEntity> rootEntry=cq.from(UserEntity.class);
-    final CriteriaQuery<UserEntity> selectUserQuery=cq
-        .where(cb.equal(rootEntry.get("name"), userName));
-
-    return em.createQuery(selectUserQuery).getSingleResult();
   }
 
   private AppServerEntity getAppServerEntity(int serverId, EntityManager em)

@@ -13,6 +13,7 @@
         <class>com.home.teamnotifier.db.SharedResourceEntity</class>
         <class>com.home.teamnotifier.db.UserEntity</class>
         <class>com.home.teamnotifier.db.SubscriptionEntity</class>
+        <class>com.home.teamnotifier.db.ActionOnSharedResourceEntity</class>
 
         <properties>
             <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>
