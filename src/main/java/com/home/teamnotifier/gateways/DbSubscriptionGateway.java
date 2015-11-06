@@ -9,7 +9,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+
+import static java.util.stream.Collectors.toList;
 
 public class DbSubscriptionGateway implements SubscriptionGateway
 {
@@ -24,18 +28,21 @@ public class DbSubscriptionGateway implements SubscriptionGateway
   }
 
   @Override
-  public void subscribe(final String userName, final int serverId)
+  public List<String> subscribe(final String userName, final int serverId)
   {
-    transactionHelper.transaction(em -> {
+    final AppServerEntity serverEntity=transactionHelper.transaction(em -> {
       final UserEntity userEntity=getUserEntity(userName, em);
-      final AppServerEntity appServerEntity=getAppServerEntity(serverId, em);
+      AppServerEntity appServerEntity=getAppServerEntity(serverId, em);
 
       appServerEntity.subscribe(userEntity);
 
-      em.merge(appServerEntity);
-
-      return null;
+      return em.merge(appServerEntity);
     });
+
+    return serverEntity.getImmutableListOfSubscribers().stream()
+        .map(SubscriptionData::getUserName)
+        .filter(u -> !Objects.equals(u, userName))
+        .collect(toList());
   }
 
   private UserEntity getUserEntity(final String userName, final EntityManager em)
@@ -55,35 +62,37 @@ public class DbSubscriptionGateway implements SubscriptionGateway
   }
 
   @Override
-  public void unsubscribe(final String userName, final int serverId)
+  public List<String> unsubscribe(final String userName, final int serverId)
   {
-    transactionHelper.transaction(em -> {
-      final AppServerEntity serverEntity=getAppServerEntity(serverId, em);
+    return transactionHelper.transaction(em -> {
       final UserEntity userEntity=getUserEntity(userName, em);
+      AppServerEntity serverEntity=getAppServerEntity(serverId, em);
 
       serverEntity.unsubscribe(userEntity);
 
-      em.merge(serverEntity);
+      serverEntity=em.merge(serverEntity);
 
-      return null;
+      return serverEntity.getImmutableListOfSubscribers().stream()
+          .map(SubscriptionData::getUserName)
+          .filter(u -> !Objects.equals(u, userName))
+          .collect(toList());
     });
   }
 
   @Override
-  public void reserve(final String userName, final int applicationId)
+  public List<String> reserve(final String userName, final int applicationId)
       throws AlreadyReserved
   {
-    final boolean success=reservationSuccess(userName, applicationId);
-    if (!success)
-    {
-      throw new AlreadyReserved();
-    }
+    return tryReserve(userName, applicationId).getImmutableListOfSubscribers().stream()
+        .map(SubscriptionData::getUserName)
+        .filter(u -> !Objects.equals(u, userName))
+        .collect(toList());
   }
 
-  private Boolean reservationSuccess(final String userName, final int applicationId)
+  private AppServerEntity tryReserve(final String userName, final int applicationId)
   {
     return transactionHelper.transaction(em -> {
-      final SharedResourceEntity resourceEntity=em.find(SharedResourceEntity.class, applicationId);
+      SharedResourceEntity resourceEntity=em.find(SharedResourceEntity.class, applicationId);
 
       final Optional<ReservationData> reservationData=resourceEntity.getReservationData();
 
@@ -96,32 +105,31 @@ public class DbSubscriptionGateway implements SubscriptionGateway
             userName,
             reservationData.get().getOccupier().getName()
         );
-        return false;
+        throw new AlreadyReserved();
       }
 
       final UserEntity newOccupier=getUserEntity(userName, em);
       resourceEntity.reserve(newOccupier);
 
-      em.merge(resourceEntity);
-
-      return true;
+      resourceEntity=em.merge(resourceEntity);
+      return resourceEntity.getAppServer();
     });
   }
 
   @Override
-  public void free(final String userName, final int applicationId)
+  public List<String> free(final String userName, final int applicationId)
       throws NotReserved
   {
-    if (!freeSuccess(userName, applicationId))
-    {
-      throw new NotReserved();
-    }
+    return tryFree(userName, applicationId).getImmutableListOfSubscribers().stream()
+        .map(SubscriptionData::getUserName)
+        .filter(u -> !Objects.equals(u, userName))
+        .collect(toList());
   }
 
-  private boolean freeSuccess(final String userName, final int applicationId)
+  private AppServerEntity tryFree(final String userName, final int applicationId)
   {
     return transactionHelper.transaction(em -> {
-      final SharedResourceEntity resourceEntity=em.find(SharedResourceEntity.class, applicationId);
+      SharedResourceEntity resourceEntity=em.find(SharedResourceEntity.class, applicationId);
       final Optional<ReservationData> reservationData=resourceEntity.getReservationData();
 
       if (!reservationData.isPresent())
@@ -132,13 +140,13 @@ public class DbSubscriptionGateway implements SubscriptionGateway
             resourceEntity.getName(),
             userName
         );
-        return false;
+        throw new NotReserved();
       }
 
       resourceEntity.free();
-      em.merge(resourceEntity);
+      resourceEntity=em.merge(resourceEntity);
 
-      return true;
+      return resourceEntity.getAppServer();
     });
   }
 }

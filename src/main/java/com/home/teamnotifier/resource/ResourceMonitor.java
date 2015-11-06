@@ -1,47 +1,60 @@
 package com.home.teamnotifier.resource;
 
-import com.home.teamnotifier.gateways.*;
-import com.home.teamnotifier.resource.environment.EnvironmentInfo;
-import java.util.*;
+import com.google.inject.Inject;
+import com.home.teamnotifier.gateways.EnvironmentGateway;
+import com.home.teamnotifier.gateways.SubscriptionGateway;
+import com.home.teamnotifier.resource.environment.EnvironmentsInfo;
+import com.home.teamnotifier.web.socket.ClientManager;
 
-public class ResourceMonitor {
-  private final Set<Integer> reservedApplications;
+public class ResourceMonitor
+{
 
-  public ResourceMonitor() {
-    reservedApplications = new HashSet<>();
+  private final EnvironmentGateway environmentGateway;
+  private final SubscriptionGateway subscriptionGateway;
+  private final ClientManager clientManager;
+
+  @Inject
+  public ResourceMonitor(
+      final EnvironmentGateway environmentGateway,
+      final SubscriptionGateway subscriptionGateway,
+      final ClientManager clientManager
+  )
+  {
+
+    this.environmentGateway=environmentGateway;
+    this.subscriptionGateway=subscriptionGateway;
+    this.clientManager=clientManager;
   }
 
-  public void reserve(final String userName, final int applicationId) {
-    if (reservedApplications.contains(applicationId)) {
-      throw new AlreadyReserved();
-    }
-
-    reservedApplications.add(applicationId);
+  public void reserve(final String userName, final int applicationId)
+  {
+    subscriptionGateway.reserve(userName, applicationId);
     fireNotification();
   }
 
-  void fireNotification() {
+  void fireNotification()
+  {
 
   }
 
-  public void subscribe(final String userName, final int serverId) {
-
+  public void subscribe(final String userName, final int serverId)
+  {
+    subscriptionGateway.subscribe(userName, serverId);
   }
 
-  public void unsubscribe(final String userName, final int serverId) {
-
+  public void unsubscribe(final String userName, final int serverId)
+  {
+    subscriptionGateway.subscribe(userName, serverId);
   }
 
-  public void free(final String userName, final int applicationId) {
-    if (!reservedApplications.contains(applicationId)) {
-      throw new NotReserved();
-    }
-
-    reservedApplications.remove(applicationId);
+  public void free(final String userName, final int applicationId)
+  {
+    subscriptionGateway.free(userName, applicationId);
     fireNotification();
   }
 
-  public List<EnvironmentInfo> getStatus(final String userName) {
-    return null;
+  public EnvironmentsInfo status()
+  {
+    return environmentGateway.status();
   }
 }

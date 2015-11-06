@@ -41,7 +41,6 @@ public class EnvironmentRestService {
   @GET
   @RolesAllowed({TeamNotifierRoles.USER})
   public EnvironmentsInfo getServerInfo(@Auth User user) {
-    final List<EnvironmentInfo> status = resourceMonitor.getStatus(user.getName());
-    return new EnvironmentsInfo(status);
+    return resourceMonitor.status();
   }
 }

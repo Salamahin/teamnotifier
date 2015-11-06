@@ -34,7 +34,7 @@ public class DbUserGateway implements UserGateway {
 
         return em.createQuery(selectUserQuery).getSingleResult();
       });
-    } catch (TransactionError exc) {
+    } catch (Exception exc) {
       LOG.error("Failed to get user by name", exc);
     }
 

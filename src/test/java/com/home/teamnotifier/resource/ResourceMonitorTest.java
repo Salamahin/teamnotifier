@@ -1,13 +1,18 @@
 package com.home.teamnotifier.resource;
 
-import com.home.teamnotifier.gateways.*;
-import com.home.teamnotifier.resource.ResourceMonitor;
-import com.home.teamnotifier.resource.environment.EnvironmentInfo;
-import org.junit.*;
-import java.util.List;
+import com.home.teamnotifier.db.TransactionHelper;
+import com.home.teamnotifier.gateways.AlreadyReserved;
+import com.home.teamnotifier.gateways.DbEnvironmentGateway;
+import com.home.teamnotifier.gateways.DbSubscriptionGateway;
+import com.home.teamnotifier.gateways.NotReserved;
+import com.home.teamnotifier.web.socket.ClientManager;
+import org.junit.Before;
+import org.junit.Test;
+
 import static org.mockito.Mockito.*;
 
-public class ResourceMonitorTest {
+public class ResourceMonitorTest
+{
 
   private ResourceMonitor monitor;
 
@@ -15,20 +20,23 @@ public class ResourceMonitorTest {
 
   @Test
   public void testCanGetFullStatus()
-  throws Exception {
-    final List<EnvironmentInfo> environmentList = monitor.getStatus(userName);
+      throws Exception
+  {
+    monitor.status();
   }
 
   @Test
   public void testCanUnsubscribe()
-  throws Exception {
+      throws Exception
+  {
     monitor.unsubscribe(userName, -1);
   }
 
   @Test
   public void testNotificationFiredWhenReservationSuccess()
-  throws Exception {
-    monitor = spy(ResourceMonitor.class);
+      throws Exception
+  {
+    monitor=spy(ResourceMonitor.class);
     monitor.reserve(userName, -1);
 
     verify(monitor, times(1)).fireNotification();
@@ -36,43 +44,55 @@ public class ResourceMonitorTest {
 
   @Test
   public void testNotificationFiredWhenFreeSuccess()
-  throws Exception {
-    monitor = spy(ResourceMonitor.class);
-    final int applicationId = -1;
+      throws Exception
+  {
+    monitor=spy(ResourceMonitor.class);
+    final int applicationId=-1;
     monitor.reserve(userName, applicationId);
     monitor.free(userName, applicationId);
 
     verify(monitor, times(2)).fireNotification();
   }
 
-  @Test(expected = AlreadyReserved.class)
+  @Test(expected=AlreadyReserved.class)
   public void testReservationOnReservedResourceFails()
-  throws Exception {
-    final int applicationId = -1;
+      throws Exception
+  {
+    final int applicationId=-1;
     monitor.reserve(userName, applicationId);
     monitor.reserve(userName, applicationId);
   }
 
   @Test
   public void testReserveResourceAfterFree()
-  throws Exception {
-    final int applicationId = -1;
+      throws Exception
+  {
+    final int applicationId=-1;
     monitor.reserve(userName, applicationId);
     monitor.free(userName, applicationId);
     monitor.reserve(userName, applicationId);
   }
 
-  @Test(expected = NotReserved.class)
+  @Test(expected=NotReserved.class)
   public void testFreeNotReservedFails()
-  throws Exception {
-    final int applicationId = -1;
+      throws Exception
+  {
+    final int applicationId=-1;
     monitor.free(userName, applicationId);
   }
 
   @Before
   public void setUp()
-  throws Exception {
-    monitor = new ResourceMonitor();
-    userName = "userName";
+      throws Exception
+  {
+    final TransactionHelper helper=new TransactionHelper();
+    final ClientManager manager=mock(ClientManager.class);
+
+    monitor=new ResourceMonitor(
+        new DbEnvironmentGateway(helper),
+        new DbSubscriptionGateway(helper),
+        manager
+    );
+    userName="userName";
   }
 }

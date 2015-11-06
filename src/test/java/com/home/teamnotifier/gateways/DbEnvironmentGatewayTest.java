@@ -1,17 +1,22 @@
 package com.home.teamnotifier.gateways;
 
-import com.fasterxml.jackson.databind.*;
-import com.home.teamnotifier.db.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.home.teamnotifier.db.EnvironmentEntity;
+import com.home.teamnotifier.db.UserEntity;
 import com.home.teamnotifier.resource.environment.EnvironmentsInfo;
 import io.dropwizard.jackson.Jackson;
-import org.junit.*;
+import org.junit.Before;
+import org.junit.Test;
+
 import static com.home.teamnotifier.gateways.Commons.*;
 import static io.dropwizard.testing.FixtureHelpers.fixture;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DbEnvironmentGatewayTest {
+public class DbEnvironmentGatewayTest
+{
 
-  private static final ObjectMapper MAPPER = Jackson
+  private static final ObjectMapper MAPPER=Jackson
       .newObjectMapper()
       .enable(SerializationFeature.INDENT_OUTPUT);
 
@@ -19,19 +24,19 @@ public class DbEnvironmentGatewayTest {
 
   @Before
   public void setUp()
-  throws Exception {
-    gateway = new DbEnvironmentGateway(HELPER);
-    final DbSubscriptionGateway subscriptionGateway = new DbSubscriptionGateway(HELPER);
-    final EnvironmentEntity environment
-        = createPersistedEnvironmentWithOneServerAndOneResource(
+      throws Exception
+  {
+    gateway=new DbEnvironmentGateway(HELPER);
+    final DbSubscriptionGateway subscriptionGateway=new DbSubscriptionGateway(HELPER);
+    final EnvironmentEntity environment=createPersistedEnvironmentWithOneServerAndOneResource(
         "environment",
         "server",
         "resource"
     );
-    final Integer serverId = environment.getImmutableListOfAppServers().get(0).getId();
-    final Integer resourceId = environment.getImmutableListOfAppServers().get(0).getImmutableListOfResources().get(0).getId();
+    final Integer serverId=environment.getImmutableListOfAppServers().get(0).getId();
+    final Integer resourceId=environment.getImmutableListOfAppServers().get(0).getImmutableListOfResources().get(0).getId();
 
-    final UserEntity user = createPersistedUserWithRandomPassHash("user");
+    final UserEntity user=createPersistedUserWithRandomPassHash("user");
 
     subscriptionGateway.subscribe(user.getName(), serverId);
     subscriptionGateway.reserve(user.getName(), resourceId);
@@ -39,8 +44,9 @@ public class DbEnvironmentGatewayTest {
 
   @Test
   public void testDeserializedFromJson()
-  throws Exception {
-    final EnvironmentsInfo status = gateway.status();
+      throws Exception
+  {
+    final EnvironmentsInfo status=gateway.status();
     assertThat(MAPPER.readValue(fixture("fixtures/envConfig.json"), EnvironmentsInfo.class))
         .isEqualTo(status);
   }

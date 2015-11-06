@@ -11,6 +11,8 @@ import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import org.glassfish.jersey.test.grizzly.GrizzlyWebTestContainerFactory;
 import org.junit.*;
 import javax.ws.rs.core.*;
+import java.util.ArrayList;
+
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.StrictAssertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -44,7 +46,7 @@ public class EnvironmentRestServiceTest {
 
   private ResourceTestRule ruleee() {
     final ResourceMonitor resourceMonitor = mock(ResourceMonitor.class);
-    when(resourceMonitor.getStatus("omg")).thenReturn(emptyList());
+    when(resourceMonitor.status()).thenReturn(new EnvironmentsInfo(new ArrayList<>()));
 
     return ResourceTestRule
         .builder()

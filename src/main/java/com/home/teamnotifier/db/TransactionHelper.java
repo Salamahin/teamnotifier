@@ -1,5 +1,6 @@
 package com.home.teamnotifier.db;
 
+import com.google.common.base.Throwables;
 import org.slf4j.*;
 import javax.inject.Inject;
 import javax.persistence.*;
@@ -20,18 +21,19 @@ public final class TransactionHelper {
   }
 
   public <U> U transaction(Function<EntityManager, U> function) {
-    final U result;
+    U result = null;
 
+    final EntityTransaction transaction=entityManager.getTransaction();
     try {
       MUTEX.acquire();
-      entityManager.getTransaction().begin();
+      transaction.begin();
       result = function.apply(entityManager);
       entityManager.flush();
-      entityManager.getTransaction().commit();
+      transaction.commit();
     } catch (Exception exc) {
       entityManager.flush();
-      entityManager.getTransaction().rollback();
-      throw new TransactionError(exc);
+      transaction.rollback();
+      Throwables.propagate(exc);
     } finally {
       MUTEX.release();
     }

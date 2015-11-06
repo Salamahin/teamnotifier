@@ -15,7 +15,7 @@ public final class SubscriptionEntity implements Serializable
   @ManyToOne(optional=false, cascade=CascadeType.ALL)
   private final AppServerEntity appServer;
 
-  @ManyToOne(optional=false)
+  @ManyToOne(optional=false, cascade=CascadeType.ALL)
   private final UserEntity subscriber;
 
   @Column(nullable=false)

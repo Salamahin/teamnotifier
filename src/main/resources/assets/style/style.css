@@ -16,13 +16,13 @@ display: table-cell;
 height: 100%;
 }
 #content-table {
-ma
-rgin: 0 auto;
+margin: 0 auto;
 align: center;
 width: 800px;
 text-align:center;
 vertical-align:middle;
 table-layout: fixed;
+font-size: 250%;
 }
 #status {
 <!--align: left;-->

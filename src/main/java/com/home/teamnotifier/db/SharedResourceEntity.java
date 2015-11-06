@@ -24,7 +24,7 @@ public final class SharedResourceEntity implements Serializable
   @ManyToOne(optional=true)
   private UserEntity occupier;
 
-  @Column
+  @Column(nullable = true)
   private LocalDateTime occupationStartTime;
 
   //for hibernate
@@ -62,6 +62,10 @@ public final class SharedResourceEntity implements Serializable
     Preconditions.checkState(occupier == null);
     occupier=userEntity;
     occupationStartTime=LocalDateTime.now();
+  }
+
+  public void actionOnResource(final UserEntity userEntity, final String details) {
+
   }
 
   public void free()
