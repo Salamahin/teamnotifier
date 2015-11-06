@@ -7,6 +7,6 @@ import java.time.LocalDateTime;
 
 public interface SharedResourceActionsGateway
 {
-  void newAction(final String userName, final int resourceId, final String description);
+  BroadcastInformation newAction(final String userName, final int resourceId, final String description);
   ActionsInfo getActions(final Range<LocalDateTime> range);
 }

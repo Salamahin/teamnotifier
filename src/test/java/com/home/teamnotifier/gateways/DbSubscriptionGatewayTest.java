@@ -93,8 +93,8 @@ public class DbSubscriptionGatewayTest
 
     final Integer serverId=environmentEntity.getImmutableListOfAppServers().get(0).getId();
 
-    assertThat(subscripbtion.subscribe(userName1, serverId)).doesNotContain(userName1);
-    assertThat(subscripbtion.subscribe(userName2, serverId)).doesNotContain(userName2).contains(userName1);
+    assertThat(subscripbtion.subscribe(userName1, serverId).getSubscribers()).doesNotContain(userName1);
+    assertThat(subscripbtion.subscribe(userName2, serverId).getSubscribers()).doesNotContain(userName2).contains(userName1);
   }
 
   @Test
@@ -108,8 +108,8 @@ public class DbSubscriptionGatewayTest
     subscripbtion.subscribe(userName1, serverId);
     subscripbtion.subscribe(userName2, serverId);
 
-    assertThat(subscripbtion.unsubscribe(userName1, serverId)).doesNotContain(userName1).contains(userName2);
-    assertThat(subscripbtion.unsubscribe(userName2, serverId)).doesNotContain(userName2).doesNotContain(userName1);
+    assertThat(subscripbtion.unsubscribe(userName1, serverId).getSubscribers()).doesNotContain(userName1).contains(userName2);
+    assertThat(subscripbtion.unsubscribe(userName2, serverId).getSubscribers()).doesNotContain(userName2).doesNotContain(userName1);
   }
 
   @Test
@@ -121,7 +121,7 @@ public class DbSubscriptionGatewayTest
 
     subscripbtion.subscribe(subscriber, serverId);
 
-    assertThat(subscripbtion.reserve(userEntity.getName(), resourceId)).contains(subscriber);
+    assertThat(subscripbtion.reserve(userEntity.getName(), resourceId).getSubscribers()).contains(subscriber);
   }
 
   @Test
@@ -134,7 +134,7 @@ public class DbSubscriptionGatewayTest
     subscripbtion.subscribe(subscriber, serverId);
     subscripbtion.reserve(userEntity.getName(), resourceId);
 
-    assertThat(subscripbtion.free(userEntity.getName(), resourceId)).contains(subscriber);
+    assertThat(subscripbtion.free(userEntity.getName(), resourceId).getSubscribers()).contains(subscriber);
   }
 
   @Before

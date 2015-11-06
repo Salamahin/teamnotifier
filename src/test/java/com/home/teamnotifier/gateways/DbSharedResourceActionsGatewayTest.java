@@ -86,6 +86,22 @@ public class DbSharedResourceActionsGatewayTest
     assertThat(loadedData).doesNotContainAnyElementsOf(dataNotInRange);
   }
 
+  @Test
+  public void testReturnsSubscribersNamesAfterAction() throws Exception
+  {
+    final String userName1=createPersistedUserWithRandomPassHash(getRandomString()).getName();
+    final String userName2=createPersistedUserWithRandomPassHash(getRandomString()).getName();
+
+    final Integer serverId = environment.getImmutableListOfAppServers().get(0).getId();
+    final Integer resourceId=environment.getImmutableListOfAppServers().get(0).getImmutableListOfResources().get(0).getId();
+
+    final DbSubscriptionGateway subscription = new DbSubscriptionGateway(HELPER);
+    subscription.subscribe(userName1, serverId);
+    subscription.subscribe(userName2, serverId);
+
+    assertThat(gateway.newAction(userName1, resourceId, getRandomString()).getSubscribers()).doesNotContain(userName1).contains(userName2);
+  }
+
   static class ActionData
   {
     public final LocalDateTime time;

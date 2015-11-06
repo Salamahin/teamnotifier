@@ -3,7 +3,10 @@ package com.home.teamnotifier.gateways;
 import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
 import com.google.inject.Inject;
-import com.home.teamnotifier.db.*;
+import com.home.teamnotifier.db.ActionOnSharedResourceEntity;
+import com.home.teamnotifier.db.SharedResourceEntity;
+import com.home.teamnotifier.db.TransactionHelper;
+import com.home.teamnotifier.db.UserEntity;
 import com.home.teamnotifier.resource.environment.ActionInfo;
 import com.home.teamnotifier.resource.environment.ActionsInfo;
 
@@ -14,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.home.teamnotifier.gateways.DbGatewayCommons.getSubscribersButUser;
 import static com.home.teamnotifier.gateways.DbGatewayCommons.getUserEntity;
 
 public class DbSharedResourceActionsGateway implements SharedResourceActionsGateway
@@ -26,17 +30,21 @@ public class DbSharedResourceActionsGateway implements SharedResourceActionsGate
     this.transactionHelper=transactionHelper;
   }
 
-  @Override public void newAction(String userName, int resourceId, String description)
+  @Override public BroadcastInformation newAction(String userName, int resourceId, String description)
   {
-    transactionHelper.transaction(em -> {
+    final SharedResourceEntity resource=transactionHelper.transaction(em -> {
       final SharedResourceEntity resourceEntity=em.find(SharedResourceEntity.class, resourceId);
       final UserEntity userEntity=getUserEntity(userName, em);
 
       final ActionOnSharedResourceEntity action=new ActionOnSharedResourceEntity(userEntity, resourceEntity, description);
       em.merge(action);
 
-      return null;
+      return resourceEntity;
     });
+
+    final List<String> usersToNotify=getSubscribersButUser(userName, resource.getAppServer());
+
+    return new BroadcastInformation(String.format("%s: %s", userName, description), usersToNotify);
   }
 
   @Override public ActionsInfo getActions(Range<LocalDateTime> range)
@@ -64,19 +72,21 @@ public class DbSharedResourceActionsGateway implements SharedResourceActionsGate
   private Predicate getPredicateForRange(Range<LocalDateTime> range, CriteriaBuilder cb, Root<ActionOnSharedResourceEntity> root)
   {
     final Path<LocalDateTime> time=root.get("actionTime");
-    final List<Predicate> predicates = new ArrayList<>();
+    final List<Predicate> predicates=new ArrayList<>();
 
-    if(range.hasLowerBound()) {
+    if (range.hasLowerBound())
+    {
       final LocalDateTime lowerEndpoint=range.lowerEndpoint();
-      if(range.lowerBoundType() == BoundType.CLOSED)
+      if (range.lowerBoundType() == BoundType.CLOSED)
         predicates.add(cb.greaterThanOrEqualTo(time, lowerEndpoint));
       else
         predicates.add(cb.greaterThan(time, lowerEndpoint));
     }
 
-    if(range.hasUpperBound()) {
+    if (range.hasUpperBound())
+    {
       final LocalDateTime upperEndpoint=range.lowerEndpoint();
-      if(range.lowerBoundType() == BoundType.CLOSED)
+      if (range.lowerBoundType() == BoundType.CLOSED)
         predicates.add(cb.lessThanOrEqualTo(time, upperEndpoint));
       else
         predicates.add(cb.lessThan(time, upperEndpoint));
