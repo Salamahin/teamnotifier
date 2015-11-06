@@ -13,15 +13,11 @@ import java.util.stream.Collectors;
 public class DbSharedResourceActionsGateway implements SharedResourceActionsGateway {
   private final TransactionHelper transactionHelper;
 
-  private LocalDateTimeFormatter formatter;
-
   @Inject
   public DbSharedResourceActionsGateway(
-      final TransactionHelper transactionHelper,
-      final LocalDateTimeFormatter formatter
+      final TransactionHelper transactionHelper
   ) {
     this.transactionHelper = transactionHelper;
-    this.formatter = formatter;
   }
 
   @Override
@@ -68,7 +64,7 @@ public class DbSharedResourceActionsGateway implements SharedResourceActionsGate
     final List<ActionInfo> actionInfos = actions.stream()
         .map(a -> new ActionInfo(
                 a.getActor().getName(),
-                formatter.toString(a.getActionTime()),
+                a.getActionTime().toString(),
                 a.getDetails()
             )
         )

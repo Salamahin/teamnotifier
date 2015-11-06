@@ -24,7 +24,7 @@ public class DbSharedResourceActionsGatewayTest {
   @Before
   public void setUp()
   throws Exception {
-    gateway = new DbSharedResourceActionsGateway(Commons.HELPER, new LocalDateTimeFormatter());
+    gateway = new DbSharedResourceActionsGateway(Commons.HELPER);
     final UserEntity user = Commons
         .createPersistedUserWithRandomPassHash(Commons.getRandomString());
     environment = Commons.createPersistedEnvironmentWithOneServerAndOneResource(

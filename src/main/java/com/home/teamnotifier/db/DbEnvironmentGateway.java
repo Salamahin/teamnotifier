@@ -12,15 +12,9 @@ import static java.util.stream.Collectors.toSet;
 public class DbEnvironmentGateway implements EnvironmentGateway {
   private final TransactionHelper transactionHelper;
 
-  private final LocalDateTimeFormatter formatter;
-
   @Inject
-  public DbEnvironmentGateway(
-      final TransactionHelper transactionHelper,
-      final LocalDateTimeFormatter formatter
-  ) {
+  public DbEnvironmentGateway(final TransactionHelper transactionHelper) {
     this.transactionHelper = transactionHelper;
-    this.formatter = formatter;
   }
 
   @Override
@@ -74,7 +68,7 @@ public class DbEnvironmentGateway implements EnvironmentGateway {
     final OccupationInfo occupationInfo = sharedResourceEntity.getReservationData()
         .map(od -> new OccupationInfo(
                 od.getOccupier().getName(),
-                formatter.toString(od.getOccupationTime())
+                od.getOccupationTime().toString()
             )
         )
         .orElse(null);

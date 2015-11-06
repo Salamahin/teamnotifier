@@ -23,7 +23,7 @@ public class DbEnvironmentGatewayTest
   public void setUp()
       throws Exception
   {
-    gateway=new DbEnvironmentGateway(Commons.HELPER, new LocalDateTimeFormatter());
+    gateway=new DbEnvironmentGateway(Commons.HELPER);
     final DbSubscriptionGateway subscriptionGateway=new DbSubscriptionGateway(Commons.HELPER);
     final EnvironmentEntity environment= Commons
         .createPersistedEnvironmentWithOneServerAndOneResource(
