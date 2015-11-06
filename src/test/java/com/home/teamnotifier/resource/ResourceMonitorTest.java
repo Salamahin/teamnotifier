@@ -5,6 +5,7 @@ import com.home.teamnotifier.gateways.AlreadyReserved;
 import com.home.teamnotifier.db.DbEnvironmentGateway;
 import com.home.teamnotifier.db.DbSubscriptionGateway;
 import com.home.teamnotifier.gateways.NotReserved;
+import com.home.teamnotifier.resource.environment.LocalDateTimeFormatter;
 import com.home.teamnotifier.web.socket.ClientManager;
 import org.junit.Before;
 import org.junit.Test;
@@ -89,7 +90,7 @@ public class ResourceMonitorTest
     final ClientManager manager=mock(ClientManager.class);
 
     monitor=new ResourceMonitor(
-        new DbEnvironmentGateway(helper),
+        new DbEnvironmentGateway(helper, new LocalDateTimeFormatter()),
         new DbSubscriptionGateway(helper),
         manager
     );

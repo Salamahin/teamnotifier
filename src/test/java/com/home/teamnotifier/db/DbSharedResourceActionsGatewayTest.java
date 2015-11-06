@@ -1,7 +1,7 @@
 package com.home.teamnotifier.db;
 
 import com.google.common.collect.Range;
-import com.home.teamnotifier.resource.environment.ActionsInfo;
+import com.home.teamnotifier.resource.environment.*;
 import org.junit.*;
 import java.time.*;
 import java.util.*;
@@ -24,7 +24,7 @@ public class DbSharedResourceActionsGatewayTest {
   @Before
   public void setUp()
   throws Exception {
-    gateway = new DbSharedResourceActionsGateway(Commons.HELPER);
+    gateway = new DbSharedResourceActionsGateway(Commons.HELPER, new LocalDateTimeFormatter());
     final UserEntity user = Commons
         .createPersistedUserWithRandomPassHash(Commons.getRandomString());
     environment = Commons.createPersistedEnvironmentWithOneServerAndOneResource(

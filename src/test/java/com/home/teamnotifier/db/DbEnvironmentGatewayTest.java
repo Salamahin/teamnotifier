@@ -2,7 +2,7 @@ package com.home.teamnotifier.db;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.home.teamnotifier.resource.environment.EnvironmentsInfo;
+import com.home.teamnotifier.resource.environment.*;
 import io.dropwizard.jackson.Jackson;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +23,7 @@ public class DbEnvironmentGatewayTest
   public void setUp()
       throws Exception
   {
-    gateway=new DbEnvironmentGateway(Commons.HELPER);
+    gateway=new DbEnvironmentGateway(Commons.HELPER, new LocalDateTimeFormatter());
     final DbSubscriptionGateway subscriptionGateway=new DbSubscriptionGateway(Commons.HELPER);
     final EnvironmentEntity environment= Commons
         .createPersistedEnvironmentWithOneServerAndOneResource(
