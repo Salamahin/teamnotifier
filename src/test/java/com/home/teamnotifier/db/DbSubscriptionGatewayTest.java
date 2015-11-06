@@ -1,12 +1,9 @@
-package com.home.teamnotifier.gateways;
+package com.home.teamnotifier.db;
 
-import com.home.teamnotifier.db.AppServerEntity;
-import com.home.teamnotifier.db.EnvironmentEntity;
-import com.home.teamnotifier.db.UserEntity;
+import com.home.teamnotifier.gateways.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.home.teamnotifier.gateways.Commons.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DbSubscriptionGatewayTest
@@ -88,8 +85,8 @@ public class DbSubscriptionGatewayTest
   @Test
   public void testReturnsSubscribersNamesAfterSubscribe() throws Exception
   {
-    final String userName1=createPersistedUserWithRandomPassHash(getRandomString()).getName();
-    final String userName2=createPersistedUserWithRandomPassHash(getRandomString()).getName();
+    final String userName1= Commons.createPersistedUserWithRandomPassHash(Commons.getRandomString()).getName();
+    final String userName2= Commons.createPersistedUserWithRandomPassHash(Commons.getRandomString()).getName();
 
     final Integer serverId=environmentEntity.getImmutableListOfAppServers().get(0).getId();
 
@@ -100,8 +97,8 @@ public class DbSubscriptionGatewayTest
   @Test
   public void testReturnsSubscribersNamesAfterUnsubscribe() throws Exception
   {
-    final String userName1=createPersistedUserWithRandomPassHash(getRandomString()).getName();
-    final String userName2=createPersistedUserWithRandomPassHash(getRandomString()).getName();
+    final String userName1= Commons.createPersistedUserWithRandomPassHash(Commons.getRandomString()).getName();
+    final String userName2= Commons.createPersistedUserWithRandomPassHash(Commons.getRandomString()).getName();
 
     final Integer serverId=environmentEntity.getImmutableListOfAppServers().get(0).getId();
 
@@ -115,7 +112,7 @@ public class DbSubscriptionGatewayTest
   @Test
   public void testReturnsSubscribersNamesAfterReserve() throws Exception
   {
-    final String subscriber=createPersistedUserWithRandomPassHash(getRandomString()).getName();
+    final String subscriber= Commons.createPersistedUserWithRandomPassHash(Commons.getRandomString()).getName();
     final Integer serverId=environmentEntity.getImmutableListOfAppServers().get(0).getId();
     final Integer resourceId=environmentEntity.getImmutableListOfAppServers().get(0).getImmutableListOfResources().get(0).getId();
 
@@ -127,7 +124,7 @@ public class DbSubscriptionGatewayTest
   @Test
   public void testReturnsSubscribersNamesAfterFree() throws Exception
   {
-    final String subscriber=createPersistedUserWithRandomPassHash(getRandomString()).getName();
+    final String subscriber= Commons.createPersistedUserWithRandomPassHash(Commons.getRandomString()).getName();
     final Integer serverId=environmentEntity.getImmutableListOfAppServers().get(0).getId();
     final Integer resourceId=environmentEntity.getImmutableListOfAppServers().get(0).getImmutableListOfResources().get(0).getId();
 
@@ -141,12 +138,12 @@ public class DbSubscriptionGatewayTest
   public void setUp()
       throws Exception
   {
-    userEntity=createPersistedUserWithRandomPassHash(getRandomString());
-    environmentEntity=createPersistedEnvironmentWithOneServerAndOneResource(
-        getRandomString(),
-        getRandomString(),
-        getRandomString()
+    userEntity= Commons.createPersistedUserWithRandomPassHash(Commons.getRandomString());
+    environmentEntity= Commons.createPersistedEnvironmentWithOneServerAndOneResource(
+        Commons.getRandomString(),
+        Commons.getRandomString(),
+        Commons.getRandomString()
     );
-    subscripbtion=new DbSubscriptionGateway(HELPER);
+    subscripbtion=new DbSubscriptionGateway(Commons.HELPER);
   }
 }

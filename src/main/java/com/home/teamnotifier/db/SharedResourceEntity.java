@@ -1,85 +1,74 @@
 package com.home.teamnotifier.db;
 
 import com.google.common.base.Preconditions;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Entity
-@Table(schema="teamnotifier", name = "SharedResource")
-public final class SharedResourceEntity implements Serializable
-{
+@Table(schema = "teamnotifier", name = "SharedResource")
+public final class SharedResourceEntity implements Serializable {
   @Id
-  @GeneratedValue(strategy=GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private final Integer id;
 
-  @Column(nullable=false)
+  @Column(nullable = false)
   private final String name;
 
-  @ManyToOne(optional=false)
+  @ManyToOne(optional = false)
   private final AppServerEntity appServer;
 
-  @ManyToOne(optional=true)
+  @ManyToOne(optional = true)
   private UserEntity occupier;
 
   @Column(nullable = true)
   private LocalDateTime occupationStartTime;
 
   //for hibernate
-  private SharedResourceEntity()
-  {
-    id=null;
-    name=null;
-    appServer=null;
+  private SharedResourceEntity() {
+    id = null;
+    name = null;
+    appServer = null;
   }
 
-  SharedResourceEntity(final AppServerEntity appServer, final String name)
-  {
-    id=null;
-    this.name=name;
-    this.appServer=appServer;
+  SharedResourceEntity(final AppServerEntity appServer, final String name) {
+    id = null;
+    this.name = name;
+    this.appServer = appServer;
   }
 
-  public Integer getId()
-  {
-    return id;
-  }
-
-  public String getName()
-  {
-    return name;
-  }
-
-  public AppServerEntity getAppServer()
-  {
-    return appServer;
-  }
-
-  public void reserve(final UserEntity userEntity)
-  {
+  public void reserve(final UserEntity userEntity) {
     Preconditions.checkState(occupier == null);
-    occupier=userEntity;
-    occupationStartTime=LocalDateTime.now();
+    occupier = userEntity;
+    occupationStartTime = LocalDateTime.now();
   }
 
   public void actionOnResource(final UserEntity userEntity, final String details) {
 
   }
 
-  public void free()
-  {
+  public void free() {
     Preconditions.checkState(occupier != null);
-    occupier=null;
-    occupationStartTime=null;
+    occupier = null;
+    occupationStartTime = null;
   }
 
-  public Optional<ReservationData> getReservationData()
-  {
-    if (occupier != null)
+  public Integer getId() {
+    return id;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public AppServerEntity getAppServer() {
+    return appServer;
+  }
+
+  public Optional<ReservationData> getReservationData() {
+    if (occupier != null) {
       return Optional.of(new ReservationData(occupier, occupationStartTime));
-    else
-      return Optional.empty();
+    } else { return Optional.empty(); }
   }
 }

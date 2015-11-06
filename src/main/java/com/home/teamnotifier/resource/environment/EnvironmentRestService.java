@@ -6,7 +6,6 @@ import io.dropwizard.auth.Auth;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.List;
 
 @Path("1.0/environment")
 @Produces(MediaType.APPLICATION_JSON)

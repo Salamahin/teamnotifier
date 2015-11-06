@@ -1,8 +1,7 @@
-package com.home.teamnotifier.gateways;
+package com.home.teamnotifier.db;
 
-import com.home.teamnotifier.db.UserEntity;
+import com.home.teamnotifier.gateways.UserCredentials;
 import org.junit.*;
-import static com.home.teamnotifier.gateways.Commons.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DbUserGatewayTest {
@@ -14,8 +13,8 @@ public class DbUserGatewayTest {
   @Before
   public void setUp()
   throws Exception {
-    userGateway = new DbUserGateway(HELPER);
-    user = createPersistedUserWithRandomPassHash(getRandomString());
+    userGateway = new DbUserGateway(Commons.HELPER);
+    user = Commons.createPersistedUserWithRandomPassHash(Commons.getRandomString());
   }
 
   @Test
@@ -29,7 +28,7 @@ public class DbUserGatewayTest {
   @Test
   public void testIncorrectLoginReturnsNull()
   throws Exception {
-    final UserCredentials credentials = userGateway.userCredentials(getRandomString());
+    final UserCredentials credentials = userGateway.userCredentials(Commons.getRandomString());
     assertThat(credentials).isNull();
   }
 }

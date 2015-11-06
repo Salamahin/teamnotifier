@@ -2,7 +2,7 @@ package com.home.teamnotifier;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.inject.*;
-import com.home.teamnotifier.db.TransactionHelper;
+import com.home.teamnotifier.db.*;
 import com.home.teamnotifier.gateways.*;
 import javax.inject.Singleton;
 import java.util.concurrent.*;

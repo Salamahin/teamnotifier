@@ -1,4 +1,4 @@
-package com.home.teamnotifier.gateways;
+package com.home.teamnotifier.db;
 
 import com.home.teamnotifier.db.*;
 import java.util.UUID;

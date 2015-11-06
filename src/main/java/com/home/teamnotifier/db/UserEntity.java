@@ -4,46 +4,40 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(schema="teamnotifier", name = "User")
-public final class UserEntity implements Serializable
-{
+@Table(schema = "teamnotifier", name = "User")
+public final class UserEntity implements Serializable {
   @Id
-  @GeneratedValue(strategy=GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private final Integer id;
 
-  @Column(nullable=false, unique=true)
+  @Column(nullable = false, unique = true)
   private final String name;
 
-  @Column(nullable=false)
+  @Column(nullable = false)
   private final String passHash;
 
   //for hibernate
-  private UserEntity()
-  {
-    id=null;
-    name=null;
-    passHash=null;
-  }
-
-  public UserEntity(String name, String passHash)
-  {
+  private UserEntity() {
     id = null;
-    this.name=name;
-    this.passHash=passHash;
+    name = null;
+    passHash = null;
   }
 
-  public Integer getId()
-  {
+  public UserEntity(String name, String passHash) {
+    id = null;
+    this.name = name;
+    this.passHash = passHash;
+  }
+
+  public Integer getId() {
     return id;
   }
 
-  public String getName()
-  {
+  public String getName() {
     return name;
   }
 
-  public String getPassHash()
-  {
+  public String getPassHash() {
     return passHash;
   }
 }

@@ -1,7 +1,5 @@
 package com.home.teamnotifier.gateways;
 
-import java.util.List;
-
 public interface SubscriptionGateway {
   BroadcastInformation subscribe(final String userName, final int serverId);
 

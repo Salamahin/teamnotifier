@@ -9,6 +9,7 @@ import java.util.function.Function;
 
 public final class TransactionHelper {
   private static final Logger LOG = LoggerFactory.getLogger(TransactionHelper.class);
+
   private static final Semaphore MUTEX = new Semaphore(1, true);
 
   private final EntityManager entityManager;
@@ -23,7 +24,7 @@ public final class TransactionHelper {
   public <U> U transaction(Function<EntityManager, U> function) {
     U result = null;
 
-    final EntityTransaction transaction=entityManager.getTransaction();
+    final EntityTransaction transaction = entityManager.getTransaction();
     try {
       MUTEX.acquire();
       transaction.begin();

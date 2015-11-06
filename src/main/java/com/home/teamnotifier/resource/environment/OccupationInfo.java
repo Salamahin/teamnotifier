@@ -3,7 +3,7 @@ package com.home.teamnotifier.resource.environment;
 import com.fasterxml.jackson.annotation.*;
 import java.util.Objects;
 
-@SuppressWarnings("FieldCanBeLocal") @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonAutoDetect(
     fieldVisibility = JsonAutoDetect.Visibility.ANY,
     getterVisibility = JsonAutoDetect.Visibility.NONE,
@@ -26,15 +26,15 @@ public class OccupationInfo {
   }
 
   @Override
+  public int hashCode() {
+    return Objects.hash(userName);
+  }
+
+  @Override
   public boolean equals(final Object o) {
     if (this == o) { return true; }
     if (o == null || getClass() != o.getClass()) { return false; }
     final OccupationInfo info = (OccupationInfo) o;
     return Objects.equals(userName, info.userName);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(userName);
   }
 }

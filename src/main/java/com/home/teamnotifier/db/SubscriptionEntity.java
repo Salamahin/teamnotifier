@@ -5,51 +5,45 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(schema="teamnotifier", name = "Subscription")
-public final class SubscriptionEntity implements Serializable
-{
+@Table(schema = "teamnotifier", name = "Subscription")
+public final class SubscriptionEntity implements Serializable {
   @Id
-  @GeneratedValue(strategy=GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private final Integer id;
 
-  @ManyToOne(optional=false, cascade=CascadeType.ALL)
+  @ManyToOne(optional = false, cascade = CascadeType.ALL)
   private final AppServerEntity appServer;
 
-  @ManyToOne(optional=false, cascade=CascadeType.ALL)
+  @ManyToOne(optional = false, cascade = CascadeType.ALL)
   private final UserEntity subscriber;
 
-  @Column(nullable=false)
+  @Column(nullable = false)
   private final LocalDateTime timestamp;
 
   //for hibernate
-  private SubscriptionEntity()
-  {
-    id=null;
-    appServer=null;
-    subscriber=null;
-    timestamp=null;
+  private SubscriptionEntity() {
+    id = null;
+    appServer = null;
+    subscriber = null;
+    timestamp = null;
   }
 
-  SubscriptionEntity(final AppServerEntity server, final UserEntity user)
-  {
-    id=null;
-    this.appServer=server;
-    this.subscriber=user;
-    this.timestamp=LocalDateTime.now();
+  SubscriptionEntity(final AppServerEntity server, final UserEntity user) {
+    id = null;
+    this.appServer = server;
+    this.subscriber = user;
+    this.timestamp = LocalDateTime.now();
   }
 
-  public Integer getId()
-  {
+  public Integer getId() {
     return id;
   }
 
-  public UserEntity getSubscriber()
-  {
+  public UserEntity getSubscriber() {
     return subscriber;
   }
 
-  public LocalDateTime getTimestamp()
-  {
+  public LocalDateTime getTimestamp() {
     return timestamp;
   }
 }

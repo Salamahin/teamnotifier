@@ -15,7 +15,6 @@ public class NotifierConfiguration extends Configuration {
     return executorsConfiguration;
   }
 
-
   public static class ExecutorsConfiguration {
     @Valid
     @NotNull

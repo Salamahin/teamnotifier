@@ -20,15 +20,15 @@ public class EnvironmentsInfo {
   }
 
   @Override
+  public int hashCode() {
+    return Objects.hash(environments);
+  }
+
+  @Override
   public boolean equals(final Object o) {
     if (this == o) { return true; }
     if (o == null || getClass() != o.getClass()) { return false; }
     final EnvironmentsInfo that = (EnvironmentsInfo) o;
     return Objects.equals(environments, that.environments);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(environments);
   }
 }

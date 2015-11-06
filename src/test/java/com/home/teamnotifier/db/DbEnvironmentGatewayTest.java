@@ -1,15 +1,12 @@
-package com.home.teamnotifier.gateways;
+package com.home.teamnotifier.db;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.home.teamnotifier.db.EnvironmentEntity;
-import com.home.teamnotifier.db.UserEntity;
 import com.home.teamnotifier.resource.environment.EnvironmentsInfo;
 import io.dropwizard.jackson.Jackson;
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.home.teamnotifier.gateways.Commons.*;
 import static io.dropwizard.testing.FixtureHelpers.fixture;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,9 +23,10 @@ public class DbEnvironmentGatewayTest
   public void setUp()
       throws Exception
   {
-    gateway=new DbEnvironmentGateway(HELPER);
-    final DbSubscriptionGateway subscriptionGateway=new DbSubscriptionGateway(HELPER);
-    final EnvironmentEntity environment=createPersistedEnvironmentWithOneServerAndOneResource(
+    gateway=new DbEnvironmentGateway(Commons.HELPER);
+    final DbSubscriptionGateway subscriptionGateway=new DbSubscriptionGateway(Commons.HELPER);
+    final EnvironmentEntity environment= Commons
+        .createPersistedEnvironmentWithOneServerAndOneResource(
         "environment",
         "server",
         "resource"
@@ -36,7 +34,7 @@ public class DbEnvironmentGatewayTest
     final Integer serverId=environment.getImmutableListOfAppServers().get(0).getId();
     final Integer resourceId=environment.getImmutableListOfAppServers().get(0).getImmutableListOfResources().get(0).getId();
 
-    final UserEntity user=createPersistedUserWithRandomPassHash("user");
+    final UserEntity user= Commons.createPersistedUserWithRandomPassHash("user");
 
     subscriptionGateway.subscribe(user.getName(), serverId);
     subscriptionGateway.reserve(user.getName(), resourceId);
