@@ -4,62 +4,46 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(schema = "teamnotifier")
-public class UserEntity implements Serializable {
+@Table(schema="teamnotifier")
+public final class UserEntity implements Serializable
+{
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private Integer id;
+  @GeneratedValue(strategy=GenerationType.AUTO)
+  private final Integer id;
 
-  @Column(nullable = false, unique = true)
-  private String name;
+  @Column(nullable=false, unique=true)
+  private final String name;
 
-  @Column(nullable = false)
-  private String passHash;
+  @Column(nullable=false)
+  private final String passHash;
 
-  //  @OneToMany(mappedBy = "subscriberEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-  //  private List<SubscriptionEntity> subscriptions = new ArrayList<>();
-  //
-  //  @OneToMany(mappedBy = "occupier", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-  //  private List<SharedResourceEntity> occupiedResources = new ArrayList<>();
+  //for hibernate
+  private UserEntity()
+  {
+    id=null;
+    name=null;
+    passHash=null;
+  }
 
-  //  public List<SharedResourceEntity> getOccupiedResources() {
-  //    return occupiedResources;
-  //  }
-  //
-  //  public void setOccupiedResources(
-  //      final List<SharedResourceEntity> occupiedResources) {
-  //    this.occupiedResources = occupiedResources;
-  //  }
-  //
-  //  public List<SubscriptionEntity> getSubscriptions() {
-  //    return subscriptions;
-  //  }
-  //
-  //  public void setSubscriptions(final List<SubscriptionEntity> subscriptions) {
-  //    this.subscriptions = subscriptions;
-  //  }
+  public UserEntity(String name, String passHash)
+  {
+    id = null;
+    this.name=name;
+    this.passHash=passHash;
+  }
 
-  public Integer getId() {
+  public Integer getId()
+  {
     return id;
   }
 
-  public void setId(final Integer id) {
-    this.id = id;
-  }
-
-  public String getName() {
+  public String getName()
+  {
     return name;
   }
 
-  public void setName(final String name) {
-    this.name = name;
-  }
-
-  public String getPassHash() {
+  public String getPassHash()
+  {
     return passHash;
-  }
-
-  public void setPassHash(final String passHash) {
-    this.passHash = passHash;
   }
 }

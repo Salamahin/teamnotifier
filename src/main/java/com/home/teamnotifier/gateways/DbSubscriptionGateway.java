@@ -2,81 +2,67 @@ package com.home.teamnotifier.gateways;
 
 import com.google.inject.Inject;
 import com.home.teamnotifier.db.*;
-import com.home.teamnotifier.resource.auth.UserInfo;
-import org.slf4j.*;
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.*;
-import java.time.LocalDateTime;
-import java.util.*;
-import static java.util.stream.Collectors.toList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class DbSubscriptionGateway implements SubscriptionGateway {
-  private static final Logger LOG = LoggerFactory.getLogger(DbSubscriptionGateway.class);
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import java.util.Optional;
+
+public class DbSubscriptionGateway implements SubscriptionGateway
+{
+  private static final Logger LOG=LoggerFactory.getLogger(DbSubscriptionGateway.class);
 
   private final TransactionHelper transactionHelper;
 
   @Inject
-  public DbSubscriptionGateway(final TransactionHelper transactionHelper) {
-    this.transactionHelper = transactionHelper;
+  public DbSubscriptionGateway(final TransactionHelper transactionHelper)
+  {
+    this.transactionHelper=transactionHelper;
   }
 
   @Override
-  public void subscribe(final String userName, final int serverId) {
+  public void subscribe(final String userName, final int serverId)
+  {
     transactionHelper.transaction(em -> {
-      final UserEntity userEntity = getUserEntity(userName, em);
-      final AppServerEntity appServerEntity = getAppServerEntity(serverId, em);
+      final UserEntity userEntity=getUserEntity(userName, em);
+      final AppServerEntity appServerEntity=getAppServerEntity(serverId, em);
 
-      SubscriptionEntity entity = new SubscriptionEntity();
-      entity.setAppServer(appServerEntity);
-      entity.setSubscriber(userEntity);
-      entity.setTimestamp(LocalDateTime.now());
-
-      appServerEntity.getSubscriptions().add(entity);
+      appServerEntity.subscribe(userEntity);
 
       em.merge(appServerEntity);
-      em.merge(entity);
 
       return null;
     });
   }
 
-  private UserEntity getUserEntity(final String userName, final EntityManager em) {
-    final CriteriaBuilder cb = em.getCriteriaBuilder();
-    final CriteriaQuery<UserEntity> cq = cb.createQuery(UserEntity.class);
-    final Root<UserEntity> rootEntry = cq.from(UserEntity.class);
-    final CriteriaQuery<UserEntity> selectUserQuery = cq
+  private UserEntity getUserEntity(final String userName, final EntityManager em)
+  {
+    final CriteriaBuilder cb=em.getCriteriaBuilder();
+    final CriteriaQuery<UserEntity> cq=cb.createQuery(UserEntity.class);
+    final Root<UserEntity> rootEntry=cq.from(UserEntity.class);
+    final CriteriaQuery<UserEntity> selectUserQuery=cq
         .where(cb.equal(rootEntry.get("name"), userName));
 
     return em.createQuery(selectUserQuery).getSingleResult();
   }
 
-  private AppServerEntity getAppServerEntity(int serverId, EntityManager em) {
+  private AppServerEntity getAppServerEntity(int serverId, EntityManager em)
+  {
     return em.find(AppServerEntity.class, serverId);
   }
 
   @Override
-  public void unsubscribe(final String userName, final int serverId) {
+  public void unsubscribe(final String userName, final int serverId)
+  {
     transactionHelper.transaction(em -> {
-      final AppServerEntity serverEntity = getAppServerEntity(serverId, em);
-      final UserEntity userEntity = getUserEntity(userName, em);
+      final AppServerEntity serverEntity=getAppServerEntity(serverId, em);
+      final UserEntity userEntity=getUserEntity(userName, em);
 
-      final CriteriaBuilder cb = em.getCriteriaBuilder();
-      CriteriaDelete<SubscriptionEntity> delete = cb.createCriteriaDelete(SubscriptionEntity.class);
-      final Root<SubscriptionEntity> _subscription = delete.from(SubscriptionEntity.class);
+      serverEntity.unsubscribe(userEntity);
 
-      final Predicate predicate = cb.and(
-          cb.equal(_subscription.get("subscriberEntity"), userEntity),
-          cb.equal(_subscription.get("appServerEntity"), serverEntity)
-      );
-
-      delete = delete.where(predicate);
-
-      final Iterator<SubscriptionEntity> it = serverEntity.getSubscriptions().iterator();
-      while (it.hasNext()) {
-        if(Objects.equals(userName, it.next().getSubscriber().getName()))
-          it.remove();
-      }
-      em.createQuery(delete).executeUpdate();
       em.merge(serverEntity);
 
       return null;
@@ -84,34 +70,37 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
   }
 
   @Override
-  public void reserve(final String userName, int applicationId)
-  throws AlreadyReserved {
-    final boolean success = reservationSuccess(userName, applicationId);
-    if (!success) { throw new AlreadyReserved(); }
+  public void reserve(final String userName, final int applicationId)
+      throws AlreadyReserved
+  {
+    final boolean success=reservationSuccess(userName, applicationId);
+    if (!success)
+    {
+      throw new AlreadyReserved();
+    }
   }
 
-  private Boolean reservationSuccess(String userName, int applicationId) {
+  private Boolean reservationSuccess(final String userName, final int applicationId)
+  {
     return transactionHelper.transaction(em -> {
-      final SharedResourceEntity resourceEntity = em
-          .find(SharedResourceEntity.class, applicationId);
-      final Optional<UserEntity> occupier = Optional
-          .of(resourceEntity)
-          .map(SharedResourceEntity::getOccupier);
+      final SharedResourceEntity resourceEntity=em.find(SharedResourceEntity.class, applicationId);
 
-      if (occupier.isPresent()) {
+      final Optional<ReservationData> reservationData=resourceEntity.getReservationData();
+
+      if (reservationData.isPresent())
+      {
         LOG.debug("Failed to reserve resource {}:{}:{} by {}: already reserved by {}",
             resourceEntity.getAppServer().getEnvironment().getName(),
             resourceEntity.getAppServer().getName(),
             resourceEntity.getName(),
             userName,
-            occupier.get().getName()
+            reservationData.get().getOccupier().getName()
         );
         return false;
       }
 
-      final UserEntity newOccupier = getUserEntity(userName, em);
-      resourceEntity.setOccupier(newOccupier);
-      resourceEntity.setOccupationStartTime(LocalDateTime.now());
+      final UserEntity newOccupier=getUserEntity(userName, em);
+      resourceEntity.reserve(newOccupier);
 
       em.merge(resourceEntity);
 
@@ -120,20 +109,23 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
   }
 
   @Override
-  public void free(final String userName, int applicationId)
-  throws NotReserved {
-    if (!freeSuccess(userName, applicationId)) { throw new NotReserved(); }
+  public void free(final String userName, final int applicationId)
+      throws NotReserved
+  {
+    if (!freeSuccess(userName, applicationId))
+    {
+      throw new NotReserved();
+    }
   }
 
-  private boolean freeSuccess(final String userName, final int applicationId) {
+  private boolean freeSuccess(final String userName, final int applicationId)
+  {
     return transactionHelper.transaction(em -> {
-      final SharedResourceEntity resourceEntity = em
-          .find(SharedResourceEntity.class, applicationId);
-      final Optional<UserEntity> occupier = Optional
-          .of(resourceEntity)
-          .map(SharedResourceEntity::getOccupier);
+      final SharedResourceEntity resourceEntity=em.find(SharedResourceEntity.class, applicationId);
+      final Optional<ReservationData> reservationData=resourceEntity.getReservationData();
 
-      if (!occupier.isPresent()) {
+      if (!reservationData.isPresent())
+      {
         LOG.debug("Failed to free resource {}:{}:{} by {}: not reserved",
             resourceEntity.getAppServer().getEnvironment().getName(),
             resourceEntity.getAppServer().getName(),
@@ -143,9 +135,7 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
         return false;
       }
 
-      resourceEntity.setOccupier(null);
-      resourceEntity.setOccupationStartTime(null);
-
+      resourceEntity.free();
       em.merge(resourceEntity);
 
       return true;

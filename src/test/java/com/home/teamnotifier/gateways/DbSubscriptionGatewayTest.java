@@ -16,28 +16,28 @@ public class DbSubscriptionGatewayTest {
   @Test
   public void testSubscribe()
   throws Exception {
-    final AppServerEntity serverEntity = environmentEntity.getAppServers().get(0);
+    final AppServerEntity serverEntity = environmentEntity.getImmutableListOfAppServers().get(0);
     final Integer serverId = serverEntity.getId();
 
-    assertThat(serverEntity.getSubscriptions()).isEmpty();
+    assertThat(serverEntity.getImmutableListOfSubscribers()).isEmpty();
     subscripbtion.subscribe(userEntity.getName(), serverId);
-    assertThat(serverEntity.getSubscriptions()).isNotEmpty();
+    assertThat(serverEntity.getImmutableListOfSubscribers()).isNotEmpty();
   }
 
   @Test
   public void testUnsubscribe()
   throws Exception {
-    final AppServerEntity serverEntity = environmentEntity.getAppServers().get(0);
+    final AppServerEntity serverEntity = environmentEntity.getImmutableListOfAppServers().get(0);
     final Integer serverId = serverEntity.getId();
     subscripbtion.subscribe(userEntity.getName(), serverId);
     subscripbtion.unsubscribe(userEntity.getName(), serverId);
-    assertThat(serverEntity.getSubscriptions()).isEmpty();
+    assertThat(serverEntity.getImmutableListOfSubscribers()).isEmpty();
   }
 
   @Test
   public void testReserve()
   throws Exception {
-    final Integer resourceId = environmentEntity.getAppServers().get(0).getResources().get(0)
+    final Integer resourceId = environmentEntity.getImmutableListOfAppServers().get(0).getImmutableListOfResources().get(0)
         .getId();
     subscripbtion.reserve(userEntity.getName(), resourceId);
   }
@@ -46,7 +46,7 @@ public class DbSubscriptionGatewayTest {
   public void testDoubleReserveCausesException()
   throws Exception {
     final String userName = userEntity.getName();
-    final Integer resourceId = environmentEntity.getAppServers().get(0).getResources().get(0)
+    final Integer resourceId = environmentEntity.getImmutableListOfAppServers().get(0).getImmutableListOfResources().get(0)
         .getId();
 
     subscripbtion.reserve(userName, resourceId);
@@ -57,7 +57,7 @@ public class DbSubscriptionGatewayTest {
   public void testFree()
   throws Exception {
     final String userName = userEntity.getName();
-    final Integer resourceId = environmentEntity.getAppServers().get(0).getResources().get(0)
+    final Integer resourceId = environmentEntity.getImmutableListOfAppServers().get(0).getImmutableListOfResources().get(0)
         .getId();
 
     subscripbtion.reserve(userName, resourceId);
@@ -68,7 +68,7 @@ public class DbSubscriptionGatewayTest {
   public void testFreeNotReservedResourceCausesException()
   throws Exception {
     final String userName = userEntity.getName();
-    final Integer resourceId = environmentEntity.getAppServers().get(0).getResources().get(0)
+    final Integer resourceId = environmentEntity.getImmutableListOfAppServers().get(0).getImmutableListOfResources().get(0)
         .getId();
 
     subscripbtion.free(userName, resourceId);

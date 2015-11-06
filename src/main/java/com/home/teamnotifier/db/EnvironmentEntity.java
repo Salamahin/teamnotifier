@@ -1,43 +1,61 @@
 package com.home.teamnotifier.db;
 
+import com.google.common.collect.ImmutableList;
+
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
-@Table(schema = "teamnotifier")
-public class EnvironmentEntity implements Serializable {
+@Table(schema="teamnotifier")
+public final class EnvironmentEntity implements Serializable
+{
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private Integer id;
+  @GeneratedValue(strategy=GenerationType.AUTO)
+  private final Integer id;
 
-  @Column(nullable = false, unique = true)
-  private String name;
+  @Column(nullable=false, unique=true)
+  private final String name;
 
-  @OneToMany(mappedBy = "environment", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-  private List<AppServerEntity> appServers = new ArrayList<>();
+  @OneToMany(mappedBy="environment", fetch=FetchType.EAGER, cascade=CascadeType.ALL)
+  private final List<AppServerEntity> appServers;
 
-  public Integer getId() {
+  //for hibernate
+  private EnvironmentEntity()
+  {
+    id=null;
+    name=null;
+    appServers=new ArrayList<>();
+  }
+
+  public EnvironmentEntity(final String name)
+  {
+    id=null;
+    this.name=name;
+    appServers=new ArrayList<>();
+  }
+
+  public Integer getId()
+  {
     return id;
   }
 
-  public void setId(final Integer id) {
-    this.id = id;
-  }
-
-  public String getName() {
+  public String getName()
+  {
     return name;
   }
 
-  public void setName(final String name) {
-    this.name = name;
+  public List<AppServerEntity> getImmutableListOfAppServers()
+  {
+    return ImmutableList.copyOf(appServers);
   }
 
-  public List<AppServerEntity> getAppServers() {
-    return appServers;
-  }
-
-  public void setAppServers(final List<AppServerEntity> appServers) {
-    this.appServers = appServers;
+  public AppServerEntity newAppServer(final String name)
+  {
+    final AppServerEntity appServerEntity=new AppServerEntity(this, name);
+    appServers.add(appServerEntity);
+    return appServerEntity;
   }
 }

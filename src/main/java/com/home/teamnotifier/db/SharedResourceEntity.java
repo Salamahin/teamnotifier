@@ -1,65 +1,81 @@
 package com.home.teamnotifier.db;
 
+import com.google.common.base.Preconditions;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Entity
-@Table(schema = "teamnotifier")
-public class SharedResourceEntity implements Serializable {
+@Table(schema="teamnotifier")
+public final class SharedResourceEntity implements Serializable
+{
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private Integer id;
+  @GeneratedValue(strategy=GenerationType.AUTO)
+  private final Integer id;
 
-  @Column(nullable = false)
-  private String name;
+  @Column(nullable=false)
+  private final String name;
 
-  @ManyToOne(optional = false)
-  private AppServerEntity appServer;
+  @ManyToOne(optional=false)
+  private final AppServerEntity appServer;
 
-  @ManyToOne(optional = true)
+  @ManyToOne(optional=true)
   private UserEntity occupier;
 
   @Column
   private LocalDateTime occupationStartTime;
 
-  public LocalDateTime getOccupationStartTime() {
-    return occupationStartTime;
+  //for hibernate
+  private SharedResourceEntity()
+  {
+    id=null;
+    name=null;
+    appServer=null;
   }
 
-  public void setOccupationStartTime(final LocalDateTime occupationStartTime) {
-    this.occupationStartTime = occupationStartTime;
+  SharedResourceEntity(final AppServerEntity appServer, final String name)
+  {
+    id=null;
+    this.name=name;
+    this.appServer=appServer;
   }
 
-  public UserEntity getOccupier() {
-    return occupier;
-  }
-
-  public void setOccupier(final UserEntity occupier) {
-    this.occupier = occupier;
-  }
-
-  public Integer getId() {
+  public Integer getId()
+  {
     return id;
   }
 
-  public void setId(final Integer id) {
-    this.id = id;
-  }
-
-  public String getName() {
+  public String getName()
+  {
     return name;
   }
 
-  public void setName(final String name) {
-    this.name = name;
-  }
-
-  public AppServerEntity getAppServer() {
+  public AppServerEntity getAppServer()
+  {
     return appServer;
   }
 
-  public void setAppServer(final AppServerEntity appServer) {
-    this.appServer = appServer;
+  public void reserve(final UserEntity userEntity)
+  {
+    Preconditions.checkState(occupier == null);
+    occupier=userEntity;
+    occupationStartTime=LocalDateTime.now();
+  }
+
+  public void free()
+  {
+    Preconditions.checkState(occupier != null);
+    occupier=null;
+    occupationStartTime=null;
+  }
+
+  public Optional<ReservationData> getReservationData()
+  {
+    if (occupier != null)
+      return Optional.of(new ReservationData(occupier, occupationStartTime));
+    else
+      return Optional.empty();
   }
 }

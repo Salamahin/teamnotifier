@@ -3,22 +3,30 @@ package com.home.teamnotifier.gateways;
 import com.google.inject.Inject;
 import com.home.teamnotifier.db.*;
 import com.home.teamnotifier.resource.environment.*;
+
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.*;
-import java.util.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
+
 import static java.util.stream.Collectors.toSet;
 
-public class DbEnvironmentGateway implements EnvironmentGateway {
+public class DbEnvironmentGateway implements EnvironmentGateway
+{
   private final TransactionHelper transactionHelper;
 
   @Inject
-  public DbEnvironmentGateway(final TransactionHelper transactionHelper) {
-    this.transactionHelper = transactionHelper;
+  public DbEnvironmentGateway(final TransactionHelper transactionHelper)
+  {
+    this.transactionHelper=transactionHelper;
   }
 
   @Override
-  public EnvironmentsInfo status() {
+  public EnvironmentsInfo status()
+  {
     return new EnvironmentsInfo(
         loadListFromDb().stream()
             .map(this::toEnvironment)
@@ -26,34 +34,37 @@ public class DbEnvironmentGateway implements EnvironmentGateway {
     );
   }
 
-  private List<EnvironmentEntity> loadListFromDb() {
+  private List<EnvironmentEntity> loadListFromDb()
+  {
     return transactionHelper.transaction(em -> {
-      final CriteriaBuilder cb = em.getCriteriaBuilder();
+      final CriteriaBuilder cb=em.getCriteriaBuilder();
 
-      final CriteriaQuery<EnvironmentEntity> cq = cb.createQuery(EnvironmentEntity.class);
-      final Root<EnvironmentEntity> rootEntry = cq.from(EnvironmentEntity.class);
-      final CriteriaQuery<EnvironmentEntity> all = cq.select(rootEntry);
-      final TypedQuery<EnvironmentEntity> allQuery = em.createQuery(all);
+      final CriteriaQuery<EnvironmentEntity> cq=cb.createQuery(EnvironmentEntity.class);
+      final Root<EnvironmentEntity> rootEntry=cq.from(EnvironmentEntity.class);
+      final CriteriaQuery<EnvironmentEntity> all=cq.select(rootEntry);
+      final TypedQuery<EnvironmentEntity> allQuery=em.createQuery(all);
 
       return allQuery.getResultList();
     });
   }
 
-  private EnvironmentInfo toEnvironment(EnvironmentEntity entity) {
+  private EnvironmentInfo toEnvironment(EnvironmentEntity entity)
+  {
     return new EnvironmentInfo(
         entity.getName(),
-        entity.getAppServers().stream()
+        entity.getImmutableListOfAppServers().stream()
             .map(this::toAppSever)
             .collect(toSet())
     );
   }
 
-  private AppServerInfo toAppSever(final AppServerEntity entity) {
-    final Set<String> subscribersNames = entity.getSubscriptions().stream()
-        .map(s -> s.getSubscriber().getName())
+  private AppServerInfo toAppSever(final AppServerEntity entity)
+  {
+    final Set<String> subscribersNames=entity.getImmutableListOfSubscribers().stream()
+        .map(SubscriptionData::getUserName)
         .collect(toSet());
 
-    final Set<SharedResourceInfo> resources = entity.getResources().stream()
+    final Set<SharedResourceInfo> resources=entity.getImmutableListOfResources().stream()
         .map(this::toResource)
         .collect(toSet());
 
@@ -64,14 +75,12 @@ public class DbEnvironmentGateway implements EnvironmentGateway {
     );
   }
 
-  private SharedResourceInfo toResource(final SharedResourceEntity sharedResourceEntity) {
-    OccupationInfo info = null;
-    if (sharedResourceEntity.getOccupier() != null) {
-      info = new OccupationInfo(
-          sharedResourceEntity.getOccupier().getName(),
-          sharedResourceEntity.getOccupationStartTime().toString()
-      );
-    }
-    return new SharedResourceInfo(sharedResourceEntity.getName(), info);
+  private SharedResourceInfo toResource(final SharedResourceEntity sharedResourceEntity)
+  {
+    final OccupationInfo occupationInfo=sharedResourceEntity.getReservationData()
+        .map(od -> new OccupationInfo(od.getOccupier().getName(), od.getOccupationTime().toString()))
+        .orElse(null);
+
+    return new SharedResourceInfo(sharedResourceEntity.getName(), occupationInfo);
   }
 }

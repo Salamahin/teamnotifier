@@ -1,61 +1,96 @@
 package com.home.teamnotifier.db;
 
+import com.google.common.collect.ImmutableList;
+
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Entity
-@Table(schema = "teamnotifier")
-public class AppServerEntity implements Serializable {
+@Table(schema="teamnotifier")
+public final class AppServerEntity implements Serializable
+{
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private Integer id;
+  @GeneratedValue(strategy=GenerationType.AUTO)
+  private final Integer id;
 
-  @Column(nullable = false)
-  private String name;
+  @Column(nullable=false)
+  private final String name;
 
-  @ManyToOne(optional = false)
-  private EnvironmentEntity environment;
+  @ManyToOne(optional=false)
+  private final EnvironmentEntity environment;
 
-  @OneToMany(mappedBy = "appServer", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-  private List<SharedResourceEntity> resources = new ArrayList<>();
+  @OneToMany(mappedBy="appServer", fetch=FetchType.EAGER, cascade=CascadeType.ALL)
+  private final List<SharedResourceEntity> resources;
 
-  @OneToMany(mappedBy = "appServerEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-  private List<SubscriptionEntity> subscriptions = new ArrayList<>();
+  @OneToMany(mappedBy="appServer", fetch=FetchType.EAGER, cascade=CascadeType.ALL)
+  private final List<SubscriptionEntity> subscriptions;
 
-  public List<SubscriptionEntity> getSubscriptions() {
-    return subscriptions;
+  //for hibernate
+  private AppServerEntity()
+  {
+    id=null;
+    name=null;
+    environment=null;
+    resources=new ArrayList<>();
+    subscriptions=new ArrayList<>();
   }
 
-  public Integer getId() {
+  AppServerEntity(final EnvironmentEntity environment, final String name)
+  {
+    this.id=null;
+    this.environment=environment;
+    this.name=name;
+    this.resources=new ArrayList<>();
+    subscriptions=new ArrayList<>();
+  }
+
+  public SharedResourceEntity newSharedResource(final String name)
+  {
+    final SharedResourceEntity entity=new SharedResourceEntity(this, name);
+    resources.add(entity);
+    return entity;
+  }
+
+  public Integer getId()
+  {
     return id;
   }
 
-  public void setId(final Integer id) {
-    this.id = id;
-  }
-
-  public String getName() {
+  public String getName()
+  {
     return name;
   }
 
-  public void setName(final String name) {
-    this.name = name;
-  }
-
-  public EnvironmentEntity getEnvironment() {
+  public EnvironmentEntity getEnvironment()
+  {
     return environment;
   }
 
-  public void setEnvironment(final EnvironmentEntity environment) {
-    this.environment = environment;
+  public List<SharedResourceEntity> getImmutableListOfResources()
+  {
+    return ImmutableList.copyOf(resources);
   }
 
-  public List<SharedResourceEntity> getResources() {
-    return resources;
+  public void subscribe(final UserEntity user)
+  {
+    subscriptions.add(new SubscriptionEntity(this, user));
   }
 
-  public void setResources(final List<SharedResourceEntity> resources) {
-    this.resources = resources;
+  public void unsubscribe(final UserEntity user)
+  {
+    final SubscriptionEntity entity=subscriptions.stream().filter(s -> Objects.equals(user.getId(), s.getSubscriber().getId())).findFirst().get();
+    subscriptions.remove(entity);
+  }
+
+  public List<SubscriptionData> getImmutableListOfSubscribers()
+  {
+    return ImmutableList.copyOf(subscriptions.stream()
+        .map(s -> new SubscriptionData(s.getSubscriber().getName(), s.getTimestamp()))
+        .collect(Collectors.toList())
+    );
   }
 }

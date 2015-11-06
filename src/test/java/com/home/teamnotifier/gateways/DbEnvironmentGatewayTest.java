@@ -28,8 +28,8 @@ public class DbEnvironmentGatewayTest {
         "server",
         "resource"
     );
-    final Integer serverId = environment.getAppServers().get(0).getId();
-    final Integer resourceId = environment.getAppServers().get(0).getResources().get(0).getId();
+    final Integer serverId = environment.getImmutableListOfAppServers().get(0).getId();
+    final Integer resourceId = environment.getImmutableListOfAppServers().get(0).getImmutableListOfResources().get(0).getId();
 
     final UserEntity user = createPersistedUserWithRandomPassHash("user");
 

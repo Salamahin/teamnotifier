@@ -5,50 +5,51 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(schema = "teamnotifier")
-public class SubscriptionEntity implements Serializable {
+@Table(schema="teamnotifier")
+public final class SubscriptionEntity implements Serializable
+{
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private Integer id;
+  @GeneratedValue(strategy=GenerationType.AUTO)
+  private final Integer id;
 
-  @ManyToOne(optional = false, cascade = CascadeType.ALL)
-  private AppServerEntity appServerEntity;
+  @ManyToOne(optional=false, cascade=CascadeType.ALL)
+  private final AppServerEntity appServer;
 
-  @ManyToOne(optional = false)
-  private UserEntity subscriberEntity;
+  @ManyToOne(optional=false)
+  private final UserEntity subscriber;
 
-  @Column(nullable = false)
-  private LocalDateTime timestamp;
+  @Column(nullable=false)
+  private final LocalDateTime timestamp;
 
-  public UserEntity getSubscriber() {
-    return subscriberEntity;
+  //for hibernate
+  private SubscriptionEntity()
+  {
+    id=null;
+    appServer=null;
+    subscriber=null;
+    timestamp=null;
   }
 
-  public void setSubscriber(UserEntity subscriber) {
-    subscriberEntity = subscriber;
+  SubscriptionEntity(final AppServerEntity server, final UserEntity user)
+  {
+    id=null;
+    this.appServer=server;
+    this.subscriber=user;
+    this.timestamp=LocalDateTime.now();
   }
 
-  public AppServerEntity getAppServer() {
-    return appServerEntity;
-  }
-
-  public void setAppServer(AppServerEntity appServer) {
-    appServerEntity = appServer;
-  }
-
-  public LocalDateTime getTimestamp() {
-    return timestamp;
-  }
-
-  public void setTimestamp(LocalDateTime timestamp) {
-    this.timestamp = timestamp;
-  }
-
-  public Integer getId() {
+  public Integer getId()
+  {
     return id;
   }
 
-  public void setId(Integer id) {
-    this.id = id;
+  public UserEntity getSubscriber()
+  {
+    return subscriber;
+  }
+
+  public LocalDateTime getTimestamp()
+  {
+    return timestamp;
   }
 }
