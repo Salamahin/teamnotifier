@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Entity
-@Table(schema="teamnotifier")
+@Table(schema="teamnotifier", name = "SharedResource")
 public final class SharedResourceEntity implements Serializable
 {
   @Id

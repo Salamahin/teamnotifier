@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Entity
-@Table(schema="teamnotifier")
+@Table(schema="teamnotifier", name = "Environment")
 public final class EnvironmentEntity implements Serializable
 {
   @Id

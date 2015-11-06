@@ -5,7 +5,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(schema="teamnotifier")
+@Table(schema="teamnotifier", name = "Subscription")
 public final class SubscriptionEntity implements Serializable
 {
   @Id

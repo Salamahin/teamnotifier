@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(schema="teamnotifier")
+@Table(schema="teamnotifier", name = "User")
 public final class UserEntity implements Serializable
 {
   @Id

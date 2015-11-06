@@ -10,7 +10,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Entity
-@Table(schema="teamnotifier")
+@Table(schema="teamnotifier", name = "AppServer")
 public final class AppServerEntity implements Serializable
 {
   @Id
