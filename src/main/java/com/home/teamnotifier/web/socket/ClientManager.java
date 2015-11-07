@@ -10,33 +10,24 @@ import java.util.Collection;
 public class ClientManager {
   private static final Logger LOGGER = LoggerFactory.getLogger(ClientManager.class);
 
-  private final BiMap<Session, String> clients;
-
-  public synchronized void addNewClient(final Session session, final String userName) {
-    clients.put(session, userName);
-  }
-
-  public synchronized void removeClient(final Session session) {
-    clients.remove(session);
-  }
+  private final BiMap<Session, String> clientSessionsByUsernames;
 
   @Inject
   public ClientManager() {
-    clients = HashBiMap.create();
+    clientSessionsByUsernames = HashBiMap.create();
+  }
+
+  public synchronized void addNewClient(final Session session, final String userName) {
+    clientSessionsByUsernames.put(session, userName);
+  }
+
+  public synchronized void removeClient(final Session session) {
+    clientSessionsByUsernames.remove(session);
   }
 
   public synchronized void pushStringToAll(final String message) {
-    clients.forEach((session, s) -> pushStringToClient(message, session));
+    clientSessionsByUsernames.forEach((session, s) -> pushStringToClient(message, session));
   }
-
-  public synchronized void pushToClients(final Collection<String> userNames, final String message) {
-    final BiMap<String, Session> clientsByNames = clients.inverse();
-    userNames.stream()
-        .filter(clientsByNames::containsKey)
-        .map(clientsByNames::get)
-        .forEach(s -> pushStringToClient(message, s));
-  }
-
 
   private void pushStringToClient(final String message, final Session session) {
     try {
@@ -44,5 +35,13 @@ public class ClientManager {
     } catch (IOException e) {
       LOGGER.error(String.format("Failed to send to %s", session.getRemote()), e);
     }
+  }
+
+  public synchronized void pushToClients(final Collection<String> userNames, final String message) {
+    final BiMap<String, Session> clientsByNames = clientSessionsByUsernames.inverse();
+    userNames.stream()
+        .filter(clientsByNames::containsKey)
+        .map(clientsByNames::get)
+        .forEach(s -> pushStringToClient(message, s));
   }
 }

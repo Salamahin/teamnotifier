@@ -4,6 +4,7 @@ import com.google.common.base.*;
 import com.google.common.hash.Hashing;
 import com.google.inject.Inject;
 import com.home.teamnotifier.gateways.*;
+import com.home.teamnotifier.utils.PasswordHasher;
 import io.dropwizard.auth.*;
 import io.dropwizard.auth.basic.BasicCredentials;
 
@@ -24,8 +25,7 @@ public class TeamNotifierAuthenticator implements Authenticator<BasicCredentials
       return Optional.absent();
     }
 
-    final String providedHash = Hashing.md5()
-        .hashString(providedCredentials.getPassword(), Charsets.UTF_8).toString();
+    final String providedHash = PasswordHasher.toMd5Hash(providedCredentials.getPassword());
     final String userHash = userCredentials.getPassHash();
 
     if (Objects.equal(userHash, providedHash)) {

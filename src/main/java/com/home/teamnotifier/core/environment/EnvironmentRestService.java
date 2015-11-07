@@ -39,6 +39,7 @@ public class EnvironmentRestService {
 
   @GET
   @RolesAllowed({TeamNotifierRoles.USER})
+  @Path("/server/status")
   public EnvironmentsInfo getServerInfo(@Auth User user) {
     return resourceMonitor.status();
   }

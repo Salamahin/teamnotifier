@@ -1,8 +1,8 @@
 package com.home.teamnotifier.db;
 
 import com.google.inject.Inject;
-import com.home.teamnotifier.gateways.EnvironmentGateway;
 import com.home.teamnotifier.core.environment.*;
+import com.home.teamnotifier.gateways.EnvironmentGateway;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.util.*;

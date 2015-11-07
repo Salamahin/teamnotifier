@@ -2,6 +2,7 @@ package com.home.teamnotifier.db;
 
 import com.google.inject.Inject;
 import com.home.teamnotifier.gateways.*;
+import com.home.teamnotifier.utils.PasswordHasher;
 import org.slf4j.*;
 import static com.home.teamnotifier.db.DbGatewayCommons.getUserEntity;
 
@@ -23,6 +24,12 @@ public class DbUserGateway implements UserGateway {
     } else {
       return null;
     }
+  }
+
+  @Override
+  public void newUser(final String userName, final String password) {
+    final UserEntity entity = new UserEntity(userName, PasswordHasher.toMd5Hash(password));
+    transactionHelper.transaction(em -> em.merge(entity));
   }
 
   private UserEntity getEntityByName(String name) {

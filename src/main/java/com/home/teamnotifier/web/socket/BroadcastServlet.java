@@ -1,13 +1,16 @@
 package com.home.teamnotifier.web.socket;
 
 import com.google.common.base.Optional;
+import com.google.common.net.HttpHeaders;
 import com.home.teamnotifier.authentication.*;
 import com.sun.xml.internal.messaging.saaj.util.Base64;
 import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.basic.BasicCredentials;
+import org.eclipse.jetty.http.HttpStatus;
 import org.eclipse.jetty.websocket.api.*;
 import org.eclipse.jetty.websocket.servlet.*;
 import org.slf4j.*;
+import java.io.IOException;
 
 public class BroadcastServlet extends WebSocketServlet {
 
@@ -25,6 +28,29 @@ public class BroadcastServlet extends WebSocketServlet {
     this.authenticator = authenticator;
   }
 
+  @Override
+  public void configure(WebSocketServletFactory factory) {
+    factory.register(WebSocketHandler.class);
+    factory.setCreator((req, resp) -> {
+      try {
+        final String userName = tryGetAuthenticatedUserName(req);
+        return new WebSocketHandler(clientManager, userName);
+      } catch (Exception exc) {
+        LOGGER.error("Websocket creation failed", exc);
+        sendUnauthorizedErrorResponse(resp, exc);
+        return null;
+      }
+    });
+  }
+
+  private void sendUnauthorizedErrorResponse(final ServletUpgradeResponse resp,final Exception exc) {
+    try {
+      resp.sendError(HttpStatus.UNAUTHORIZED_401, exc.getMessage());
+    } catch (IOException e) {
+      LOGGER.error("Failed to send error response", e);
+    }
+  }
+
   private String tryGetAuthenticatedUserName(final ServletUpgradeRequest request)
   throws AuthenticationException {
     final BasicCredentials credentials = extractCredentials(request);
@@ -37,30 +63,18 @@ public class BroadcastServlet extends WebSocketServlet {
   }
 
   private BasicCredentials extractCredentials(final ServletUpgradeRequest request) {
-    final String authHeader = request.getHeader("authorization");
+    final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
     final String encodedValue = authHeader.split(" ")[1];
     final String decodedValue = Base64.base64Decode(encodedValue);
     final String[] logingPassword = decodedValue.split(":");
     return new BasicCredentials(logingPassword[0], logingPassword[1]);
   }
 
-  @Override
-  public void configure(WebSocketServletFactory factory) {
-    factory.register(WebSocketHandler.class);
-    factory.setCreator((req, resp) -> {
-      try {
-        final String userName = tryGetAuthenticatedUserName(req);
-        return new WebSocketHandler(clientManager, userName);
-      } catch (Exception exc) {
-        LOGGER.error("Websocket creation failed", exc);
-        return null;
-      }
-    });
-  }
 
   private static class WebSocketHandler implements WebSocketListener {
 
     private final ClientManager manager;
+
     private final String userName;
 
     private Session session;

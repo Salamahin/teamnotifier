@@ -1,7 +1,9 @@
 package com.home.teamnotifier.db;
 
 import com.home.teamnotifier.gateways.UserCredentials;
+import com.home.teamnotifier.utils.PasswordHasher;
 import org.junit.*;
+import static com.home.teamnotifier.db.Commons.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DbUserGatewayTest {
@@ -13,8 +15,19 @@ public class DbUserGatewayTest {
   @Before
   public void setUp()
   throws Exception {
-    userGateway = new DbUserGateway(Commons.HELPER);
-    user = Commons.createPersistedUserWithRandomPassHash(Commons.getRandomString());
+    userGateway = new DbUserGateway(HELPER);
+    user = createPersistedUserWithRandomPassHash(getRandomString());
+  }
+
+  @Test
+  public void testCanCreateNewUser()
+  throws Exception {
+    final String userName = getRandomString();
+    final String password = getRandomString();
+    userGateway.newUser(userName, password);
+    final UserCredentials credentials = userGateway.userCredentials(userName);
+    assertThat(credentials.getUserName()).isEqualTo(userName);
+    assertThat(credentials.getPassHash()).isEqualTo(PasswordHasher.toMd5Hash(password));
   }
 
   @Test
@@ -28,7 +41,7 @@ public class DbUserGatewayTest {
   @Test
   public void testIncorrectLoginReturnsNull()
   throws Exception {
-    final UserCredentials credentials = userGateway.userCredentials(Commons.getRandomString());
+    final UserCredentials credentials = userGateway.userCredentials(getRandomString());
     assertThat(credentials).isNull();
   }
 }

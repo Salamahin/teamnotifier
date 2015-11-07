@@ -32,11 +32,6 @@ public class AppServerInfo {
   }
 
   @Override
-  public int hashCode() {
-    return Objects.hash(name, resources, subscribers);
-  }
-
-  @Override
   public boolean equals(final Object o) {
     if (this == o) { return true; }
     if (o == null || getClass() != o.getClass()) { return false; }
@@ -44,5 +39,10 @@ public class AppServerInfo {
     return Objects.equals(name, that.name) &&
         Objects.equals(resources, that.resources) &&
         Objects.equals(subscribers, that.subscribers);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(name, resources, subscribers);
   }
 }

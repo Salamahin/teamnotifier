@@ -2,7 +2,7 @@ package com.home.teamnotifier.core.environment;
 
 import com.fasterxml.jackson.annotation.*;
 import com.google.common.collect.ImmutableList;
-import java.util.List;
+import java.util.*;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonAutoDetect(
@@ -22,5 +22,18 @@ public class ActionsInfo {
 
   public List<ActionInfo> getActions() {
     return actions;
+  }
+
+  @Override
+  public boolean equals(final Object o) {
+    if (this == o) { return true; }
+    if (o == null || getClass() != o.getClass()) { return false; }
+    final ActionsInfo that = (ActionsInfo) o;
+    return Objects.equals(actions, that.actions);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(actions);
   }
 }

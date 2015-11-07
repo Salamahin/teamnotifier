@@ -16,7 +16,7 @@ import static com.home.teamnotifier.Injection.INJECTION_BUNDLE;
 public class NotifierApplication extends Application<NotifierConfiguration> {
 
   @Override
-  public void initialize(Bootstrap<NotifierConfiguration> bootstrap) {
+  public void initialize(final Bootstrap<NotifierConfiguration> bootstrap) {
     bootstrap.addBundle(new AssetsBundle("/assets", "/"));
     bootstrap.addBundle(INJECTION_BUNDLE);
   }
@@ -34,8 +34,7 @@ public class NotifierApplication extends Application<NotifierConfiguration> {
 
     final AuthDynamicFeature authDynamicFeature = new AuthDynamicFeature(
         new BasicCredentialAuthFilter.Builder<User>()
-            .setAuthenticator(
-                authenticator)
+            .setAuthenticator(authenticator)
             .setAuthorizer(new TrivialAuthorizer())
             .buildAuthFilter()
     );
