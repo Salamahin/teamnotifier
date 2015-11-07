@@ -1,7 +1,7 @@
-package com.home.teamnotifier.resource.environment;
+package com.home.teamnotifier.core.environment;
 
 import com.home.teamnotifier.authentication.*;
-import com.home.teamnotifier.resource.ResourceMonitor;
+import com.home.teamnotifier.core.ResourceMonitor;
 import io.dropwizard.auth.Auth;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;

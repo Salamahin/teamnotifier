@@ -7,20 +7,29 @@ import com.home.teamnotifier.gateways.*;
 import javax.inject.Singleton;
 import java.util.concurrent.*;
 
-public class NotifierModule extends AbstractModule {
+final class NotifierModule extends AbstractModule {
 
   @Override
   protected void configure() {
-    bind(UserGateway.class).to(DbUserGateway.class).in(Singleton.class);
-    bind(EnvironmentGateway.class).to(DbEnvironmentGateway.class).in(Singleton.class);
-    bind(TransactionHelper.class).in(Singleton.class);
+    bind(UserGateway.class)
+        .to(DbUserGateway.class)
+        .in(Singleton.class);
+
+    bind(EnvironmentGateway.class)
+        .to(DbEnvironmentGateway.class)
+        .in(Singleton.class);
+
+    bind(SharedResourceActionsGateway.class)
+        .to(DbSharedResourceActionsGateway.class)
+        .in(Singleton.class);
+
+    bind(TransactionHelper.class)
+        .in(Singleton.class);
   }
 
   @Provides
   @Singleton
-  public Executor newExecutor(
-      final NotifierConfiguration configuration
-  ) {
+  public Executor newExecutor(final NotifierConfiguration configuration) {
     return Executors.newFixedThreadPool(
         configuration.getExecutorsConfiguration().getPoolSize(),
         new ThreadFactoryBuilder().setNameFormat("cam-pool-%d").build()

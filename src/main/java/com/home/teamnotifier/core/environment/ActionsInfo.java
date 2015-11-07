@@ -1,8 +1,9 @@
-package com.home.teamnotifier.resource.auth;
+package com.home.teamnotifier.core.environment;
 
 import com.fasterxml.jackson.annotation.*;
+import com.google.common.collect.ImmutableList;
+import java.util.List;
 
-@SuppressWarnings("FieldCanBeLocal")
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonAutoDetect(
     fieldVisibility = JsonAutoDetect.Visibility.ANY,
@@ -10,13 +11,16 @@ import com.fasterxml.jackson.annotation.*;
     isGetterVisibility = JsonAutoDetect.Visibility.NONE,
     setterVisibility = JsonAutoDetect.Visibility.NONE,
     creatorVisibility = JsonAutoDetect.Visibility.NONE)
-@JsonTypeName("UserInfo")
-public class UserInfo {
-
-  private final String name;
+@JsonTypeName("Actions")
+public class ActionsInfo {
+  private final List<ActionInfo> actions;
 
   @JsonCreator
-  public UserInfo(@JsonProperty("name") String name) {
-    this.name = name;
+  public ActionsInfo(@JsonProperty("actions") final List<ActionInfo> actions) {
+    this.actions = ImmutableList.copyOf(actions);
+  }
+
+  public List<ActionInfo> getActions() {
+    return actions;
   }
 }

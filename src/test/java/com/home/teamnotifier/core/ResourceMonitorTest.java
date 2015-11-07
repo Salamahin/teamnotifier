@@ -1,4 +1,4 @@
-package com.home.teamnotifier.resource;
+package com.home.teamnotifier.core;
 
 import com.home.teamnotifier.db.TransactionHelper;
 import com.home.teamnotifier.gateways.AlreadyReserved;

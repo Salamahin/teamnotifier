@@ -1,4 +1,4 @@
-package com.home.teamnotifier.resource.environment;
+package com.home.teamnotifier.core.environment;
 
 import com.fasterxml.jackson.annotation.*;
 import com.google.common.collect.ImmutableSet;
@@ -11,33 +11,38 @@ import java.util.*;
     isGetterVisibility = JsonAutoDetect.Visibility.NONE,
     setterVisibility = JsonAutoDetect.Visibility.NONE,
     creatorVisibility = JsonAutoDetect.Visibility.NONE)
-@JsonTypeName("EnvironmentInfo")
-public class EnvironmentInfo {
+@JsonTypeName("AppServer")
+public class AppServerInfo {
 
   private final String name;
 
-  private final Set<AppServerInfo> servers;
+  private final Set<SharedResourceInfo> resources;
+
+  private final Set<String> subscribers;
 
   @JsonCreator
-  public EnvironmentInfo(
+  public AppServerInfo(
       @JsonProperty("name") final String name,
-      @JsonProperty("servers") final Set<AppServerInfo> servers
+      @JsonProperty("resources") final Set<SharedResourceInfo> resources,
+      @JsonProperty("subscribers") final Set<String> subscibers
   ) {
     this.name = name;
-    this.servers = ImmutableSet.copyOf(servers);
+    this.resources = ImmutableSet.copyOf(resources);
+    this.subscribers = ImmutableSet.copyOf(subscibers);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(name, servers);
+    return Objects.hash(name, resources, subscribers);
   }
 
   @Override
   public boolean equals(final Object o) {
     if (this == o) { return true; }
     if (o == null || getClass() != o.getClass()) { return false; }
-    final EnvironmentInfo that = (EnvironmentInfo) o;
+    final AppServerInfo that = (AppServerInfo) o;
     return Objects.equals(name, that.name) &&
-        Objects.equals(servers, that.servers);
+        Objects.equals(resources, that.resources) &&
+        Objects.equals(subscribers, that.subscribers);
   }
 }

@@ -1,7 +1,7 @@
 package com.home.teamnotifier.gateways;
 
 import com.google.common.collect.Range;
-import com.home.teamnotifier.resource.environment.ActionsInfo;
+import com.home.teamnotifier.core.environment.ActionsInfo;
 import java.time.LocalDateTime;
 
 public interface SharedResourceActionsGateway {

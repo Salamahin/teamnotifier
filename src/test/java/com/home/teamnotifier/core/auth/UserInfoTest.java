@@ -1,4 +1,4 @@
-package com.home.teamnotifier.resource.auth;
+package com.home.teamnotifier.core.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;

@@ -1,8 +1,8 @@
-package com.home.teamnotifier.resource;
+package com.home.teamnotifier.core;
 
 import com.google.inject.Inject;
 import com.home.teamnotifier.gateways.*;
-import com.home.teamnotifier.resource.environment.EnvironmentsInfo;
+import com.home.teamnotifier.core.environment.EnvironmentsInfo;
 import com.home.teamnotifier.web.socket.ClientManager;
 
 public class ResourceMonitor {

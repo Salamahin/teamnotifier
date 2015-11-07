@@ -1,4 +1,4 @@
-package com.home.teamnotifier.resource.environment;
+package com.home.teamnotifier.core.environment;
 
 import com.fasterxml.jackson.annotation.*;
 import java.util.Objects;

@@ -1,7 +1,8 @@
-package com.home.teamnotifier.resource.environment;
+package com.home.teamnotifier.core.environment;
 
 import com.fasterxml.jackson.annotation.*;
-import java.util.Objects;
+import com.google.common.collect.ImmutableSet;
+import java.util.*;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonAutoDetect(
@@ -10,31 +11,33 @@ import java.util.Objects;
     isGetterVisibility = JsonAutoDetect.Visibility.NONE,
     setterVisibility = JsonAutoDetect.Visibility.NONE,
     creatorVisibility = JsonAutoDetect.Visibility.NONE)
-@JsonTypeName("OccupationInfo")
-public class OccupationInfo {
-  private final String userName;
+@JsonTypeName("EnvironmentInfo")
+public class EnvironmentInfo {
 
-  private final String occupationTime;
+  private final String name;
+
+  private final Set<AppServerInfo> servers;
 
   @JsonCreator
-  public OccupationInfo(
-      @JsonProperty("userName") final String userName,
-      @JsonProperty("occupationTime") final String occupationTime
+  public EnvironmentInfo(
+      @JsonProperty("name") final String name,
+      @JsonProperty("servers") final Set<AppServerInfo> servers
   ) {
-    this.userName = userName;
-    this.occupationTime = occupationTime;
+    this.name = name;
+    this.servers = ImmutableSet.copyOf(servers);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(userName);
+    return Objects.hash(name, servers);
   }
 
   @Override
   public boolean equals(final Object o) {
     if (this == o) { return true; }
     if (o == null || getClass() != o.getClass()) { return false; }
-    final OccupationInfo info = (OccupationInfo) o;
-    return Objects.equals(userName, info.userName);
+    final EnvironmentInfo that = (EnvironmentInfo) o;
+    return Objects.equals(name, that.name) &&
+        Objects.equals(servers, that.servers);
   }
 }

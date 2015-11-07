@@ -1,9 +1,9 @@
-package com.home.teamnotifier.resource.environment;
+package com.home.teamnotifier.core.environment;
 
 import com.google.common.base.Optional;
 import com.google.common.io.BaseEncoding;
 import com.home.teamnotifier.authentication.*;
-import com.home.teamnotifier.resource.ResourceMonitor;
+import com.home.teamnotifier.core.ResourceMonitor;
 import io.dropwizard.auth.*;
 import io.dropwizard.auth.basic.*;
 import io.dropwizard.testing.junit.ResourceTestRule;
@@ -13,7 +13,6 @@ import org.junit.*;
 import javax.ws.rs.core.*;
 import java.util.ArrayList;
 
-import static java.util.Collections.emptyList;
 import static org.assertj.core.api.StrictAssertions.assertThat;
 import static org.mockito.Mockito.*;
 

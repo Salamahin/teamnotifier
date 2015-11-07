@@ -1,7 +1,7 @@
 package com.home.teamnotifier.db;
 
 import com.google.common.collect.Range;
-import com.home.teamnotifier.resource.environment.*;
+import com.home.teamnotifier.core.environment.*;
 import org.junit.*;
 import java.time.*;
 import java.util.*;

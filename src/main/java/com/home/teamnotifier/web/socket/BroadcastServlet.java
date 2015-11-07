@@ -14,7 +14,9 @@ public class BroadcastServlet extends WebSocketServlet {
   @Override
   public void configure(WebSocketServletFactory factory) {
     factory.register(WebSocketHandler.class);
-    factory.setCreator((req, resp) -> new WebSocketHandler(clientManager));
+    factory.setCreator((req, resp) -> {
+      System.out.println(req.getHeaders());
+      return new WebSocketHandler(clientManager);});
   }
 
   private static class WebSocketHandler implements WebSocketListener {

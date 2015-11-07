@@ -2,7 +2,7 @@ package com.home.teamnotifier.db;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.home.teamnotifier.resource.environment.*;
+import com.home.teamnotifier.core.environment.*;
 import io.dropwizard.jackson.Jackson;
 import org.junit.Before;
 import org.junit.Test;
