@@ -16,7 +16,7 @@ public class TeamNotifierAuthenticator implements Authenticator<BasicCredentials
   }
 
   @Override
-  public Optional<User> authenticate(BasicCredentials providedCredentials)
+  public Optional<User> authenticate(final BasicCredentials providedCredentials)
   throws AuthenticationException {
     final UserCredentials userCredentials = userGateway
         .userCredentials(providedCredentials.getUsername());

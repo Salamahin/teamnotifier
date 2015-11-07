@@ -1,34 +1,73 @@
 package com.home.teamnotifier.web.socket;
 
+import com.google.common.base.Optional;
+import com.home.teamnotifier.authentication.*;
+import com.sun.xml.internal.messaging.saaj.util.Base64;
+import io.dropwizard.auth.AuthenticationException;
+import io.dropwizard.auth.basic.BasicCredentials;
 import org.eclipse.jetty.websocket.api.*;
 import org.eclipse.jetty.websocket.servlet.*;
 import org.slf4j.*;
 
 public class BroadcastServlet extends WebSocketServlet {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(WebSocketHandler.class);
+
   private final ClientManager clientManager;
 
-  public BroadcastServlet(final ClientManager clientManager) {
+  private final TeamNotifierAuthenticator authenticator;
+
+  public BroadcastServlet(
+      final ClientManager clientManager,
+      final TeamNotifierAuthenticator authenticator
+  ) {
     this.clientManager = clientManager;
+    this.authenticator = authenticator;
+  }
+
+  private String tryGetAuthenticatedUserName(final ServletUpgradeRequest request)
+  throws AuthenticationException {
+    final BasicCredentials credentials = extractCredentials(request);
+    final Optional<User> authenticatedUser = authenticator.authenticate(credentials);
+    if (!authenticatedUser.isPresent()) {
+      throw new AuthenticationException
+          ("AuthenticationFailed");
+    }
+    return authenticatedUser.get().getName();
+  }
+
+  private BasicCredentials extractCredentials(final ServletUpgradeRequest request) {
+    final String authHeader = request.getHeader("authorization");
+    final String encodedValue = authHeader.split(" ")[1];
+    final String decodedValue = Base64.base64Decode(encodedValue);
+    final String[] logingPassword = decodedValue.split(":");
+    return new BasicCredentials(logingPassword[0], logingPassword[1]);
   }
 
   @Override
   public void configure(WebSocketServletFactory factory) {
     factory.register(WebSocketHandler.class);
     factory.setCreator((req, resp) -> {
-      System.out.println(req.getHeaders());
-      return new WebSocketHandler(clientManager);});
+      try {
+        final String userName = tryGetAuthenticatedUserName(req);
+        return new WebSocketHandler(clientManager, userName);
+      } catch (Exception exc) {
+        LOGGER.error("Websocket creation failed", exc);
+        return null;
+      }
+    });
   }
 
   private static class WebSocketHandler implements WebSocketListener {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(WebSocketHandler.class);
-
     private final ClientManager manager;
+    private final String userName;
 
     private Session session;
 
-    public WebSocketHandler(final ClientManager manager) {
+    public WebSocketHandler(final ClientManager manager, final String userName) {
       this.manager = manager;
+      this.userName = userName;
     }
 
     @Override
@@ -37,21 +76,21 @@ public class BroadcastServlet extends WebSocketServlet {
     }
 
     @Override
-    public void onWebSocketClose(int statusCode, String reason) {
-      manager.removeClientBySession(session);
+    public void onWebSocketClose(final int statusCode, final String reason) {
+      manager.removeClient(session);
       LOGGER.info("Socket closed: [{}] {}", statusCode, reason);
     }
 
     @Override
-    public void onWebSocketConnect(Session session) {
+    public void onWebSocketConnect(final Session session) {
       this.session = session;
-      manager.addNewClientBySession(session);
+      manager.addNewClient(session, userName);
       LOGGER.info("Socket connected: {}", Integer.toHexString(session.hashCode()));
     }
 
     @Override
-    public void onWebSocketError(Throwable cause) {
-      manager.removeClientBySession(session);
+    public void onWebSocketError(final Throwable cause) {
+      manager.removeClient(session);
       LOGGER.error("Websocket error", cause);
     }
 
