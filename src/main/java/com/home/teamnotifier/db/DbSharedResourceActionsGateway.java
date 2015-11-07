@@ -44,17 +44,22 @@ public class DbSharedResourceActionsGateway implements SharedResourceActionsGate
   }
 
   @Override
-  public ActionsInfo getActions(Range<LocalDateTime> range) {
+  public ActionsInfo getActions(final int resourceId, final Range<LocalDateTime> range) {
     final List<ActionOnSharedResourceEntity> actions = transactionHelper.transaction(em -> {
+      final SharedResourceEntity resource = em.find(SharedResourceEntity.class, resourceId);
       final CriteriaBuilder cb = em.getCriteriaBuilder();
       final CriteriaQuery<ActionOnSharedResourceEntity> cq = cb
           .createQuery(ActionOnSharedResourceEntity.class);
       final Root<ActionOnSharedResourceEntity> rootEntry = cq
           .from(ActionOnSharedResourceEntity.class);
+
       final Path<LocalDateTime> time = rootEntry.get("actionTime");
 
+      final Predicate actionTimeInRange = getPredicateForRange(range, cb, rootEntry);
+      final Predicate isEqualToProvidedResource = cb.equal(rootEntry.get("resource"), resource);
+
       final CriteriaQuery<ActionOnSharedResourceEntity> allInRange =
-          cq.select(rootEntry).where(getPredicateForRange(range, cb, rootEntry))
+          cq.select(rootEntry).where(cb.and(actionTimeInRange, isEqualToProvidedResource))
               .orderBy(cb.desc(time));
       final TypedQuery<ActionOnSharedResourceEntity> allQuery = em.createQuery(allInRange);
 

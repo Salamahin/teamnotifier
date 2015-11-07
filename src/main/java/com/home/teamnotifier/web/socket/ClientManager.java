@@ -25,10 +25,6 @@ public class ClientManager {
     clientSessionsByUsernames.remove(session);
   }
 
-  public synchronized void pushStringToAll(final String message) {
-    clientSessionsByUsernames.forEach((session, s) -> pushStringToClient(message, session));
-  }
-
   private void pushStringToClient(final String message, final Session session) {
     try {
       session.getRemote().sendString(message);

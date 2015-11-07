@@ -21,6 +21,8 @@ public class DbSharedResourceActionsGatewayTest {
 
   private List<ActionData> allActionsEver;
 
+  private Integer resourceId;
+
   @Before
   public void setUp()
   throws Exception {
@@ -29,7 +31,7 @@ public class DbSharedResourceActionsGatewayTest {
         .createPersistedUserWithRandomPassHash(Commons.getRandomString());
     environment = Commons.createPersistedEnvironmentWithOneServerAndOneResource(
         Commons.getRandomString(), Commons.getRandomString(), Commons.getRandomString());
-    final Integer resourceId = environment.getImmutableListOfAppServers().get(0)
+    resourceId = environment.getImmutableListOfAppServers().get(0)
         .getImmutableListOfResources().get(0).getId();
 
     for (int i = 0; i < 10; i++) {
@@ -56,7 +58,7 @@ public class DbSharedResourceActionsGatewayTest {
   @Test
   public void testDoesntHaveBeforeMiddle()
   throws Exception {
-    final ActionsInfo actions = gateway.getActions(Range.closed(firstEver, middle));
+    final ActionsInfo actions = gateway.getActions(resourceId, Range.closed(firstEver, middle));
     final List<ActionData> loadedData = toActionDataList(actions);
 
     final List<ActionData> dataNotInRange = new ArrayList<>(allActionsEver);
@@ -69,7 +71,7 @@ public class DbSharedResourceActionsGatewayTest {
   @Test
   public void testDoesntHaveAfter()
   throws Exception {
-    final ActionsInfo actions = gateway.getActions(Range.closed(middle, lastEver));
+    final ActionsInfo actions = gateway.getActions(resourceId, Range.closed(middle, lastEver));
     final List<ActionData> loadedData = toActionDataList(actions);
 
     final List<ActionData> dataNotInRange = new ArrayList<>(allActionsEver);
@@ -126,6 +128,6 @@ public class DbSharedResourceActionsGatewayTest {
   }
 
   private ActionsInfo getAllActionsEver() {
-    return gateway.getActions(Range.all());
+    return gateway.getActions(resourceId, Range.all());
   }
 }

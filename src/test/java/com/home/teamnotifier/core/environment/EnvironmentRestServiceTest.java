@@ -4,6 +4,7 @@ import com.google.common.base.Optional;
 import com.google.common.io.BaseEncoding;
 import com.home.teamnotifier.authentication.*;
 import com.home.teamnotifier.core.ResourceMonitor;
+import com.home.teamnotifier.db.*;
 import io.dropwizard.auth.*;
 import io.dropwizard.auth.basic.*;
 import io.dropwizard.testing.junit.ResourceTestRule;
@@ -58,7 +59,7 @@ public class EnvironmentRestServiceTest {
             .buildAuthFilter()))
         .addProvider(RolesAllowedDynamicFeature.class)
         .addProvider(new AuthValueFactoryProvider.Binder<>(User.class))
-        .addResource(new EnvironmentRestService(resourceMonitor))
+        .addResource(new EnvironmentRestService(resourceMonitor, new DbUserGateway(new TransactionHelper())))
         .build();
   }
 
