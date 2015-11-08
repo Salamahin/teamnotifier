@@ -13,19 +13,15 @@ function getStatus() {
   xmlHttp.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + pass));
   xmlHttp.onreadystatechange = function() {
     if (xmlHttp.readyState == 4) {
-        if (xmlHttp.status == 200) {
-          environment.innerHTML=xmlHttp.responseText;
-        }
-      }
+      environment.innerHTML=xmlHttp.responseText;
+    }
   };
   xmlHttp.send(null);
 }
 
 function reaskStatus(xmlHttp) {
   if (xmlHttp.readyState == 4) {
-    if (xmlHttp.status == 200) {
-      getStatus();
-    }
+    getStatus();
   }
 }
 
