@@ -16,7 +16,7 @@ public final class TransactionHelper {
 
   @Inject
   public TransactionHelper() {
-    EntityManagerFactory managerFactory = Persistence
+    final EntityManagerFactory managerFactory = Persistence
         .createEntityManagerFactory("teamnotifier");
     entityManager = managerFactory.createEntityManager();
   }
@@ -29,10 +29,8 @@ public final class TransactionHelper {
       MUTEX.acquire();
       transaction.begin();
       result = function.apply(entityManager);
-      entityManager.flush();
       transaction.commit();
     } catch (Exception exc) {
-      entityManager.flush();
       transaction.rollback();
       Throwables.propagate(exc);
     } finally {

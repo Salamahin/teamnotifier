@@ -78,31 +78,29 @@ public class BroadcastServlet extends WebSocketServlet {
 
     @Override
     public void onWebSocketBinary(final byte[] payload, final int offset, final int len) {
-         /* do nothing */
     }
 
     @Override
     public void onWebSocketClose(final int statusCode, final String reason) {
       manager.removeClient(session);
-      LOGGER.info("Socket closed: [{}] {}", statusCode, reason);
+      LOGGER.info("[{}] Socket closed: [{}] {}", userName, statusCode, reason);
     }
 
     @Override
     public void onWebSocketConnect(final Session session) {
       this.session = session;
       manager.addNewClient(session, userName);
-      LOGGER.info("Socket connected: {}", Integer.toHexString(session.hashCode()));
+      LOGGER.info("[{}] Socket connected", userName);
     }
 
     @Override
     public void onWebSocketError(final Throwable cause) {
       manager.removeClient(session);
-      LOGGER.error("Websocket error", cause);
+      LOGGER.error("[{}] Websocket error ({})", userName, cause);
     }
 
     @Override
     public void onWebSocketText(final String message) {
-      LOGGER.info("Websocket text: {}", message);
     }
   }
 }

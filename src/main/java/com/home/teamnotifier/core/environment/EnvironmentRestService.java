@@ -19,7 +19,7 @@ import static com.home.teamnotifier.utils.BasicAuthenticationCredentialExtractor
 @Path("1.0/environment")
 @Produces(MediaType.APPLICATION_JSON)
 public class EnvironmentRestService {
-  
+
   private final ResourceMonitor resourceMonitor;
 
   private final UserGateway userGateway;
@@ -43,8 +43,10 @@ public class EnvironmentRestService {
   @POST
   @Path("/application/reserve/{applicationId}")
   @RolesAllowed({TeamNotifierRoles.USER})
-  public void reserve(@Auth final User user,
-      @PathParam("applicationId") final Integer applicationId) {
+  public void reserve(
+      @Auth final User user,
+      @PathParam("applicationId") final Integer applicationId
+  ) {
     resourceMonitor.reserve(user.getName(), applicationId);
   }
 
