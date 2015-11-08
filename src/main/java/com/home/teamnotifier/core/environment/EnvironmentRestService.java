@@ -9,6 +9,7 @@ import com.home.teamnotifier.gateways.UserGateway;
 import com.home.teamnotifier.utils.BasicAuthenticationCredentialExtractor;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.auth.basic.BasicCredentials;
+import org.slf4j.*;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -18,7 +19,7 @@ import static com.home.teamnotifier.utils.BasicAuthenticationCredentialExtractor
 @Path("1.0/environment")
 @Produces(MediaType.APPLICATION_JSON)
 public class EnvironmentRestService {
-
+  
   private final ResourceMonitor resourceMonitor;
 
   private final UserGateway userGateway;

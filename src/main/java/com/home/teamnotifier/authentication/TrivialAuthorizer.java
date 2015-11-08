@@ -5,7 +5,7 @@ import io.dropwizard.auth.Authorizer;
 public class TrivialAuthorizer implements Authorizer<User> {
 
   @Override
-  public boolean authorize(User user, String role) {
+  public boolean authorize(final User user, final String role) {
     return role.equals(TeamNotifierRoles.USER);
   }
 }

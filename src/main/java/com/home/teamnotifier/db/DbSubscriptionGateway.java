@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class DbSubscriptionGateway implements SubscriptionGateway {
-  private static final Logger LOG = LoggerFactory.getLogger(DbSubscriptionGateway.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(DbSubscriptionGateway.class);
 
   private final TransactionHelper transactionHelper;
 
@@ -90,7 +90,7 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
       final Optional<ReservationData> reservationData = resourceEntity.getReservationData();
 
       if (reservationData.isPresent()) {
-        LOG.debug("Failed to reserve resource {}:{}:{} by {}: already reserved by {}",
+        LOGGER.debug("Failed to reserve resource {}:{}:{} by {}: already reserved by {}",
             resourceEntity.getAppServer().getEnvironment().getName(),
             resourceEntity.getAppServer().getName(),
             resourceEntity.getName(),
@@ -131,7 +131,7 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
       final Optional<ReservationData> reservationData = resourceEntity.getReservationData();
 
       if (!reservationData.isPresent()) {
-        LOG.debug("Failed to free resource {}:{}:{} by {}: not reserved",
+        LOGGER.debug("Failed to free resource {}:{}:{} by {}: not reserved",
             resourceEntity.getAppServer().getEnvironment().getName(),
             resourceEntity.getAppServer().getName(),
             resourceEntity.getName(),

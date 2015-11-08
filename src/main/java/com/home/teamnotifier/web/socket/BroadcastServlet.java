@@ -1,7 +1,6 @@
 package com.home.teamnotifier.web.socket;
 
 import com.google.common.base.Optional;
-import com.google.common.net.HttpHeaders;
 import com.home.teamnotifier.authentication.*;
 import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.basic.BasicCredentials;
@@ -54,7 +53,9 @@ public class BroadcastServlet extends WebSocketServlet {
 
   private String tryGetAuthenticatedUserName(final ServletUpgradeRequest request)
   throws AuthenticationException {
-    final BasicCredentials credentials = extract(request.getHeader(HttpHeaders.AUTHORIZATION));
+    //fixme dont know how to provide them different way; should be changed when ssl
+    final String encodedCredentials = request.getParameterMap().get("credentials").get(0);
+    final BasicCredentials credentials = extract(encodedCredentials);
     final Optional<User> authenticatedUser = authenticator.authenticate(credentials);
     if (!authenticatedUser.isPresent()) {
       throw new AuthenticationException("Authentication failed");

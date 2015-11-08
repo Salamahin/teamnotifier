@@ -1,10 +1,11 @@
 package com.home.teamnotifier.db;
 
 import com.google.common.collect.Range;
-import com.home.teamnotifier.core.environment.*;
+import com.home.teamnotifier.core.environment.ActionsInfo;
 import org.junit.*;
 import java.time.*;
 import java.util.*;
+import static com.home.teamnotifier.db.Commons.*;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,16 +27,16 @@ public class DbSharedResourceActionsGatewayTest {
   @Before
   public void setUp()
   throws Exception {
-    gateway = new DbSharedResourceActionsGateway(Commons.HELPER);
-    final UserEntity user = Commons
-        .createPersistedUserWithRandomPassHash(Commons.getRandomString());
-    environment = Commons.createPersistedEnvironmentWithOneServerAndOneResource(
-        Commons.getRandomString(), Commons.getRandomString(), Commons.getRandomString());
+    gateway = new DbSharedResourceActionsGateway(HELPER);
+    final UserEntity user =
+        createPersistedUser(getRandomString(), getRandomString());
+    environment = createPersistedEnvironmentWithOneServerAndOneResource(
+        getRandomString(), getRandomString(), getRandomString());
     resourceId = environment.getImmutableListOfAppServers().get(0)
         .getImmutableListOfResources().get(0).getId();
 
     for (int i = 0; i < 10; i++) {
-      gateway.newAction(user.getName(), resourceId, Commons.getRandomString());
+      gateway.newAction(user.getName(), resourceId, getRandomString());
     }
 
     final ActionsInfo allActionsEver = getAllActionsEver();
@@ -84,20 +85,18 @@ public class DbSharedResourceActionsGatewayTest {
   @Test
   public void testReturnsSubscribersNamesAfterAction()
   throws Exception {
-    final String userName1 = Commons
-        .createPersistedUserWithRandomPassHash(Commons.getRandomString()).getName();
-    final String userName2 = Commons
-        .createPersistedUserWithRandomPassHash(Commons.getRandomString()).getName();
+    final String userName1 = createPersistedUser(getRandomString(), getRandomString()).getName();
+    final String userName2 = createPersistedUser(getRandomString(), getRandomString()).getName();
 
     final Integer serverId = environment.getImmutableListOfAppServers().get(0).getId();
     final Integer resourceId = environment.getImmutableListOfAppServers().get(0)
         .getImmutableListOfResources().get(0).getId();
 
-    final DbSubscriptionGateway subscription = new DbSubscriptionGateway(Commons.HELPER);
+    final DbSubscriptionGateway subscription = new DbSubscriptionGateway(HELPER);
     subscription.subscribe(userName1, serverId);
     subscription.subscribe(userName2, serverId);
 
-    assertThat(gateway.newAction(userName1, resourceId, Commons.getRandomString()).getSubscribers())
+    assertThat(gateway.newAction(userName1, resourceId, getRandomString()).getSubscribers())
         .doesNotContain(userName1)
         .contains(userName2);
   }

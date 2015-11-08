@@ -7,7 +7,7 @@ import org.slf4j.*;
 import static com.home.teamnotifier.db.DbGatewayCommons.getUserEntity;
 
 public class DbUserGateway implements UserGateway {
-  private static final Logger LOG = LoggerFactory.getLogger(DbUserGateway.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(DbUserGateway.class);
 
   private final TransactionHelper transactionHelper;
 
@@ -28,6 +28,7 @@ public class DbUserGateway implements UserGateway {
 
   @Override
   public void newUser(final String userName, final String password) {
+    LOGGER.info("New user {} creation", userName);
     final UserEntity entity = new UserEntity(userName, PasswordHasher.toMd5Hash(password));
     transactionHelper.transaction(em -> em.merge(entity));
   }
@@ -36,7 +37,7 @@ public class DbUserGateway implements UserGateway {
     try {
       return transactionHelper.transaction(em -> getUserEntity(name, em));
     } catch (Exception exc) {
-      LOG.error("Failed to get user by name", exc);
+      LOGGER.error("Failed to get user by name", exc);
     }
 
     return null;

@@ -1,17 +1,20 @@
 package com.home.teamnotifier.db;
 
-import com.home.teamnotifier.db.*;
+import com.home.teamnotifier.utils.PasswordHasher;
 import java.util.UUID;
 
-final class Commons {
+final public class Commons {
   private Commons() {
     throw new AssertionError();
   }
 
   static final TransactionHelper HELPER = new TransactionHelper();
 
-  static UserEntity createPersistedUserWithRandomPassHash(final String userName) {
-    final UserEntity entity = new UserEntity(userName, getRandomString());
+  public static UserEntity createPersistedUser(
+      final String userName,
+      final String pass
+  ) {
+    final UserEntity entity = new UserEntity(userName, PasswordHasher.toMd5Hash(pass));
     return HELPER.transaction(em -> em.merge(entity));
   }
 
@@ -20,7 +23,7 @@ final class Commons {
   }
 
 
-  static EnvironmentEntity createPersistedEnvironmentWithOneServerAndOneResource(
+  public static EnvironmentEntity createPersistedEnvironmentWithOneServerAndOneResource(
       final String envName,
       final String serverName,
       final String appName

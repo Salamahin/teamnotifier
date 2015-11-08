@@ -16,7 +16,7 @@ public class DbUserGatewayTest {
   public void setUp()
   throws Exception {
     userGateway = new DbUserGateway(HELPER);
-    user = createPersistedUserWithRandomPassHash(getRandomString());
+    user = createPersistedUser(getRandomString(), getRandomString());
   }
 
   @Test
