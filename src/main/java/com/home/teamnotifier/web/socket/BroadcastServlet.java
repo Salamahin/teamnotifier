@@ -3,7 +3,6 @@ package com.home.teamnotifier.web.socket;
 import com.google.common.base.Optional;
 import com.google.common.net.HttpHeaders;
 import com.home.teamnotifier.authentication.*;
-import com.sun.xml.internal.messaging.saaj.util.Base64;
 import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.basic.BasicCredentials;
 import org.eclipse.jetty.http.HttpStatus;
@@ -11,6 +10,7 @@ import org.eclipse.jetty.websocket.api.*;
 import org.eclipse.jetty.websocket.servlet.*;
 import org.slf4j.*;
 import java.io.IOException;
+import static com.home.teamnotifier.utils.BasicAuthenticationCredentialExtractor.extract;
 
 public class BroadcastServlet extends WebSocketServlet {
 
@@ -43,7 +43,8 @@ public class BroadcastServlet extends WebSocketServlet {
     });
   }
 
-  private void sendUnauthorizedErrorResponse(final ServletUpgradeResponse resp,final Exception exc) {
+  private void sendUnauthorizedErrorResponse(final ServletUpgradeResponse resp,
+      final Exception exc) {
     try {
       resp.sendError(HttpStatus.UNAUTHORIZED_401, exc.getMessage());
     } catch (IOException e) {
@@ -53,23 +54,13 @@ public class BroadcastServlet extends WebSocketServlet {
 
   private String tryGetAuthenticatedUserName(final ServletUpgradeRequest request)
   throws AuthenticationException {
-    final BasicCredentials credentials = extractCredentials(request);
+    final BasicCredentials credentials = extract(request.getHeader(HttpHeaders.AUTHORIZATION));
     final Optional<User> authenticatedUser = authenticator.authenticate(credentials);
     if (!authenticatedUser.isPresent()) {
-      throw new AuthenticationException
-          ("AuthenticationFailed");
+      throw new AuthenticationException("Authentication failed");
     }
     return authenticatedUser.get().getName();
   }
-
-  private BasicCredentials extractCredentials(final ServletUpgradeRequest request) {
-    final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-    final String encodedValue = authHeader.split(" ")[1];
-    final String decodedValue = Base64.base64Decode(encodedValue);
-    final String[] logingPassword = decodedValue.split(":");
-    return new BasicCredentials(logingPassword[0], logingPassword[1]);
-  }
-
 
   private static class WebSocketHandler implements WebSocketListener {
 

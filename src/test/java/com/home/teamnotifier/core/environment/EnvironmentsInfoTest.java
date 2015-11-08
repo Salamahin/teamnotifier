@@ -22,6 +22,7 @@ public class EnvironmentsInfoTest {
 
   private AppServerInfo createFineAppServerInfo() {
     return new AppServerInfo(
+        1,
         "server",
         Sets.newHashSet(createFineSharedResourceInfo()),
         Sets.newHashSet("user")
@@ -29,7 +30,7 @@ public class EnvironmentsInfoTest {
   }
 
   private SharedResourceInfo createFineSharedResourceInfo() {
-    return new SharedResourceInfo("resource", createFineOccupationInfo());
+    return new SharedResourceInfo(1, "resource", createFineOccupationInfo());
   }
 
   private OccupationInfo createFineOccupationInfo() {

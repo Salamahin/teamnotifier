@@ -58,6 +58,7 @@ public class DbEnvironmentGateway implements EnvironmentGateway {
         .collect(toSet());
 
     return new AppServerInfo(
+        entity.getId(),
         entity.getName(),
         resources,
         subscribersNames
@@ -73,6 +74,10 @@ public class DbEnvironmentGateway implements EnvironmentGateway {
         )
         .orElse(null);
 
-    return new SharedResourceInfo(sharedResourceEntity.getName(), occupationInfo);
+    return new SharedResourceInfo(
+        sharedResourceEntity.getId(),
+        sharedResourceEntity.getName(),
+        occupationInfo
+    );
   }
 }
