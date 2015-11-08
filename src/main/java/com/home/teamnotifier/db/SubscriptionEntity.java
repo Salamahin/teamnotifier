@@ -5,16 +5,24 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(schema = "teamnotifier", name = "Subscription")
+@Table(
+    schema = "teamnotifier",
+    name = "Subscription",
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"appServerId", "subscriberId"})
+    }
+)
 public final class SubscriptionEntity implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private final Integer id;
 
   @ManyToOne(optional = false, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
+  @JoinColumn(name="appServerId")
   private final AppServerEntity appServer;
 
   @ManyToOne(optional = false, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
+  @JoinColumn(name="subscriberId")
   private final UserEntity subscriber;
 
   @Column(nullable = false)
