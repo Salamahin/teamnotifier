@@ -3,23 +3,31 @@
 <head>
     <meta charset="utf-8"/>
     <title>WebSocket Test</title>
-    <link rel="stylesheet" type="text/css" href="style/style.css">
 </head>
 <body>
 
 <script language="javascript" type="text/javascript" src="js/environment.js"></script>
 
-<div id="tableContainer-1">
-    <div id="tableContainer-2">
-        <table id="content-table">
-            <tr>
-                <td>
-                    <div id="status"></div>
-                </td>
-            </tr>
-            <tr><td><div id="environment"></div></td></tr>
-        </table>
-    </div>
-</div>
+<div id="status"></div>
+<div id="environment"></div>
+<table>
+    <tr>
+        <td>
+            <input id="input">
+        </td>
+        <td>
+            <input id="subscribe" type="button" value="subscribe"/>
+        </td>
+        <td>
+            <input id="unsubscribe" type="button" value="unsubscribe"/>
+        </td>
+        <td>
+            <input id="reserve" type="button" value="reserve"/>
+        </td>
+        <td>
+            <input id="free" type="button" value="free"/>
+        </td>
+    </tr>
+</table>
 </body>
 </html>

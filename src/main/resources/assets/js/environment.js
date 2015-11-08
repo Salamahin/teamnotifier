@@ -5,9 +5,31 @@ var wsUri = "ws://hello:world@localhost:7998/state?credentials=Basic"+btoa(user 
 var status;
 var environment;
 
-window.addEventListener("load", init, false);
+function getStatus() {
+  var xmlHttp = null;
+  xmlHttp = new XMLHttpRequest();
+  xmlHttp.withCredentials = true;
+  xmlHttp.open("GET", "/teamnotifier/1.0/environment", true);
+  xmlHttp.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + pass));
+  xmlHttp.onreadystatechange = function() {
+    if (xmlHttp.readyState == 4) {
+        if (xmlHttp.status == 200) {
+          environment.innerHTML=xmlHttp.responseText;
+        }
+      }
+  };
+  xmlHttp.send(null);
+}
 
-function init() {
+function reaskStatus(xmlHttp) {
+  if (xmlHttp.readyState == 4) {
+    if (xmlHttp.status == 200) {
+      getStatus();
+    }
+  }
+}
+
+window.onload = function() {
   status = document.getElementById("status");
   environment = document.getElementById("environment");
   getStatus();
@@ -31,22 +53,47 @@ function init() {
   websocket.onerror = function(evt) {
     console.error(evt.data)
   };
-}
 
-function getStatus() {
-  //document.write(theUrl);
-  var xmlHttp = null;
-  xmlHttp = new XMLHttpRequest();
-  xmlHttp.open("GET", "/teamnotifier/1.0/environment", true);
-  xmlHttp.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + pass));
-  xmlHttp.onreadystatechange = handleReadyStateChange;
-  xmlHttp.send(null);
 
-  function handleReadyStateChange() {
-    if (xmlHttp.readyState == 4) {
-      if (xmlHttp.status == 200) {
-        document.getElementById("environment").innerHTML=xmlHttp.responseText;
-      }
-    }
+  var subscribe = document.getElementById("subscribe");
+  var unsubscribe = document.getElementById("unsubscribe");
+  var reserve = document.getElementById("reserve");
+  var free = document.getElementById("free");
+  var input = document.getElementById("input");
+
+  subscribe.onclick = function() {
+    var xhr = new XMLHttpRequest();
+    xhr.withCredentials = true;
+    xhr.open("POST", "/teamnotifier/1.0/environment/server/subscribe/" + input.value, true);
+    xhr.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + pass));
+    xhr.onreadystatechange = function() {reaskStatus(xhr);};
+    xhr.send();
+  }
+
+  unsubscribe.onclick = function() {
+    var xhr = new XMLHttpRequest();
+    xhr.withCredentials = true;
+    xhr.open("DELETE", "/teamnotifier/1.0/environment/server/subscribe/" + input.value, true);
+    xhr.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + pass));
+    xhr.onreadystatechange = function() {reaskStatus(xhr);};
+    xhr.send();
+  }
+
+  reserve.onclick = function() {
+    var xhr = new XMLHttpRequest();
+    xhr.withCredentials = true;
+    xhr.open("POST", "/teamnotifier/1.0/environment/application/reserve/" + input.value, true);
+    xhr.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + pass));
+    xhr.onreadystatechange = function() {reaskStatus(xhr);};
+    xhr.send();
+  }
+
+  free.onclick = function() {
+    var xhr = new XMLHttpRequest();
+    xhr.withCredentials = true;
+    xhr.open("DELETE", "/teamnotifier/1.0/environment/application/reserve/" + input.value, true);
+    xhr.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + pass));
+    xhr.onreadystatechange = function() {reaskStatus(xhr);};
+    xhr.send();
   }
 }

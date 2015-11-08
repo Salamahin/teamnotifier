@@ -23,7 +23,8 @@ public final class AppServerEntity implements Serializable {
   @OneToMany(mappedBy = "appServer", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   private final List<SharedResourceEntity> resources;
 
-  @OneToMany(mappedBy = "appServer", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "appServer", fetch = FetchType.EAGER, cascade = CascadeType.ALL,
+      orphanRemoval = true)
   private final List<SubscriptionEntity> subscriptions;
 
   //for hibernate

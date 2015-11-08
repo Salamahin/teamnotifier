@@ -11,10 +11,10 @@ public final class SubscriptionEntity implements Serializable {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private final Integer id;
 
-  @ManyToOne(optional = false, cascade = CascadeType.ALL)
+  @ManyToOne(optional = false, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
   private final AppServerEntity appServer;
 
-  @ManyToOne(optional = false, cascade = CascadeType.ALL)
+  @ManyToOne(optional = false, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
   private final UserEntity subscriber;
 
   @Column(nullable = false)

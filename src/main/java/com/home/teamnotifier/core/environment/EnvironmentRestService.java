@@ -65,7 +65,7 @@ public class EnvironmentRestService {
   }
 
   @DELETE
-  @Path("/server/reserve/{serverId}")
+  @Path("/server/subscribe/{serverId}")
   @RolesAllowed({TeamNotifierRoles.USER})
   public void unsubscribe(@Auth final User user, @PathParam("serverId") final Integer serverId) {
     resourceMonitor.unsubscribe(user.getName(), serverId);

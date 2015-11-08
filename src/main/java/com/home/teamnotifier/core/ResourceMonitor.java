@@ -46,7 +46,7 @@ public class ResourceMonitor {
   }
 
   public void unsubscribe(final String userName, final int serverId) {
-    final BroadcastInformation information = subscriptionGateway.subscribe(userName, serverId);
+    final BroadcastInformation information = subscriptionGateway.unsubscribe(userName, serverId);
     fireNotification(information);
   }
 
