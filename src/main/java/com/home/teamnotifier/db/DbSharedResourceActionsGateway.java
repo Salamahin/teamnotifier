@@ -91,7 +91,7 @@ public class DbSharedResourceActionsGateway implements SharedResourceActionsGate
     }
 
     if (range.hasUpperBound()) {
-      final LocalDateTime upperEndpoint = range.lowerEndpoint();
+      final LocalDateTime upperEndpoint = range.upperEndpoint();
       if (range.lowerBoundType() == BoundType.CLOSED) {
         predicates.add(cb.lessThanOrEqualTo(time, upperEndpoint));
       } else { predicates.add(cb.lessThan(time, upperEndpoint)); }

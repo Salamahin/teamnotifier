@@ -13,7 +13,9 @@ import org.slf4j.*;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.nio.charset.Charset;
 import java.time.LocalDateTime;
+import java.util.Base64;
 import static com.home.teamnotifier.utils.BasicAuthenticationCredentialExtractor.*;
 
 @Path("1.0/environment")
@@ -77,16 +79,33 @@ public class EnvironmentRestService {
     return resourceMonitor.status();
   }
 
+  private String decodeBase64String(final String encodedString) {
+    return new String(
+        Base64.getDecoder().decode(encodedString),
+        Charset.forName("UTF-8"));
+  }
+
   @GET
   @Path("/application/actions/{applicationId}")
   @RolesAllowed({TeamNotifierRoles.USER})
   public ActionsInfo getActionsInfo(
       @PathParam("applicationId") final Integer applicationId,
-      @QueryParam("from") final String from,
-      @QueryParam("to") final String to
+      @HeaderParam("ActionsFrom") final String encodedBase64From,
+      @HeaderParam("ActionsTo") final String encodedBase64To
   ) {
-    final LocalDateTime fromTime = LocalDateTime.parse(from);
-    final LocalDateTime toTime = LocalDateTime.parse(to);
+    final LocalDateTime fromTime = LocalDateTime.parse(decodeBase64String(encodedBase64From));
+    final LocalDateTime toTime = LocalDateTime.parse(decodeBase64String(encodedBase64To));
     return resourceMonitor.actionsInfo(applicationId, Range.closed(fromTime, toTime));
+  }
+
+  @POST
+  @Path("/application/actions/{applicationId}")
+  @RolesAllowed({TeamNotifierRoles.USER})
+  public void newInfo(
+      @Auth final User user,
+      @PathParam("applicationId") final Integer applicationId,
+      @HeaderParam("ActionDetails") final String details
+  ) {
+    resourceMonitor.newAction(user.getName(), applicationId, details);
   }
 }

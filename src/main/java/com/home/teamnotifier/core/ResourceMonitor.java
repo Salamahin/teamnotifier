@@ -62,4 +62,10 @@ public class ResourceMonitor {
   public ActionsInfo actionsInfo(final int applicationId, final Range<LocalDateTime> range) {
     return sharedResourceActionsGateway.getActions(applicationId, range);
   }
+
+  public void newAction(final String userName, final int applicationId, final String desc) {
+    final BroadcastInformation information = sharedResourceActionsGateway
+        .newAction(userName, applicationId, desc);
+    fireNotification(information);
+  }
 }
