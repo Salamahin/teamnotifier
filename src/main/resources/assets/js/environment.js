@@ -34,16 +34,19 @@ function init() {
 }
 
 function getStatus() {
-  var xhr = new XMLHttpRequest();
-  xhr.withCredentials = true;
-  xhr.open("GET", "/teamnotifier/1.0/environment", true, user, pass);
-  xhr.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + pass));
-  xhr.onreadystatechange = showStatus;
-  xhr.send();
-}
+  //document.write(theUrl);
+  var xmlHttp = null;
+  xmlHttp = new XMLHttpRequest();
+  xmlHttp.open("GET", "/teamnotifier/1.0/environment", true);
+  xmlHttp.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + pass));
+  xmlHttp.onreadystatechange = handleReadyStateChange;
+  xmlHttp.send(null);
 
-function showStatus(xhr) {
-//  if (xhr.readyState == 4)  {
-    environment.innerHTML = xhr.responseText;
-//  }
+  function handleReadyStateChange() {
+    if (xmlHttp.readyState == 4) {
+      if (xmlHttp.status == 200) {
+        document.getElementById("environment").innerHTML=xmlHttp.responseText;
+      }
+    }
+  }
 }

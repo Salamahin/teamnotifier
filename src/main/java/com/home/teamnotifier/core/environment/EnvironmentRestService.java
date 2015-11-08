@@ -78,12 +78,12 @@ public class EnvironmentRestService {
   }
 
   @GET
-  @Path("/application/actions/{applicationId}{from}{to}")
+  @Path("/application/actions/{applicationId}")
   @RolesAllowed({TeamNotifierRoles.USER})
   public ActionsInfo getActionsInfo(
       @PathParam("applicationId") final Integer applicationId,
-      @PathParam("from") final String from,
-      @PathParam("to") final String to
+      @QueryParam("from") final String from,
+      @QueryParam("to") final String to
   ) {
     final LocalDateTime fromTime = LocalDateTime.parse(from);
     final LocalDateTime toTime = LocalDateTime.parse(to);
