@@ -34,8 +34,9 @@ public class DbSubscriptionGatewayTest
   {
     final AppServerEntity serverEntity=environmentEntity.getImmutableListOfAppServers().get(0);
     final Integer serverId=serverEntity.getId();
-    subscripbtion.subscribe(userEntity.getName(), serverId);
-    subscripbtion.unsubscribe(userEntity.getName(), serverId);
+    final String userName=userEntity.getName();
+    subscripbtion.subscribe(userName, serverId);
+    subscripbtion.unsubscribe(userName, serverId);
     assertThat(serverEntity.getImmutableListOfSubscribers()).isEmpty();
   }
 
@@ -43,9 +44,18 @@ public class DbSubscriptionGatewayTest
   public void testReserve()
       throws Exception
   {
-    final Integer resourceId=environmentEntity.getImmutableListOfAppServers().get(0).getImmutableListOfResources().get(0)
-        .getId();
+    final Integer resourceId=environmentEntity.getImmutableListOfAppServers().get(0).getImmutableListOfResources().get(0).getId();
     subscripbtion.reserve(userEntity.getName(), resourceId);
+  }
+
+  @Test(expected = Exception.class)
+  public void testDoubleSubscribeCausesException() {
+    final AppServerEntity serverEntity=environmentEntity.getImmutableListOfAppServers().get(0);
+    final Integer serverId=serverEntity.getId();
+    final String userName=userEntity.getName();
+
+    subscripbtion.subscribe(userName, serverId);
+    subscripbtion.subscribe(userName, serverId);
   }
 
   @Test(expected=AlreadyReserved.class)

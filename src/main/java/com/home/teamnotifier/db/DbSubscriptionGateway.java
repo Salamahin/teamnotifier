@@ -53,18 +53,7 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
     return transactionHelper.transaction(em -> {
       final UserEntity userEntity = DbGatewayCommons.getUserEntity(userName, em);
       AppServerEntity serverEntity = getAppServerEntity(serverId, em);
-//
-//      final CriteriaBuilder cb = em.getCriteriaBuilder();
-//      final CriteriaDelete<SubscriptionEntity> delete = cb
-//          .createCriteriaDelete(SubscriptionEntity.class);
-//      final Root<SubscriptionEntity> _subscription = delete.getRoot();
-//      final Predicate subscriberAndServerEqualsToProvided = cb.and(
-//          cb.equal(_subscription.get("appServer"), serverEntity),
-//          cb.equal(_subscription.get("subscriber"), userEntity)
-//      );
-
       final LocalDateTime time = serverEntity.unsubscribe(userEntity);
-//      em.createQuery(delete.where(subscriberAndServerEqualsToProvided)).executeUpdate();
       serverEntity = em.merge(serverEntity);
 
       return getBroadcastInformation(

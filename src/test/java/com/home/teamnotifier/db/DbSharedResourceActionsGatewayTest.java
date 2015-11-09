@@ -5,7 +5,10 @@ import com.home.teamnotifier.core.environment.ActionsInfo;
 import org.junit.*;
 import java.time.*;
 import java.util.*;
+import java.util.stream.Collectors;
+
 import static com.home.teamnotifier.db.Commons.*;
+import static java.util.stream.Collectors.*;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -20,7 +23,8 @@ public class DbSharedResourceActionsGatewayTest {
 
   private LocalDateTime middle;
 
-  private List<ActionData> allActionsEver;
+  private List<ActionData> actionsBeforeMiddle;
+  private List<ActionData> actionAfterMiddle;
 
   private Integer resourceId;
 
@@ -40,13 +44,21 @@ public class DbSharedResourceActionsGatewayTest {
     }
 
     final ActionsInfo allActionsEver = getAllActionsEver();
-    this.allActionsEver = toActionDataList(allActionsEver);
+    final List<ActionData> actionsEver = toActionDataList(allActionsEver);
 
-    firstEver = this.allActionsEver.get(0).time;
-    lastEver = this.allActionsEver.get(this.allActionsEver.size() - 1).time;
+    firstEver = actionsEver.get(0).time;
+    lastEver = actionsEver.get(actionsEver.size() - 1).time;
 
     middle = LocalDateTime
         .from(Duration.between(firstEver, lastEver).dividedBy(2).addTo(firstEver));
+
+    actionsBeforeMiddle = actionsEver.stream()
+        .filter(ad -> ad.time.compareTo(middle) <= 0)
+        .collect(toList());
+
+    actionAfterMiddle = actionsEver.stream()
+        .filter(ad -> ad.time.compareTo(middle) >= 0)
+        .collect(toList());
   }
 
   private List<ActionData> toActionDataList(ActionsInfo allActionsEver) {
@@ -62,11 +74,8 @@ public class DbSharedResourceActionsGatewayTest {
     final ActionsInfo actions = gateway.getActions(resourceId, Range.closed(firstEver, middle));
     final List<ActionData> loadedData = toActionDataList(actions);
 
-    final List<ActionData> dataNotInRange = new ArrayList<>(allActionsEver);
-    dataNotInRange.removeAll(loadedData);
-
-    assertThat(allActionsEver).containsAll(loadedData);
-    assertThat(loadedData).doesNotContainAnyElementsOf(dataNotInRange);
+    assertThat(loadedData).containsAll(actionsBeforeMiddle);
+    assertThat(loadedData).doesNotContainAnyElementsOf(actionAfterMiddle);
   }
 
   @Test
@@ -75,11 +84,8 @@ public class DbSharedResourceActionsGatewayTest {
     final ActionsInfo actions = gateway.getActions(resourceId, Range.closed(middle, lastEver));
     final List<ActionData> loadedData = toActionDataList(actions);
 
-    final List<ActionData> dataNotInRange = new ArrayList<>(allActionsEver);
-    dataNotInRange.removeAll(loadedData);
-
-    assertThat(allActionsEver).containsAll(loadedData);
-    assertThat(loadedData).doesNotContainAnyElementsOf(dataNotInRange);
+    assertThat(loadedData).containsAll(actionAfterMiddle);
+    assertThat(loadedData).doesNotContainAnyElementsOf(actionsBeforeMiddle);
   }
 
   @Test
