@@ -1,5 +1,8 @@
 package com.home.teamnotifier;
 
+import com.github.toastshaman.dropwizard.auth.jwt.*;
+import com.github.toastshaman.dropwizard.auth.jwt.hmac.HmacSHA512Verifier;
+import com.github.toastshaman.dropwizard.auth.jwt.parser.DefaultJsonWebTokenParser;
 import com.home.teamnotifier.authentication.*;
 import com.home.teamnotifier.gateways.EnvironmentGateway;
 import com.home.teamnotifier.health.DbConnection;
@@ -23,23 +26,27 @@ public class NotifierApplication extends Application<NotifierConfiguration> {
 
   @Override
   public void run(final NotifierConfiguration configuration, final Environment environment) {
-    final TeamNotifierAuthenticator authenticator = INJECTION_BUNDLE
+    final TokenAuthenticator authenticator = INJECTION_BUNDLE
         .getInjector()
-        .getInstance(TeamNotifierAuthenticator.class);
+        .getInstance(TokenAuthenticator.class);
     final ClientManager clientManager = INJECTION_BUNDLE
         .getInjector()
         .getInstance(ClientManager.class);
 
     registerWebsocket(environment, authenticator, clientManager);
 
-    final AuthDynamicFeature authDynamicFeature = new AuthDynamicFeature(
-        new BasicCredentialAuthFilter.Builder<User>()
-            .setAuthenticator(authenticator)
-            .setAuthorizer(new TrivialAuthorizer())
-            .buildAuthFilter()
+    final JsonWebTokenParser tokenParser = new DefaultJsonWebTokenParser();
+    final HmacSHA512Verifier tokenVerifier = new HmacSHA512Verifier(
+        configuration.getJwtTokenSecret());
+    environment.jersey().register(new AuthDynamicFeature(
+            new JWTAuthFilter.Builder<User>()
+                .setTokenParser(tokenParser)
+                .setTokenVerifier(tokenVerifier)
+                .setAuthenticator(authenticator)
+                .buildAuthFilter()
+        )
     );
 
-    environment.jersey().register(authDynamicFeature);
     environment.jersey().register(RolesAllowedDynamicFeature.class);
     environment.jersey().register(new AuthValueFactoryProvider.Binder<>(User.class));
 
@@ -51,7 +58,7 @@ public class NotifierApplication extends Application<NotifierConfiguration> {
 
   private void registerWebsocket(
       final Environment environment,
-      final TeamNotifierAuthenticator authenticator,
+      final WebsocketAuthenticator authenticator,
       final ClientManager manager
   ) {
 

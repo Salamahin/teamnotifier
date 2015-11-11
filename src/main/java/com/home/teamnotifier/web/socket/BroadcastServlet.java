@@ -17,11 +17,11 @@ public class BroadcastServlet extends WebSocketServlet {
 
   private final ClientManager clientManager;
 
-  private final TeamNotifierAuthenticator authenticator;
+  private final WebsocketAuthenticator authenticator;
 
   public BroadcastServlet(
       final ClientManager clientManager,
-      final TeamNotifierAuthenticator authenticator
+      final WebsocketAuthenticator authenticator
   ) {
     this.clientManager = clientManager;
     this.authenticator = authenticator;
@@ -54,9 +54,8 @@ public class BroadcastServlet extends WebSocketServlet {
   private String tryGetAuthenticatedUserName(final ServletUpgradeRequest request)
   throws AuthenticationException {
     //fixme dont know how to provide them different way; should be changed when ssl
-    final String encodedCredentials = request.getParameterMap().get("credentials").get(0);
-    final BasicCredentials credentials = extract(encodedCredentials);
-    final Optional<User> authenticatedUser = authenticator.authenticate(credentials);
+    final String tokenStr = request.getParameterMap().get("credentials").get(0);
+    final Optional<User> authenticatedUser = authenticator.authenticate(tokenStr);
     if (!authenticatedUser.isPresent()) {
       throw new AuthenticationException("Authentication failed");
     }
