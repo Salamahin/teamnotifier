@@ -23,7 +23,7 @@ public final class UserEntity implements Serializable {
     passHash = null;
   }
 
-  public UserEntity(String name, String passHash) {
+  public UserEntity(final String name, final String passHash) {
     id = null;
     this.name = name;
     this.passHash = passHash;

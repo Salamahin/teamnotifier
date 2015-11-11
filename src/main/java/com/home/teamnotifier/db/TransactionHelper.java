@@ -1,42 +1,68 @@
 package com.home.teamnotifier.db;
 
-import com.google.common.base.Throwables;
-import org.slf4j.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.inject.Inject;
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.Persistence;
 import java.util.concurrent.Semaphore;
 import java.util.function.Function;
 
-public final class TransactionHelper {
-  private static final Logger LOGGER = LoggerFactory.getLogger(TransactionHelper.class);
+public final class TransactionHelper
+{
+  private static final Logger LOGGER=LoggerFactory.getLogger(TransactionHelper.class);
 
-  private static final Semaphore MUTEX = new Semaphore(1, true);
-
-  private final EntityManager entityManager;
+  private final EntityManagerFactory factory;
 
   @Inject
-  public TransactionHelper() {
-    final EntityManagerFactory managerFactory = Persistence
+  public TransactionHelper()
+  {
+    factory=Persistence
         .createEntityManagerFactory("teamnotifier");
-    entityManager = managerFactory.createEntityManager();
   }
 
-  public <U> U transaction(Function<EntityManager, U> function) {
-    U result = null;
+  public <U> U transaction(Function<EntityManager, U> function)
+  {
+    U result=null;
+    EntityManager em=null;
+    EntityTransaction tx=null;
 
-    final EntityTransaction transaction = entityManager.getTransaction();
-    try {
-      MUTEX.acquire();
-      transaction.begin();
-      result = function.apply(entityManager);
-      transaction.commit();
-    } catch (Exception exc) {
-      transaction.rollback();
-      Throwables.propagate(exc);
-    } finally {
-      MUTEX.release();
+    try
+    {
+      em=factory.createEntityManager();
+      tx=em.getTransaction();
+      tx.begin();
+      result=function.apply(em);
+      tx.commit();
+    }
+    catch (RuntimeException exc)
+    {
+      rollback(tx);
+      throw exc;
+    }
+    finally
+    {
+      if (em != null)
+        em.close();
     }
 
     return result;
   }
+
+  private void rollback(EntityTransaction tx)
+  {
+    try
+    {
+      if (tx != null)
+        tx.rollback();
+    }
+    catch (RuntimeException e)
+    {
+      LOGGER.error("Failed to rollback", e);
+    }
+  }
+
 }

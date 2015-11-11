@@ -50,22 +50,6 @@ public final class AppServerEntity implements Serializable {
     return entity;
   }
 
-  public LocalDateTime subscribe(final UserEntity user) {
-    final SubscriptionEntity entity = new SubscriptionEntity(this, user);
-    subscriptions.add(entity);
-    return entity.getTimestamp();
-  }
-
-  public LocalDateTime unsubscribe(final UserEntity user) {
-    final SubscriptionEntity entity = subscriptions.stream()
-        .filter(s -> Objects.equals(user.getId(), s.getSubscriber().getId()))
-        .findFirst()
-        .get();
-    subscriptions.remove(entity);
-
-    return entity.getTimestamp();
-  }
-
   public Integer getId() {
     return id;
   }
@@ -82,7 +66,7 @@ public final class AppServerEntity implements Serializable {
     return ImmutableList.copyOf(resources);
   }
 
-  public List<SubscriptionData> getImmutableListOfSubscribers() {
+  List<SubscriptionData> getImmutableListOfSubscribers() {
     return ImmutableList.copyOf(subscriptions.stream()
         .map(s -> new SubscriptionData(s.getSubscriber().getName(), s.getTimestamp()))
         .collect(Collectors.toList())

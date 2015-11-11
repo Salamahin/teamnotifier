@@ -14,13 +14,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class DbSharedResourceActionsGatewayTest {
   private DbSharedResourceActionsGateway gateway;
-
   private EnvironmentEntity environment;
 
   private LocalDateTime firstEver;
-
   private LocalDateTime lastEver;
-
   private LocalDateTime middle;
 
   private List<ActionData> actionsBeforeMiddle;

@@ -39,7 +39,7 @@ public class DbEnvironmentGateway implements EnvironmentGateway {
     });
   }
 
-  private EnvironmentInfo toEnvironment(EnvironmentEntity entity) {
+  private EnvironmentInfo toEnvironment(final EnvironmentEntity entity) {
     return new EnvironmentInfo(
         entity.getName(),
         entity.getImmutableListOfAppServers().stream()

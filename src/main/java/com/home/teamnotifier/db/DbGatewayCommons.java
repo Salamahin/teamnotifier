@@ -1,5 +1,7 @@
 package com.home.teamnotifier.db;
 
+import com.google.common.base.Preconditions;
+
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
 import java.util.*;
@@ -17,7 +19,10 @@ final class DbGatewayCommons {
     final CriteriaQuery<UserEntity> selectUserQuery = cq
         .where(cb.equal(rootEntry.get("name"), userName));
 
-    return em.createQuery(selectUserQuery).getSingleResult();
+    final UserEntity entity=em.createQuery(selectUserQuery).getSingleResult();
+    Preconditions.checkNotNull(entity, "No such user %s", userName);
+
+    return entity;
   }
 
   static List<String> getSubscribersButUser(final String userName, final AppServerEntity server) {

@@ -2,6 +2,7 @@ package com.home.teamnotifier.db;
 
 import com.home.teamnotifier.gateways.*;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static com.home.teamnotifier.db.Commons.*;
@@ -9,35 +10,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class DbSubscriptionGatewayTest
 {
-
   private EnvironmentEntity environmentEntity;
-
   private UserEntity userEntity;
-
   private DbSubscriptionGateway subscripbtion;
 
-  @Test
-  public void testSubscribe()
+  @Before
+  public void setUp()
       throws Exception
   {
-    final AppServerEntity serverEntity=environmentEntity.getImmutableListOfAppServers().get(0);
-    final Integer serverId=serverEntity.getId();
-
-    assertThat(serverEntity.getImmutableListOfSubscribers()).isEmpty();
-    subscripbtion.subscribe(userEntity.getName(), serverId);
-    assertThat(serverEntity.getImmutableListOfSubscribers()).isNotEmpty();
-  }
-
-  @Test
-  public void testUnsubscribe()
-      throws Exception
-  {
-    final AppServerEntity serverEntity=environmentEntity.getImmutableListOfAppServers().get(0);
-    final Integer serverId=serverEntity.getId();
-    final String userName=userEntity.getName();
-    subscripbtion.subscribe(userName, serverId);
-    subscripbtion.unsubscribe(userName, serverId);
-    assertThat(serverEntity.getImmutableListOfSubscribers()).isEmpty();
+    userEntity= createPersistedUser(getRandomString(), getRandomString());
+    environmentEntity= createPersistedEnvironmentWithOneServerAndOneResource(
+        getRandomString(),
+        getRandomString(),
+        getRandomString()
+    );
+    subscripbtion=new DbSubscriptionGateway(HELPER);
   }
 
   @Test
@@ -145,16 +132,5 @@ public class DbSubscriptionGatewayTest
     assertThat(subscripbtion.free(userEntity.getName(), resourceId).getSubscribers()).contains(subscriber);
   }
 
-  @Before
-  public void setUp()
-      throws Exception
-  {
-    userEntity= createPersistedUser(getRandomString(), getRandomString());
-    environmentEntity= createPersistedEnvironmentWithOneServerAndOneResource(
-        getRandomString(),
-        getRandomString(),
-        getRandomString()
-    );
-    subscripbtion=new DbSubscriptionGateway(HELPER);
-  }
+
 }

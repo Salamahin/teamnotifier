@@ -36,17 +36,6 @@ final class NotifierModule extends AbstractModule {
   public Executor newExecutor(final NotifierConfiguration configuration) {
     return Executors.newFixedThreadPool(
         configuration.getExecutorsConfiguration().getPoolSize(),
-        new ThreadFactoryBuilder().setNameFormat("cam-pool-%d").build()
-    );
-  }
-
-  @Provides
-  @Singleton
-  public ScheduledExecutorService newScheduledExecutorService(
-      final NotifierConfiguration configuration
-  ) {
-    return Executors.newScheduledThreadPool(
-        configuration.getExecutorsConfiguration().getPoolSize(),
         new ThreadFactoryBuilder().setNameFormat("websocket-pool-%d").build()
     );
   }
