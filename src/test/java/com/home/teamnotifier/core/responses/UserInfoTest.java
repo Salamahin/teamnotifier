@@ -1,6 +1,7 @@
-package com.home.teamnotifier.core.auth;
+package com.home.teamnotifier.core.responses;
 
 import com.fasterxml.jackson.databind.*;
+import com.home.teamnotifier.core.responses.UserInfo;
 import io.dropwizard.jackson.Jackson;
 import org.junit.Test;
 import static io.dropwizard.testing.FixtureHelpers.fixture;

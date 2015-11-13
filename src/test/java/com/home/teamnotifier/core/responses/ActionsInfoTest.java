@@ -1,4 +1,4 @@
-package com.home.teamnotifier.core.environment;
+package com.home.teamnotifier.core.responses;
 
 import com.fasterxml.jackson.databind.*;
 import com.google.common.collect.Lists;

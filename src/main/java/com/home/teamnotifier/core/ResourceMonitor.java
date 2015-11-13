@@ -2,9 +2,9 @@ package com.home.teamnotifier.core;
 
 import com.google.common.collect.Range;
 import com.google.inject.Inject;
-import com.home.teamnotifier.core.environment.*;
+import com.home.teamnotifier.core.responses.*;
 import com.home.teamnotifier.gateways.*;
-import com.home.teamnotifier.web.socket.ClientManager;
+
 import java.time.LocalDateTime;
 
 public class ResourceMonitor {
@@ -15,20 +15,20 @@ public class ResourceMonitor {
 
   private final SharedResourceActionsGateway sharedResourceActionsGateway;
 
-  private final ClientManager clientManager;
+  private final NotificationManager notificationManager;
 
   @Inject
   public ResourceMonitor(
       final EnvironmentGateway environmentGateway,
       final SubscriptionGateway subscriptionGateway,
       final SharedResourceActionsGateway sharedResourceActionsGateway,
-      final ClientManager clientManager
+      final NotificationManager notificationManager
   ) {
 
     this.environmentGateway = environmentGateway;
     this.subscriptionGateway = subscriptionGateway;
     this.sharedResourceActionsGateway = sharedResourceActionsGateway;
-    this.clientManager = clientManager;
+    this.notificationManager = notificationManager;
   }
 
   public void reserve(final String userName, final int applicationId) {
@@ -37,7 +37,7 @@ public class ResourceMonitor {
   }
 
   void fireNotification(final BroadcastInformation information) {
-    clientManager.pushToClients(information.getSubscribers(), information.getStringToPush());
+    notificationManager.pushToClients(information.getSubscribers(), information.getStringToPush());
   }
 
   public void subscribe(final String userName, final int serverId) {

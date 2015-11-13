@@ -1,14 +1,12 @@
 package com.home.teamnotifier.db;
 
 import com.google.common.collect.Range;
-import com.home.teamnotifier.core.environment.ActionsInfo;
+import com.home.teamnotifier.core.responses.ActionsInfo;
 import org.junit.*;
 import java.time.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
-import static com.home.teamnotifier.db.Commons.*;
-import static java.util.stream.Collectors.*;
+import static com.home.teamnotifier.Commons.*;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 

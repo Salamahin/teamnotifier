@@ -3,7 +3,6 @@ package com.home.teamnotifier.db;
 import com.google.common.collect.ImmutableList;
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -44,10 +43,9 @@ public final class AppServerEntity implements Serializable {
     subscriptions = new ArrayList<>();
   }
 
-  public SharedResourceEntity newSharedResource(final String name) {
+  public void newSharedResource(final String name) {
     final SharedResourceEntity entity = new SharedResourceEntity(this, name);
     resources.add(entity);
-    return entity;
   }
 
   public Integer getId() {

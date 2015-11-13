@@ -2,10 +2,9 @@ package com.home.teamnotifier.db;
 
 import com.home.teamnotifier.gateways.*;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import static com.home.teamnotifier.db.Commons.*;
+import static com.home.teamnotifier.Commons.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DbSubscriptionGatewayTest

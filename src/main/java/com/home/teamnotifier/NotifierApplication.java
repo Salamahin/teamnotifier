@@ -10,7 +10,6 @@ import com.home.teamnotifier.web.socket.*;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.auth.*;
-import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
 import io.dropwizard.setup.*;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import javax.servlet.ServletRegistration;
@@ -26,9 +25,9 @@ public class NotifierApplication extends Application<NotifierConfiguration> {
 
   @Override
   public void run(final NotifierConfiguration configuration, final Environment environment) {
-    final TokenAuthenticator authenticator = INJECTION_BUNDLE
+    final JwtTokenAuthenticator authenticator = INJECTION_BUNDLE
         .getInjector()
-        .getInstance(TokenAuthenticator.class);
+        .getInstance(JwtTokenAuthenticator.class);
     final ClientManager clientManager = INJECTION_BUNDLE
         .getInjector()
         .getInstance(ClientManager.class);
@@ -36,23 +35,24 @@ public class NotifierApplication extends Application<NotifierConfiguration> {
     registerWebsocket(environment, authenticator, clientManager);
 
     final JsonWebTokenParser tokenParser = new DefaultJsonWebTokenParser();
-    final HmacSHA512Verifier tokenVerifier = new HmacSHA512Verifier(
-        configuration.getJwtTokenSecret());
+    final HmacSHA512Verifier tokenVerifier = new HmacSHA512Verifier(configuration.getJwtTokenSecret());
+
     environment.jersey().register(new AuthDynamicFeature(
-            new JWTAuthFilter.Builder<User>()
+            new JWTAuthFilter.Builder<AuthenticatedUserData>()
                 .setTokenParser(tokenParser)
                 .setTokenVerifier(tokenVerifier)
                 .setAuthenticator(authenticator)
+                .setAuthorizer(new PermitAllAuthorizer<>())
                 .buildAuthFilter()
         )
     );
-
     environment.jersey().register(RolesAllowedDynamicFeature.class);
-    environment.jersey().register(new AuthValueFactoryProvider.Binder<>(User.class));
+    environment.jersey().register(new AuthValueFactoryProvider.Binder<>(AuthenticatedUserData.class));
 
     final EnvironmentGateway environmentGateway = INJECTION_BUNDLE
         .getInjector()
         .getInstance(EnvironmentGateway.class);
+
     environment.healthChecks().register("DbConnection", new DbConnection(environmentGateway));
   }
 

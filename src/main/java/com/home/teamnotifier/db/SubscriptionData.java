@@ -2,7 +2,7 @@ package com.home.teamnotifier.db;
 
 import java.time.LocalDateTime;
 
-public final class SubscriptionData {
+final class SubscriptionData {
   private final String user;
 
   private final LocalDateTime subscribtionTime;

@@ -1,9 +1,13 @@
-package com.home.teamnotifier.db;
+package com.home.teamnotifier;
 
+import com.home.teamnotifier.db.AppServerEntity;
+import com.home.teamnotifier.db.EnvironmentEntity;
+import com.home.teamnotifier.db.TransactionHelper;
+import com.home.teamnotifier.db.UserEntity;
 import com.home.teamnotifier.utils.PasswordHasher;
 import java.util.UUID;
 
-final public class Commons {
+public final class Commons {
   private Commons() {
     throw new AssertionError();
   }
@@ -18,7 +22,7 @@ final public class Commons {
     return HELPER.transaction(em -> em.merge(entity));
   }
 
-  static String getRandomString() {
+  public static String getRandomString() {
     return UUID.randomUUID().toString();
   }
 

@@ -2,7 +2,7 @@ package com.home.teamnotifier.db;
 
 import java.time.LocalDateTime;
 
-public final class ReservationData {
+final class ReservationData {
   private final UserEntity occupier;
 
   private final LocalDateTime occupationTime;

@@ -44,10 +44,6 @@ public final class SharedResourceEntity implements Serializable {
     occupationStartTime = LocalDateTime.now();
   }
 
-  public void actionOnResource(final UserEntity userEntity, final String details) {
-
-  }
-
   public void free() {
     Preconditions.checkState(occupier != null);
     occupier = null;

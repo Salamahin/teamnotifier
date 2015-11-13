@@ -3,13 +3,11 @@ package com.home.teamnotifier.web.socket;
 import com.google.common.base.Optional;
 import com.home.teamnotifier.authentication.*;
 import io.dropwizard.auth.AuthenticationException;
-import io.dropwizard.auth.basic.BasicCredentials;
 import org.eclipse.jetty.http.HttpStatus;
 import org.eclipse.jetty.websocket.api.*;
 import org.eclipse.jetty.websocket.servlet.*;
 import org.slf4j.*;
 import java.io.IOException;
-import static com.home.teamnotifier.utils.BasicAuthenticationCredentialExtractor.extract;
 
 public class BroadcastServlet extends WebSocketServlet {
 
@@ -53,9 +51,8 @@ public class BroadcastServlet extends WebSocketServlet {
 
   private String tryGetAuthenticatedUserName(final ServletUpgradeRequest request)
   throws AuthenticationException {
-    //fixme dont know how to provide them different way; should be changed when ssl
     final String tokenStr = request.getParameterMap().get("credentials").get(0);
-    final Optional<User> authenticatedUser = authenticator.authenticate(tokenStr);
+    final Optional<AuthenticatedUserData> authenticatedUser = authenticator.authenticate(tokenStr);
     if (!authenticatedUser.isPresent()) {
       throw new AuthenticationException("Authentication failed");
     }

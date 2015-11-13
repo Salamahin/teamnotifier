@@ -16,11 +16,23 @@ public class DbUserGateway implements UserGateway {
     this.transactionHelper = transactionHelper;
   }
 
+  @Override public UserCredentials userCredentials(final int id)
+  {
+    try {
+      final UserEntity entity=transactionHelper.transaction(em -> em.find(UserEntity.class, id));
+      return new UserCredentials(entity.getId(), entity.getName(), entity.getPassHash());
+    } catch (Exception exc) {
+      LOGGER.error("Failed to get user by name", exc);
+    }
+
+    return null;
+  }
+
   @Override
   public UserCredentials userCredentials(final String userName) {
     final UserEntity entity = getEntityByName(userName);
     if (entity != null) {
-      return new UserCredentials(entity.getName(), entity.getPassHash());
+      return new UserCredentials(entity.getId(), entity.getName(), entity.getPassHash());
     } else {
       return null;
     }

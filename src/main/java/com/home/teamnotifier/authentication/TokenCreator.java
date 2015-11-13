@@ -15,11 +15,11 @@ public class TokenCreator {
     signer = new HmacSHA512Signer(configuration.getJwtTokenSecret());
   }
 
-  public String getTokenFor(final String userName) {
+  public String getTokenFor(final int userId) {
     final JsonWebToken token = JsonWebToken.builder()
         .header(JsonWebTokenHeader.HS512())
         .claim(JsonWebTokenClaim.builder()
-            .subject(userName)
+            .subject(String.valueOf(userId))
             .issuedAt(DateTime.now())
             .expiration(DateTime.now().plusHours(16))
             .build())

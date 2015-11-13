@@ -2,8 +2,11 @@ package com.home.teamnotifier;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.inject.*;
+import com.home.teamnotifier.core.NotificationManager;
 import com.home.teamnotifier.db.*;
 import com.home.teamnotifier.gateways.*;
+import com.home.teamnotifier.web.socket.ClientManager;
+
 import javax.inject.Singleton;
 import java.util.concurrent.*;
 
@@ -28,6 +31,10 @@ final class NotifierModule extends AbstractModule {
         .in(Singleton.class);
 
     bind(TransactionHelper.class)
+        .in(Singleton.class);
+
+    bind(NotificationManager.class)
+        .to(ClientManager.class)
         .in(Singleton.class);
   }
 

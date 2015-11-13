@@ -3,6 +3,7 @@ package com.home.teamnotifier.web.socket;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.inject.Inject;
+import com.home.teamnotifier.core.NotificationManager;
 import org.eclipse.jetty.websocket.api.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,15 +13,14 @@ import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
-public class ClientManager
-{
+public class ClientManager implements NotificationManager {
   private static final Logger LOGGER=LoggerFactory.getLogger(ClientManager.class);
 
   private final Executor executor;
   private final BiMap<Session, String> clientSessionsByUsernames;
 
   @Inject
-  public ClientManager(Executor executor)
+  public ClientManager(final Executor executor)
   {
     this.executor=executor;
     clientSessionsByUsernames=HashBiMap.create();
@@ -41,6 +41,7 @@ public class ClientManager
     CompletableFuture.runAsync(() -> pushSync(session, message), executor);
   }
 
+  @Override
   public synchronized void pushToClients(final Collection<String> userNames, final String message)
   {
     final BiMap<String, Session> clientsByNames=clientSessionsByUsernames.inverse();
