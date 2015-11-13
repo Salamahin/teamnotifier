@@ -31,4 +31,8 @@ public class AuthenticationInfo {
   public int hashCode() {
     return Objects.hash(token);
   }
+
+  public String getToken() {
+    return token;
+  }
 }

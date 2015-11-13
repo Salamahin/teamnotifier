@@ -2,6 +2,7 @@ package com.home.teamnotifier.web.rest;
 
 import com.home.teamnotifier.NotifierApplication;
 import com.home.teamnotifier.TestHelper;
+import com.jayway.restassured.http.ContentType;
 import io.federecio.dropwizard.junitrunner.DropwizardJunitRunner;
 import io.federecio.dropwizard.junitrunner.DropwizardTestConfig;
 import org.eclipse.jetty.http.HttpStatus;
@@ -40,6 +41,7 @@ public class UserRestServiceTest {
         authentication = preemptive().basic(userName, password);
         expect()
                 .statusCode(HttpStatus.OK_200)
+                .contentType(ContentType.JSON)
                 .when()
                 .get("/teamnotifier/1.0/users/authenticate");
     }
