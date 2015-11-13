@@ -1,16 +1,19 @@
 package com.home.teamnotifier.db;
 
 import com.google.common.collect.Range;
+import com.home.teamnotifier.TestHelper;
 import com.home.teamnotifier.core.responses.ActionsInfo;
 import org.junit.*;
 import java.time.*;
 import java.util.*;
 
-import static com.home.teamnotifier.Commons.*;
+import static com.home.teamnotifier.TestHelper.*;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DbSharedResourceActionsGatewayTest {
+  private static final TestHelper helper = new TestHelper();
+
   private DbSharedResourceActionsGateway gateway;
   private EnvironmentEntity environment;
 
@@ -26,10 +29,10 @@ public class DbSharedResourceActionsGatewayTest {
   @Before
   public void setUp()
   throws Exception {
-    gateway = new DbSharedResourceActionsGateway(HELPER);
+    gateway = new DbSharedResourceActionsGateway(helper.TRANSACTION_HELPER);
     final UserEntity user =
-        createPersistedUser(getRandomString(), getRandomString());
-    environment = createPersistedEnvironmentWithOneServerAndOneResource(
+        helper.createPersistedUser(getRandomString(), getRandomString());
+    environment = helper.createPersistedEnvironmentWithOneServerAndOneResource(
         getRandomString(), getRandomString(), getRandomString());
     resourceId = environment.getImmutableListOfAppServers().get(0)
         .getImmutableListOfResources().get(0).getId();
@@ -86,14 +89,16 @@ public class DbSharedResourceActionsGatewayTest {
   @Test
   public void testReturnsSubscribersNamesAfterAction()
   throws Exception {
-    final String userName1 = createPersistedUser(getRandomString(), getRandomString()).getName();
-    final String userName2 = createPersistedUser(getRandomString(), getRandomString()).getName();
+    final String userName1 = helper.createPersistedUser(getRandomString(), getRandomString()).getName();
+    final String userName2 = helper.createPersistedUser(getRandomString(), getRandomString()).getName();
 
     final Integer serverId = environment.getImmutableListOfAppServers().get(0).getId();
-    final Integer resourceId = environment.getImmutableListOfAppServers().get(0)
-        .getImmutableListOfResources().get(0).getId();
+    final Integer resourceId = environment
+        .getImmutableListOfAppServers().get(0)
+        .getImmutableListOfResources().get(0)
+        .getId();
 
-    final DbSubscriptionGateway subscription = new DbSubscriptionGateway(HELPER);
+    final DbSubscriptionGateway subscription = new DbSubscriptionGateway(helper.TRANSACTION_HELPER);
     subscription.subscribe(userName1, serverId);
     subscription.subscribe(userName2, serverId);
 

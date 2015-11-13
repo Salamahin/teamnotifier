@@ -1,13 +1,14 @@
 package com.home.teamnotifier.db;
 
+import com.home.teamnotifier.TestHelper;
 import com.home.teamnotifier.gateways.UserCredentials;
 import com.home.teamnotifier.utils.PasswordHasher;
 import org.junit.*;
-import static com.home.teamnotifier.Commons.*;
+import static com.home.teamnotifier.TestHelper.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DbUserGatewayTest {
-
+  private static final TestHelper helper = new TestHelper();
   private DbUserGateway userGateway;
 
   private UserEntity user;
@@ -15,8 +16,8 @@ public class DbUserGatewayTest {
   @Before
   public void setUp()
   throws Exception {
-    userGateway = new DbUserGateway(HELPER);
-    user = createPersistedUser(getRandomString(), getRandomString());
+    userGateway = new DbUserGateway(helper.TRANSACTION_HELPER);
+    user = helper.createPersistedUser(getRandomString(), getRandomString());
   }
 
   @Test

@@ -7,19 +7,24 @@ import com.home.teamnotifier.db.UserEntity;
 import com.home.teamnotifier.utils.PasswordHasher;
 import java.util.UUID;
 
-public final class Commons {
-  private Commons() {
-    throw new AssertionError();
+public final class TestHelper {
+
+  public final TransactionHelper TRANSACTION_HELPER;
+
+  public TestHelper(final TransactionHelper helper) {
+    this.TRANSACTION_HELPER = helper;
   }
 
-  static final TransactionHelper HELPER = new TransactionHelper();
+  public TestHelper() {
+    TRANSACTION_HELPER = new TransactionHelper();
+  }
 
-  public static UserEntity createPersistedUser(
+  public UserEntity createPersistedUser(
       final String userName,
       final String pass
   ) {
     final UserEntity entity = new UserEntity(userName, PasswordHasher.toMd5Hash(pass));
-    return HELPER.transaction(em -> em.merge(entity));
+    return TRANSACTION_HELPER.transaction(em -> em.merge(entity));
   }
 
   public static String getRandomString() {
@@ -27,7 +32,7 @@ public final class Commons {
   }
 
 
-  public static EnvironmentEntity createPersistedEnvironmentWithOneServerAndOneResource(
+  public EnvironmentEntity createPersistedEnvironmentWithOneServerAndOneResource(
       final String envName,
       final String serverName,
       final String appName
@@ -36,6 +41,6 @@ public final class Commons {
     final AppServerEntity appServerEntity=entity.newAppServer(serverName);
     appServerEntity.newSharedResource(appName);
 
-    return HELPER.transaction(em -> em.merge(entity));
+    return TRANSACTION_HELPER.transaction(em -> em.merge(entity));
   }
 }

@@ -1,14 +1,17 @@
 package com.home.teamnotifier.db;
 
+import com.home.teamnotifier.TestHelper;
 import com.home.teamnotifier.gateways.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.home.teamnotifier.Commons.*;
+import static com.home.teamnotifier.TestHelper.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DbSubscriptionGatewayTest
 {
+  private static final TestHelper helper = new TestHelper();
+
   private EnvironmentEntity environmentEntity;
   private UserEntity userEntity;
   private DbSubscriptionGateway subscripbtion;
@@ -17,13 +20,13 @@ public class DbSubscriptionGatewayTest
   public void setUp()
       throws Exception
   {
-    userEntity= createPersistedUser(getRandomString(), getRandomString());
-    environmentEntity= createPersistedEnvironmentWithOneServerAndOneResource(
+    userEntity= helper.createPersistedUser(getRandomString(), getRandomString());
+    environmentEntity= helper.createPersistedEnvironmentWithOneServerAndOneResource(
         getRandomString(),
         getRandomString(),
         getRandomString()
     );
-    subscripbtion=new DbSubscriptionGateway(HELPER);
+    subscripbtion=new DbSubscriptionGateway(helper.TRANSACTION_HELPER);
   }
 
   @Test
@@ -82,8 +85,8 @@ public class DbSubscriptionGatewayTest
   @Test
   public void testReturnsSubscribersNamesAfterSubscribe() throws Exception
   {
-    final String userName1= createPersistedUser(getRandomString(), getRandomString()).getName();
-    final String userName2= createPersistedUser(getRandomString(), getRandomString()).getName();
+    final String userName1= getPersistedUserName();
+    final String userName2= getPersistedUserName();
 
     final Integer serverId=environmentEntity.getImmutableListOfAppServers().get(0).getId();
 
@@ -91,11 +94,15 @@ public class DbSubscriptionGatewayTest
     assertThat(subscripbtion.subscribe(userName2, serverId).getSubscribers()).doesNotContain(userName2).contains(userName1);
   }
 
+  private String getPersistedUserName() {
+    return helper.createPersistedUser(getRandomString(), getRandomString()).getName();
+  }
+
   @Test
   public void testReturnsSubscribersNamesAfterUnsubscribe() throws Exception
   {
-    final String userName1= createPersistedUser(getRandomString(), getRandomString()).getName();
-    final String userName2= createPersistedUser(getRandomString(), getRandomString()).getName();
+    final String userName1= getPersistedUserName();
+    final String userName2= getPersistedUserName();
 
     final Integer serverId=environmentEntity.getImmutableListOfAppServers().get(0).getId();
 
@@ -109,7 +116,7 @@ public class DbSubscriptionGatewayTest
   @Test
   public void testReturnsSubscribersNamesAfterReserve() throws Exception
   {
-    final String subscriber= createPersistedUser(getRandomString(), getRandomString()).getName();
+    final String subscriber= getPersistedUserName();
     final Integer serverId=environmentEntity.getImmutableListOfAppServers().get(0).getId();
     final Integer resourceId=environmentEntity.getImmutableListOfAppServers().get(0).getImmutableListOfResources().get(0).getId();
 
@@ -121,7 +128,7 @@ public class DbSubscriptionGatewayTest
   @Test
   public void testReturnsSubscribersNamesAfterFree() throws Exception
   {
-    final String subscriber= createPersistedUser(getRandomString(), getRandomString()).getName();
+    final String subscriber= getPersistedUserName();
     final Integer serverId=environmentEntity.getImmutableListOfAppServers().get(0).getId();
     final Integer resourceId=environmentEntity.getImmutableListOfAppServers().get(0).getImmutableListOfResources().get(0).getId();
 
