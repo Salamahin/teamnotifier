@@ -3,7 +3,7 @@ package com.home.teamnotifier.web.rest;
 import com.google.common.net.HttpHeaders;
 import com.google.inject.Inject;
 import com.home.teamnotifier.authentication.TokenCreator;
-import com.home.teamnotifier.core.responses.AuthenticationInfo;
+import com.home.teamnotifier.authentication.AuthenticationInfo;
 import com.home.teamnotifier.gateways.UserCredentials;
 import com.home.teamnotifier.gateways.UserGateway;
 import com.home.teamnotifier.utils.PasswordHasher;

@@ -1,4 +1,4 @@
-package com.home.teamnotifier.core.responses;
+package com.home.teamnotifier.authentication;
 
 import com.fasterxml.jackson.annotation.*;
 import java.util.Objects;
