@@ -35,22 +35,6 @@ public class AppServerInfo {
     this.subscribers = ImmutableSet.copyOf(subscibers);
   }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(name, resources, subscribers, id);
-  }
-
-  @Override
-  public boolean equals(final Object o) {
-    if (this == o) { return true; }
-    if (o == null || getClass() != o.getClass()) { return false; }
-    final AppServerInfo that = (AppServerInfo) o;
-    return Objects.equals(name, that.name) &&
-        Objects.equals(resources, that.resources) &&
-        Objects.equals(id, that.id) &&
-        Objects.equals(subscribers, that.subscribers);
-  }
-
   public String getName() {
     return name;
   }
@@ -65,5 +49,21 @@ public class AppServerInfo {
 
   public Set<String> getSubscribers() {
     return subscribers;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(name, resources, subscribers, id);
+  }
+
+  @Override
+  public boolean equals(final Object o) {
+    if (this == o) { return true; }
+    if (o == null || getClass() != o.getClass()) { return false; }
+    final AppServerInfo that = (AppServerInfo) o;
+    return Objects.equals(name, that.name) &&
+        Objects.equals(resources, that.resources) &&
+        Objects.equals(id, that.id) &&
+        Objects.equals(subscribers, that.subscribers);
   }
 }

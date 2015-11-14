@@ -4,7 +4,6 @@ import com.google.common.collect.Range;
 import com.google.inject.Inject;
 import com.home.teamnotifier.core.responses.*;
 import com.home.teamnotifier.gateways.*;
-
 import java.time.LocalDateTime;
 
 public class ResourceMonitor {

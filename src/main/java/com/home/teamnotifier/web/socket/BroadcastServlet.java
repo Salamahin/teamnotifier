@@ -59,7 +59,6 @@ public class BroadcastServlet extends WebSocketServlet {
     }
   }
 
-
   private static class WebSocketHandler implements WebSocketListener {
 
     private final ClientManager manager;

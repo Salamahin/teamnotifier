@@ -20,6 +20,10 @@ public class EnvironmentsInfo {
     this.environments = ImmutableList.copyOf(environments);
   }
 
+  public List<EnvironmentInfo> getEnvironments() {
+    return environments;
+  }
+
   @Override
   public int hashCode() {
     return Objects.hash(environments);
@@ -31,9 +35,5 @@ public class EnvironmentsInfo {
     if (o == null || getClass() != o.getClass()) { return false; }
     final EnvironmentsInfo that = (EnvironmentsInfo) o;
     return Objects.equals(environments, that.environments);
-  }
-
-  public List<EnvironmentInfo> getEnvironments() {
-    return environments;
   }
 }

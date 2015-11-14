@@ -1,18 +1,17 @@
 package com.home.teamnotifier.db;
 
 import com.google.common.collect.Range;
-import com.home.teamnotifier.TestHelper;
+import com.home.teamnotifier.DbPreparer;
 import com.home.teamnotifier.core.responses.ActionsInfo;
 import org.junit.*;
 import java.time.*;
 import java.util.*;
-
-import static com.home.teamnotifier.TestHelper.*;
+import static com.home.teamnotifier.DbPreparer.getRandomString;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DbSharedResourceActionsGatewayTest {
-  private static final TestHelper helper = new TestHelper();
+  private static final DbPreparer helper = new DbPreparer();
 
   private DbSharedResourceActionsGateway gateway;
 
@@ -38,6 +37,13 @@ public class DbSharedResourceActionsGatewayTest {
 
     assertThat(loadedData).containsAll(actionsBeforeMiddle);
     assertThat(loadedData).doesNotContainAnyElementsOf(actionAfterMiddle);
+  }
+
+  private List<ActionData> toActionDataList(ActionsInfo allActionsEver) {
+    return allActionsEver.getActions().stream()
+        .map(a -> new ActionData(a.getTimestamp(), a.getDescription()))
+        .sorted((o1, o2) -> o1.time.compareTo(o2.time))
+        .collect(toList());
   }
 
   @Test
@@ -108,13 +114,6 @@ public class DbSharedResourceActionsGatewayTest {
 
   private ActionsInfo getAllActionsEver() {
     return gateway.getActions(resourceId, Range.all());
-  }
-
-  private List<ActionData> toActionDataList(ActionsInfo allActionsEver) {
-    return allActionsEver.getActions().stream()
-        .map(a -> new ActionData(a.getTimestamp(), a.getDescription()))
-        .sorted((o1, o2) -> o1.time.compareTo(o2.time))
-        .collect(toList());
   }
 
 

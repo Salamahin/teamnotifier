@@ -1,11 +1,8 @@
 package com.home.teamnotifier.authentication;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.home.teamnotifier.core.responses.UserInfo;
+import com.fasterxml.jackson.databind.*;
 import io.dropwizard.jackson.Jackson;
 import org.junit.Test;
-
 import static io.dropwizard.testing.FixtureHelpers.fixture;
 import static org.assertj.core.api.StrictAssertions.assertThat;
 

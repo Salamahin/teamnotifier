@@ -1,14 +1,14 @@
 package com.home.teamnotifier.db;
 
-import com.home.teamnotifier.TestHelper;
+import com.home.teamnotifier.DbPreparer;
 import com.home.teamnotifier.gateways.UserCredentials;
 import com.home.teamnotifier.utils.PasswordHasher;
 import org.junit.*;
-import static com.home.teamnotifier.TestHelper.*;
+import static com.home.teamnotifier.DbPreparer.getRandomString;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DbUserGatewayTest {
-  private static final TestHelper helper = new TestHelper();
+  private static final DbPreparer helper = new DbPreparer();
 
   private DbUserGateway userGateway;
 

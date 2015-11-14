@@ -29,6 +29,18 @@ public class SharedResourceInfo {
     this.occupationInfo = occupationInfo;
   }
 
+  public int getId() {
+    return id;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public OccupationInfo getOccupationInfo() {
+    return occupationInfo;
+  }
+
   @Override
   public int hashCode() {
     return Objects.hash(name, occupationInfo, id);
@@ -42,17 +54,5 @@ public class SharedResourceInfo {
     return Objects.equals(name, that.name) &&
         Objects.equals(id, that.id) &&
         Objects.equals(occupationInfo, that.occupationInfo);
-  }
-
-  public int getId() {
-    return id;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public OccupationInfo getOccupationInfo() {
-    return occupationInfo;
   }
 }

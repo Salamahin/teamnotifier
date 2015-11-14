@@ -8,7 +8,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
 import java.time.LocalDateTime;
 import java.util.*;
-
 import static com.home.teamnotifier.db.DbGatewayCommons.*;
 
 public class DbSubscriptionGateway implements SubscriptionGateway {

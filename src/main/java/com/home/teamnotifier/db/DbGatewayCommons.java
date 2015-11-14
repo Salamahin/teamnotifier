@@ -1,7 +1,6 @@
 package com.home.teamnotifier.db;
 
 import com.google.common.base.Preconditions;
-
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
 import java.util.*;

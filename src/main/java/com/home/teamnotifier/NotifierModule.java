@@ -6,7 +6,6 @@ import com.home.teamnotifier.core.NotificationManager;
 import com.home.teamnotifier.db.*;
 import com.home.teamnotifier.gateways.*;
 import com.home.teamnotifier.web.socket.ClientManager;
-
 import javax.inject.Singleton;
 import java.util.concurrent.*;
 

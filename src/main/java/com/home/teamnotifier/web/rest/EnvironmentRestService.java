@@ -2,17 +2,15 @@ package com.home.teamnotifier.web.rest;
 
 import com.google.common.collect.Range;
 import com.google.inject.Inject;
-import com.home.teamnotifier.authentication.*;
+import com.home.teamnotifier.authentication.AuthenticatedUserData;
 import com.home.teamnotifier.core.ResourceMonitor;
-import com.home.teamnotifier.core.responses.ActionsInfo;
-import com.home.teamnotifier.core.responses.EnvironmentsInfo;
+import com.home.teamnotifier.core.responses.*;
 import io.dropwizard.auth.Auth;
-
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.nio.charset.Charset;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Base64;
 
 @Path("1.0/environment")
 @Produces(MediaType.APPLICATION_JSON)

@@ -25,6 +25,14 @@ public class OccupationInfo {
     this.occupationTime = occupationTime;
   }
 
+  public String getUserName() {
+    return userName;
+  }
+
+  public String getOccupationTime() {
+    return occupationTime;
+  }
+
   @Override
   public int hashCode() {
     return Objects.hash(userName, occupationTime);
@@ -37,13 +45,5 @@ public class OccupationInfo {
     final OccupationInfo that = (OccupationInfo) o;
     return Objects.equals(userName, that.userName) &&
         Objects.equals(occupationTime, that.occupationTime);
-  }
-
-  public String getUserName() {
-    return userName;
-  }
-
-  public String getOccupationTime() {
-    return occupationTime;
   }
 }

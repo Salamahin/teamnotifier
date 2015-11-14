@@ -1,12 +1,7 @@
 package com.home.teamnotifier.db;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
+import org.slf4j.*;
+import javax.persistence.*;
 import java.util.function.Function;
 
 public final class TransactionHelper {

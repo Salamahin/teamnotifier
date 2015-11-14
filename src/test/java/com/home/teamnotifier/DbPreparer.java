@@ -1,21 +1,18 @@
 package com.home.teamnotifier;
 
-import com.home.teamnotifier.db.AppServerEntity;
-import com.home.teamnotifier.db.EnvironmentEntity;
-import com.home.teamnotifier.db.TransactionHelper;
-import com.home.teamnotifier.db.UserEntity;
+import com.home.teamnotifier.db.*;
 import com.home.teamnotifier.utils.PasswordHasher;
 import java.util.UUID;
 
-public final class TestHelper {
+public final class DbPreparer {
 
   public final TransactionHelper TRANSACTION_HELPER;
 
-  public TestHelper(final TransactionHelper helper) {
+  public DbPreparer(final TransactionHelper helper) {
     this.TRANSACTION_HELPER = helper;
   }
 
-  public TestHelper() {
+  public DbPreparer() {
     TRANSACTION_HELPER = new TransactionHelper();
   }
 

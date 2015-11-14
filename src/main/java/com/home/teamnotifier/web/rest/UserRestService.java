@@ -2,17 +2,13 @@ package com.home.teamnotifier.web.rest;
 
 import com.google.common.net.HttpHeaders;
 import com.google.inject.Inject;
-import com.home.teamnotifier.authentication.TokenCreator;
-import com.home.teamnotifier.authentication.AuthenticationInfo;
-import com.home.teamnotifier.gateways.UserCredentials;
-import com.home.teamnotifier.gateways.UserGateway;
+import com.home.teamnotifier.authentication.*;
+import com.home.teamnotifier.gateways.*;
 import com.home.teamnotifier.utils.PasswordHasher;
 import io.dropwizard.auth.basic.BasicCredentials;
-
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.Objects;
-
 import static com.home.teamnotifier.utils.BasicAuthenticationCredentialExtractor.extract;
 
 @Path("1.0/users")

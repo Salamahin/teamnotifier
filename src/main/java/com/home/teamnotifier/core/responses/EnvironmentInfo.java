@@ -27,6 +27,14 @@ public class EnvironmentInfo {
     this.servers = ImmutableSet.copyOf(servers);
   }
 
+  public String getName() {
+    return name;
+  }
+
+  public Set<AppServerInfo> getServers() {
+    return servers;
+  }
+
   @Override
   public int hashCode() {
     return Objects.hash(name, servers);
@@ -39,13 +47,5 @@ public class EnvironmentInfo {
     final EnvironmentInfo that = (EnvironmentInfo) o;
     return Objects.equals(name, that.name) &&
         Objects.equals(servers, that.servers);
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public Set<AppServerInfo> getServers() {
-    return servers;
   }
 }
