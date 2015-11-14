@@ -38,4 +38,12 @@ public class OccupationInfo {
     return Objects.equals(userName, that.userName) &&
         Objects.equals(occupationTime, that.occupationTime);
   }
+
+  public String getUserName() {
+    return userName;
+  }
+
+  public String getOccupationTime() {
+    return occupationTime;
+  }
 }

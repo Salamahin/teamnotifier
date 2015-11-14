@@ -43,4 +43,16 @@ public class SharedResourceInfo {
         Objects.equals(id, that.id) &&
         Objects.equals(occupationInfo, that.occupationInfo);
   }
+
+  public int getId() {
+    return id;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public OccupationInfo getOccupationInfo() {
+    return occupationInfo;
+  }
 }

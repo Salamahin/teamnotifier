@@ -1,15 +1,12 @@
 package com.home.teamnotifier.web.rest;
 
 import com.home.teamnotifier.NotifierApplication;
-import com.home.teamnotifier.TestHelper;
 import com.jayway.restassured.http.ContentType;
-import io.federecio.dropwizard.junitrunner.DropwizardJunitRunner;
-import io.federecio.dropwizard.junitrunner.DropwizardTestConfig;
+import io.dropwizard.auth.basic.BasicCredentials;
+import io.federecio.dropwizard.junitrunner.*;
 import org.eclipse.jetty.http.HttpStatus;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
-
 import static com.home.teamnotifier.TestHelper.getRandomString;
 import static com.jayway.restassured.RestAssured.*;
 
@@ -17,54 +14,44 @@ import static com.jayway.restassured.RestAssured.*;
 @DropwizardTestConfig(applicationClass = NotifierApplication.class, yamlFile = "/web.yml")
 public class UserRestServiceTest {
 
+  private static IntegrationTestHelper HELPER;
+
+  @BeforeClass
+  public static void prepare() {
+    HELPER = new IntegrationTestHelper();
+    HELPER.prepareEnvironment();
+  }
+
+  @Before
+  public void setUp() {
+    port = 7998;
+  }
+
   @Test
   public void testRegistration()
   throws Exception {
-    authentication = preemptive().basic(getRandomString(), getRandomString());
-    expect()
-        .statusCode(HttpStatus.NO_CONTENT_204)
-        .when()
-        .post("/teamnotifier/1.0/users/register");
+    given().auth().preemptive().basic(getRandomString(), getRandomString()).
+        expect().statusCode(HttpStatus.NO_CONTENT_204)
+        .when().post("/teamnotifier/1.0/users/register");
   }
 
   @Test
   public void testAuthentication()
   throws Exception {
-    final String userName = getRandomString();
-    final String password = getRandomString();
+    final BasicCredentials credentials = HELPER.getPersistedUserCredentials();
 
-    createPersistedUser(userName, password);
-
-    authentication = preemptive().basic(userName, password);
-    expect()
-        .statusCode(HttpStatus.OK_200)
-        .contentType(ContentType.JSON)
-        .when()
-        .get("/teamnotifier/1.0/users/authenticate");
-  }
-
-  private void createPersistedUser(final String userName, final String password) {
-    TestHelper helper = new TestHelper();
-    helper.createPersistedUser(userName, password);
+    given().auth().preemptive().basic(credentials.getUsername(), credentials.getPassword()).
+        expect().statusCode(HttpStatus.OK_200).contentType(ContentType.JSON)
+        .when().get("/teamnotifier/1.0/users/authenticate");
   }
 
   @Test
   public void testIncorrectLogin()
   throws Exception {
-    final String userName = getRandomString();
-    final String password = getRandomString();
+    final BasicCredentials credentials = HELPER.getPersistedUserCredentials();
 
-    createPersistedUser(userName, password);
-
-    authentication = preemptive().basic(userName, getRandomString());
-    expect()
-        .statusCode(HttpStatus.NO_CONTENT_204)
-        .when()
-        .get("/teamnotifier/1.0/users/authenticate");
-  }
-
-  @BeforeClass
-  public static void setUp() {
-    port = 7998;
+    given().auth().preemptive().basic(credentials.getUsername(), getRandomString())
+        .expect().statusCode(HttpStatus.NO_CONTENT_204)
+        .when().get("/teamnotifier/1.0/users/authenticate");
   }
 }

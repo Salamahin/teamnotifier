@@ -1,6 +1,7 @@
 package com.home.teamnotifier.core.responses;
 
 import com.fasterxml.jackson.annotation.*;
+import com.google.common.collect.ImmutableList;
 import java.util.*;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
@@ -16,7 +17,7 @@ public class EnvironmentsInfo {
 
   @JsonCreator
   public EnvironmentsInfo(@JsonProperty("environments") final List<EnvironmentInfo> environments) {
-    this.environments = environments;
+    this.environments = ImmutableList.copyOf(environments);
   }
 
   @Override
@@ -30,5 +31,9 @@ public class EnvironmentsInfo {
     if (o == null || getClass() != o.getClass()) { return false; }
     final EnvironmentsInfo that = (EnvironmentsInfo) o;
     return Objects.equals(environments, that.environments);
+  }
+
+  public List<EnvironmentInfo> getEnvironments() {
+    return environments;
   }
 }

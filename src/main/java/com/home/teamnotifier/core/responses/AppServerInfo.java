@@ -50,4 +50,20 @@ public class AppServerInfo {
         Objects.equals(id, that.id) &&
         Objects.equals(subscribers, that.subscribers);
   }
+
+  public String getName() {
+    return name;
+  }
+
+  public int getId() {
+    return id;
+  }
+
+  public Set<SharedResourceInfo> getResources() {
+    return resources;
+  }
+
+  public Set<String> getSubscribers() {
+    return subscribers;
+  }
 }

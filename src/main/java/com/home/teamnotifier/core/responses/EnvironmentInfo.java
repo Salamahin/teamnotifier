@@ -40,4 +40,12 @@ public class EnvironmentInfo {
     return Objects.equals(name, that.name) &&
         Objects.equals(servers, that.servers);
   }
+
+  public String getName() {
+    return name;
+  }
+
+  public Set<AppServerInfo> getServers() {
+    return servers;
+  }
 }
