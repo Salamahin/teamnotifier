@@ -13,35 +13,37 @@ public class NotifierConfiguration extends Configuration {
     final String s2 = UUID.randomUUID().toString();
 
     final StringBuilder sb = new StringBuilder();
-    for(int i = 0; i < s1.length(); i++)
-      sb.append((char)(s1.charAt(i) ^ s2.charAt(i % s2.length())));
+    for (int i = 0; i < s1.length(); i++) {
+      sb.append((char) (s1.charAt(i) ^ s2.charAt(i % s2.length())));
+    }
     GENERATED_SECRET_STRING = sb.toString();
   }
+
+  @NotNull
+  private final String tokenSecretString = GENERATED_SECRET_STRING;
 
   @Valid
   @NotNull
   private ExecutorsConfiguration executorsConfiguration;
-
-  @NotNull
-  private final String tokenSecretString = GENERATED_SECRET_STRING;
 
   @JsonProperty(value = "executors")
   public ExecutorsConfiguration getExecutorsConfiguration() {
     return executorsConfiguration;
   }
 
+
   public byte[] getJwtTokenSecret() {
     return tokenSecretString.getBytes();
   }
-
   public static class ExecutorsConfiguration {
+
     @Valid
     @NotNull
     private Integer poolSize;
-
     @JsonProperty(value = "poolSize")
     public Integer getPoolSize() {
       return poolSize;
     }
+
   }
 }

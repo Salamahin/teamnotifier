@@ -27,7 +27,8 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
       final UserEntity userEntity = getUserEntity(userName, em);
       final AppServerEntity appServerEntity = getAppServerEntity(serverId, em);
 
-      final SubscriptionEntity subscriptionEntity = em.merge(new SubscriptionEntity(appServerEntity, userEntity));
+      final SubscriptionEntity subscriptionEntity = em
+          .merge(new SubscriptionEntity(appServerEntity, userEntity));
 
       return getBroadcastInformation(
           userName,
@@ -39,7 +40,7 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
   }
 
   private AppServerEntity getAppServerEntity(final int serverId, final EntityManager em) {
-    final AppServerEntity serverEntity=em.find(AppServerEntity.class, serverId);
+    final AppServerEntity serverEntity = em.find(AppServerEntity.class, serverId);
     Preconditions.checkNotNull(serverEntity, "No server with provided id %s", serverId);
     return serverEntity;
   }
@@ -56,11 +57,13 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
       final UserEntity userEntity = getUserEntity(userName, em);
       final AppServerEntity serverEntity = getAppServerEntity(serverId, em);
 
-      final CriteriaBuilder cb=em.getCriteriaBuilder();
-      final CriteriaDelete<SubscriptionEntity> delete=cb.createCriteriaDelete(SubscriptionEntity.class);
-      final Root<SubscriptionEntity> _subsctiption=delete.from(SubscriptionEntity.class);
-      final Predicate userAndServerEqualToProvided=
-          cb.and(cb.equal(_subsctiption.get("subscriber"), userEntity), cb.equal(_subsctiption.get("appServer"), serverEntity));
+      final CriteriaBuilder cb = em.getCriteriaBuilder();
+      final CriteriaDelete<SubscriptionEntity> delete = cb
+          .createCriteriaDelete(SubscriptionEntity.class);
+      final Root<SubscriptionEntity> _subsctiption = delete.from(SubscriptionEntity.class);
+      final Predicate userAndServerEqualToProvided =
+          cb.and(cb.equal(_subsctiption.get("subscriber"), userEntity),
+              cb.equal(_subsctiption.get("appServer"), serverEntity));
 
       em.createQuery(delete.where(userAndServerEqualToProvided)).executeUpdate();
 
@@ -93,7 +96,7 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
 
   private SharedResourceEntity tryReserve(final String userName, final int applicationId) {
     return transactionHelper.transaction(em -> {
-      SharedResourceEntity resourceEntity=getSharedResourceEntity(applicationId, em);
+      SharedResourceEntity resourceEntity = getSharedResourceEntity(applicationId, em);
 
       final Optional<ReservationData> reservationData = resourceEntity.getReservationData();
 
@@ -116,9 +119,9 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
     });
   }
 
-  private SharedResourceEntity getSharedResourceEntity(final int applicationId, final EntityManager em)
-  {
-    final SharedResourceEntity entity=em.find(SharedResourceEntity.class, applicationId);
+  private SharedResourceEntity getSharedResourceEntity(final int applicationId,
+      final EntityManager em) {
+    final SharedResourceEntity entity = em.find(SharedResourceEntity.class, applicationId);
     Preconditions.checkNotNull(entity, "No resource with provided id %s", applicationId);
     return entity;
   }
@@ -142,7 +145,7 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
 
   private SharedResourceEntity tryFree(final String userName, final int applicationId) {
     return transactionHelper.transaction(em -> {
-      SharedResourceEntity resourceEntity=getSharedResourceEntity(applicationId, em);
+      SharedResourceEntity resourceEntity = getSharedResourceEntity(applicationId, em);
       final Optional<ReservationData> reservationData = resourceEntity.getReservationData();
 
       if (!reservationData.isPresent()) {

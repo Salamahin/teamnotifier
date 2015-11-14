@@ -35,19 +35,22 @@ public class NotifierApplication extends Application<NotifierConfiguration> {
     registerWebsocket(environment, authenticator, clientManager);
 
     final JsonWebTokenParser tokenParser = new DefaultJsonWebTokenParser();
-    final HmacSHA512Verifier tokenVerifier = new HmacSHA512Verifier(configuration.getJwtTokenSecret());
+    final HmacSHA512Verifier tokenVerifier = new HmacSHA512Verifier(
+        configuration.getJwtTokenSecret());
 
     environment.jersey().register(new AuthDynamicFeature(
             new JWTAuthFilter.Builder<AuthenticatedUserData>()
                 .setTokenParser(tokenParser)
                 .setTokenVerifier(tokenVerifier)
+                .setPrefix("Bearer")
                 .setAuthenticator(authenticator)
                 .setAuthorizer(new PermitAllAuthorizer<>())
                 .buildAuthFilter()
         )
     );
     environment.jersey().register(RolesAllowedDynamicFeature.class);
-    environment.jersey().register(new AuthValueFactoryProvider.Binder<>(AuthenticatedUserData.class));
+    environment.jersey()
+        .register(new AuthValueFactoryProvider.Binder<>(AuthenticatedUserData.class));
 
     final EnvironmentGateway environmentGateway = INJECTION_BUNDLE
         .getInjector()

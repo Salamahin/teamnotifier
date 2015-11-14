@@ -27,20 +27,19 @@ public final class TestHelper {
     return TRANSACTION_HELPER.transaction(em -> em.merge(entity));
   }
 
-  public static String getRandomString() {
-    return UUID.randomUUID().toString();
-  }
-
-
   public EnvironmentEntity createPersistedEnvironmentWithOneServerAndOneResource(
       final String envName,
       final String serverName,
       final String appName
   ) {
     final EnvironmentEntity entity = new EnvironmentEntity(envName);
-    final AppServerEntity appServerEntity=entity.newAppServer(serverName);
+    final AppServerEntity appServerEntity = entity.newAppServer(serverName);
     appServerEntity.newSharedResource(appName);
 
     return TRANSACTION_HELPER.transaction(em -> em.merge(entity));
+  }
+
+  public static String getRandomString() {
+    return UUID.randomUUID().toString();
   }
 }

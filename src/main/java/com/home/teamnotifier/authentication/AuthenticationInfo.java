@@ -15,8 +15,17 @@ public class AuthenticationInfo {
   private final String token;
 
   @JsonCreator
-  public AuthenticationInfo(@JsonProperty("token")  final String token) {
+  public AuthenticationInfo(@JsonProperty("token") final String token) {
     this.token = token;
+  }
+
+  public String getToken() {
+    return token;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(token);
   }
 
   @Override
@@ -25,14 +34,5 @@ public class AuthenticationInfo {
     if (o == null || getClass() != o.getClass()) { return false; }
     final AuthenticationInfo that = (AuthenticationInfo) o;
     return Objects.equals(token, that.token);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(token);
-  }
-
-  public String getToken() {
-    return token;
   }
 }

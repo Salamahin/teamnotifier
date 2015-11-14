@@ -40,15 +40,6 @@ public class BroadcastServlet extends WebSocketServlet {
     });
   }
 
-  private void sendUnauthorizedErrorResponse(final ServletUpgradeResponse resp,
-      final Exception exc) {
-    try {
-      resp.sendError(HttpStatus.UNAUTHORIZED_401, exc.getMessage());
-    } catch (IOException e) {
-      LOGGER.error("Failed to send error response", e);
-    }
-  }
-
   private String tryGetAuthenticatedUserName(final ServletUpgradeRequest request)
   throws AuthenticationException {
     final String tokenStr = request.getParameterMap().get("credentials").get(0);
@@ -58,6 +49,16 @@ public class BroadcastServlet extends WebSocketServlet {
     }
     return authenticatedUser.get().getName();
   }
+
+  private void sendUnauthorizedErrorResponse(final ServletUpgradeResponse resp,
+      final Exception exc) {
+    try {
+      resp.sendError(HttpStatus.UNAUTHORIZED_401, exc.getMessage());
+    } catch (IOException e) {
+      LOGGER.error("Failed to send error response", e);
+    }
+  }
+
 
   private static class WebSocketHandler implements WebSocketListener {
 

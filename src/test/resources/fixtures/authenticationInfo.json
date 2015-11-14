@@ -1,4 +1,4 @@
 {
-  "type" : "Authentication",
-  "token" : "tokenstr"
+  "type": "Authentication",
+  "token": "tokenstr"
 }

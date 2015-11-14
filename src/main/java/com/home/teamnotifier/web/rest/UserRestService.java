@@ -17,9 +17,9 @@ import static com.home.teamnotifier.utils.BasicAuthenticationCredentialExtractor
 
 @Path("1.0/users")
 @Produces(MediaType.APPLICATION_JSON)
-public class UserRestService
-{
+public class UserRestService {
   private final TokenCreator tokenCreator;
+
   private final UserGateway userGateway;
 
   @Inject
@@ -31,7 +31,6 @@ public class UserRestService
     this.userGateway = userGateway;
   }
 
-
   @GET
   @Path("/authenticate")
   public AuthenticationInfo authenticate(
@@ -42,17 +41,11 @@ public class UserRestService
 
     final UserCredentials persistedCredentials = userGateway.userCredentials(username);
 
-    if(compareCredentials(credentials, persistedCredentials))
+    if (compareCredentials(credentials, persistedCredentials)) {
       return new AuthenticationInfo(tokenCreator.getTokenFor(persistedCredentials.getId()));
+    }
 
     return null;
-  }
-
-  @POST
-  @Path("/register")
-  public void newUser(@HeaderParam(HttpHeaders.AUTHORIZATION) final String encodedCredentials) {
-    final BasicCredentials credentials = extract(encodedCredentials);
-    userGateway.newUser(credentials.getUsername(), credentials.getPassword());
   }
 
   private boolean compareCredentials(
@@ -63,5 +56,12 @@ public class UserRestService
 
     final String providedPassHash = PasswordHasher.toMd5Hash(provided.getPassword());
     return Objects.equals(providedPassHash, persisted.getPassHash());
+  }
+
+  @POST
+  @Path("/register")
+  public void newUser(@HeaderParam(HttpHeaders.AUTHORIZATION) final String encodedCredentials) {
+    final BasicCredentials credentials = extract(encodedCredentials);
+    userGateway.newUser(credentials.getUsername(), credentials.getPassword());
   }
 }

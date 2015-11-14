@@ -7,12 +7,12 @@
       "servers": [
         {
           "type": "AppServer",
-          "id":1,
+          "id": 1,
           "name": "server",
           "resources": [
             {
               "type": "SharedResource",
-              "id":1,
+              "id": 1,
               "name": "resource",
               "occupationInfo": {
                 "type": "OccupationInfo",

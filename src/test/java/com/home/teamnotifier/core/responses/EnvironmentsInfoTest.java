@@ -11,6 +11,15 @@ public class EnvironmentsInfoTest {
   private static final ObjectMapper MAPPER = Jackson.newObjectMapper()
       .enable(SerializationFeature.INDENT_OUTPUT);
 
+  @Test
+  public void serializesToJSON()
+  throws Exception {
+    final EnvironmentsInfo info = createFineInfo();
+    final String expected = MAPPER.writeValueAsString(
+        MAPPER.readValue(fixture("fixtures/envConfig.json"), EnvironmentsInfo.class));
+    assertThat(MAPPER.writeValueAsString(info)).isEqualTo(expected);
+  }
+
   private EnvironmentsInfo createFineInfo() {
     return new EnvironmentsInfo(Lists.newArrayList(createFineEnvironmentInfo()));
   }
@@ -35,15 +44,6 @@ public class EnvironmentsInfoTest {
 
   private OccupationInfo createFineOccupationInfo() {
     return new OccupationInfo("user", "2015-11-05T23:44:40.220");
-  }
-
-  @Test
-  public void serializesToJSON()
-  throws Exception {
-    final EnvironmentsInfo info = createFineInfo();
-    final String expected = MAPPER.writeValueAsString(
-        MAPPER.readValue(fixture("fixtures/envConfig.json"), EnvironmentsInfo.class));
-    assertThat(MAPPER.writeValueAsString(info)).isEqualTo(expected);
   }
 
   @Test

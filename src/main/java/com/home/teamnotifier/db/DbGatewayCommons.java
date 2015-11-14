@@ -19,7 +19,7 @@ final class DbGatewayCommons {
     final CriteriaQuery<UserEntity> selectUserQuery = cq
         .where(cb.equal(rootEntry.get("name"), userName));
 
-    final UserEntity entity=em.createQuery(selectUserQuery).getSingleResult();
+    final UserEntity entity = em.createQuery(selectUserQuery).getSingleResult();
     Preconditions.checkNotNull(entity, "No such user %s", userName);
 
     return entity;

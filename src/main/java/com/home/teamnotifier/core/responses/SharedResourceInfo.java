@@ -21,12 +21,17 @@ public class SharedResourceInfo {
 
   @JsonCreator
   public SharedResourceInfo(
-      @JsonProperty("id")  final int id, @JsonProperty("name") final String name,
+      @JsonProperty("id") final int id, @JsonProperty("name") final String name,
       @JsonProperty("occupationInfo") final OccupationInfo occupationInfo
   ) {
     this.id = id;
     this.name = name;
     this.occupationInfo = occupationInfo;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(name, occupationInfo, id);
   }
 
   @Override
@@ -37,10 +42,5 @@ public class SharedResourceInfo {
     return Objects.equals(name, that.name) &&
         Objects.equals(id, that.id) &&
         Objects.equals(occupationInfo, that.occupationInfo);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(name, occupationInfo, id);
   }
 }

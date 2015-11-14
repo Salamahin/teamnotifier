@@ -17,12 +17,14 @@ public final class SubscriptionEntity implements Serializable {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private final Integer id;
 
-  @ManyToOne(optional = false, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
-  @JoinColumn(name="appServerId")
+  @ManyToOne(optional = false, cascade = {CascadeType.DETACH, CascadeType.MERGE,
+      CascadeType.PERSIST})
+  @JoinColumn(name = "appServerId")
   private final AppServerEntity appServer;
 
-  @ManyToOne(optional = false, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
-  @JoinColumn(name="subscriberId")
+  @ManyToOne(optional = false, cascade = {CascadeType.DETACH, CascadeType.MERGE,
+      CascadeType.PERSIST})
+  @JoinColumn(name = "subscriberId")
   private final UserEntity subscriber;
 
   @Column(nullable = false)

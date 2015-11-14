@@ -9,16 +9,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class DbUserGatewayTest {
   private static final TestHelper helper = new TestHelper();
+
   private DbUserGateway userGateway;
 
   private UserEntity user;
-
-  @Before
-  public void setUp()
-  throws Exception {
-    userGateway = new DbUserGateway(helper.TRANSACTION_HELPER);
-    user = helper.createPersistedUser(getRandomString(), getRandomString());
-  }
 
   @Test
   public void testCanCreateNewUser()
@@ -44,5 +38,12 @@ public class DbUserGatewayTest {
   throws Exception {
     final UserCredentials credentials = userGateway.userCredentials(getRandomString());
     assertThat(credentials).isNull();
+  }
+
+  @Before
+  public void setUp()
+  throws Exception {
+    userGateway = new DbUserGateway(helper.TRANSACTION_HELPER);
+    user = helper.createPersistedUser(getRandomString(), getRandomString());
   }
 }

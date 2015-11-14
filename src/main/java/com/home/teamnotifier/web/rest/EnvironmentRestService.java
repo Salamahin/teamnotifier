@@ -21,7 +21,7 @@ public class EnvironmentRestService {
   private final ResourceMonitor resourceMonitor;
 
   @Inject
-  public EnvironmentRestService(final ResourceMonitor resourceMonitor ) {
+  public EnvironmentRestService(final ResourceMonitor resourceMonitor) {
     this.resourceMonitor = resourceMonitor;
   }
 
@@ -36,31 +36,38 @@ public class EnvironmentRestService {
 
   @DELETE
   @Path("/application/reserve/{applicationId}")
-  public void free(@Auth final AuthenticatedUserData authenticatedUserData, @PathParam("applicationId") final Integer applicationId) {
+  public void free(@Auth final AuthenticatedUserData authenticatedUserData,
+      @PathParam("applicationId") final Integer applicationId) {
     resourceMonitor.free(authenticatedUserData.getName(), applicationId);
   }
 
   @POST
   @Path("/server/subscribe/{serverId}")
-  public void subscribe(@Auth final AuthenticatedUserData authenticatedUserData, @PathParam("serverId") final Integer serverId) {
+  public void subscribe(@Auth final AuthenticatedUserData authenticatedUserData,
+      @PathParam("serverId") final Integer serverId) {
     resourceMonitor.subscribe(authenticatedUserData.getName(), serverId);
   }
 
   @DELETE
   @Path("/server/subscribe/{serverId}")
-  public void unsubscribe(@Auth final AuthenticatedUserData authenticatedUserData, @PathParam("serverId") final Integer serverId) {
+  public void unsubscribe(@Auth final AuthenticatedUserData authenticatedUserData,
+      @PathParam("serverId") final Integer serverId) {
     resourceMonitor.unsubscribe(authenticatedUserData.getName(), serverId);
+  }
+
+  @POST
+  @Path("/application/actions/{applicationId}")
+  public void newInfo(
+      @Auth final AuthenticatedUserData authenticatedUserData,
+      @PathParam("applicationId") final Integer applicationId,
+      @HeaderParam("ActionDetails") final String details
+  ) {
+    resourceMonitor.newAction(authenticatedUserData.getName(), applicationId, details);
   }
 
   @GET
   public EnvironmentsInfo getServerInfo(@Auth final AuthenticatedUserData authenticatedUserData) {
     return resourceMonitor.status();
-  }
-
-  private String decodeBase64String(final String encodedString) {
-    return new String(
-        Base64.getDecoder().decode(encodedString),
-        Charset.forName("UTF-8"));
   }
 
   @GET
@@ -75,13 +82,9 @@ public class EnvironmentRestService {
     return resourceMonitor.actionsInfo(applicationId, Range.closed(fromTime, toTime));
   }
 
-  @POST
-  @Path("/application/actions/{applicationId}")
-  public void newInfo(
-      @Auth final AuthenticatedUserData authenticatedUserData,
-      @PathParam("applicationId") final Integer applicationId,
-      @HeaderParam("ActionDetails") final String details
-  ) {
-    resourceMonitor.newAction(authenticatedUserData.getName(), applicationId, details);
+  private String decodeBase64String(final String encodedString) {
+    return new String(
+        Base64.getDecoder().decode(encodedString),
+        Charset.forName("UTF-8"));
   }
 }

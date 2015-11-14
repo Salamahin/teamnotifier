@@ -15,16 +15,63 @@ public class DbSharedResourceActionsGatewayTest {
   private static final TestHelper helper = new TestHelper();
 
   private DbSharedResourceActionsGateway gateway;
+
   private EnvironmentEntity environment;
 
   private LocalDateTime firstEver;
+
   private LocalDateTime lastEver;
+
   private LocalDateTime middle;
 
   private List<ActionData> actionsBeforeMiddle;
+
   private List<ActionData> actionAfterMiddle;
 
   private Integer resourceId;
+
+  @Test
+  public void testDoesntHaveBeforeMiddle()
+  throws Exception {
+    final ActionsInfo actions = gateway.getActions(resourceId, Range.closed(firstEver, middle));
+    final List<ActionData> loadedData = toActionDataList(actions);
+
+    assertThat(loadedData).containsAll(actionsBeforeMiddle);
+    assertThat(loadedData).doesNotContainAnyElementsOf(actionAfterMiddle);
+  }
+
+  @Test
+  public void testDoesntHaveAfter()
+  throws Exception {
+    final ActionsInfo actions = gateway.getActions(resourceId, Range.closed(middle, lastEver));
+    final List<ActionData> loadedData = toActionDataList(actions);
+
+    assertThat(loadedData).containsAll(actionAfterMiddle);
+    assertThat(loadedData).doesNotContainAnyElementsOf(actionsBeforeMiddle);
+  }
+
+  @Test
+  public void testReturnsSubscribersNamesAfterAction()
+  throws Exception {
+    final String userName1 = helper.createPersistedUser(getRandomString(), getRandomString())
+        .getName();
+    final String userName2 = helper.createPersistedUser(getRandomString(), getRandomString())
+        .getName();
+
+    final Integer serverId = environment.getImmutableListOfAppServers().get(0).getId();
+    final Integer resourceId = environment
+        .getImmutableListOfAppServers().get(0)
+        .getImmutableListOfResources().get(0)
+        .getId();
+
+    final DbSubscriptionGateway subscription = new DbSubscriptionGateway(helper.TRANSACTION_HELPER);
+    subscription.subscribe(userName1, serverId);
+    subscription.subscribe(userName2, serverId);
+
+    assertThat(gateway.newAction(userName1, resourceId, getRandomString()).getSubscribers())
+        .doesNotContain(userName1)
+        .contains(userName2);
+  }
 
   @Before
   public void setUp()
@@ -59,6 +106,10 @@ public class DbSharedResourceActionsGatewayTest {
         .collect(toList());
   }
 
+  private ActionsInfo getAllActionsEver() {
+    return gateway.getActions(resourceId, Range.all());
+  }
+
   private List<ActionData> toActionDataList(ActionsInfo allActionsEver) {
     return allActionsEver.getActions().stream()
         .map(a -> new ActionData(a.getTimestamp(), a.getDescription()))
@@ -66,46 +117,6 @@ public class DbSharedResourceActionsGatewayTest {
         .collect(toList());
   }
 
-  @Test
-  public void testDoesntHaveBeforeMiddle()
-  throws Exception {
-    final ActionsInfo actions = gateway.getActions(resourceId, Range.closed(firstEver, middle));
-    final List<ActionData> loadedData = toActionDataList(actions);
-
-    assertThat(loadedData).containsAll(actionsBeforeMiddle);
-    assertThat(loadedData).doesNotContainAnyElementsOf(actionAfterMiddle);
-  }
-
-  @Test
-  public void testDoesntHaveAfter()
-  throws Exception {
-    final ActionsInfo actions = gateway.getActions(resourceId, Range.closed(middle, lastEver));
-    final List<ActionData> loadedData = toActionDataList(actions);
-
-    assertThat(loadedData).containsAll(actionAfterMiddle);
-    assertThat(loadedData).doesNotContainAnyElementsOf(actionsBeforeMiddle);
-  }
-
-  @Test
-  public void testReturnsSubscribersNamesAfterAction()
-  throws Exception {
-    final String userName1 = helper.createPersistedUser(getRandomString(), getRandomString()).getName();
-    final String userName2 = helper.createPersistedUser(getRandomString(), getRandomString()).getName();
-
-    final Integer serverId = environment.getImmutableListOfAppServers().get(0).getId();
-    final Integer resourceId = environment
-        .getImmutableListOfAppServers().get(0)
-        .getImmutableListOfResources().get(0)
-        .getId();
-
-    final DbSubscriptionGateway subscription = new DbSubscriptionGateway(helper.TRANSACTION_HELPER);
-    subscription.subscribe(userName1, serverId);
-    subscription.subscribe(userName2, serverId);
-
-    assertThat(gateway.newAction(userName1, resourceId, getRandomString()).getSubscribers())
-        .doesNotContain(userName1)
-        .contains(userName2);
-  }
 
   static class ActionData {
     public final LocalDateTime time;
@@ -118,6 +129,11 @@ public class DbSharedResourceActionsGatewayTest {
     }
 
     @Override
+    public int hashCode() {
+      return Objects.hash(time, description);
+    }
+
+    @Override
     public boolean equals(Object o) {
       if (this == o) { return true; }
       if (o == null || getClass() != o.getClass()) { return false; }
@@ -125,14 +141,5 @@ public class DbSharedResourceActionsGatewayTest {
       return Objects.equals(time, that.time) &&
           Objects.equals(description, that.description);
     }
-
-    @Override
-    public int hashCode() {
-      return Objects.hash(time, description);
-    }
-  }
-
-  private ActionsInfo getAllActionsEver() {
-    return gateway.getActions(resourceId, Range.all());
   }
 }

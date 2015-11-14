@@ -2,7 +2,9 @@ package com.home.teamnotifier.gateways;
 
 public class UserCredentials {
   private final String userName;
+
   private final int id;
+
   private final String passHash;
 
   public UserCredentials(final int id, final String userName, final String passHash) {
@@ -11,8 +13,7 @@ public class UserCredentials {
     this.id = id;
   }
 
-  public int getId()
-  {
+  public int getId() {
     return id;
   }
 
