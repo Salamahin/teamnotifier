@@ -116,7 +116,6 @@ public class DbSharedResourceActionsGatewayTest {
     return gateway.getActions(resourceId, Range.all());
   }
 
-
   static class ActionData {
     public final LocalDateTime time;
 

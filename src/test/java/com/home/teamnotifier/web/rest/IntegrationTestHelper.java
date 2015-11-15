@@ -12,7 +12,9 @@ import static com.home.teamnotifier.DbPreparer.getRandomString;
 
 class IntegrationTestHelper {
   private final DbPreparer preparer;
+
   private final ObjectMapper mapper;
+
   private EnvironmentsInfo environment;
 
   public IntegrationTestHelper() {

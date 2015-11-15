@@ -9,6 +9,13 @@ import java.util.UUID;
 public class NotifierConfiguration extends Configuration {
   private final static String GENERATED_SECRET_STRING = createRandomString();
 
+  @NotNull
+  private final String tokenSecretString = GENERATED_SECRET_STRING;
+
+  @Valid
+  @NotNull
+  private ExecutorsConfiguration executorsConfiguration;
+
   private static String createRandomString() {
     final String s1 = UUID.randomUUID().toString();
     final String s2 = UUID.randomUUID().toString();
@@ -20,13 +27,6 @@ public class NotifierConfiguration extends Configuration {
     return sb.toString();
   }
 
-  @NotNull
-  private final String tokenSecretString = GENERATED_SECRET_STRING;
-
-  @Valid
-  @NotNull
-  private ExecutorsConfiguration executorsConfiguration;
-
   @JsonProperty(value = "executors")
   public ExecutorsConfiguration getExecutorsConfiguration() {
     return executorsConfiguration;
@@ -35,7 +35,6 @@ public class NotifierConfiguration extends Configuration {
   public byte[] getJwtTokenSecret() {
     return tokenSecretString.getBytes();
   }
-
 
   public static class ExecutorsConfiguration {
 
@@ -48,5 +47,4 @@ public class NotifierConfiguration extends Configuration {
       return poolSize;
     }
   }
-
 }

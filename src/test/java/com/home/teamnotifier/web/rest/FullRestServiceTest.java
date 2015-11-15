@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(DropwizardJunitRunner.class)
 @DropwizardTestConfig(applicationClass = NotifierApplication.class, yamlFile = "/web.yml")
-public class EnvironmentRestServiceTest {
+public class FullRestServiceTest {
   private String token;
 
   private IntegrationTestHelper helper;
@@ -200,6 +200,30 @@ public class EnvironmentRestServiceTest {
     return info.getActions().stream()
         .map(ActionInfo::getDescription)
         .collect(toList());
+  }
+
+  @Test
+  public void testRegistration()
+  throws Exception {
+    given().auth().preemptive().basic(getRandomString(), getRandomString()).
+        expect().statusCode(HttpStatus.NO_CONTENT_204)
+        .when().post("/teamnotifier/1.0/users/register");
+  }
+
+  @Test
+  public void testAuthentication()
+  throws Exception {
+    given().auth().preemptive().basic(credentials.getUsername(), credentials.getPassword()).
+        expect().statusCode(HttpStatus.OK_200).contentType(ContentType.JSON)
+        .when().get("/teamnotifier/1.0/users/authenticate");
+  }
+
+  @Test
+  public void testIncorrectLogin()
+  throws Exception {
+    given().auth().preemptive().basic(credentials.getUsername(), getRandomString())
+        .expect().statusCode(HttpStatus.NO_CONTENT_204)
+        .when().get("/teamnotifier/1.0/users/authenticate");
   }
 
   @Before
