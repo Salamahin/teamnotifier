@@ -12,17 +12,12 @@ import static com.home.teamnotifier.DbPreparer.getRandomString;
 
 class IntegrationTestHelper {
   private final DbPreparer preparer;
-
   private final ObjectMapper mapper;
-
-  private BasicCredentials persistedUserCredentials;
-
   private EnvironmentsInfo environment;
 
   public IntegrationTestHelper() {
     preparer = new DbPreparer();
     mapper = Jackson.newObjectMapper();
-    ;
   }
 
   public void prepareEnvironment() {
