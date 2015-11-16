@@ -1,29 +1,19 @@
-var user="hello";
-var pass="world";
 
-var wsUri = "ws://hello:world@localhost:7998/state?credentials=Basic"+btoa(user + ":" + pass);
-var status;
-var environment;
-var hist;
+var USER_TOKEN;
 
-function getStatus() {
-  var xmlHttp = null;
-  xmlHttp = new XMLHttpRequest();
-  xmlHttp.withCredentials = true;
-  xmlHttp.open("GET", "/teamnotifier/1.0/environment", true);
-  xmlHttp.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + pass));
-  xmlHttp.onreadystatechange = function() {
-    if (xmlHttp.readyState == 4) {
-      environment.innerHTML=xmlHttp.responseText;
-    }
-  };
-  xmlHttp.send(null);
+function loadToken() {
+  var matches = document.cookie.match(new RegExp(
+    "(?:^|; )" + "userToken".replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+  ));
+  return matches ? decodeURIComponent(matches[1]) : undefined;
 }
 
-function reaskStatus(xmlHttp) {
-  if (xmlHttp.readyState == 4) {
-    getStatus();
-  }
+function storeToken() {
+  document.cookie = "userToken="+USER_TOKEN;
+}
+
+function buildEnvTree(environments) {
+
 }
 
 window.onload = function() {

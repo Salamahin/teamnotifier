@@ -3,54 +3,21 @@
 <head>
     <meta charset="utf-8"/>
     <title>WebSocket Test</title>
+    <link rel="stylesheet" href="css/index.css"/>
 </head>
 <body>
 
-<script language="javascript" type="text/javascript" src="js/environment.js"></script>
+<ul id="env-tree">
+</ul>
 
-<div id="status"></div>
-<div id="environment"></div>
-<table>
-    <tr>
-        <td>
-            <input id="input">
-        </td>
-        <td>
-            <input id="subscribe" type="button" value="subscribe"/>
-        </td>
-        <td>
-            <input id="unsubscribe" type="button" value="unsubscribe"/>
-        </td>
-        <td>
-            <input id="reserve" type="button" value="reserve"/>
-        </td>
-        <td>
-            <input id="free" type="button" value="free"/>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <input id="action_resource_id"/>
-        </td>
-        <td>
-            <input id="action_descr"/>
-        </td>
-        <td>
-            <input id='push_action' type="button" value="push"/>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <input id="action_hist_from" type="datetime-local"/>
-        </td>
-        <td>
-            <input id="action_hist_to" type="datetime-local"/>
-        </td>
-        <td>
-            <input id='get_actions' type="button" value="hist"/>
-        </td>
-    </tr>
-</table>
-<div id="hist"></div>
+<div class="modal">
+    <table class="modal-content">
+        <tr><td><input id="ib.username" type="text" placeholder="user"/></td></tr>
+        <tr><td><input id="ib.password" type="password" placeholder="password"/></td></tr>
+        <tr><td><input id="b.authenticate" type="button" value="Sing in" /></td></tr>
+        <tr><td><a id="b.register" href="#">New user</a></td></tr>
+    </table>
+</div>
+
 </body>
 </html>
