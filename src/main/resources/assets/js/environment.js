@@ -1,24 +1,26 @@
+const TOKEN_COOKIE = "userToken";
+const USER_COOKIE = "currentUser";
+
 var USER_TOKEN;
-var CURRENT_USER;
+var USER_NAME;
 var SERVER_SUBSCRIBTION_CHECKBOXES;
 var RESOURCE_RESERVE_BUTTONS;
 var RESOURCE_HISTORY_BUTTONS;
 var RESOURCE_FREE_BUTTONS;
 
-function loadToken() {
+function loadCookie(cookieName) {
     var matches = document.cookie.match(new RegExp(
-        "(?:^|; )" + "userToken".replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+        "(?:^|; )" + cookieName.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
     ));
     return matches ? decodeURIComponent(matches[1]) : undefined;
 }
 
-function storeToken() {
-    document.cookie = "userToken=" + USER_TOKEN;
-    console.debug("token stored: " + USER_TOKEN);
+function storeCookie(cookieName, cookieValue) {
+    document.cookie = cookieName + "=" + cookieValue;
 }
 
-function removeToken() {
-    var cookieString = 'userToken=';
+function removeCookie(cookieName) {
+    var cookieString = cookieName + "=";
     var expiryDate = new Date();
     expiryDate.setTime(expiryDate.getTime() - 86400 * 1000);
     cookieString += ';max-age=0';
@@ -29,9 +31,10 @@ function removeToken() {
 function authenticate() {
     var authForm = document.getElementById("frm.authentication");
 
-    var loadedToken = loadToken();
+    var loadedToken = loadCookie(TOKEN_COOKIE);
     if (loadedToken != undefined) {
         USER_TOKEN = loadedToken;
+        USER_NAME = loadCookie(USER_COOKIE);
         connectStatusSocket();
     }
 
@@ -49,7 +52,7 @@ function sendAuthRequest() {
     xhttp.open("GET", "/teamnotifier/1.0/users/authenticate", true);
     xhttp.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password));
     xhttp.onreadystatechange = function () {
-        handleAuthentication(xhttp);
+        handleAuthentication(xhttp, username);
     };
     xhttp.send();
 }
@@ -67,14 +70,16 @@ function showAuthenticationResult(success) {
 }
 
 /** @namespace authInfo.token */
-function handleAuthentication(XMLHttpRequest) {
+function handleAuthentication(XMLHttpRequest, userName) {
     if (XMLHttpRequest.readyState != 4)
         return;
 
     if (XMLHttpRequest.status == 200) {
         var authInfo = JSON.parse(XMLHttpRequest.responseText);
         USER_TOKEN = authInfo.token;
-        storeToken();
+        USER_NAME = userName;
+        storeCookie(TOKEN_COOKIE, USER_TOKEN);
+        storeCookie(USER_COOKIE, userName);
         connectStatusSocket();
         return;
     }
@@ -106,7 +111,8 @@ function connectStatusSocket() {
     };
 
     websocket.onerror = function () {
-        removeToken();
+        removeCookie(TOKEN_COOKIE);
+        removeCookie(USER_COOKIE);
         showAuthenticationResult(false);
     };
 }
@@ -127,6 +133,7 @@ function showStatus(status) {
     SERVER_SUBSCRIBTION_CHECKBOXES = [];
     RESOURCE_RESERVE_BUTTONS = [];
     RESOURCE_HISTORY_BUTTONS = [];
+    RESOURCE_FREE_BUTTONS = [];
 
     var environments = status.environments;
 
@@ -179,7 +186,7 @@ function serverToHtml(server) {
     });
     html += "</ul></li></ul>";
 
-    return html ;
+    return html;
 }
 
 
@@ -196,6 +203,7 @@ function newCheckbox(id, value) {
 /** @namespace occupationInfo.userName */
 function resourceToHtml(resource) {
     var resourceReserveId = "resource_reserve_" + resource.id;
+    var resourceFreeId = "resource_free_" + resource.id;
     var resourceHistoryId = "resource_hist_" + resource.id;
 
     var html = "";
@@ -206,6 +214,9 @@ function resourceToHtml(resource) {
     if (!occupationInfo) {
         html += resource.name + newButton(resourceReserveId, "Reserve");
         RESOURCE_RESERVE_BUTTONS[resourceReserveId] = resource.id;
+    } else if (occupationInfo.userName == USER_NAME) {
+        html += resource.name + newButton(resourceFreeId, "Free");
+        RESOURCE_FREE_BUTTONS[resourceFreeId] = resource.id;
     } else {
         html += resource.name + " reserved by " + occupationInfo.userName + " on " + occupationInfo.occupationTime;
     }
@@ -230,7 +241,7 @@ function getState() {
     xhttp.send();
 }
 
-function handleReserve(XMLHttpRequest) {
+function handleInteraction(XMLHttpRequest) {
     if (XMLHttpRequest.readyState != 4)
         return;
 
@@ -249,7 +260,17 @@ function reserve(resourceId) {
     xhttp.open("POST", "/teamnotifier/1.0/environment/application/reserve/" + resourceId, true);
     xhttp.setRequestHeader("Authorization", "Bearer " + USER_TOKEN);
     xhttp.onreadystatechange = function () {
-        handleReserve(xhttp);
+        handleInteraction(xhttp);
+    };
+    xhttp.send();
+}
+
+function free(resourceId) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.open("DELETE", "/teamnotifier/1.0/environment/application/reserve/" + resourceId, true);
+    xhttp.setRequestHeader("Authorization", "Bearer " + USER_TOKEN);
+    xhttp.onreadystatechange = function () {
+        handleInteraction(xhttp);
     };
     xhttp.send();
 }
@@ -258,7 +279,7 @@ function installCallbacks() {
     var key;
     for (key in RESOURCE_HISTORY_BUTTONS) {
 
-        if(!RESOURCE_HISTORY_BUTTONS.hasOwnProperty(key))
+        if (!RESOURCE_HISTORY_BUTTONS.hasOwnProperty(key))
             continue;
 
         const histResourceId = RESOURCE_HISTORY_BUTTONS[key];
@@ -270,7 +291,7 @@ function installCallbacks() {
     }
     for (key in SERVER_SUBSCRIBTION_CHECKBOXES) {
 
-        if(!SERVER_SUBSCRIBTION_CHECKBOXES.hasOwnProperty(key))
+        if (!SERVER_SUBSCRIBTION_CHECKBOXES.hasOwnProperty(key))
             continue;
 
         const serverId = SERVER_SUBSCRIBTION_CHECKBOXES[key];
@@ -282,14 +303,26 @@ function installCallbacks() {
     }
     for (key in RESOURCE_RESERVE_BUTTONS) {
 
-        if(!RESOURCE_RESERVE_BUTTONS.hasOwnProperty(key))
+        if (!RESOURCE_RESERVE_BUTTONS.hasOwnProperty(key))
             continue;
 
-        resResourceId = RESOURCE_RESERVE_BUTTONS[key];
-        btnReserve = document.getElementById(key);
+        const resResourceId = RESOURCE_RESERVE_BUTTONS[key];
+        const btnReserve = document.getElementById(key);
 
         btnReserve.onclick = function () {
             reserve(resResourceId);
+        };
+    }
+    for (key in RESOURCE_FREE_BUTTONS) {
+
+        if (!RESOURCE_FREE_BUTTONS.hasOwnProperty(key))
+            continue;
+
+        const freeResourceId = RESOURCE_FREE_BUTTONS[key];
+        const btnFree = document.getElementById(key);
+
+        btnFree.onclick = function () {
+            free(freeResourceId);
         };
     }
 }
