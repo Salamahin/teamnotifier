@@ -44,7 +44,7 @@ public class BroadcastServlet extends WebSocketServlet {
 
   private String tryGetAuthenticatedUserName(final ServletUpgradeRequest request)
   throws AuthenticationException {
-    final String tokenStr = decodeBase64(request.getParameterMap().get("token").get(0));
+    final String tokenStr = request.getParameterMap().get("token").get(0);
     final Optional<AuthenticatedUserData> authenticatedUser = authenticator.authenticate(tokenStr);
     if (!authenticatedUser.isPresent()) {
       throw new AuthenticationException("Authentication failed");

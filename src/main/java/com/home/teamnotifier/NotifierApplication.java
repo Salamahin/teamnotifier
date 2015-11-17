@@ -1,10 +1,12 @@
 package com.home.teamnotifier;
 
 import com.github.toastshaman.dropwizard.auth.jwt.*;
+import com.github.toastshaman.dropwizard.auth.jwt.hmac.HmacSHA256Verifier;
 import com.github.toastshaman.dropwizard.auth.jwt.hmac.HmacSHA512Verifier;
 import com.github.toastshaman.dropwizard.auth.jwt.parser.DefaultJsonWebTokenParser;
 import com.home.teamnotifier.authentication.*;
 import com.home.teamnotifier.gateways.EnvironmentGateway;
+import com.home.teamnotifier.gateways.UserGateway;
 import com.home.teamnotifier.health.DbConnection;
 import com.home.teamnotifier.web.socket.*;
 import io.dropwizard.Application;
@@ -25,12 +27,14 @@ public class NotifierApplication extends Application<NotifierConfiguration> {
 
   @Override
   public void run(final NotifierConfiguration configuration, final Environment environment) {
-    final JwtTokenAuthenticator authenticator = INJECTION_BUNDLE
-        .getInjector()
-        .getInstance(JwtTokenAuthenticator.class);
     final ClientManager clientManager = INJECTION_BUNDLE
         .getInjector()
         .getInstance(ClientManager.class);
+
+    final JwtTokenAuthenticator authenticator = new JwtTokenAuthenticator(
+            INJECTION_BUNDLE.getInjector().getInstance(UserGateway.class),
+            new HmacSHA512Verifier(configuration.getJwtTokenSecret())
+    );
 
     registerWebsocket(environment, authenticator, clientManager);
 

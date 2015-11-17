@@ -1,10 +1,10 @@
 package com.home.teamnotifier.authentication;
 
+import com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenVerifier;
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
 import com.github.toastshaman.dropwizard.auth.jwt.parser.DefaultJsonWebTokenParser;
 import com.github.toastshaman.dropwizard.auth.jwt.validator.ExpiryValidator;
 import com.google.common.base.Optional;
-import com.google.inject.Inject;
 import com.home.teamnotifier.gateways.*;
 import io.dropwizard.auth.*;
 
@@ -12,12 +12,12 @@ public class JwtTokenAuthenticator
     implements Authenticator<JsonWebToken, AuthenticatedUserData>, WebsocketAuthenticator {
 
   private final ExpiryValidator expiryValidator;
-
   private final UserGateway userGateway;
+  private final JsonWebTokenVerifier verifier ;
 
-  @Inject
-  public JwtTokenAuthenticator(final UserGateway userGateway) {
+  public JwtTokenAuthenticator(final UserGateway userGateway, final JsonWebTokenVerifier verifier) {
     this.userGateway = userGateway;
+    this.verifier = verifier;
     expiryValidator = new ExpiryValidator();
   }
 
@@ -25,6 +25,7 @@ public class JwtTokenAuthenticator
   public Optional<AuthenticatedUserData> authenticate(final String jwtToken)
   throws AuthenticationException {
     final JsonWebToken token = new DefaultJsonWebTokenParser().parse(jwtToken);
+    verifier.verifySignature(token);
     return authenticate(token);
   }
 
