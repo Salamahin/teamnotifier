@@ -13,7 +13,8 @@ public class NotifierApplicationRunner {
 
     final Injector injector = Injection.INJECTION_BUNDLE.getInjector();
     final DbPreparer helper = new DbPreparer(injector.getInstance(TransactionHelper.class));
-    helper.createPersistedEnvironmentWithOneServerAndOneResource("env", "srv", "app");
+    helper.createPersistedEnvironmentWithOneServerAndOneResource("env1", "srv1", "app1");
+    helper.createPersistedEnvironmentWithOneServerAndOneResource("env2", "srv2", "app2");
     helper.createPersistedUser("user", "pass");
   }
 }
