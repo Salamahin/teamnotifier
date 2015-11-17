@@ -9,6 +9,8 @@ import org.eclipse.jetty.websocket.servlet.*;
 import org.slf4j.*;
 import java.io.IOException;
 
+import static com.home.teamnotifier.utils.Base64Decoder.decodeBase64;
+
 public class BroadcastServlet extends WebSocketServlet {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(WebSocketHandler.class);
@@ -42,7 +44,7 @@ public class BroadcastServlet extends WebSocketServlet {
 
   private String tryGetAuthenticatedUserName(final ServletUpgradeRequest request)
   throws AuthenticationException {
-    final String tokenStr = request.getParameterMap().get("credentials").get(0);
+    final String tokenStr = decodeBase64(request.getParameterMap().get("token").get(0));
     final Optional<AuthenticatedUserData> authenticatedUser = authenticator.authenticate(tokenStr);
     if (!authenticatedUser.isPresent()) {
       throw new AuthenticationException("Authentication failed");

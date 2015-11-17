@@ -5,6 +5,8 @@ import io.dropwizard.auth.basic.BasicCredentials;
 import java.nio.charset.Charset;
 import java.util.Base64;
 
+import static com.home.teamnotifier.utils.Base64Decoder.*;
+
 public final class BasicAuthenticationCredentialExtractor {
   private BasicAuthenticationCredentialExtractor() {
     throw new AssertionError();
@@ -15,9 +17,7 @@ public final class BasicAuthenticationCredentialExtractor {
     Preconditions.checkArgument(encodedAuthorizationString.startsWith("Basic"));
 
     final String base64Credentials = encodedAuthorizationString.substring("Basic".length()).trim();
-    final String credentials = new String(
-        Base64.getDecoder().decode(base64Credentials),
-        Charset.forName("UTF-8"));
+    final String credentials = decodeBase64(base64Credentials);
 
     final String[] values = credentials.split(":", 2);
     return new BasicCredentials(values[0], values[1]);

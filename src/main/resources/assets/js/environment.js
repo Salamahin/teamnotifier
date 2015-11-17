@@ -16,7 +16,10 @@ function storeToken() {
 function authenticate() {
   var authForm = document.getElementById("frm.authentication");
 
-  if(loadToken() != undefined) {
+  var loadedToken = loadToken();
+  if(loadedToken != undefined) {
+    USER_TOKEN = loadedToken;
+    connectStatusSocket();
     return;
   }
 
@@ -43,8 +46,10 @@ function showAuthenticationResult(success) {
   var authForm = document.getElementById("frm.authentication");
 
   if(success) {
+    console.debug("authentication success");
     authForm.classList.remove("authenticationFailed");
   } else {
+    console.debug("authentication failed");
     authForm.classList.add("authenticationFailed");
   }
 }
@@ -58,10 +63,31 @@ function handleAuthentication(XMLHttpRequest) {
     USER_TOKEN = authInfo.token;
     storeToken();
     showAuthenticationResult(true);
+    connectStatusSocket();
     return;
   }
 
   showAuthenticationResult(false);
+}
+
+function connectStatusSocket() {
+    var servUrl = document.URL.replace(/.*?:\/\//g, "");
+    var websocket = new WebSocket("ws://" + servUrl + "state/?token="+btoa(USER_TOKEN));
+    websocket.onopen = function(evt) {
+    console.debug(evt.data);
+    };
+
+    websocket.onclose = function(evt) {
+    console.debug(evt.data);
+    };
+
+    websocket.onmessage = function(evt) {
+    console.debug(evt.data);
+    };
+
+    websocket.onerror = function(evt) {
+    console.error(evt.data)
+    };
 }
 
 window.onload = function() {

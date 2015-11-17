@@ -1,6 +1,7 @@
 package com.home.teamnotifier.authentication;
 
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
+import com.github.toastshaman.dropwizard.auth.jwt.parser.DefaultJsonWebTokenParser;
 import com.github.toastshaman.dropwizard.auth.jwt.validator.ExpiryValidator;
 import com.google.common.base.Optional;
 import com.google.inject.Inject;
@@ -21,15 +22,9 @@ public class JwtTokenAuthenticator
   }
 
   @Override
-  public Optional<AuthenticatedUserData> authenticate(final String credentials)
+  public Optional<AuthenticatedUserData> authenticate(final String jwtToken)
   throws AuthenticationException {
-    final String[] splitted = credentials.split(".");
-    final JsonWebToken token = JsonWebToken.parser()
-        .header(splitted[0])
-        .claim(splitted[1])
-        .signature(splitted[2].getBytes())
-        .build();
-
+    final JsonWebToken token = new DefaultJsonWebTokenParser().parse(jwtToken);
     return authenticate(token);
   }
 
