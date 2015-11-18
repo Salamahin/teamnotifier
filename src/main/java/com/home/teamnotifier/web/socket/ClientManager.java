@@ -15,25 +15,25 @@ public class ClientManager implements NotificationManager {
 
   private final Executor executor;
 
-  private final AtomicReference<BiMap<Session, String>> clientSessionsByUsernames;
+  private final BiMap<Session, String> clientSessionsByUsernames;
 
   @Inject
   public ClientManager(final Executor executor) {
     this.executor = executor;
-    clientSessionsByUsernames = new AtomicReference<>(HashBiMap.create());
+    clientSessionsByUsernames = HashBiMap.create();
   }
 
   public synchronized void addNewClient(final Session session, final String userName) {
-    clientSessionsByUsernames.get().put(session, userName);
+    clientSessionsByUsernames.put(session, userName);
   }
 
   public synchronized void removeClient(final Session session) {
-    clientSessionsByUsernames.get().remove(session);
+    clientSessionsByUsernames.remove(session);
   }
 
   @Override
   public synchronized void pushToClients(final Collection<String> userNames, final String message) {
-    final BiMap<String, Session> clientsByNames = clientSessionsByUsernames.get().inverse();
+    final BiMap<String, Session> clientsByNames = clientSessionsByUsernames.inverse();
     userNames.stream()
         .filter(clientsByNames::containsKey)
         .map(clientsByNames::get)
@@ -48,7 +48,7 @@ public class ClientManager implements NotificationManager {
     try {
       session.getRemote().sendString(message);
     } catch (IOException e) {
-      LOGGER.error(String.format("Failed to push to %s: ", clientSessionsByUsernames.get().get(session)),
+      LOGGER.error(String.format("Failed to push to %s: ", clientSessionsByUsernames.get(session)),
           e);
     }
   }
