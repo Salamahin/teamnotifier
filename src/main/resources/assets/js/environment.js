@@ -3,10 +3,6 @@ const USER_COOKIE = "currentUser";
 
 var USER_TOKEN;
 var USER_NAME;
-var SERVER_SUBSCRIBTION_CHECKBOXES;
-var RESOURCE_RESERVE_BUTTONS;
-var RESOURCE_HISTORY_BUTTONS;
-var RESOURCE_FREE_BUTTONS;
 
 function loadCookie(cookieName) {
     var matches = document.cookie.match(new RegExp(
@@ -130,105 +126,141 @@ function handleStatus(XMLHttpRequest) {
 
 /** @namespace status.environments */
 function showStatus(status) {
-    SERVER_SUBSCRIBTION_CHECKBOXES = [];
-    RESOURCE_RESERVE_BUTTONS = [];
-    RESOURCE_HISTORY_BUTTONS = [];
-    RESOURCE_FREE_BUTTONS = [];
-
     var environments = status.environments;
 
     var envFrame = document.getElementById("frm.environment");
 
-    var html = "<ul>";
+    var envList = newUnsignedList();
     environments.forEach(function (env) {
-        html += "<li>" + environmentToHtml(env) + "</li>";
+       envList.appendChild(envToListElem(env));
     });
-    html += "</ul>";
 
-    envFrame.innerHTML = html;
-    installCallbacks();
+    while (envFrame.firstChild) {
+        envFrame.removeChild(envFrame.firstChild);
+    }
+    envFrame.appendChild(envList);
 }
 
 /** @namespace environment.servers */
-function environmentToHtml(environment) {
+function envToListElem(environment) {
     var servers = environment.servers;
 
-    var html = environment.name + "<ul>";
+    var serverList = newUnsignedList();
     servers.forEach(function (server) {
-        html += "<li>" + serverToHtml(server) + "</li>";
+        serverList.appendChild(servToListElem(server))
     });
-    html += "</ul>";
 
-    return html;
+    var listElem = newListElement();
+    listElem.appendChild(newLabel(environment.name));
+    listElem.appendChild(serverList);
+    return listElem;
 }
 
 /** @namespace server.resources */
 /** @namespace server.subscribers */
-function serverToHtml(server) {
-    var resources = server.resources;
+function servToListElem(server) {
     var subscribers = server.subscribers;
+    var listSubscribers = newUnsignedList();
+    listSubscribers.appendChild(newLabel("subscribers"));
 
-    var serverId = "server_" + server.id;
-
-    SERVER_SUBSCRIBTION_CHECKBOXES[serverId] = server.id;
-
-    var html = "";
-
-    html += newCheckbox(serverId, server.name) + "<ul>";
-
-    html += "<li>subscribers<ul>";
     subscribers.forEach(function (subscriber) {
-        html += "<li>" + subscriberToHtml(subscriber) + "</li>";
+        listSubscribers.appendChild(subscriberToListElem(subscriber));
     });
-    html += "</ul></li><li>resources<ul>";
+
+    var resources = server.resources;
+    var listResources = newUnsignedList();
     resources.forEach(function (resource) {
-        html += "<li>" + resourceToHtml(resource) + "</li>";
+        listResources.appendChild(resourceToListElem(resource));
     });
-    html += "</ul></li></ul>";
 
-    return html;
+    var subscribed = subscribers.indexOf(USER_NAME) != 0;
+    var cbSubscribe = newLabeledCheckbox(server.name, subscribed, function() {
+        console.debug("subscribe server " + server.id);
+    });
+
+    var listElem = newListElement();
+    listElem.appendChild(cbSubscribe);
+    listElem.appendChild(listSubscribers);
+    listElem.appendChild(listResources);
+
+    return listElem;
 }
 
-
-function newButton(id, value) {
-    return "<input id=\"" + id + "\" type=\"button\" value=\"" + value + "\"/>";
+function newLabel(value) {
+    var label = document.createElement("label");
+    label.appendChild(document.createTextNode(value));
+    return label;
 }
 
-function newCheckbox(id, value) {
-    return "<label><input id=\"" + id + "\" type=\"checkbox\"/>" + value + "</label>";
+function newUnsignedList() {
+    var unsignedList = document.createElement("ul");
+    return unsignedList;
 }
+
+function newListElement() {
+    var element = document.createElement("li");
+    return element;
+}
+
+function newButton(value, onclick) {
+    var button = document.createElement("button");
+    button.innerHTML = value;
+    button.onclick = onclick;
+    return button;
+}
+
+function newLabeledCheckbox(value, checked, onchange) {
+    var checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.onchange = onchange;
+    checkbox.checked = checked;
+
+    var label = document.createElement("label");
+    label.appendChild(checkbox);
+    label.appendChild(document.createTextNode(value));
+
+    return label;
+}
+
 
 /** @namespace resource.occupationInfo */
 /** @namespace occupationInfo.occupationTime */
 /** @namespace occupationInfo.userName */
-function resourceToHtml(resource) {
-    var resourceReserveId = "resource_reserve_" + resource.id;
-    var resourceFreeId = "resource_free_" + resource.id;
-    var resourceHistoryId = "resource_hist_" + resource.id;
-
-    var html = "";
-
+function resourceToListElem(resource) {
     var occupationInfo = resource.occupationInfo;
+
+    var action;
+    var btnHistory = newButton("History", function() {
+        console.debug("history of resource " + resource.id);
+    });
 
 
     if (!occupationInfo) {
-        html += resource.name + newButton(resourceReserveId, "Reserve");
-        RESOURCE_RESERVE_BUTTONS[resourceReserveId] = resource.id;
+        action = newButton("Reserve", function() {
+            reserve(resource.id);
+        });
     } else if (occupationInfo.userName == USER_NAME) {
-        html += resource.name + newButton(resourceFreeId, "Free");
-        RESOURCE_FREE_BUTTONS[resourceFreeId] = resource.id;
+       action = newButton("Free", function() {
+           free(resource.id);
+       });
+
     } else {
-        html += resource.name + " reserved by " + occupationInfo.userName + " on " + occupationInfo.occupationTime;
+       action = newLabel("Reserved by " + occupationInfo.userName + " on " + occupationInfo.occupationTime);
     }
 
-    html += newButton(resourceHistoryId, "History");
-    RESOURCE_HISTORY_BUTTONS[resourceHistoryId] = resource.id;
 
-    return html;
+    var listElem = newListElement();
+    listElem.appendChild(newLabel(resource.name));
+    listElem.appendChild(action);
+    listElem.appendChild(btnHistory);
+
+    return listElem;
 }
 
-function subscriberToHtml(subscriber) {
-    return "<label>" + subscriber.name + "</label>"
+function subscriberToListElem(subscriber) {
+    var listElem = newListElement();
+    listElem.appendChild(newLabel(subscriber.name));
+    return listElem;
 }
 
 function getState() {
@@ -274,59 +306,6 @@ function free(resourceId) {
     };
     xhttp.send();
 }
-
-function installCallbacks() {
-    var key;
-    for (key in RESOURCE_HISTORY_BUTTONS) {
-
-        if (!RESOURCE_HISTORY_BUTTONS.hasOwnProperty(key))
-            continue;
-
-        const histResourceId = RESOURCE_HISTORY_BUTTONS[key];
-        const btnHist = document.getElementById(key);
-
-        btnHist.onclick = function () {
-            showHist(histResourceId);
-        };
-    }
-    for (key in SERVER_SUBSCRIBTION_CHECKBOXES) {
-
-        if (!SERVER_SUBSCRIBTION_CHECKBOXES.hasOwnProperty(key))
-            continue;
-
-        const serverId = SERVER_SUBSCRIBTION_CHECKBOXES[key];
-        const cbSubscribe = document.getElementById(key);
-
-        cbSubscribe.onchange = function () {
-            subscribe(serverId, cbSubscribe.value);
-        };
-    }
-    for (key in RESOURCE_RESERVE_BUTTONS) {
-
-        if (!RESOURCE_RESERVE_BUTTONS.hasOwnProperty(key))
-            continue;
-
-        const resResourceId = RESOURCE_RESERVE_BUTTONS[key];
-        const btnReserve = document.getElementById(key);
-
-        btnReserve.onclick = function () {
-            reserve(resResourceId);
-        };
-    }
-    for (key in RESOURCE_FREE_BUTTONS) {
-
-        if (!RESOURCE_FREE_BUTTONS.hasOwnProperty(key))
-            continue;
-
-        const freeResourceId = RESOURCE_FREE_BUTTONS[key];
-        const btnFree = document.getElementById(key);
-
-        btnFree.onclick = function () {
-            free(freeResourceId);
-        };
-    }
-}
-
 window.onload = function () {
     authenticate();
 
