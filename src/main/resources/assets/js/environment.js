@@ -36,14 +36,13 @@ function authenticate() {
 
     var authenticate = document.getElementById("btn.authenticate");
     authenticate.onclick = function () {
-        sendAuthRequest();
+        var username = document.getElementById("ibox.username").value;
+        var password = document.getElementById("ibox.password").value;
+        sendAuthRequest(username, password);
     };
 }
 
-function sendAuthRequest() {
-    var username = document.getElementById("ibox.username").value;
-    var password = document.getElementById("ibox.password").value;
-
+function sendAuthRequest(username, password) {
     var xhttp = new XMLHttpRequest();
     xhttp.open("GET", "/teamnotifier/1.0/users/authenticate", true);
     xhttp.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password));
@@ -344,10 +343,35 @@ function unsubscribe(serverId) {
 
 function newMessage(permission) {
     if( permission != "granted" ) return false;
-};
+}
+
+function handleRegistration(XMLHttpRequest, username, password) {
+    if (XMLHttpRequest.readyState != 4)
+        return;
+
+    if (XMLHttpRequest.status == 204) {
+        sendAuthRequest(username, password);
+    }
+}
+
+function sendRegisterRequest() {
+    const username = document.getElementById("ibox.username").value;
+    const password = document.getElementById("ibox.password").value;
+
+    var xhttp = new XMLHttpRequest();
+    xhttp.open("POST", "/teamnotifier/1.0/users/register", true);
+    xhttp.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password));
+    xhttp.onreadystatechange = function () {
+        handleRegistration(xhttp, username, password);
+    };
+    xhttp.send();
+}
 
 window.onload = function () {
     authenticate();
+    document.getElementById("btn.register").onclick = function() {
+        sendRegisterRequest();
+    };
 
     Notification.requestPermission( newMessage );
 
