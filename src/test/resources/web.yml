@@ -10,10 +10,10 @@ server:
       appenders: []
 
 logging:
-  level: TRACE
+  level: INFO
   loggers:
-    com.home.teamnotifier: TRACE
-    org.hibernate: TRACE
+    com.home.teamnotifier: DEBUG
+    org.hibernate: WARN
   appenders:
     - type: console
     - type: file

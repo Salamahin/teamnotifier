@@ -16,5 +16,6 @@ public class NotifierApplicationRunner {
     helper.createPersistedEnvironmentWithOneServerAndOneResource("env1", "srv1", "app1");
     helper.createPersistedEnvironmentWithOneServerAndOneResource("env2", "srv2", "app2");
     helper.createPersistedUser("user", "pass");
+    helper.createPersistedUser("hello", "world");
   }
 }

@@ -102,7 +102,8 @@ function connectStatusSocket() {
     };
 
     websocket.onmessage = function (evt) {
-        console.debug(evt.data);
+        console.debug();
+        new Notification(evt.data);
         getState();
     };
 
@@ -161,7 +162,6 @@ function envToListElem(environment) {
 function servToListElem(server) {
     var subscribers = server.subscribers;
     var listSubscribers = newUnsignedList();
-    listSubscribers.appendChild(newLabel("subscribers"));
 
     subscribers.forEach(function (subscriber) {
         listSubscribers.appendChild(subscriberToListElem(subscriber));
@@ -169,19 +169,34 @@ function servToListElem(server) {
 
     var resources = server.resources;
     var listResources = newUnsignedList();
+
     resources.forEach(function (resource) {
         listResources.appendChild(resourceToListElem(resource));
     });
 
-    var subscribed = subscribers.indexOf(USER_NAME) != 0;
+    const subscribed = subscribers.indexOf(USER_NAME) >= 0;
     var cbSubscribe = newLabeledCheckbox(server.name, subscribed, function() {
-        console.debug("subscribe server " + server.id);
+        subscribed
+            ? unsubscribe(server.id)
+            : subscribe(server.id);
     });
+
+    var listResourcesAndSubscribers = newUnsignedList();
+
+    var listSubscribersElem = newListElement();
+    listSubscribersElem.appendChild(newLabel("subscribers"));
+    listSubscribersElem.appendChild(listSubscribers);
+
+    var listResourcesElem = newListElement();
+    listResourcesElem.appendChild(newLabel("resources`"));
+    listResourcesElem.appendChild(listResources);
+
+    listResourcesAndSubscribers.appendChild(listSubscribersElem);
+    listResourcesAndSubscribers.appendChild(listResourcesElem);
 
     var listElem = newListElement();
     listElem.appendChild(cbSubscribe);
-    listElem.appendChild(listSubscribers);
-    listElem.appendChild(listResources);
+    listElem.appendChild(listResourcesAndSubscribers);
 
     return listElem;
 }
@@ -306,8 +321,35 @@ function free(resourceId) {
     };
     xhttp.send();
 }
+
+function subscribe(serverId) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.open("POST", "/teamnotifier/1.0/environment/server/subscribe/" + serverId, true);
+    xhttp.setRequestHeader("Authorization", "Bearer " + USER_TOKEN);
+    xhttp.onreadystatechange = function () {
+        handleInteraction(xhttp);
+    };
+    xhttp.send();
+}
+
+function unsubscribe(serverId) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.open("DELETE", "/teamnotifier/1.0/environment/server/subscribe/" + serverId, true);
+    xhttp.setRequestHeader("Authorization", "Bearer " + USER_TOKEN);
+    xhttp.onreadystatechange = function () {
+        handleInteraction(xhttp);
+    };
+    xhttp.send();
+}
+
+function newMessage(permission) {
+    if( permission != "granted" ) return false;
+};
+
 window.onload = function () {
     authenticate();
+
+    Notification.requestPermission( newMessage );
 
 //  status = document.getElementById("status");
 //  environment = document.getElementById("environment");
