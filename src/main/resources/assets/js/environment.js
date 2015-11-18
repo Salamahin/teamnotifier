@@ -274,7 +274,7 @@ function resourceToListElem(resource) {
 
 function subscriberToListElem(subscriber) {
     var listElem = newListElement();
-    listElem.appendChild(newLabel(subscriber.name));
+    listElem.appendChild(newLabel(subscriber));
     return listElem;
 }
 

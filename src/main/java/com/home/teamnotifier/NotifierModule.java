@@ -32,6 +32,9 @@ final class NotifierModule extends AbstractModule {
     bind(TransactionHelper.class)
         .in(Singleton.class);
 
+    bind(ClientManager.class)
+        .in(Singleton.class);
+
     bind(NotificationManager.class)
         .to(ClientManager.class)
         .in(Singleton.class);

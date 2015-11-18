@@ -8,31 +8,32 @@ import org.slf4j.*;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class ClientManager implements NotificationManager {
   private static final Logger LOGGER = LoggerFactory.getLogger(ClientManager.class);
 
   private final Executor executor;
 
-  private final BiMap<Session, String> clientSessionsByUsernames;
+  private final AtomicReference<BiMap<Session, String>> clientSessionsByUsernames;
 
   @Inject
   public ClientManager(final Executor executor) {
     this.executor = executor;
-    clientSessionsByUsernames = HashBiMap.create();
+    clientSessionsByUsernames = new AtomicReference<>(HashBiMap.create());
   }
 
   public synchronized void addNewClient(final Session session, final String userName) {
-    clientSessionsByUsernames.put(session, userName);
+    clientSessionsByUsernames.get().put(session, userName);
   }
 
   public synchronized void removeClient(final Session session) {
-    clientSessionsByUsernames.remove(session);
+    clientSessionsByUsernames.get().remove(session);
   }
 
   @Override
   public synchronized void pushToClients(final Collection<String> userNames, final String message) {
-    final BiMap<String, Session> clientsByNames = clientSessionsByUsernames.inverse();
+    final BiMap<String, Session> clientsByNames = clientSessionsByUsernames.get().inverse();
     userNames.stream()
         .filter(clientsByNames::containsKey)
         .map(clientsByNames::get)
@@ -47,7 +48,7 @@ public class ClientManager implements NotificationManager {
     try {
       session.getRemote().sendString(message);
     } catch (IOException e) {
-      LOGGER.error(String.format("Failed to push to %s: ", clientSessionsByUsernames.get(session)),
+      LOGGER.error(String.format("Failed to push to %s: ", clientSessionsByUsernames.get().get(session)),
           e);
     }
   }
