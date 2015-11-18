@@ -207,13 +207,11 @@ function newLabel(value) {
 }
 
 function newUnsignedList() {
-    var unsignedList = document.createElement("ul");
-    return unsignedList;
+    return document.createElement("ul");
 }
 
 function newListElement() {
-    var element = document.createElement("li");
-    return element;
+    return document.createElement("li");
 }
 
 function newButton(value, onclick) {
@@ -247,6 +245,9 @@ function resourceToListElem(resource) {
     var btnHistory = newButton("History", function() {
         console.debug("history of resource " + resource.id);
     });
+    var btnAction = newButton("Action", function () {
+        sendActionRequest(resource.id);
+    });
 
 
     if (!occupationInfo) {
@@ -267,6 +268,7 @@ function resourceToListElem(resource) {
     listElem.appendChild(newLabel(resource.name));
     listElem.appendChild(action);
     listElem.appendChild(btnHistory);
+    listElem.appendChild(btnAction);
 
     return listElem;
 }
@@ -364,6 +366,15 @@ function sendRegisterRequest() {
     xhttp.onreadystatechange = function () {
         handleRegistration(xhttp, username, password);
     };
+    xhttp.send();
+}
+
+function sendActionRequest(resourceId) {
+    var action = prompt("New action", "deploy");
+    var xhttp = new XMLHttpRequest();
+    xhttp.open("POST", "/teamnotifier/1.0/environment/application/actions/" + resourceId, true);
+    xhttp.setRequestHeader("ActionDetails", action);
+    xhttp.setRequestHeader("Authorization", "Bearer " + USER_TOKEN);
     xhttp.send();
 }
 
