@@ -3,8 +3,11 @@ package com.home.teamnotifier.web.rest;
 import com.google.common.net.HttpHeaders;
 import com.google.inject.Inject;
 import com.home.teamnotifier.authentication.*;
+import com.home.teamnotifier.core.responses.EnvironmentsInfo;
+import com.home.teamnotifier.core.responses.UserInfo;
 import com.home.teamnotifier.gateways.*;
 import com.home.teamnotifier.utils.PasswordHasher;
+import io.dropwizard.auth.Auth;
 import io.dropwizard.auth.basic.BasicCredentials;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -59,5 +62,11 @@ public class UserRestService {
   public void newUser(@HeaderParam(HttpHeaders.AUTHORIZATION) final String encodedCredentials) {
     final BasicCredentials credentials = extract(encodedCredentials);
     userGateway.newUser(credentials.getUsername(), credentials.getPassword());
+  }
+
+  @GET
+  @Path("/whoami")
+  public UserInfo whoAmI(@Auth final AuthenticatedUserData authenticatedUserData) {
+    return new UserInfo(authenticatedUserData.getName());
   }
 }

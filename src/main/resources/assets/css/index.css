@@ -65,8 +65,7 @@
     border: 1px solid #ccc;
     padding: 5px 10px;
     text-decoration: none;
-    color: #666;
-    font-family: arial, verdana, tahoma;
+    font-family: arial, verdana, tahoma, serif;
     font-size: 14px;
     display: inline-block;
     vertical-align: middle;
@@ -141,15 +140,14 @@ input.cmn-toggle-round:checked + label:after {
 
 .round-button {
     float: right;
-    right: 0px;
+    right: 0;
     margin: 10px;
     cursor: pointer;
     width: 30px;
     height: 30px;
     display: inline-block;
     line-height: 15px;
-    background-color: #f1f1f1;
-    background-image: linear-gradient(top, #f6f6f6, #f1f1f1);
+    background: #f1f1f1 linear-gradient(top, #f6f6f6, #f1f1f1);
     border-radius: 100%;
     box-shadow: 0 1px 1px rgba(0, 0, 0, .25), 0 2px 3px rgba(0, 0, 0, .1);
 }
@@ -174,6 +172,5 @@ input.cmn-toggle-round:checked + label:after {
 
 .round-button:active {
 	top: 1px;
-	background-image: linear-gradient(top, #f1f1f1, #f6f6f6);
-	background-color: #8ce196;
+    background: #8ce196 linear-gradient(top, #f1f1f1, #f6f6f6);
 }

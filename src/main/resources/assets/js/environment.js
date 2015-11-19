@@ -1,6 +1,4 @@
 const TOKEN_COOKIE = "userToken";
-const USER_COOKIE = "currentUser";
-
 var USER_TOKEN;
 var USER_NAME;
 
@@ -24,14 +22,23 @@ function removeCookie(cookieName) {
     document.cookie = cookieString;
 }
 
+function sendWhoAmIRequest() {
+    var xhttp = new XMLHttpRequest();
+    xhttp.open("GET", "/teamnotifier/1.0/users/whoami", true);
+    xhttp.setRequestHeader("Authorization", "Bearer " + USER_TOKEN);
+    xhttp.onreadystatechange = function() {
+        handleWhoAmI(xhttp);
+    };
+    xhttp.send();
+}
+
 function authenticate() {
     var authForm = document.getElementById("frm.authentication");
 
     var loadedToken = loadCookie(TOKEN_COOKIE);
     if (loadedToken != undefined) {
         USER_TOKEN = loadedToken;
-        USER_NAME = loadCookie(USER_COOKIE);
-        connectStatusSocket();
+        sendWhoAmIRequest();
     }
 
     var authenticate = document.getElementById("btn.authenticate");
@@ -48,8 +55,7 @@ function sendAuthRequest(username, password) {
     xhttp.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password));
     xhttp.onreadystatechange = function () {
         handleAuthentication(xhttp, username);
-    }
-    ;
+    };
     xhttp.send();
 }
 
@@ -65,6 +71,20 @@ function showAuthenticationResult(success) {
     }
 }
 
+function handleWhoAmI(XMLHttpRequest) {
+    if (XMLHttpRequest.readyState != 4)
+        return;
+
+    if (XMLHttpRequest.status == 200) {
+        var userInfo = JSON.parse(XMLHttpRequest.responseText);
+        USER_NAME = userInfo.name;
+        connectStatusSocket();
+        return;
+    }
+
+    showAuthenticationResult(false);
+}
+
 /** @namespace authInfo.token */
 function handleAuthentication(XMLHttpRequest, userName) {
     if (XMLHttpRequest.readyState != 4)
@@ -75,7 +95,6 @@ function handleAuthentication(XMLHttpRequest, userName) {
         USER_TOKEN = authInfo.token;
         USER_NAME = userName;
         storeCookie(TOKEN_COOKIE, USER_TOKEN);
-        storeCookie(USER_COOKIE, userName);
         connectStatusSocket();
         return;
     }
@@ -230,15 +249,16 @@ function newListElement() {
 }
 
 function newButton(value, onclick) {
-    var button = document.createElement("input");
-    button.type = "button";
-    button.appendChild(document.createTextNode(value));
+    var button = decorateWith(document.createElement("a"), document.createTextNode(value));
     button.onclick = onclick;
     return button;
 }
 
+function getUniqueId() {
+    return "id" + Math.random().toString(16).slice(2);
+}
 function newLabeledCheckbox(value, checked, onchange) {
-    const uniqueId = "id" + Math.random().toString(16).slice(2);
+    var uniqueId = getUniqueId();
 
     var checkbox = document.createElement("input");
     checkbox.type = "checkbox";
@@ -250,12 +270,7 @@ function newLabeledCheckbox(value, checked, onchange) {
     var label = document.createElement("label");
     label.htmlFor = uniqueId;
 
-    var wrapper = document.createElement("div");
-    wrapper.appendChild(checkbox);
-    wrapper.appendChild(label);
-    wrapper.appendChild(document.createTextNode(value));
-
-    return wrapper;
+    return decorateWith(document.createElement("div"), checkbox, label, document.createTextNode(value));
 }
 
 

@@ -1,21 +1,24 @@
 package com.home.teamnotifier.web.socket;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.*;
 import com.google.inject.Inject;
 import com.home.teamnotifier.core.NotificationManager;
+import com.home.teamnotifier.core.responses.ActionInfo;
+import io.dropwizard.jackson.Jackson;
 import org.eclipse.jetty.websocket.api.Session;
 import org.slf4j.*;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class ClientManager implements NotificationManager {
   private static final Logger LOGGER = LoggerFactory.getLogger(ClientManager.class);
 
   private final Executor executor;
-
   private final BiMap<Session, String> clientSessionsByUsernames;
+  private final ObjectMapper mapper = Jackson.newObjectMapper();
 
   @Inject
   public ClientManager(final Executor executor) {
@@ -32,12 +35,22 @@ public class ClientManager implements NotificationManager {
   }
 
   @Override
-  public synchronized void pushToClients(final Collection<String> userNames, final String message) {
+  public synchronized void pushToClients(final Collection<String> userNames, final ActionInfo message) {
     final BiMap<String, Session> clientsByNames = clientSessionsByUsernames.inverse();
+    final String messageString = infoToString(message);
     userNames.stream()
         .filter(clientsByNames::containsKey)
         .map(clientsByNames::get)
-        .forEach(s -> pushAsync(message, s));
+        .forEach(s -> pushAsync(messageString, s));
+  }
+
+  private String infoToString(ActionInfo message) {
+    try {
+      return mapper.writeValueAsString(message);
+    } catch (JsonProcessingException e) {
+      LOGGER.error("Failed to map action info", e);
+    }
+    return "";
   }
 
   private void pushAsync(final String message, final Session session) {
