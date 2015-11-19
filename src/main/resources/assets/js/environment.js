@@ -174,7 +174,7 @@ function servToListElem(server) {
     });
 
     const subscribed = subscribers.indexOf(USER_NAME) >= 0;
-    var cbSubscribe = newLabeledCheckbox(server.name, subscribed, function() {
+    var cbSubscribe = newLabeledCheckbox("Subscription on " + server.name, subscribed, function() {
         subscribed
             ? unsubscribe(server.id)
             : subscribe(server.id);
@@ -229,17 +229,24 @@ function newButton(value, onclick) {
 }
 
 function newLabeledCheckbox(value, checked, onchange) {
+    const uniqueId = "id" + Math.random().toString(16).slice(2);
+
     var checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.onchange = onchange;
     checkbox.checked = checked;
-    checkbox.className = "switch";
+    checkbox.className = "cmn-toggle cmn-toggle-round";
+    checkbox.id = uniqueId;
 
     var label = document.createElement("label");
-    label.appendChild(checkbox);
-    label.appendChild(document.createTextNode(value));
+    label.htmlFor = uniqueId;
 
-    return label;
+    var wrapper = document.createElement("label");
+    wrapper.appendChild(checkbox);
+    wrapper.appendChild(label);
+    wrapper.appendChild(document.createTextNode(value));
+
+    return wrapper;
 }
 
 
@@ -270,8 +277,6 @@ function resourceToListElem(resource) {
     } else {
        action = document.createTextNode("Reserved by " + occupationInfo.userName + " on " + occupationInfo.occupationTime);
     }
-
-
 
     var label = newLabel(resource.name);
     label.appendChild(action);
