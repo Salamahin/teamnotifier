@@ -184,11 +184,18 @@ function servToListElem(server) {
 
     var listSubscribersElem = newListElement();
     listSubscribersElem.appendChild(newLabel("subscribers"));
-    listSubscribersElem.appendChild(listSubscribers);
+    if(subscribers.length != 0)
+        listSubscribersElem.appendChild(listSubscribers);
+
+
+    var resourcesLabel = newLabel("resources");
+    if(subscribed)
+        resourcesLabel.className = "highlighted";
 
     var listResourcesElem = newListElement();
-    listResourcesElem.appendChild(newLabel("resources`"));
+    listResourcesElem.appendChild(resourcesLabel);
     listResourcesElem.appendChild(listResources);
+
 
     listResourcesAndSubscribers.appendChild(listSubscribersElem);
     listResourcesAndSubscribers.appendChild(listResourcesElem);
@@ -226,6 +233,7 @@ function newLabeledCheckbox(value, checked, onchange) {
     checkbox.type = "checkbox";
     checkbox.onchange = onchange;
     checkbox.checked = checked;
+    checkbox.className = "switch";
 
     var label = document.createElement("label");
     label.appendChild(checkbox);
