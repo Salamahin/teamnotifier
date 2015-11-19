@@ -235,8 +235,8 @@ function newListElement() {
 }
 
 function newButton(value, onclick) {
-    var button = document.createElement("button");
-    button.innerHTML = value;
+    var button = document.createElement("a");
+    button.appendChild(document.createTextNode(value));
     button.onclick = onclick;
     return button;
 }
@@ -293,7 +293,8 @@ function resourceToListElem(resource) {
     
     } else {
         action = document.createElement("div");
-        action.appendChild(document.createTextNode("Reserved by " + occupationInfo.userName + "\non " + reformatDate(occupationInfo.occupationTime)));
+        action.appendChild(document.createTextNode("Reserved by " + occupationInfo.userName));
+        action.appendChild(document.createTextNode(" on " + reformatDate(occupationInfo.occupationTime)));
     }
     
     var div = document.createElement("div");
