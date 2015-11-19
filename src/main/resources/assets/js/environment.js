@@ -270,15 +270,16 @@ function resourceToListElem(resource) {
     var occupationInfo = resource.occupationInfo;
     
     var action;
-    var btnHistory = newButton("History", function() {
+    var btnHistory = newButton("", function() {
         console.debug("history of resource " + resource.id);
-    }
-    );
+    });
+    btnHistory.className = "round-button history-button";
+
     var btnAction = newButton("", function() {
         sendActionRequest(resource.id);
-    }
-    );
-    btnAction.className = "action-button";
+    });
+
+    btnAction.className = "round-button action-button";
     
     if (!occupationInfo) {
         action = newLabeledCheckbox("Reserve " + resource.name, false, function() {
