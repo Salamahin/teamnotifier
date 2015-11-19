@@ -137,4 +137,14 @@ input.cmn-toggle-round:checked + label:before {
 }
 input.cmn-toggle-round:checked + label:after {
   margin-left: 22px;
-}}
+}
+
+.action-button {
+  width: 22px;
+  height: 22px;
+  background-color: #fff;
+  border-radius: 100%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  background: url('/images/lightning.png') no-repeat top left;
+/*   padding: 2px 8px; */
+}
