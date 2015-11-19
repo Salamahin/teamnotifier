@@ -11,7 +11,8 @@ public enum BroadcastAction {
     SUBSCRIBE,
     UNSUBSCRIBE,
     RESERVE,
-    FREE;
+    FREE,
+    ACTION_ON_RESOURCE;
 
     private static BiMap<String, BroadcastAction> namesMap = HashBiMap.create();
 

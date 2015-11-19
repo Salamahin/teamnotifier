@@ -1,9 +1,8 @@
 package com.home.teamnotifier.core.responses.notification;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
@@ -18,17 +17,19 @@ public class NotificationInfo {
     private final String name;
     private final String timestamp;
     private final BroadcastAction action;
-    private final String targetName;
+    private final int targetId;
 
-    public NotificationInfo(final String name,
-                            final String timestamp,
-                            final BroadcastAction action,
-                            final String targetName
+    @JsonCreator
+    public NotificationInfo(
+            @JsonProperty("name") final String name,
+            @JsonProperty("timestamp") final String timestamp,
+            @JsonProperty("action") final BroadcastAction action,
+            @JsonProperty("targetId") final int targetId
     ) {
         this.name = name;
         this.timestamp = timestamp;
         this.action = action;
-        this.targetName = targetName;
+        this.targetId = targetId;
     }
 
     public String getName() {
@@ -43,8 +44,8 @@ public class NotificationInfo {
         return action;
     }
 
-    public String getTargetName() {
-        return targetName;
+    public int getTargetId() {
+        return targetId;
     }
 
     @Override
@@ -52,14 +53,14 @@ public class NotificationInfo {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         NotificationInfo that = (NotificationInfo) o;
-        return Objects.equals(name, that.name) &&
+        return targetId == that.targetId &&
+                Objects.equals(name, that.name) &&
                 Objects.equals(timestamp, that.timestamp) &&
-                action == that.action &&
-                Objects.equals(targetName, that.targetName);
+                action == that.action;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, timestamp, action, targetName);
+        return Objects.hash(name, timestamp, action, targetId);
     }
 }

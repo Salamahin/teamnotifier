@@ -39,7 +39,7 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
                             userName,
                             subscriptionEntity.getTimestamp().toString(),
                             BroadcastAction.SUBSCRIBE,
-                            appServerEntity.getName()
+                            appServerEntity.getId()
                     ),
                     subscribersNames
             );
@@ -75,7 +75,7 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
                             userName,
                             LocalDateTime.now().toString(),
                             BroadcastAction.SUBSCRIBE,
-                            serverEntity.getName()
+                            serverEntity.getId()
                     ),
                     subscribersNames
             );
@@ -91,7 +91,7 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
                         userName,
                         resource.getReservationData().get().getOccupationTime().toString(),
                         BroadcastAction.RESERVE,
-                        getTargetString(resource)
+                        resource.getId()
                 ),
                 getSubscribersButUser(userName, resource.getAppServer())
         );
@@ -135,7 +135,7 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
                         userName,
                         LocalDateTime.now().toString(),
                         BroadcastAction.FREE,
-                        getTargetString(resource)
+                        resource.getId()
                 ),
                 getSubscribersButUser(userName, resource.getAppServer())
         );

@@ -1,4 +1,4 @@
-package com.home.teamnotifier.core.responses;
+package com.home.teamnotifier.core.responses.authentication;
 
 import com.fasterxml.jackson.databind.*;
 import com.home.teamnotifier.core.responses.authentication.UserInfo;

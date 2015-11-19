@@ -1,0 +1,7 @@
+{
+  "type": "NotificationInfo",
+  "name": "user",
+  "timestamp": "2015-11-05T23:44:40.220",
+  "action": "ACTION_ON_RESOURCE",
+  "targetId": 1
+}
