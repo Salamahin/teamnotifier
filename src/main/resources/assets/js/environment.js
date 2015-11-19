@@ -274,6 +274,7 @@ function resourceToListElem(resource) {
         console.debug("history of resource " + resource.id);
     });
     btnHistory.className = "round-button history-button";
+    btnHistory.img = "/images/history.png"
 
     var btnAction = newButton("", function() {
         sendActionRequest(resource.id);
@@ -337,8 +338,7 @@ function getState() {
     xhttp.setRequestHeader("Authorization", "Bearer " + USER_TOKEN);
     xhttp.onreadystatechange = function() {
         handleStatus(xhttp);
-    }
-    ;
+    };
     xhttp.send();
 }
 
@@ -362,8 +362,7 @@ function reserve(resourceId) {
     xhttp.setRequestHeader("Authorization", "Bearer " + USER_TOKEN);
     xhttp.onreadystatechange = function() {
         handleInteraction(xhttp);
-    }
-    ;
+    };
     xhttp.send();
 }
 
@@ -373,8 +372,7 @@ function free(resourceId) {
     xhttp.setRequestHeader("Authorization", "Bearer " + USER_TOKEN);
     xhttp.onreadystatechange = function() {
         handleInteraction(xhttp);
-    }
-    ;
+    };
     xhttp.send();
 }
 
@@ -384,8 +382,7 @@ function subscribe(serverId) {
     xhttp.setRequestHeader("Authorization", "Bearer " + USER_TOKEN);
     xhttp.onreadystatechange = function() {
         handleInteraction(xhttp);
-    }
-    ;
+    };
     xhttp.send();
 }
 
@@ -395,8 +392,7 @@ function unsubscribe(serverId) {
     xhttp.setRequestHeader("Authorization", "Bearer " + USER_TOKEN);
     xhttp.onreadystatechange = function() {
         handleInteraction(xhttp);
-    }
-    ;
+    };
     xhttp.send();
 }
 
@@ -423,13 +419,14 @@ function sendRegisterRequest() {
     xhttp.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password));
     xhttp.onreadystatechange = function() {
         handleRegistration(xhttp, username, password);
-    }
-    ;
+    };
     xhttp.send();
 }
 
 function sendActionRequest(resourceId) {
     var action = prompt("New action", "deploy");
+    if(!action)
+        return;
     var xhttp = new XMLHttpRequest();
     xhttp.open("POST", "/teamnotifier/1.0/environment/application/actions/" + resourceId, true);
     xhttp.setRequestHeader("ActionDetails", action);
@@ -441,9 +438,7 @@ window.onload = function() {
     authenticate();
     document.getElementById("btn.register").onclick = function() {
         sendRegisterRequest();
-    }
-    ;
+    };
     
     Notification.requestPermission(newMessage);
-}
-;
+};

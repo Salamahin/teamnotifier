@@ -155,11 +155,11 @@ input.cmn-toggle-round:checked + label:after {
 }
 
 .history-button {
-    content: url('/images/history.png');
+/*     content: url('/images/history.png'); */
 }
 
 .action-button {
-    content: url('/images/lightning.png');
+/*     content: url('/images/lightning.png'); */
 }
 
 .round-button::before{
