@@ -2,7 +2,10 @@ package com.home.teamnotifier.web.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.home.teamnotifier.DbPreparer;
-import com.home.teamnotifier.core.responses.*;
+import com.home.teamnotifier.core.responses.status.AppServerInfo;
+import com.home.teamnotifier.core.responses.status.EnvironmentInfo;
+import com.home.teamnotifier.core.responses.status.EnvironmentsInfo;
+import com.home.teamnotifier.core.responses.status.SharedResourceInfo;
 import com.home.teamnotifier.db.DbEnvironmentGateway;
 import io.dropwizard.auth.basic.BasicCredentials;
 import io.dropwizard.jackson.Jackson;

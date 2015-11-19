@@ -2,6 +2,8 @@ package com.home.teamnotifier.core.responses;
 
 import com.fasterxml.jackson.databind.*;
 import com.google.common.collect.Lists;
+import com.home.teamnotifier.core.responses.action.ActionInfo;
+import com.home.teamnotifier.core.responses.action.ActionsInfo;
 import io.dropwizard.jackson.Jackson;
 import org.junit.Test;
 import static io.dropwizard.testing.FixtureHelpers.fixture;

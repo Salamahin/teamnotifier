@@ -1,29 +1,25 @@
 package com.home.teamnotifier.gateways;
 
 import com.google.common.collect.ImmutableList;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import com.home.teamnotifier.core.responses.notification.NotificationInfo;
+
 import java.util.List;
 
 public class BroadcastInformation {
-  private static final DateTimeFormatter formatter = DateTimeFormatter
-      .ofPattern("HH:mm:ss dd-MM-YYYY");
-
-  private final String stringToPush;
+  private final NotificationInfo value;
 
   private final List<String> subscribers;
 
   public BroadcastInformation(
-      final String stringToPush,
-      final LocalDateTime timestamp,
+      final NotificationInfo value,
       final List<String> subscribers
   ) {
-    this.stringToPush = String.format("[%s] %s", formatter.format(timestamp), stringToPush);
+    this.value = value;
     this.subscribers = ImmutableList.copyOf(subscribers);
   }
 
-  public String getStringToPush() {
-    return stringToPush;
+  public NotificationInfo getValue() {
+    return value;
   }
 
   public List<String> getSubscribers() {

@@ -1,4 +1,4 @@
-package com.home.teamnotifier.core.responses;
+package com.home.teamnotifier.core.responses.status;
 
 import com.fasterxml.jackson.annotation.*;
 import java.util.Objects;
@@ -13,7 +13,6 @@ import java.util.Objects;
 @JsonTypeName("OccupationInfo")
 public class OccupationInfo {
   private final String userName;
-
   private final String occupationTime;
 
   @JsonCreator

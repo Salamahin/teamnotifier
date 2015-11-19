@@ -443,7 +443,7 @@ function sendActionRequest(resourceId) {
     if (!action)
         return;
     var xhttp = new XMLHttpRequest();
-    xhttp.open("POST", "/teamnotifier/1.0/environment/application/actions/" + resourceId, true);
+    xhttp.open("POST", "/teamnotifier/1.0/environment/application/action/" + resourceId, true);
     xhttp.setRequestHeader("ActionDetails", action);
     xhttp.setRequestHeader("Authorization", "Bearer " + USER_TOKEN);
     xhttp.send();

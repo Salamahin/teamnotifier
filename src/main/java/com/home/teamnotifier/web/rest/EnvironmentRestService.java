@@ -4,7 +4,8 @@ import com.google.common.collect.Range;
 import com.google.inject.Inject;
 import com.home.teamnotifier.authentication.AuthenticatedUserData;
 import com.home.teamnotifier.core.ResourceMonitor;
-import com.home.teamnotifier.core.responses.*;
+import com.home.teamnotifier.core.responses.action.ActionsInfo;
+import com.home.teamnotifier.core.responses.status.EnvironmentsInfo;
 import io.dropwizard.auth.Auth;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -54,7 +55,7 @@ public class EnvironmentRestService {
   }
 
   @POST
-  @Path("/application/actions/{applicationId}")
+  @Path("/application/action/{applicationId}")
   public void newInfo(
       @Auth final AuthenticatedUserData authenticatedUserData,
       @PathParam("applicationId") final Integer applicationId,
@@ -69,7 +70,7 @@ public class EnvironmentRestService {
   }
 
   @GET
-  @Path("/application/actions/{applicationId}")
+  @Path("/application/action/{applicationId}")
   public ActionsInfo getActionsInfo(
       @PathParam("applicationId") final Integer applicationId,
       @HeaderParam("ActionsFrom") final String encodedBase64From,

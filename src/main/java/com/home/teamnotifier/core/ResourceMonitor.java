@@ -2,7 +2,8 @@ package com.home.teamnotifier.core;
 
 import com.google.common.collect.Range;
 import com.google.inject.Inject;
-import com.home.teamnotifier.core.responses.*;
+import com.home.teamnotifier.core.responses.action.ActionsInfo;
+import com.home.teamnotifier.core.responses.status.EnvironmentsInfo;
 import com.home.teamnotifier.gateways.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +40,7 @@ public class ResourceMonitor {
   }
 
   void fireNotification(final BroadcastInformation information) {
-    notificationManager.pushToClients(information.getSubscribers(), information.getStringToPush());
+    notificationManager.pushToClients(information.getSubscribers(), information.getValue());
   }
 
   public void subscribe(final String userName, final int serverId) {

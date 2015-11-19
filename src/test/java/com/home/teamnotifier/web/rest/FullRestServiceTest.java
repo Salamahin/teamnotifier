@@ -2,7 +2,11 @@ package com.home.teamnotifier.web.rest;
 
 import com.home.teamnotifier.NotifierApplication;
 import com.home.teamnotifier.authentication.AuthenticationInfo;
-import com.home.teamnotifier.core.responses.*;
+import com.home.teamnotifier.core.responses.action.ActionInfo;
+import com.home.teamnotifier.core.responses.action.ActionsInfo;
+import com.home.teamnotifier.core.responses.status.EnvironmentsInfo;
+import com.home.teamnotifier.core.responses.status.OccupationInfo;
+import com.home.teamnotifier.core.responses.status.SharedResourceInfo;
 import com.jayway.restassured.http.ContentType;
 import com.jayway.restassured.response.*;
 import io.dropwizard.auth.basic.BasicCredentials;
@@ -178,7 +182,7 @@ public class FullRestServiceTest {
     final Header headerTo = new Header("ActionsTo", encodeLocalDateTimeToBase64(to));
 
     final Response response = given().auth().oauth2(token).header(headerFrom).header(headerTo)
-        .when().get("/teamnotifier/1.0/environment/application/actions/" + resourceId)
+        .when().get("/teamnotifier/1.0/environment/application/action/" + resourceId)
         .then().contentType(ContentType.JSON).extract().response();
 
     final ActionsInfo info = helper.deserialize(ActionsInfo.class, response.asString());
@@ -189,7 +193,7 @@ public class FullRestServiceTest {
     given()
         .auth().oauth2(token).header(new Header("ActionDetails", action))
         .expect().statusCode(HttpStatus.NO_CONTENT_204)
-        .when().post("/teamnotifier/1.0/environment/application/actions/" + resourceId);
+        .when().post("/teamnotifier/1.0/environment/application/action/" + resourceId);
   }
 
   private String encodeLocalDateTimeToBase64(final LocalDateTime time) {

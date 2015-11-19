@@ -5,7 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.*;
 import com.google.inject.Inject;
 import com.home.teamnotifier.core.NotificationManager;
-import com.home.teamnotifier.core.responses.ActionInfo;
+import com.home.teamnotifier.core.responses.action.ActionInfo;
+import com.home.teamnotifier.core.responses.notification.NotificationInfo;
 import io.dropwizard.jackson.Jackson;
 import org.eclipse.jetty.websocket.api.Session;
 import org.slf4j.*;
@@ -35,7 +36,7 @@ public class ClientManager implements NotificationManager {
   }
 
   @Override
-  public synchronized void pushToClients(final Collection<String> userNames, final ActionInfo message) {
+  public synchronized void pushToClients(final Collection<String> userNames, final NotificationInfo message) {
     final BiMap<String, Session> clientsByNames = clientSessionsByUsernames.inverse();
     final String messageString = infoToString(message);
     userNames.stream()
@@ -44,7 +45,7 @@ public class ClientManager implements NotificationManager {
         .forEach(s -> pushAsync(messageString, s));
   }
 
-  private String infoToString(ActionInfo message) {
+  private String infoToString(NotificationInfo message) {
     try {
       return mapper.writeValueAsString(message);
     } catch (JsonProcessingException e) {

@@ -2,7 +2,7 @@ package com.home.teamnotifier.db;
 
 import com.google.common.collect.Range;
 import com.home.teamnotifier.DbPreparer;
-import com.home.teamnotifier.core.responses.ActionsInfo;
+import com.home.teamnotifier.core.responses.action.ActionsInfo;
 import org.junit.*;
 import java.time.*;
 import java.util.*;

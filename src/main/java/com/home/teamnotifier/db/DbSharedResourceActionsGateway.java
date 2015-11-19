@@ -2,7 +2,8 @@ package com.home.teamnotifier.db;
 
 import com.google.common.collect.*;
 import com.google.inject.Inject;
-import com.home.teamnotifier.core.responses.*;
+import com.home.teamnotifier.core.responses.action.ActionInfo;
+import com.home.teamnotifier.core.responses.action.ActionsInfo;
 import com.home.teamnotifier.gateways.*;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
