@@ -6,7 +6,7 @@ var USER_NAME;
 
 function loadCookie(cookieName) {
     var matches = document.cookie.match(new RegExp(
-    "(?:^|; )" + cookieName.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+        "(?:^|; )" + cookieName.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
     ));
     return matches ? decodeURIComponent(matches[1]) : undefined;
 }
@@ -26,28 +26,27 @@ function removeCookie(cookieName) {
 
 function authenticate() {
     var authForm = document.getElementById("frm.authentication");
-    
+
     var loadedToken = loadCookie(TOKEN_COOKIE);
     if (loadedToken != undefined) {
         USER_TOKEN = loadedToken;
         USER_NAME = loadCookie(USER_COOKIE);
         connectStatusSocket();
     }
-    
+
     var authenticate = document.getElementById("btn.authenticate");
-    authenticate.onclick = function() {
+    authenticate.onclick = function () {
         var username = document.getElementById("ibox.username").value;
         var password = document.getElementById("ibox.password").value;
         sendAuthRequest(username, password);
-    }
-    ;
+    };
 }
 
 function sendAuthRequest(username, password) {
     var xhttp = new XMLHttpRequest();
     xhttp.open("GET", "/teamnotifier/1.0/users/authenticate", true);
     xhttp.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password));
-    xhttp.onreadystatechange = function() {
+    xhttp.onreadystatechange = function () {
         handleAuthentication(xhttp, username);
     }
     ;
@@ -56,7 +55,7 @@ function sendAuthRequest(username, password) {
 
 function showAuthenticationResult(success) {
     var authForm = document.getElementById("frm.authentication");
-    
+
     if (success) {
         console.debug("authentication success");
         authForm.classList.remove("authenticationFailed");
@@ -70,7 +69,7 @@ function showAuthenticationResult(success) {
 function handleAuthentication(XMLHttpRequest, userName) {
     if (XMLHttpRequest.readyState != 4)
         return;
-    
+
     if (XMLHttpRequest.status == 200) {
         var authInfo = JSON.parse(XMLHttpRequest.responseText);
         USER_TOKEN = authInfo.token;
@@ -80,7 +79,7 @@ function handleAuthentication(XMLHttpRequest, userName) {
         connectStatusSocket();
         return;
     }
-    
+
     showAuthenticationResult(false);
 }
 
@@ -91,133 +90,129 @@ function getSocketUrl() {
 
 function connectStatusSocket() {
     var websocket = new WebSocket(getSocketUrl());
-    
-    websocket.onopen = function(evt) {
+
+    websocket.onopen = function (evt) {
         console.debug(evt.data);
         showAuthenticationResult(true);
         getState();
-    }
-    ;
-    
-    websocket.onclose = function(evt) {
+    };
+
+    websocket.onclose = function (evt) {
         console.debug(evt.data);
-    }
-    ;
-    
-    websocket.onmessage = function(evt) {
+    };
+
+    websocket.onmessage = function (evt) {
         console.debug();
         new Notification(evt.data);
         getState();
-    }
-    ;
-    
-    websocket.onerror = function() {
+    };
+
+    websocket.onerror = function () {
         removeCookie(TOKEN_COOKIE);
         removeCookie(USER_COOKIE);
         showAuthenticationResult(false);
-    }
-    ;
+    };
 }
 
 /** @namespace XMLHttpRequest.responseText */
 function handleStatus(XMLHttpRequest) {
     if (XMLHttpRequest.readyState != 4)
         return;
-    
+
     if (XMLHttpRequest.status == 200) {
         var status = JSON.parse(XMLHttpRequest.responseText);
         showStatus(status);
     }
 }
 
+function removeAllChildren(parent) {
+    while (parent.firstChild) {
+        parent.removeChild(parent.firstChild);
+    }
+}
 /** @namespace status.environments */
 function showStatus(status) {
     var environments = status.environments;
-    
-    var envFrame = document.getElementById("frm.environment");
-    
+
     var envList = newUnsignedList();
-    environments.forEach(function(env) {
-        envList.appendChild(envToListElem(env));
-    }
+    environments.forEach(function (env) {
+            envList.appendChild(envToListElem(env));
+        }
     );
-    
-    while (envFrame.firstChild) {
-        envFrame.removeChild(envFrame.firstChild);
-    }
+
+    var envFrame = document.getElementById("frm.environment");
+    removeAllChildren(envFrame);
     envFrame.appendChild(envList);
 }
 
 /** @namespace environment.servers */
 function envToListElem(environment) {
     var servers = environment.servers;
-    
+
     var serverList = newUnsignedList();
-    servers.forEach(function(server) {
-        serverList.appendChild(servToListElem(server))
-    }
+    servers.forEach(function (server) {
+            serverList.appendChild(servToListElem(server))
+        }
     );
-    
-    var listElem = newListElement();
-    listElem.appendChild(newLabel(environment.name));
-    listElem.appendChild(serverList);
-    return listElem;
+
+    return decorateWith(newListElement(), newLabel(environment.name), serverList);
 }
+
+
+function subscribersToUnsignedList(subscribers) {
+    var listSubscribers = newUnsignedList();
+
+    subscribers.forEach(function (subscriber) {
+            listSubscribers.appendChild(subscriberToListElem(subscriber));
+        }
+    );
+
+    return listSubscribers;
+}
+
+function resourcesToUnsignedList(resources) {
+    var listResources = newUnsignedList();
+
+    resources.forEach(function (resource) {
+            listResources.appendChild(resourceToListElem(resource));
+        }
+    );
+
+    return listResources;
+}
+
+function decorateWith() {
+    var parent = arguments[0];
+    for (var i = 1; i < arguments.length; i++) {
+        parent.appendChild(arguments[i]);
+    }
+    return parent;
+}
+
 
 /** @namespace server.resources */
 /** @namespace server.subscribers */
 function servToListElem(server) {
     var subscribers = server.subscribers;
-    var listSubscribers = newUnsignedList();
-    
-    subscribers.forEach(function(subscriber) {
-        listSubscribers.appendChild(subscriberToListElem(subscriber));
-    }
-    );
-    
     var resources = server.resources;
-    var listResources = newUnsignedList();
-    
-    resources.forEach(function(resource) {
-        listResources.appendChild(resourceToListElem(resource));
-    }
-    );
-    
+
     const subscribed = subscribers.indexOf(USER_NAME) >= 0;
-    var cbSubscribe = newLabeledCheckbox("Subscription on " + server.name, subscribed, function() {
-        subscribed 
-        ? unsubscribe(server.id) 
-        : subscribe(server.id);
-    }
+    var cbSubscribe = newLabeledCheckbox("Subscription on " + server.name, subscribed, function () {
+            subscribed
+                ? unsubscribe(server.id)
+                : subscribe(server.id);
+        }
     );
-    
-    var listResourcesAndSubscribers = newUnsignedList();
-    
-    var listSubscribersElem = newListElement();
-    listSubscribersElem.appendChild(newLabel("subscribers"));
+
+    var listSubscribersElem = decorateWith(newListElement(), newLabel("subscribers"));
     if (subscribers.length != 0)
-        listSubscribersElem.appendChild(listSubscribers);
-    
-    
-    var resourcesLabel = newLabel("resources");
-    
-    
-    var listResourcesElem = newListElement();
-    listResourcesElem.appendChild(resourcesLabel);
-    listResourcesElem.appendChild(listResources);
-    
-    
-    listResourcesAndSubscribers.appendChild(listSubscribersElem);
-    listResourcesAndSubscribers.appendChild(listResourcesElem);
-    
-    var cbSubscribeWrapper = document.createElement("label");
-    cbSubscribeWrapper.appendChild(cbSubscribe);
-    
-    var listElem = newListElement();
-    listElem.appendChild(cbSubscribeWrapper);
-    listElem.appendChild(listResourcesAndSubscribers);
-    
-    return listElem;
+        listSubscribersElem.appendChild(subscribersToUnsignedList(subscribers));
+
+    var listResourcesElem = decorateWith(newListElement(), newLabel("resources"), resourcesToUnsignedList(resources));
+    var listResourcesAndSubscribers = decorateWith(newUnsignedList(), listSubscribersElem, listResourcesElem);
+    var cbSubscribeWrapper = decorateWith(document.createElement("label"), cbSubscribe);
+
+    return decorateWith(newListElement(), cbSubscribeWrapper, listResourcesAndSubscribers);
 }
 
 function newLabel(value) {
@@ -235,7 +230,8 @@ function newListElement() {
 }
 
 function newButton(value, onclick) {
-    var button = document.createElement("a");
+    var button = document.createElement("input");
+    button.type = "button";
     button.appendChild(document.createTextNode(value));
     button.onclick = onclick;
     return button;
@@ -243,74 +239,78 @@ function newButton(value, onclick) {
 
 function newLabeledCheckbox(value, checked, onchange) {
     const uniqueId = "id" + Math.random().toString(16).slice(2);
-    
+
     var checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.onchange = onchange;
     checkbox.checked = checked;
     checkbox.className = "cmn-toggle cmn-toggle-round";
     checkbox.id = uniqueId;
-    
+
     var label = document.createElement("label");
     label.htmlFor = uniqueId;
-    
+
     var wrapper = document.createElement("div");
     wrapper.appendChild(checkbox);
     wrapper.appendChild(label);
     wrapper.appendChild(document.createTextNode(value));
-    
+
     return wrapper;
 }
 
 
 /** @namespace resource.occupationInfo */
 /** @namespace occupationInfo.occupationTime */
-/** @namespace occupationInfo.userName */
-function resourceToListElem(resource) {
-    var occupationInfo = resource.occupationInfo;
-    
-    var action;
-    var btnHistory = newButton("", function() {
+
+function getHistoryButton(resource) {
+    var btnHistory = newButton("", function () {
         console.debug("history of resource " + resource.id);
     });
     btnHistory.className = "round-button history-button";
-    btnHistory.img = "/images/history.png"
+    return btnHistory;
+}
 
-    var btnAction = newButton("", function() {
+function getActionButton(resource) {
+    var btnAction = newButton("", function () {
         sendActionRequest(resource.id);
     });
-
     btnAction.className = "round-button action-button";
-    
+    return btnAction;
+}
+
+function getReservationCheckbox(resource, reserved) {
+    return newLabeledCheckbox("Reserve " + resource.name, reserved, function () {
+            reserved ? free(resource.id) : reserve(resource.id);
+        }
+    );
+}
+function decorateOccupationInfo(occupationInfo) {
+    return decorateWith(
+        document.createElement("div"),
+        document.createTextNode("Reserved by " + occupationInfo.userName),
+        document.createTextNode(" on " + reformatDate(occupationInfo.occupationTime)));
+}
+/** @namespace occupationInfo.userName */
+function resourceToListElem(resource) {
+    var occupationInfo = resource.occupationInfo;
+
+    var btnHistory = getHistoryButton(resource);
+    var btnAction = getActionButton(resource);
+    var action;
+
     if (!occupationInfo) {
-        action = newLabeledCheckbox("Reserve " + resource.name, false, function() {
-            reserve(resource.id);
-        }
-        );
+        action = getReservationCheckbox(resource, false);
     } else if (occupationInfo.userName == USER_NAME) {
-        action = newLabeledCheckbox("Reserve " + resource.name, true, function() {
-            free(resource.id);
-        }
-        );
-    
+        action = getReservationCheckbox(resource, true);
+
     } else {
-        action = document.createElement("div");
-        action.appendChild(document.createTextNode("Reserved by " + occupationInfo.userName));
-        action.appendChild(document.createTextNode(" on " + reformatDate(occupationInfo.occupationTime)));
+        action = decorateOccupationInfo(occupationInfo);
     }
-    
-    var div = document.createElement("div");
-    div.appendChild(action);
-    div.appendChild(btnAction);
-    div.appendChild(btnHistory);
-    
-    var label = document.createElement("label");
-    label.appendChild(div);
-    
-    var listElem = newListElement();
-    listElem.appendChild(label);
-    
-    return listElem;
+
+    var div = decorateWith(document.createElement("div"), action, btnAction, btnHistory);
+    var label = decorateWith(document.createElement("label"), div);
+
+    return decorateWith(newListElement(), label);
 }
 
 function reformatDate(dateStr) {
@@ -323,7 +323,7 @@ function reformatDate(dateStr) {
     var curr_sec = d.getSeconds();
 
     return curr_hour + ":" + curr_min + ":" + curr_sec + " " +
-        curr_date + "-" + curr_month + "-"+curr_year;
+        curr_date + "-" + curr_month + "-" + curr_year;
 }
 
 function subscriberToListElem(subscriber) {
@@ -336,7 +336,7 @@ function getState() {
     var xhttp = new XMLHttpRequest();
     xhttp.open("GET", "/teamnotifier/1.0/environment", true);
     xhttp.setRequestHeader("Authorization", "Bearer " + USER_TOKEN);
-    xhttp.onreadystatechange = function() {
+    xhttp.onreadystatechange = function () {
         handleStatus(xhttp);
     };
     xhttp.send();
@@ -345,12 +345,12 @@ function getState() {
 function handleInteraction(XMLHttpRequest) {
     if (XMLHttpRequest.readyState != 4)
         return;
-    
+
     if (XMLHttpRequest.status == 204) {
         getState();
         return;
     }
-    
+
     if (XMLHttpRequest.status == 401) {
         showAuthenticationResult(false);
     }
@@ -360,7 +360,7 @@ function reserve(resourceId) {
     var xhttp = new XMLHttpRequest();
     xhttp.open("POST", "/teamnotifier/1.0/environment/application/reserve/" + resourceId, true);
     xhttp.setRequestHeader("Authorization", "Bearer " + USER_TOKEN);
-    xhttp.onreadystatechange = function() {
+    xhttp.onreadystatechange = function () {
         handleInteraction(xhttp);
     };
     xhttp.send();
@@ -370,7 +370,7 @@ function free(resourceId) {
     var xhttp = new XMLHttpRequest();
     xhttp.open("DELETE", "/teamnotifier/1.0/environment/application/reserve/" + resourceId, true);
     xhttp.setRequestHeader("Authorization", "Bearer " + USER_TOKEN);
-    xhttp.onreadystatechange = function() {
+    xhttp.onreadystatechange = function () {
         handleInteraction(xhttp);
     };
     xhttp.send();
@@ -380,7 +380,7 @@ function subscribe(serverId) {
     var xhttp = new XMLHttpRequest();
     xhttp.open("POST", "/teamnotifier/1.0/environment/server/subscribe/" + serverId, true);
     xhttp.setRequestHeader("Authorization", "Bearer " + USER_TOKEN);
-    xhttp.onreadystatechange = function() {
+    xhttp.onreadystatechange = function () {
         handleInteraction(xhttp);
     };
     xhttp.send();
@@ -390,7 +390,7 @@ function unsubscribe(serverId) {
     var xhttp = new XMLHttpRequest();
     xhttp.open("DELETE", "/teamnotifier/1.0/environment/server/subscribe/" + serverId, true);
     xhttp.setRequestHeader("Authorization", "Bearer " + USER_TOKEN);
-    xhttp.onreadystatechange = function() {
+    xhttp.onreadystatechange = function () {
         handleInteraction(xhttp);
     };
     xhttp.send();
@@ -404,7 +404,7 @@ function newMessage(permission) {
 function handleRegistration(XMLHttpRequest, username, password) {
     if (XMLHttpRequest.readyState != 4)
         return;
-    
+
     if (XMLHttpRequest.status == 204) {
         sendAuthRequest(username, password);
     }
@@ -413,11 +413,11 @@ function handleRegistration(XMLHttpRequest, username, password) {
 function sendRegisterRequest() {
     const username = document.getElementById("ibox.username").value;
     const password = document.getElementById("ibox.password").value;
-    
+
     var xhttp = new XMLHttpRequest();
     xhttp.open("POST", "/teamnotifier/1.0/users/register", true);
     xhttp.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password));
-    xhttp.onreadystatechange = function() {
+    xhttp.onreadystatechange = function () {
         handleRegistration(xhttp, username, password);
     };
     xhttp.send();
@@ -425,7 +425,7 @@ function sendRegisterRequest() {
 
 function sendActionRequest(resourceId) {
     var action = prompt("New action", "deploy");
-    if(!action)
+    if (!action)
         return;
     var xhttp = new XMLHttpRequest();
     xhttp.open("POST", "/teamnotifier/1.0/environment/application/actions/" + resourceId, true);
@@ -434,11 +434,11 @@ function sendActionRequest(resourceId) {
     xhttp.send();
 }
 
-window.onload = function() {
+window.onload = function () {
     authenticate();
-    document.getElementById("btn.register").onclick = function() {
+    document.getElementById("btn.register").onclick = function () {
         sendRegisterRequest();
     };
-    
+
     Notification.requestPermission(newMessage);
 };
