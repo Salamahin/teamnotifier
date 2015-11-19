@@ -74,20 +74,6 @@
     color: #999;
 }
 
-/*Time for some hover effects*/
-/*We will apply the hover effect the the lineage of the element also*/
-.tree li label.highlighted, .tree li label.highlighted+ul li label {
-    background: #8ce196; color: #000; border: 1px solid #94a0b4;
-}
-/*Connector styles on hover*/
-.tree li label.highlighted+ul li::after,
-.tree li label.highlighted+ul li::before,
-.tree li label.highlighted+ul::before,
-.tree li label.highlighted+ul ul::before{
-    border-color:  #94a0b4;
-}
-
-
 .cmn-toggle {
   /*position: absolute;*/
   /*margin-left: -9999px;*/
