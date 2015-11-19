@@ -164,6 +164,10 @@ function showStatus(status) {
     envFrame.appendChild(envList);
 }
 
+function toTreeElem(body, nextElems) {
+    return decorateWith(newListElement(), decorateWith(document.createElement("span"), body), nextElems);
+}
+
 /** @namespace environment.servers */
 function envToListElem(environment) {
     var servers = environment.servers;
@@ -174,7 +178,7 @@ function envToListElem(environment) {
         }
     );
 
-    return decorateWith(newListElement(), newLabel(environment.name), serverList);
+    return toTreeElem(newLabel(environment.name), serverList);
 }
 
 
@@ -229,9 +233,8 @@ function servToListElem(server) {
 
     var listResourcesElem = decorateWith(newListElement(), newLabel("resources"), resourcesToUnsignedList(resources));
     var listResourcesAndSubscribers = decorateWith(newUnsignedList(), listSubscribersElem, listResourcesElem);
-    var cbSubscribeWrapper = decorateWith(document.createElement("label"), cbSubscribe);
 
-    return decorateWith(newListElement(), cbSubscribeWrapper, listResourcesAndSubscribers);
+    return toTreeElem(cbSubscribe, listResourcesAndSubscribers);
 }
 
 function newLabel(value) {
