@@ -7,6 +7,8 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
 public class DbEnvironmentGateway implements EnvironmentGateway {
@@ -44,18 +46,18 @@ public class DbEnvironmentGateway implements EnvironmentGateway {
         entity.getName(),
         entity.getImmutableListOfAppServers().stream()
             .map(this::toAppSever)
-            .collect(toSet())
+            .collect(toList())
     );
   }
 
   private AppServerInfo toAppSever(final AppServerEntity entity) {
-    final Set<String> subscribersNames = entity.getImmutableListOfSubscribers().stream()
+    final List<String> subscribersNames = entity.getImmutableListOfSubscribers().stream()
         .map(SubscriptionData::getUserName)
-        .collect(toSet());
+        .collect(toList());
 
-    final Set<SharedResourceInfo> resources = entity.getImmutableListOfResources().stream()
+    final List<SharedResourceInfo> resources = entity.getImmutableListOfResources().stream()
         .map(this::toResource)
-        .collect(toSet());
+        .collect(toList());
 
     return new AppServerInfo(
         entity.getId(),

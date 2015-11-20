@@ -13,15 +13,14 @@ body{
 
 /*==============================TREE====================================*/
 .tree {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+position: fixed;
+    top: 10%;
+    left: 10%;
+    transform: translate(-10%, -10%);
 }
 
 .tree ul {
     padding-top: 20px; position: relative;
-    transition: all 0.5s;
 }
 
 .tree li {
@@ -29,7 +28,6 @@ body{
     list-style-type: none;
     position: relative;
     padding: 20px 5px 0 5px;
-    transition: all 0.5s;
 }
 
 .tree li::before, .tree li::after{
@@ -72,7 +70,7 @@ body{
     padding: 5px 10px;
     text-decoration: none;
     font-family: arial, verdana, tahoma, serif;
-    font-size: 14px;
+    font-size: 12px;
     display: inline-block;
     vertical-align: middle;
     border-radius: 5px;
@@ -203,7 +201,7 @@ input.cmn-toggle-round:checked + label:after {
 }
 
 .modal > .content {
-  text-align: left;
+  text-align: center;
   display: inline-block;
   background-color: #f1f1f1;
   box-sizing: border-box;
@@ -298,21 +296,7 @@ input.authentication {
   color: #fff;
   text-shadow: 0 1px 0 rgba(0,0,0,.2);
   background-image: linear-gradient(top, rgba(255,255,255,.3),
-             rgba(255,255,255,0)),
-                    url(data:image/png;base64,iVBORw0KGg[...]QmCC);
-}
-
-.button.green{
-  background-color: #57a957;
-  border-color: #57a957;
-}
-
-.button.green:hover{
-  background-color: #62c462;
-}
-
-.button.green:active{
-  background: #57a957;
+             rgba(255,255,255,0));
 }
 
 .button.blue{
@@ -329,5 +313,6 @@ input.authentication {
 }
 
 span.modal-footer a {
-   text-align: center;
+   display: inline-block;
+   text-align: right;
 }

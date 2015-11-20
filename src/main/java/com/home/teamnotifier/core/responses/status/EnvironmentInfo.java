@@ -1,8 +1,11 @@
 package com.home.teamnotifier.core.responses.status;
 
 import com.fasterxml.jackson.annotation.*;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import java.util.*;
+
+import static java.util.stream.Collectors.toList;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonAutoDetect(
@@ -16,22 +19,22 @@ public class EnvironmentInfo {
 
   private final String name;
 
-  private final Set<AppServerInfo> servers;
+  private final List<AppServerInfo> servers;
 
   @JsonCreator
   public EnvironmentInfo(
       @JsonProperty("name") final String name,
-      @JsonProperty("servers") final Set<AppServerInfo> servers
+      @JsonProperty("servers") final List<AppServerInfo> servers
   ) {
     this.name = name;
-    this.servers = ImmutableSet.copyOf(servers);
+    this.servers = ImmutableList.copyOf(servers);
   }
 
   public String getName() {
     return name;
   }
 
-  public Set<AppServerInfo> getServers() {
+  public List<AppServerInfo> getServers() {
     return servers;
   }
 

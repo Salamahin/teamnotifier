@@ -25,16 +25,15 @@ public class EnvironmentsInfoTest {
   }
 
   private EnvironmentInfo createFineEnvironmentInfo() {
-    return new EnvironmentInfo("environment", Sets.newHashSet
-        (createFineAppServerInfo()));
+    return new EnvironmentInfo("environment", Lists.newArrayList(createFineAppServerInfo()));
   }
 
   private AppServerInfo createFineAppServerInfo() {
     return new AppServerInfo(
         1,
         "server",
-        Sets.newHashSet(createFineSharedResourceInfo()),
-        Sets.newHashSet("user")
+            Lists.newArrayList(createFineSharedResourceInfo()),
+            Lists.newArrayList("user")
     );
   }
 

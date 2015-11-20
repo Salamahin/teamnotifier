@@ -101,7 +101,6 @@ function handleAuthentication(XMLHttpRequest, userName) {
 }
 
 function getSocketUrl() {
-//    var servUrl = document.URL.replace(/.*?:\/\//g, "").replace(/#.*$/, "");
     return "ws://" + location.host + "/state/?token=" + USER_TOKEN;
 }
 
@@ -302,7 +301,7 @@ function getActionButton(resource) {
 }
 
 function getReservationCheckbox(resource, reserved) {
-    return newLabeledCheckbox("Reserve " + resource.name, reserved, function () {
+    return newLabeledCheckbox(resource.name, reserved, function () {
             reserved ? free(resource.id) : reserve(resource.id);
         }
     );
@@ -332,7 +331,7 @@ function resourceToListElem(resource) {
         action = decorateOccupationInfo(occupationInfo);
     }
 
-    var div = decorateWith(document.createElement("div"), action, btnAction, btnHistory);
+    var div = decorateWith(document.createElement("div"), action , btnAction, btnHistory);
     return toTreeElem(div);
 }
 

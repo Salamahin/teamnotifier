@@ -1,8 +1,12 @@
 package com.home.teamnotifier.core.responses.status;
 
 import com.fasterxml.jackson.annotation.*;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import java.util.*;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.*;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonAutoDetect(
@@ -18,21 +22,21 @@ public class AppServerInfo {
 
   private final int id;
 
-  private final Set<SharedResourceInfo> resources;
+  private final List<SharedResourceInfo> resources;
 
-  private final Set<String> subscribers;
+  private final List<String> subscribers;
 
   @JsonCreator
   public AppServerInfo(
       @JsonProperty("id") final int id,
       @JsonProperty("name") final String name,
-      @JsonProperty("resources") final Set<SharedResourceInfo> resources,
-      @JsonProperty("subscribers") final Set<String> subscibers
+      @JsonProperty("resources") final List<SharedResourceInfo> resources,
+      @JsonProperty("subscribers") final List<String> subscibers
   ) {
     this.name = name;
     this.id = id;
-    this.resources = ImmutableSet.copyOf(resources);
-    this.subscribers = ImmutableSet.copyOf(subscibers);
+    this.resources = ImmutableList.copyOf(resources);
+    this.subscribers = ImmutableList.copyOf(subscibers);
   }
 
   public String getName() {
@@ -43,11 +47,11 @@ public class AppServerInfo {
     return id;
   }
 
-  public Set<SharedResourceInfo> getResources() {
+  public List<SharedResourceInfo> getResources() {
     return resources;
   }
 
-  public Set<String> getSubscribers() {
+  public List<String> getSubscribers() {
     return subscribers;
   }
 
