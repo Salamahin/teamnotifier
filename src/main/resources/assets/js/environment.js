@@ -165,7 +165,7 @@ function showStatus(status) {
 }
 
 function toTreeElem(body, nextElems) {
-    var treeElem = decorateWith(document.createElement("span"), body);
+    var treeElem = decorateWith(document.createElement("div"), body);
     treeElem.className = "tree-elem";
     return decorateWith(newListElement(), treeElem, nextElems);
 }
@@ -278,12 +278,10 @@ function newLabeledCheckbox(value, checked, onchange) {
     var label = document.createElement("label");
     label.htmlFor = uniqueId;
 
-//    var cb = decorateWith(document.createElement("span"), checkbox, label);
-//    var text = document.createElement("label");
-//    text.nodeValue = value;
-//    text.appendChild(cb);
+    var text =  newLabel(value);
+    text.className = "vertical-aligned";
 
-    return decorateWith(document.createElement("span"), checkbox,  document.createTextNode(value), label);
+    return decorateWith(document.createElement("div"), text, checkbox, label);
 }
 
 

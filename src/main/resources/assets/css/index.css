@@ -1,4 +1,4 @@
-* {margin: 0; padding: 0;}
+* {/* margin: 0; */ padding: 0;}
 
 body{
  background-image: url("../images/bg.png");
@@ -65,7 +65,7 @@ body{
     width: 0; height: 20px;
 }
 
-.tree li span.tree-elem{
+.tree li div.tree-elem{
     border: 1px solid #ccc;
     padding: 5px 10px;
     text-decoration: none;
@@ -80,16 +80,14 @@ body{
 
 .cmn-toggle {
   position: absolute;
-  margin-left: -9999px;
   visibility: hidden;
 }
 .cmn-toggle + label {
-  display: block;
+  display: inline-block;
   position: relative;
   cursor: pointer;
   outline: none;
   user-select: none;
-  margin: 0 10px 0 0;
 }
 
 input.cmn-toggle-round + label {
@@ -100,6 +98,14 @@ input.cmn-toggle-round + label {
   border-radius: 20px;
   border: 1px;
 }
+
+.vertical-aligned {
+    display: block;
+    vertical-align: middle;
+    margin: 0 0 5px 0;
+    text-align: center;
+}
+
 input.cmn-toggle-round + label:before,
 input.cmn-toggle-round + label:after {
   display: block;
@@ -113,7 +119,6 @@ input.cmn-toggle-round + label:before {
   right: 1px;
   background-color: #f1f1f1;
   border-radius: 20px;
-
 }
 input.cmn-toggle-round + label:after {
   width: 22px;
@@ -141,18 +146,16 @@ input.cmn-toggle-round:checked + label:after {
     background-image: linear-gradient(top, #f6f6f6, #f1f1f1);
     border-radius: 100%;
     box-shadow: 0 1px 1px rgba(0, 0, 0, .25), 0 2px 3px rgba(0, 0, 0, .1);
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 .history-button {
     background-image: url("../images/history.png");
-    background-position: center;
-    background-repeat: no-repeat;
 }
 
 .action-button {
-	background-image: url("../images/action.png");
-    background-position: center;
-    background-repeat: no-repeat;
+	background-image: url("../images/lightning.png");
 }
 
 .round-button::before{
