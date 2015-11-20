@@ -60,14 +60,12 @@ function sendAuthRequest(username, password) {
 }
 
 function showAuthenticationResult(success) {
-    var authForm = document.getElementById("frm.authentication");
-
     if (success) {
         console.debug("authentication success");
-        authForm.classList.remove("authenticationFailed");
+        jumpToAnchor("environment");
     } else {
         console.debug("authentication failed");
-        authForm.classList.add("authenticationFailed");
+        jumpToAnchor("authenntication");
     }
 }
 
@@ -103,8 +101,8 @@ function handleAuthentication(XMLHttpRequest, userName) {
 }
 
 function getSocketUrl() {
-    var servUrl = document.URL.replace(/.*?:\/\//g, "");
-    return "ws://" + servUrl + "state/?token=" + USER_TOKEN;
+//    var servUrl = document.URL.replace(/.*?:\/\//g, "").replace(/#.*$/, "");
+    return "ws://" + location.host + "/state/?token=" + USER_TOKEN;
 }
 
 function connectStatusSocket() {
@@ -457,10 +455,86 @@ function sendActionRequest(resourceId) {
     xhttp.send();
 }
 
+ var checkForm = function(e){
+    var form = (e.target) ? e.target : e.srcElement;
+    if(form.name.value == "") {
+      alert("Please enter your Name");
+      form.name.focus();
+      e.preventDefault ? e.preventDefault() : e.returnValue = false;
+      return;
+    }
+    if(form.email.value == "") {
+      alert("Please enter a valid Email address");
+      form.email.focus();
+      e.preventDefault ? e.preventDefault() : e.returnValue = false;
+      return;
+    }
+    if(form.message.value == "") {
+      alert("Please enter your comment or question in the Message box");
+      form.message.focus();
+      e.preventDefault ? e.preventDefault() : e.returnValue = false;
+      return;
+    }
+};
+
+var modal_init = function() {
+
+    var modalWrapper = document.getElementById("modal_wrapper");
+    var modalWindow  = document.getElementById("modal_window");
+
+    var openModal = function(e)
+    {
+      modalWrapper.className = "overlay";
+      var overflow = modalWindow.offsetHeight - document.documentElement.clientHeight;
+      if(overflow > 0) {
+        modalWindow.style.maxHeight = (parseInt(window.getComputedStyle(modalWindow).height) - overflow) + "px";
+      }
+      modalWindow.style.marginTop = (-modalWindow.offsetHeight)/2 + "px";
+      modalWindow.style.marginLeft = (-modalWindow.offsetWidth)/2 + "px";
+      e.preventDefault ? e.preventDefault() : e.returnValue = false;
+    };
+
+    var closeModal = function(e)
+    {
+      modalWrapper.className = "";
+      e.preventDefault ? e.preventDefault() : e.returnValue = false;
+    };
+
+    var clickHandler = function(e) {
+      if(!e.target) e.target = e.srcElement;
+      if(e.target.tagName == "DIV") {
+        if(e.target.id != "modal_window") closeModal(e);
+      }
+    };
+
+    var keyHandler = function(e) {
+      if(e.keyCode == 27) closeModal(e);
+    };
+
+    if(document.addEventListener) {
+      document.getElementById("modal_open").addEventListener("click", openModal, false);
+      document.getElementById("modal_close").addEventListener("click", closeModal, false);
+      document.addEventListener("click", clickHandler, false);
+      document.addEventListener("keydown", keyHandler, false);
+    } else {
+      document.getElementById("modal_open").attachEvent("onclick", openModal);
+      document.getElementById("modal_close").attachEvent("onclick", closeModal);
+      document.attachEvent("onclick", clickHandler);
+      document.attachEvent("onkeydown", keyHandler);
+    }
+};
+
+function jumpToAnchor(id) {
+    window.location.hash = "#" + id;
+}
+
 window.onload = function () {
     authenticate();
     document.getElementById("btn.register").onclick = function () {
         sendRegisterRequest();
+    };
+    document.getElementById("btn.authenticate").onclick = function () {
+        sendAuthRequest();
     };
 
     Notification.requestPermission(newMessage);

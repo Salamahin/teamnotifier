@@ -7,19 +7,27 @@
 </head>
 <body>
 
-<script language="javascript" type="text/javascript" src="js/environment.js"></script>
+<script type="text/javascript" src="js/environment.js"></script>
 
+<span id="environment" class="target"></span>
 <div id="frm.environment" class="tree">
 </div>
 
-<div id="frm.authentication">
-    <table class="modal-content">
-        <tr><td><input id="ibox.username" type="text" placeholder="user"/></td></tr>
-        <tr><td><input id="ibox.password" type="password" placeholder="password"/></td></tr>
-        <tr><td><input id="btn.authenticate" type="button" value="Sign in"/></td></tr>
-        <tr><td><input id="btn.register" type="button" value="register"/></td></tr>
-    </table>
+
+<span id="authenntication" class="target"></span>
+<div class="modal">
+    <div class="content vertical-align-middle">
+        <div class="modal-content">
+            <input id="ibox.username" type="text" placeholder="user"/>
+            <input id="ibox.password" type="password" placeholder="password"/>
+        </div>
+    <span class="modal-footer">
+       <input id="btn.authenticate" type="button" value="Sign in"/>
+       <input id="btn.register" type="button" value="Register"/>
+    </span>
+    </div>
 </div>
+
 
 </body>
 </html>

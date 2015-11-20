@@ -10,7 +10,7 @@ public class NotifierConfiguration extends Configuration {
   private final static String GENERATED_SECRET_STRING = createRandomString();
 
   @NotNull
-  private final String tokenSecretString = "AAAAAA";
+  private final String tokenSecretString = GENERATED_SECRET_STRING;
 
   @Valid
   @NotNull
