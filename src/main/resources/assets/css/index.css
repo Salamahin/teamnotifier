@@ -61,7 +61,7 @@
     width: 0; height: 20px;
 }
 
-.tree li span{
+.tree li span.tree-elem{
     border: 1px solid #ccc;
     padding: 5px 10px;
     text-decoration: none;
@@ -75,8 +75,8 @@
 }
 
 .cmn-toggle {
-  /*position: absolute;*/
-  /*margin-left: -9999px;*/
+  position: absolute;
+  margin-left: -9999px;
   visibility: hidden;
 }
 .cmn-toggle + label {
@@ -126,24 +126,25 @@ input.cmn-toggle-round:checked + label:after {
 
 .round-button {
     float: right;
-    right: 0;
+    right: 0px;
     margin: 10px;
     cursor: pointer;
     width: 30px;
     height: 30px;
     display: inline-block;
     line-height: 15px;
-    background: #f1f1f1 linear-gradient(top, #f6f6f6, #f1f1f1);
+    background-color: #f1f1f1;
+    background-image: linear-gradient(top, #f6f6f6, #f1f1f1);
     border-radius: 100%;
     box-shadow: 0 1px 1px rgba(0, 0, 0, .25), 0 2px 3px rgba(0, 0, 0, .1);
 }
 
 .history-button {
-/*     content: url('/images/history.png'); */
+
 }
 
 .action-button {
-/*     content: url('/images/lightning.png'); */
+
 }
 
 .round-button::before{
@@ -158,5 +159,6 @@ input.cmn-toggle-round:checked + label:after {
 
 .round-button:active {
 	top: 1px;
-    background: #8ce196 linear-gradient(top, #f1f1f1, #f6f6f6);
-}
+	background-image: linear-gradient(top, #f1f1f1, #f6f6f6);
+	background-color: #8ce196;
+

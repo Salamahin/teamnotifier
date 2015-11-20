@@ -165,7 +165,9 @@ function showStatus(status) {
 }
 
 function toTreeElem(body, nextElems) {
-    return decorateWith(newListElement(), decorateWith(document.createElement("span"), body), nextElems);
+    var treeElem = decorateWith(document.createElement("span"), body);
+    treeElem.className = "tree-elem";
+    return decorateWith(newListElement(), treeElem, nextElems);
 }
 
 /** @namespace environment.servers */
@@ -207,6 +209,8 @@ function resourcesToUnsignedList(resources) {
 function decorateWith() {
     var parent = arguments[0];
     for (var i = 1; i < arguments.length; i++) {
+        if(arguments[i] == undefined)
+            continue;
         parent.appendChild(arguments[i]);
     }
     return parent;
@@ -227,11 +231,12 @@ function servToListElem(server) {
         }
     );
 
-    var listSubscribersElem = decorateWith(newListElement(), newLabel("subscribers"));
-    if (subscribers.length != 0)
-        listSubscribersElem.appendChild(subscribersToUnsignedList(subscribers));
+    if(subscribers.length == 0)
+        var listSubscribersElem = toTreeElem(newLabel("subscribers"));
+   else
+        var listSubscribersElem = toTreeElem(newLabel("subscribers"), subscribersToUnsignedList(subscribers));
 
-    var listResourcesElem = decorateWith(newListElement(), newLabel("resources"), resourcesToUnsignedList(resources));
+    var listResourcesElem = toTreeElem(newLabel("resources"), resourcesToUnsignedList(resources));
     var listResourcesAndSubscribers = decorateWith(newUnsignedList(), listSubscribersElem, listResourcesElem);
 
     return toTreeElem(cbSubscribe, listResourcesAndSubscribers);
@@ -273,13 +278,17 @@ function newLabeledCheckbox(value, checked, onchange) {
     var label = document.createElement("label");
     label.htmlFor = uniqueId;
 
-    return decorateWith(document.createElement("div"), checkbox, label, document.createTextNode(value));
+//    var cb = decorateWith(document.createElement("span"), checkbox, label);
+//    var text = document.createElement("label");
+//    text.nodeValue = value;
+//    text.appendChild(cb);
+
+    return decorateWith(document.createElement("span"), checkbox,  document.createTextNode(value), label);
 }
 
 
 /** @namespace resource.occupationInfo */
 /** @namespace occupationInfo.occupationTime */
-
 function getHistoryButton(resource) {
     var btnHistory = newButton("", function () {
         console.debug("history of resource " + resource.id);
@@ -302,12 +311,14 @@ function getReservationCheckbox(resource, reserved) {
         }
     );
 }
+
 function decorateOccupationInfo(occupationInfo) {
     return decorateWith(
         document.createElement("div"),
         document.createTextNode("Reserved by " + occupationInfo.userName),
         document.createTextNode(" on " + reformatDate(occupationInfo.occupationTime)));
 }
+
 /** @namespace occupationInfo.userName */
 function resourceToListElem(resource) {
     var occupationInfo = resource.occupationInfo;
@@ -326,9 +337,7 @@ function resourceToListElem(resource) {
     }
 
     var div = decorateWith(document.createElement("div"), action, btnAction, btnHistory);
-    var label = decorateWith(document.createElement("label"), div);
-
-    return decorateWith(newListElement(), label);
+    return toTreeElem(div);
 }
 
 function reformatDate(dateStr) {
@@ -345,9 +354,7 @@ function reformatDate(dateStr) {
 }
 
 function subscriberToListElem(subscriber) {
-    var listElem = newListElement();
-    listElem.appendChild(newLabel(subscriber));
-    return listElem;
+    return toTreeElem(document.createTextNode(subscriber));
 }
 
 function getState() {
