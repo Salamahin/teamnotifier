@@ -1,8 +1,8 @@
 const TOKEN_COOKIE = "userToken";
 var USER_TOKEN;
 var USER_NAME;
-var SELECTED_ENV;
-var SELECTED_SRV;
+var SELECTED_ENV_NAME;
+var SELECTED_SRV_ID;
 var CURRENT_STATUS;
 
 function loadCookie(cookieName) {
@@ -36,8 +36,6 @@ function sendWhoAmIRequest() {
 }
 
 function authenticate() {
-    var authForm = document.getElementById("frm.authentication");
-
     var loadedToken = loadCookie(TOKEN_COOKIE);
     if (loadedToken != undefined) {
         USER_TOKEN = loadedToken;
@@ -128,7 +126,6 @@ function connectStatusSocket() {
 
     websocket.onerror = function () {
         removeCookie(TOKEN_COOKIE);
-        removeCookie(USER_COOKIE);
         showAuthenticationResult(false);
     };
 }
@@ -139,8 +136,8 @@ function handleStatus(XMLHttpRequest) {
         return;
 
     if (XMLHttpRequest.status == 200) {
-        var status = JSON.parse(XMLHttpRequest.responseText);
-        showStatus(status);
+        CURRENT_STATUS = JSON.parse(XMLHttpRequest.responseText);
+        rebuildNavigation();
     }
 }
 
@@ -149,12 +146,13 @@ function removeAllChildren(parent) {
         parent.removeChild(parent.firstChild);
     }
 }
-/** @namespace status.environments */
-function showStatus(status) {
-    if (!SELECTED_ENV || !SELECTED_SRV)
+
+
+function showCurrentResourcesStatus() {
+    if (!SELECTED_ENV_NAME || !SELECTED_SRV_ID)
         return;
 
-    var env = extractSelectedEnvironment(status.environments);
+    var env = extractSelectedEnvironment(CURRENT_STATUS.environments);
     if (env == undefined)
         return;
 
@@ -165,14 +163,92 @@ function showStatus(status) {
     var resourceFrame = document.getElementById("resources");
     removeAllChildren(resourceFrame);
 
-    srv.resources.forEach(function(resource) {
+    srv.resources.forEach(function (resource) {
         resourceFrame.appendChild(newResourceInfoElem(resource))
     });
 }
-function a
+
+function rebuildNavigation() {
+    var navigationElemsList = document.getElementById("navigation-elems");
+    removeAllChildren(navigationElemsList);
+
+    var environments = CURRENT_STATUS.environments;
+    environments.forEach(function (env) {
+        var servers = env.servers;
+        servers.forEach(function (srv) {
+            var currentName = srv.name + "" + env.name;
+            var btn = newButton(currentName, function () {
+                handleCurrentChange(env, srv, currentName);
+            });
+            navigationElemsList.appendChild(btn);
+        });
+    });
+
+    if (SELECTED_SRV_ID && SELECTED_ENV_NAME) {
+        var env = extractSelectedEnvironment(environments);
+        if (env == undefined)
+            return;
+
+        var srv = extractSelectedServer(env.servers);
+        if (srv == undefined)
+            return;
+
+        showCurrentSubscriptionStatus(srv);
+        showSubscribers(srv);
+        showCurrentResourcesStatus(srv);
+    } else {
+        navigationElemsList.childNodes.item(0).click();
+    }
+}
+
+function handleCurrentChange(env, srv, currentName) {
+    SELECTED_ENV_NAME = env.name;
+    SELECTED_SRV_ID = srv.id;
+
+    showCurrentServerName(currentName);
+    showCurrentSubscriptionStatus(srv);
+    showSubscribers(srv);
+    showCurrentResourcesStatus(srv);
+}
+
+function showCurrentServerName(currentName) {
+    var currentNameContainer = document.getElementById("server");
+    removeAllChildren(currentNameContainer);
+    currentNameContainer.appendChild(document.createTextNode(currentName));
+}
+
+function showCurrentSubscriptionStatus(srv) {
+    var subscriptionInfoContainer = document.getElementById("subscription");
+    removeAllChildren(subscriptionInfoContainer);
+    const subscribed = isSubscribedOnServer(srv);
+    var cbSubscribe = newLabeledCheckbox("subscribe", subscribed, function () {
+        subscribed ? unsubscribe(srv.id) : subscribe(srv.id);
+    });
+    subscriptionInfoContainer.appendChild(cbSubscribe);
+}
+
+function showSubscribers(srv) {
+    var subscribersContainer = document.getElementById("subscribers");
+    removeAllChildren(subscribersContainer);
+
+    var subscribers = srv.subscribers;
+    subscribers.forEach(function (s) {
+        subscribersContainer.appendChild(decorateWith(document.createElement("li"), document.createTextNode(s)));
+    });
+}
+
+function isSubscribedOnServer(srv) {
+    var subscribers = srv.subscribers;
+    for (var i = 0; i < subscribers.length; i++)
+        if (subscribers[i] == USER_NAME)
+            return true;
+
+    return false;
+}
+
 function extractSelectedEnvironment(environments) {
     for (var i = 0; i < environments.length; i++) {
-        if (environments[i].name == SELECTED_ENV)
+        if (environments[i].name == SELECTED_ENV_NAME)
             return environments[i];
     }
     return undefined;
@@ -180,7 +256,7 @@ function extractSelectedEnvironment(environments) {
 
 function extractSelectedServer(servers) {
     for (var i = 0; i < servers.length; i++) {
-        if (servers[i].name == SELECTED_SRV)
+        if (servers[i].id == SELECTED_SRV_ID)
             return servers[i];
     }
     return undefined;
@@ -211,6 +287,7 @@ function newButton(value, onclick) {
 function getUniqueId() {
     return "id" + Math.random().toString(16).slice(2);
 }
+
 function newLabeledCheckbox(value, checked, onchange) {
     var uniqueId = getUniqueId();
 
@@ -224,10 +301,12 @@ function newLabeledCheckbox(value, checked, onchange) {
     var label = document.createElement("label");
     label.htmlFor = uniqueId;
 
-    var text = newLabel(value);
-    text.className = "vertical-aligned";
+    var element = document.createElement("div");
+    element.className = "labeled-checkbox";
 
-    return decorateWith(document.createElement("div"), text, checkbox, label);
+    var text = newLabel(value);
+    text.className = "toggle_text";
+    return decorateWith(element, checkbox, label, text);
 }
 
 
@@ -280,7 +359,10 @@ function newResourceInfoElem(resource) {
         action = decorateOccupationInfo(occupationInfo);
     }
 
-    return decorateWith(document.createElement("div"), action, btnAction, btnHistory);
+    var wrapper = document.createElement("div");
+    wrapper.className = "resource";
+
+    return decorateWith(wrapper, action, btnAction, btnHistory);
 }
 
 function reformatDate(dateStr) {
