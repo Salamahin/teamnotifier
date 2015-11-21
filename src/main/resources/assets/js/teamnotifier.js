@@ -1,7 +1,8 @@
 const TOKEN_COOKIE = "userToken";
 var USER_TOKEN;
 var USER_NAME;
-var CURRENT_SRV;
+var SELECTED_ENV;
+var SELECTED_SRV;
 var CURRENT_STATUS;
 
 function loadCookie(cookieName) {
@@ -28,7 +29,7 @@ function sendWhoAmIRequest() {
     var xhttp = new XMLHttpRequest();
     xhttp.open("GET", "/teamnotifier/1.0/users/whoami", true);
     xhttp.setRequestHeader("Authorization", "Bearer " + USER_TOKEN);
-    xhttp.onreadystatechange = function() {
+    xhttp.onreadystatechange = function () {
         handleWhoAmI(xhttp);
     };
     xhttp.send();
@@ -150,96 +151,49 @@ function removeAllChildren(parent) {
 }
 /** @namespace status.environments */
 function showStatus(status) {
-    var environments = status.environments;
+    if (!SELECTED_ENV || !SELECTED_SRV)
+        return;
 
-    var envList = newUnsignedList();
-    environments.forEach(function (env) {
-            envList.appendChild(envToListElem(env));
-        }
-    );
+    var env = extractSelectedEnvironment(status.environments);
+    if (env == undefined)
+        return;
 
-    var envFrame = document.getElementById("frm.environment");
-    removeAllChildren(envFrame);
-    envFrame.appendChild(envList);
+    var srv = extractSelectedServer(env.servers);
+    if (srv == undefined)
+        return;
+
+    var resourceFrame = document.getElementById("resources");
+    removeAllChildren(resourceFrame);
+
+    srv.resources.forEach(function(resource) {
+        resourceFrame.appendChild(newResourceInfoElem(resource))
+    });
+}
+function a
+function extractSelectedEnvironment(environments) {
+    for (var i = 0; i < environments.length; i++) {
+        if (environments[i].name == SELECTED_ENV)
+            return environments[i];
+    }
+    return undefined;
 }
 
-function toTreeElem(body, nextElems) {
-    var treeElem = decorateWith(document.createElement("div"), body);
-    treeElem.className = "tree-elem";
-    return decorateWith(newListElement(), treeElem, nextElems);
-}
-
-/** @namespace environment.servers */
-function envToListElem(environment) {
-    var servers = environment.servers;
-
-    var serverList = newUnsignedList();
-    servers.forEach(function (server) {
-            serverList.appendChild(servToListElem(server))
-        }
-    );
-
-    return toTreeElem(newLabel(environment.name), serverList);
-}
-
-
-function subscribersToUnsignedList(subscribers) {
-    var listSubscribers = newUnsignedList();
-
-    subscribers.forEach(function (subscriber) {
-            listSubscribers.appendChild(subscriberToListElem(subscriber));
-        }
-    );
-
-    return listSubscribers;
-}
-
-function resourcesToUnsignedList(resources) {
-    var listResources = newUnsignedList();
-
-    resources.forEach(function (resource) {
-            listResources.appendChild(newResourceInfoElem(resource));
-        }
-    );
-
-    return listResources;
+function extractSelectedServer(servers) {
+    for (var i = 0; i < servers.length; i++) {
+        if (servers[i].name == SELECTED_SRV)
+            return servers[i];
+    }
+    return undefined;
 }
 
 function decorateWith() {
     var parent = arguments[0];
     for (var i = 1; i < arguments.length; i++) {
-        if(arguments[i] == undefined)
+        if (arguments[i] == undefined)
             continue;
         parent.appendChild(arguments[i]);
     }
     return parent;
-}
-
-
-/** @namespace server.resources */
-/** @namespace server.subscribers */
-function servToListElem(server) {
-    var subscribers = server.subscribers;
-    var resources = server.resources;
-
-    const subscribed = subscribers.indexOf(USER_NAME) >= 0;
-    var cbSubscribe = newLabeledCheckbox("Subscription on " + server.name, subscribed, function () {
-            subscribed
-                ? unsubscribe(server.id)
-                : subscribe(server.id);
-        }
-    );
-
-    var listSubscribersElem;
-    if(subscribers.length == 0)
-        listSubscribersElem = toTreeElem(newLabel("subscribers"));
-   else
-        listSubscribersElem = toTreeElem(newLabel("subscribers"), subscribersToUnsignedList(subscribers));
-
-    var listResourcesElem = toTreeElem(newLabel("resources"), resourcesToUnsignedList(resources));
-    var listResourcesAndSubscribers = decorateWith(newUnsignedList(), listSubscribersElem, listResourcesElem);
-
-    return toTreeElem(cbSubscribe, listResourcesAndSubscribers);
 }
 
 function newLabel(value) {
@@ -264,13 +218,13 @@ function newLabeledCheckbox(value, checked, onchange) {
     checkbox.type = "checkbox";
     checkbox.onchange = onchange;
     checkbox.checked = checked;
-    checkbox.className = "cmn-toggle cmn-toggle-round";
+    checkbox.className = "toggle toggle-round";
     checkbox.id = uniqueId;
 
     var label = document.createElement("label");
     label.htmlFor = uniqueId;
 
-    var text =  newLabel(value);
+    var text = newLabel(value);
     text.className = "vertical-aligned";
 
     return decorateWith(document.createElement("div"), text, checkbox, label);
@@ -326,7 +280,7 @@ function newResourceInfoElem(resource) {
         action = decorateOccupationInfo(occupationInfo);
     }
 
-    return decorateWith(document.createElement("div"), action , btnAction, btnHistory);
+    return decorateWith(document.createElement("div"), action, btnAction, btnHistory);
 }
 
 function reformatDate(dateStr) {
@@ -340,10 +294,6 @@ function reformatDate(dateStr) {
 
     return curr_hour + ":" + curr_min + ":" + curr_sec + " " +
         curr_date + "-" + curr_month + "-" + curr_year;
-}
-
-function subscriberToListElem(subscriber) {
-    return toTreeElem(document.createTextNode(subscriber));
 }
 
 function getState() {
