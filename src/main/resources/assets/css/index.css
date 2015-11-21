@@ -30,6 +30,7 @@ html, body {
 }
 
 #navigation {
+    float: left;
     margin: 0 20px 0 0;
     width: 145px;
     height: 100%;
@@ -48,9 +49,8 @@ html, body {
     display: flex;
     height: 47px;
     align-items: center;
-    font-weight: bold;
-    font-size: 20px;
-    font-family: monospace;
+    /*font-weight: bold;*/
+    font: bold 24px "Source Code Pro", Inconsolata, "Lucida Console", Terminal, "Courier New", Courier;
     color: #e3e3e3;
     padding-left: 20px;
     cursor: pointer;
@@ -65,6 +65,26 @@ html, body {
     background-color: #7dcf87;
     color: #272727;
 }
+
+#server {
+    color: #858585;
+    margin: 0;
+    padding: 30px 0 0 0;
+    font: bold 40px "Source Code Pro", Inconsolata, "Lucida Console", Terminal, "Courier New", Courier;
+}
+
+#subscription {
+    color: #858585;
+    margin: 0;
+    padding: 0 0 30px 0;
+    font: 20px Tahoma, Verdana, Segoe, sans-serif;
+    display: flex;
+    vertical-align: middle;
+}
+#subscribe {
+    padding-left: 10px;
+}
+
 
 /*==============================TOGGLE====================================*/
 .cmn-toggle {
@@ -130,12 +150,9 @@ input.cmn-toggle-round:checked + label:after {
     height: 30px;
     display: inline-block;
     line-height: 15px;
-    background-color: #f1f1f1;
-    background-image: linear-gradient(top, #f6f6f6, #f1f1f1);
     border-radius: 100%;
     box-shadow: 0 1px 1px rgba(0, 0, 0, .25), 0 2px 3px rgba(0, 0, 0, .1);
-    background-position: center;
-    background-repeat: no-repeat;
+    background: #f1f1f1 linear-gradient(top, #f6f6f6, #f1f1f1) no-repeat center;
 }
 
 .history-button {
@@ -158,8 +175,7 @@ input.cmn-toggle-round:checked + label:after {
 
 .round-button:active {
     top: 1px;
-    background-image: linear-gradient(top, #f1f1f1, #f6f6f6);
-    background-color: #8ce196;
+    background: #8ce196 linear-gradient(top, #f1f1f1, #f6f6f6);
 }
 
 /*==============================MODAL====================================*/
@@ -259,8 +275,7 @@ input.authentication {
     text-decoration: none;
     white-space: nowrap;
     color: #555;
-    background-color: #ddd;
-    background-image: linear-gradient(top, rgba(255, 255, 255, 1),
+    background: #ddd linear-gradient(top, rgba(255, 255, 255, 1),
     rgba(255, 255, 255, 0)),
     url(data:image/png;base64,iVBORw0KGg[...]QmCC);
     transition: background-color .2s ease-out;

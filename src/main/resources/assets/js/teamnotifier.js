@@ -228,10 +228,11 @@ function servToListElem(server) {
         }
     );
 
+    var listSubscribersElem;
     if(subscribers.length == 0)
-        var listSubscribersElem = toTreeElem(newLabel("subscribers"));
+        listSubscribersElem = toTreeElem(newLabel("subscribers"));
    else
-        var listSubscribersElem = toTreeElem(newLabel("subscribers"), subscribersToUnsignedList(subscribers));
+        listSubscribersElem = toTreeElem(newLabel("subscribers"), subscribersToUnsignedList(subscribers));
 
     var listResourcesElem = toTreeElem(newLabel("resources"), resourcesToUnsignedList(resources));
     var listResourcesAndSubscribers = decorateWith(newUnsignedList(), listSubscribersElem, listResourcesElem);
