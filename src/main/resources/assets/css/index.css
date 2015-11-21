@@ -8,13 +8,6 @@ html, body {
     padding: 0;
 }
 
-.vertical-aligned {
-    display: block;
-    vertical-align: middle;
-    margin: 0 0 5px 0;
-    text-align: center;
-}
-
 /*==============================TREE====================================*/
 
 .resource {
@@ -29,6 +22,8 @@ html, body {
     background-color: WHITE
 }
 
+
+/*==============================NAVIGATION====================================*/
 #navigation {
     float: left;
     margin: 0 20px 0 0;
@@ -38,61 +33,71 @@ html, body {
     background-color: #555555;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
-
 #navigation ul {
     margin:0;
     padding:0;
     list-style:none;
 }
-
 #navigation a {
     display: flex;
     height: 47px;
     align-items: center;
-    /*font-weight: bold;*/
     font: bold 24px "Source Code Pro", Inconsolata, "Lucida Console", Terminal, "Courier New", Courier;
     color: #e3e3e3;
     padding-left: 20px;
     cursor: pointer;
 }
-
 #navigation a:hover {
     background-color: #96f5a1;
     color: #555555;
 }
-
 #navigation a:active {
     background-color: #7dcf87;
     color: #272727;
 }
-
 #server {
     color: #858585;
     margin: 0;
     padding: 30px 0 0 0;
     font: bold 40px "Source Code Pro", Inconsolata, "Lucida Console", Terminal, "Courier New", Courier;
 }
-
 #subscription {
     color: #858585;
     margin: 0;
-    padding: 0 0 30px 0;
+    padding: 0;
     font: 20px Tahoma, Verdana, Segoe, sans-serif;
     display: flex;
     vertical-align: middle;
 }
 #subscribe {
-    padding-left: 10px;
+     padding-left: 10px;
+ }
+#subscribers {
+    margin: 5px 0 30px 0;
+}
+#subscribers li {
+    font: 12px Tahoma, Verdana, Segoe, sans-serif;
+    color: #4d4d4d;
+}
+#subscribers > li {
+    display: inline-block;
+    padding-right: 20px;
+    margin-left: 20px;
+}
+#subscribers > li:before{
+    content: "";
+    display: list-item;
+    position: absolute;
 }
 
 
 /*==============================TOGGLE====================================*/
-.cmn-toggle {
+.toggle {
     position: absolute;
     visibility: hidden;
 }
 
-.cmn-toggle + label {
+.toggle + label {
     display: inline-block;
     position: relative;
     cursor: pointer;
@@ -100,7 +105,7 @@ html, body {
     user-select: none;
 }
 
-input.cmn-toggle-round + label {
+input.toggle-round + label {
     padding: 2px;
     width: 40px;
     height: 20px;
@@ -109,8 +114,8 @@ input.cmn-toggle-round + label {
     border: 1px;
 }
 
-input.cmn-toggle-round + label:before,
-input.cmn-toggle-round + label:after {
+input.toggle-round + label:before,
+input.toggle-round + label:after {
     display: block;
     position: absolute;
     top: 1px;
@@ -119,24 +124,24 @@ input.cmn-toggle-round + label:after {
     content: "";
 }
 
-input.cmn-toggle-round + label:before {
+input.toggle-round + label:before {
     right: 1px;
     background-color: #f1f1f1;
     border-radius: 20px;
 }
 
-input.cmn-toggle-round + label:after {
+input.toggle-round + label:after {
     width: 22px;
     background-color: #fff;
     border-radius: 100%;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
-input.cmn-toggle-round:checked + label:before {
+input.toggle-round:checked + label:before {
     background-color: #8ce196;
 }
 
-input.cmn-toggle-round:checked + label:after {
+input.toggle-round:checked + label:after {
     margin-left: 22px;
 }
 

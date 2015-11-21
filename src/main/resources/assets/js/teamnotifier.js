@@ -1,6 +1,8 @@
 const TOKEN_COOKIE = "userToken";
 var USER_TOKEN;
 var USER_NAME;
+var CURRENT_SRV;
+var CURRENT_STATUS;
 
 function loadCookie(cookieName) {
     var matches = document.cookie.match(new RegExp(
@@ -196,7 +198,7 @@ function resourcesToUnsignedList(resources) {
     var listResources = newUnsignedList();
 
     resources.forEach(function (resource) {
-            listResources.appendChild(resourceToListElem(resource));
+            listResources.appendChild(newResourceInfoElem(resource));
         }
     );
 
@@ -244,14 +246,6 @@ function newLabel(value) {
     var label = document.createElement("label");
     label.appendChild(document.createTextNode(value));
     return label;
-}
-
-function newUnsignedList() {
-    return document.createElement("ul");
-}
-
-function newListElement() {
-    return document.createElement("li");
 }
 
 function newButton(value, onclick) {
@@ -316,7 +310,7 @@ function decorateOccupationInfo(occupationInfo) {
 }
 
 /** @namespace occupationInfo.userName */
-function resourceToListElem(resource) {
+function newResourceInfoElem(resource) {
     var occupationInfo = resource.occupationInfo;
 
     var btnHistory = getHistoryButton(resource);
@@ -332,8 +326,7 @@ function resourceToListElem(resource) {
         action = decorateOccupationInfo(occupationInfo);
     }
 
-    var div = decorateWith(document.createElement("div"), action , btnAction, btnHistory);
-    return toTreeElem(div);
+    return decorateWith(document.createElement("div"), action , btnAction, btnHistory);
 }
 
 function reformatDate(dateStr) {
