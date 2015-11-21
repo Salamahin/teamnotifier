@@ -23,10 +23,10 @@ public class NotifierApplicationRunner {
       return null;
     });
 
-//    gt.transaction(em -> {
-//      em.persist(getEuEnv("eu2"));
-//      return null;
-//    });
+    gt.transaction(em -> {
+      em.persist(getEuEnv("eu2"));
+      return null;
+    });
 
   }
 

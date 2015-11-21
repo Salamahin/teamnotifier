@@ -1,5 +1,6 @@
 body {
-    background-image: url("../images/bg.png");
+    background-image: url("https://static.pexels.com/photos/2855/landscape-mountains-nature-lake.jpg");
+    background-size: cover;
 }
 
 html, body {
@@ -21,6 +22,7 @@ html, body {
     color: #999;
     background-color: WHITE;
     margin: 5px 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
 
@@ -223,6 +225,7 @@ input.toggle-round:checked + label:after {
     z-index: 100;
     text-align: center;
     display: none;
+    background-color: transparent;
 }
 
 .modal > .content {
@@ -248,7 +251,6 @@ input.toggle-round:checked + label:after {
 
 :root .modal {
     display: block;
-    background-color: transparent;
     transition: transform 0.3s cubic-bezier(0.5, -0.5, 0.5, 1.5);
     transform-origin: center center;
     transform: scale(0, 0);
