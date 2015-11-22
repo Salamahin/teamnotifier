@@ -42,10 +42,10 @@ function authenticate() {
         sendWhoAmIRequest();
     }
 
-    var authenticate = document.getElementById("btn.authenticate");
+    var authenticate = document.getElementById("btn_authenticate");
     authenticate.onclick = function () {
-        var username = document.getElementById("ibox.username").value;
-        var password = document.getElementById("ibox.password").value;
+        var username = document.getElementById("ibox_username").value;
+        var password = document.getElementById("ibox_password").value;
         sendAuthRequest(username, password);
     };
 }
@@ -66,7 +66,7 @@ function showAuthenticationResult(success) {
         jumpToAnchor("environment");
     } else {
         console.debug("authentication failed");
-        jumpToAnchor("authenntication");
+        jumpToAnchor("authentication");
     }
 }
 
@@ -322,7 +322,7 @@ function getHistoryButton(resource) {
 
 function getActionButton(resource) {
     var btnAction = newButton("", function () {
-        sendActionRequest(resource.id);
+        showActionModal(resource.id, resource.name)
     });
     btnAction.className = "round-button action-button";
     return btnAction;
@@ -457,8 +457,8 @@ function handleRegistration(XMLHttpRequest, username, password) {
 }
 
 function sendRegisterRequest() {
-    const username = document.getElementById("ibox.username").value;
-    const password = document.getElementById("ibox.password").value;
+    const username = document.getElementById("ibox_username").value;
+    const password = document.getElementById("ibox_password").value;
 
     var xhttp = new XMLHttpRequest();
     xhttp.open("POST", "/teamnotifier/1.0/users/register", true);
@@ -469,10 +469,48 @@ function sendRegisterRequest() {
     xhttp.send();
 }
 
-function sendActionRequest(resourceId) {
-    var action = prompt("New action", "deploy");
-    if (!action)
-        return;
+
+function showActionModal(resourceId, caption) {
+    document.getElementById("btn_deploy").onclick = function () {
+        sendActionRequest(resourceId, "deploy");
+        jumpToAnchor("environment");
+    };
+
+    document.getElementById("btn_polite").onclick = function () {
+        sendActionRequest(resourceId, "polite");
+        jumpToAnchor("environment");
+    };
+
+    document.getElementById("btn_other").onclick = function () {
+        var action = document.getElementById("ibox_other").value;
+        sendActionRequest(resourceId, action);
+        jumpToAnchor("environment");
+    };
+
+    document.addEventListener('keyup', function(e) {
+        if (e.keyCode == 27) {
+            jumpToAnchor("environment");
+            jumpToAnchor("environment");
+        }
+    });
+
+    var header = document.getElementById("action_header");
+    removeAllChildren(header);
+    header.appendChild(document.createTextNode(caption));
+
+    var modal = document.querySelector('#actions_modal');
+    modal.addEventListener('click', function(e) {
+        jumpToAnchor("environment");
+    }, false);
+
+    modal.children[0].addEventListener('click', function(e) {
+        e.stopPropagation();
+    }, false);
+
+    jumpToAnchor("action");
+}
+
+function sendActionRequest(resourceId, action) {
     var xhttp = new XMLHttpRequest();
     xhttp.open("POST", "/teamnotifier/1.0/environment/application/action/" + resourceId, true);
     xhttp.setRequestHeader("ActionDetails", action);
@@ -486,7 +524,7 @@ function jumpToAnchor(id) {
 
 window.onload = function () {
     authenticate();
-    document.getElementById("btn.register").onclick = function () {
+    document.getElementById("btn_register").onclick = function () {
         sendRegisterRequest();
     };
 

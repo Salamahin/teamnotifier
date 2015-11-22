@@ -21,7 +21,7 @@ public class TokenCreator {
         .claim(JsonWebTokenClaim.builder()
             .subject(String.valueOf(userId))
             .issuedAt(DateTime.now())
-            .expiration(DateTime.now().plusHours(16))
+            .expiration(DateTime.now().plusMinutes(1))
             .build())
         .build();
 

@@ -342,3 +342,29 @@ span.modal-footer a {
     display: inline-block;
     text-align: right;
 }
+
+#action_header {
+    color: #555;
+    font: bold 25px arial, helvetica, sans-serif;
+}
+
+#action_common {
+    margin: 20px 0 20px 0;
+}
+
+#action_footer {
+    display: table-caption;
+}
+
+#ibox_other {
+    width: 200px;
+    height: 40px;
+}
+
+#workbench_header {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.5);
+    filter: blur(5px);
+}

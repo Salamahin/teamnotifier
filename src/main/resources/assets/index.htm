@@ -7,45 +7,61 @@
 </head>
 <body>
 
-<div id="navigation">
-    <ul id="navigation-elems">
-    </ul>
+<script type="text/javascript" src="js/teamnotifier.js"></script>
+
+
+<span id="authentication" class="target"></span>
+
+<div class="modal">
+    <div class="content">
+        <div id="inputwrap">
+            <input id="ibox_username" type="text" placeholder="user" class="authentication"/>
+            <hr>
+            <input id="ibox_password" type="password" placeholder="password" class="authentication"/>
+        </div>
+<span class="modal-footer">
+<a id="btn_authenticate" class="color blue button">Sign in</a>
+<a id="btn_register" class="button">Register</a>
+</span>
+    </div>
 </div>
 
 <span id="environment" class="target"></span>
 
-<div>
+<div id="navigation">
+    <ul id="navigation-elems">
+    </ul>
+</div>
+<div id="workbench">
     <div>
-        <h1 id="server"></h1>
-        <div id="subscription">
-        </div>
-        <ul id="subscribers">
-        </ul>
-    </div>
+        <div>
+            <h1 id="server"></h1>
 
-    <span id="resources"></span>
+            <div id="subscription">
+            </div>
+            <ul id="subscribers">
+            </ul>
+        </div>
+
+        <span id="resources"></span>
+    </div>
 </div>
 
+<span id="action" class="target"></span>
 
-<script type="text/javascript" src="js/teamnotifier.js"></script>
-
-<!--<span id="environment" class="target"></span>-->
-<!--<div id="frm.environment" class="tree">-->
-<!--</div>-->
-
-
-<span id="authenntication" class="target"></span>
-<div class="modal">
+<div class="modal" id="actions_modal">
     <div class="content">
-        <div id="inputwrap">
-            <input id="ibox.username" type="text" placeholder="user" class="authentication"/>
-            <hr>
-            <input id="ibox.password" type="password" placeholder="password" class="authentication"/>
+        <label id="action_header">ssteu1 flexprod</label>
+        <hr>
+        <div class="action-content" id="action_common">
+            <a id="btn_deploy" class="color blue button">Deploy</a>
+            <a id="btn_polite" class="color blue button">Polite</a>
         </div>
-<span class="modal-footer">
-<a id="btn.authenticate" class="color blue button">Sign in</a>
-<a id="btn.register" class="button">Register</a>
-</span>
+        <textarea id="ibox_other" placeholder="other action"></textarea>
+
+        <div>
+            <a id="btn_other" class="color blue button">Action</a>
+        </div>
     </div>
 </div>
 
