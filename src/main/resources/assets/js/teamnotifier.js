@@ -5,27 +5,6 @@ var SELECTED_ENV_NAME;
 var SELECTED_SRV_ID;
 var CURRENT_STATUS;
 
-Date.prototype.toLocalISOString = function(){
-    // ISO 8601
-    var d = this
-        , pad = function (n){return n<10 ? '0'+n : n}
-        , tz = d.getTimezoneOffset() //mins
-        , tzs = (tz>0?"-":"+") + pad(parseInt(tz/60));
-
-    if (tz%60 != 0)
-        tzs += pad(tz%60);
-
-    if (tz === 0) // Zulu time == UTC
-        tzs = 'Z';
-
-    return d.getFullYear()+'-'
-        + pad(d.getMonth()+1)+'-'
-        + pad(d.getDate())+'T'
-        + pad(d.getHours())+':'
-        + pad(d.getMinutes())+':'
-        + pad(d.getSeconds()) + tzs
-};
-
 function loadCookie(cookieName) {
     var matches = document.cookie.match(new RegExp(
         "(?:^|; )" + cookieName.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
@@ -343,6 +322,8 @@ function newLabeledCheckbox(value, checked, onchange) {
 /** @namespace occupationInfo.occupationTime */
 function getHistoryButton(resource) {
     var btnHistory = newButton("", function () {
+        var hist = document.getElementById("ul_hist");
+        removeAllChildren(hist);
         showActionsHistoryModal(resource.id, resource.name);
     });
     btnHistory.className = "round-button history-button";
@@ -392,6 +373,11 @@ function newResourceInfoElem(resource) {
     wrapper.className = "resource";
 
     return decorateWith(wrapper, action, btnAction, btnHistory);
+}
+
+function toLocalDate(date) {
+    var timeOffset = date.getTimezoneOffset() / 60;
+    return new Date(date.getTime() - timeOffset * 3600 * 1000);
 }
 
 function reformatDate(dateStr) {
@@ -595,7 +581,6 @@ function sendActionRequest(resourceId, action) {
 
 function showActionsInfo(actions) {
     var hist = document.getElementById("ul_hist");
-    removeAllChildren(hist);
     actions.forEach(function(action) {
        hist.appendChild(decorateWith(document.createElement("li"), actionInfoToLabel(action)));
     });
@@ -619,17 +604,15 @@ function actionInfoToLabel(info) {
     return newLabel(info.userName + " " + reformatDate(info.timestamp) + " " + info.description)
 }
 
-function toLocalIsoString(date) {
-    var timeOffset = date.getTimezoneOffset() / 60;
-    var localDate = new Date(date.getTime() - timeOffset * 3600 * 1000);
-    return localDate.toISOString();
-}
 
 function sendHistRequest(resourceId, from, to) {
+    var hist = document.getElementById("ul_hist");
+    removeAllChildren(hist);
+
     var xhttp = new XMLHttpRequest();
     xhttp.open("GET", "/teamnotifier/1.0/environment/application/action/" + resourceId, true);
-    var fromStr = toLocalIsoString(from);
-    var toStr = toLocalIsoString(to);
+    var fromStr = toLocalDate(from).toISOString();
+    var toStr = toLocalDate(to).toISOString();
     xhttp.setRequestHeader("ActionsFrom", btoa(fromStr));
     xhttp.setRequestHeader("ActionsTo", btoa(toStr));
     xhttp.setRequestHeader("Authorization", "Bearer " + USER_TOKEN);

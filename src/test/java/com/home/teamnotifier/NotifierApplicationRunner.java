@@ -38,9 +38,7 @@ public class NotifierApplicationRunner {
       final String userName = "user";
       final String userPass = "pass";
 
-      final UserEntity actor = gt.transaction(em -> {
-          return em.merge(new UserEntity(userName, toMd5Hash(userPass)));
-      });
+      final UserEntity actor = gt.transaction(em -> em.merge(new UserEntity(userName, toMd5Hash(userPass))));
 
       final SharedResourceEntity resource = eu1.getImmutableListOfAppServers().stream()
               .flatMap(s -> s.getImmutableListOfResources().stream())
