@@ -121,8 +121,8 @@ public class DbSharedResourceActionsGatewayTest {
 
     public final String description;
 
-    ActionData(String time, String description) {
-      this.time = LocalDateTime.parse(time);
+    ActionData(LocalDateTime time, String description) {
+      this.time = time;
       this.description = description;
     }
 

@@ -1,7 +1,12 @@
 package com.home.teamnotifier.core.responses.status;
 
 import com.fasterxml.jackson.annotation.*;
+import com.home.teamnotifier.utils.Iso8601DateTimeHelper;
+
+import java.time.LocalDateTime;
 import java.util.Objects;
+
+import static com.home.teamnotifier.utils.Iso8601DateTimeHelper.*;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonAutoDetect(
@@ -24,12 +29,20 @@ public class OccupationInfo {
     this.occupationTime = occupationTime;
   }
 
+  public OccupationInfo(
+          final String userName,
+          final LocalDateTime occupationTime
+  ) {
+    this.userName = userName;
+    this.occupationTime = toIso8601String(occupationTime);
+  }
+
   public String getUserName() {
     return userName;
   }
 
-  public String getOccupationTime() {
-    return occupationTime;
+  public LocalDateTime getOccupationTime() {
+    return Iso8601DateTimeHelper.parseTimestamp(occupationTime);
   }
 
   @Override

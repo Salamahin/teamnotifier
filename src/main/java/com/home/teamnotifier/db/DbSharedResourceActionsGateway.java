@@ -43,7 +43,7 @@ public class DbSharedResourceActionsGateway implements SharedResourceActionsGate
             return new BroadcastInformation(
                     new NotificationInfo(
                             userName,
-                            time.toString(),
+                            time,
                             BroadcastAction.ACTION_ON_RESOURCE,
                             resourceEntity.getId()
                     ),
@@ -78,7 +78,7 @@ public class DbSharedResourceActionsGateway implements SharedResourceActionsGate
         final List<ActionInfo> actionInfos = actions.stream()
                 .map(a -> new ActionInfo(
                                 a.getActor().getName(),
-                                a.getActionTime().toString(),
+                                a.getActionTime(),
                                 a.getDetails()
                         )
                 )

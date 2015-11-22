@@ -2,6 +2,7 @@ package com.home.teamnotifier.core.responses.status;
 
 import com.fasterxml.jackson.databind.*;
 import com.google.common.collect.*;
+import com.home.teamnotifier.utils.Iso8601DateTimeHelper;
 import io.dropwizard.jackson.Jackson;
 import org.junit.Test;
 import static io.dropwizard.testing.FixtureHelpers.fixture;
@@ -42,7 +43,7 @@ public class EnvironmentsInfoTest {
   }
 
   private OccupationInfo createFineOccupationInfo() {
-    return new OccupationInfo("user", "2015-11-05T23:44:40.220");
+    return new OccupationInfo("user", Iso8601DateTimeHelper.parseTimestamp("2015-11-05T23:44:40.220Z"));
   }
 
   @Test

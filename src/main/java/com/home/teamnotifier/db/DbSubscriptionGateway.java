@@ -37,7 +37,7 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
             return new BroadcastInformation(
                     new NotificationInfo(
                             userName,
-                            subscriptionEntity.getTimestamp().toString(),
+                            subscriptionEntity.getTimestamp(),
                             BroadcastAction.SUBSCRIBE,
                             appServerEntity.getId()
                     ),
@@ -73,7 +73,7 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
             return new BroadcastInformation(
                     new NotificationInfo(
                             userName,
-                            LocalDateTime.now().toString(),
+                            LocalDateTime.now(),
                             BroadcastAction.SUBSCRIBE,
                             serverEntity.getId()
                     ),
@@ -89,7 +89,7 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
         return new BroadcastInformation(
                 new NotificationInfo(
                         userName,
-                        resource.getReservationData().get().getOccupationTime().toString(),
+                        resource.getReservationData().get().getOccupationTime(),
                         BroadcastAction.RESERVE,
                         resource.getId()
                 ),
@@ -133,7 +133,7 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
         return new BroadcastInformation(
                 new NotificationInfo(
                         userName,
-                        LocalDateTime.now().toString(),
+                        LocalDateTime.now(),
                         BroadcastAction.FREE,
                         resource.getId()
                 ),

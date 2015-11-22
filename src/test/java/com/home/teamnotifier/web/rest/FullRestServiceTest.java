@@ -7,14 +7,16 @@ import com.home.teamnotifier.core.responses.action.ActionsInfo;
 import com.home.teamnotifier.core.responses.status.EnvironmentsInfo;
 import com.home.teamnotifier.core.responses.status.OccupationInfo;
 import com.home.teamnotifier.core.responses.status.SharedResourceInfo;
+import com.home.teamnotifier.utils.Iso8601DateTimeHelper;
 import com.jayway.restassured.http.ContentType;
 import com.jayway.restassured.response.*;
 import io.dropwizard.auth.basic.BasicCredentials;
 import io.federecio.dropwizard.junitrunner.*;
 import org.eclipse.jetty.http.HttpStatus;
-import org.joda.time.LocalDateTime;
 import org.junit.*;
 import org.junit.runner.RunWith;
+
+import java.time.LocalDateTime;
 import java.util.*;
 import static com.home.teamnotifier.DbPreparer.getRandomString;
 import static com.jayway.restassured.RestAssured.*;
@@ -197,7 +199,7 @@ public class FullRestServiceTest {
   }
 
   private String encodeLocalDateTimeToBase64(final LocalDateTime time) {
-    return new String(Base64.getEncoder().encode(time.toString().getBytes()));
+    return new String(Base64.getEncoder().encode(Iso8601DateTimeHelper.toIso8601String(time).getBytes()));
   }
 
   private List<String> getDescriptions(final ActionsInfo info) {

@@ -71,7 +71,7 @@ public class DbEnvironmentGateway implements EnvironmentGateway {
     final OccupationInfo occupationInfo = sharedResourceEntity.getReservationData()
         .map(od -> new OccupationInfo(
                 od.getOccupier().getName(),
-                od.getOccupationTime().toString()
+                od.getOccupationTime()
             )
         )
         .orElse(null);

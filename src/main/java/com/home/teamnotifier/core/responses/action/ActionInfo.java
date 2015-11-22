@@ -1,7 +1,14 @@
 package com.home.teamnotifier.core.responses.action;
 
 import com.fasterxml.jackson.annotation.*;
+import com.home.teamnotifier.utils.Iso8601DateTimeHelper;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
+
+import static com.home.teamnotifier.utils.Iso8601DateTimeHelper.*;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonAutoDetect(
@@ -9,9 +16,9 @@ import java.util.Objects;
     getterVisibility = JsonAutoDetect.Visibility.NONE,
     isGetterVisibility = JsonAutoDetect.Visibility.NONE,
     setterVisibility = JsonAutoDetect.Visibility.NONE,
-    creatorVisibility = JsonAutoDetect.Visibility.NONE)
+    creatorVisibility = JsonAutoDetect.Visibility.ANY)
 @JsonTypeName("ActionInfo")
-public class ActionInfo {
+public class ActionInfo implements Serializable {
   private final String userName;
 
   private final String timestamp;
@@ -19,7 +26,7 @@ public class ActionInfo {
   private final String description;
 
   @JsonCreator
-  public ActionInfo(
+  private ActionInfo(
       @JsonProperty("userName") final String userName,
       @JsonProperty("timestamp") final String timestamp,
       @JsonProperty("description") final String description
@@ -29,12 +36,23 @@ public class ActionInfo {
     this.description = description;
   }
 
+  public ActionInfo(
+          final String userName,
+          final LocalDateTime timestamp,
+          final String description
+  ) {
+    this.userName = userName;
+    this.timestamp = toIso8601String(timestamp);
+    this.description = description;
+  }
+
+
   public String getUserName() {
     return userName;
   }
 
-  public String getTimestamp() {
-    return timestamp;
+  public LocalDateTime getTimestamp() {
+    return parseTimestamp(timestamp);
   }
 
   public String getDescription() {

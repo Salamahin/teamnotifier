@@ -1,9 +1,12 @@
 package com.home.teamnotifier.core.responses.notification;
 
 import com.fasterxml.jackson.annotation.*;
+import com.home.teamnotifier.utils.Iso8601DateTimeHelper;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+
+import static com.home.teamnotifier.utils.Iso8601DateTimeHelper.*;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonAutoDetect(
@@ -32,12 +35,24 @@ public class NotificationInfo {
         this.targetId = targetId;
     }
 
+    public NotificationInfo(
+            final String name,
+            final LocalDateTime timestamp,
+            final BroadcastAction action,
+            final int targetId
+    ) {
+        this.name = name;
+        this.timestamp = toIso8601String(timestamp);
+        this.action = action;
+        this.targetId = targetId;
+    }
+
     public String getName() {
         return name;
     }
 
-    public String getTimestamp() {
-        return timestamp;
+    public LocalDateTime getTimestamp() {
+        return parseTimestamp(timestamp);
     }
 
     public BroadcastAction getAction() {

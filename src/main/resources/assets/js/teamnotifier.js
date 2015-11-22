@@ -5,6 +5,30 @@ var SELECTED_ENV_NAME;
 var SELECTED_SRV_ID;
 var CURRENT_STATUS;
 
+Date.prototype.dateToISO8601String  = function() {
+    var padDigits = function padDigits(number, digits) {
+        return new Array(Math.max(digits - String(number).length + 1, 0)).join(0) + number;
+    };
+    var offsetMinutes = this.getTimezoneOffset();
+    var offsetHours = offsetMinutes / 60;
+    var offset= "Z";
+    if (offsetHours < 0)
+        offset = "-" + padDigits(offsetHours.replace("-","") + "00",4);
+    else if (offsetHours > 0)
+        offset = "+" + padDigits(offsetHours  + "00", 4);
+
+    return this.getFullYear()
+        + "-" + padDigits((this.getUTCMonth()+1),2)
+        + "-" + padDigits(this.getUTCDate(),2)
+        + "T"
+        + padDigits(this.getUTCHours(),2)
+        + ":" + padDigits(this.getUTCMinutes(),2)
+        + ":" + padDigits(this.getUTCSeconds(),2)
+        + "." + padDigits(this.getUTCMilliseconds(),2)
+        + offset;
+
+};
+
 function loadCookie(cookieName) {
     var matches = document.cookie.match(new RegExp(
         "(?:^|; )" + cookieName.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
@@ -36,18 +60,22 @@ function sendWhoAmIRequest() {
 }
 
 function authenticate() {
-    var loadedToken = loadCookie(TOKEN_COOKIE);
-    if (loadedToken != undefined) {
-        USER_TOKEN = loadedToken;
-        sendWhoAmIRequest();
-    }
-
-    var authenticate = document.getElementById("btn_authenticate");
-    authenticate.onclick = function () {
+    document.getElementById("btn_authenticate").onclick = function () {
         var username = document.getElementById("ibox_username").value;
         var password = document.getElementById("ibox_password").value;
         sendAuthRequest(username, password);
     };
+    document.getElementById("btn_register").onclick = function () {
+        sendRegisterRequest();
+    };
+
+    var loadedToken = loadCookie(TOKEN_COOKIE);
+    if (loadedToken != undefined) {
+        USER_TOKEN = loadedToken;
+        sendWhoAmIRequest();
+    } else {
+        handleAuthenticationFailed(false);
+    }
 }
 
 function sendAuthRequest(username, password) {
@@ -60,7 +88,7 @@ function sendAuthRequest(username, password) {
     xhttp.send();
 }
 
-function showAuthenticationResult(success) {
+function handleAuthenticationFailed(success) {
     if (success) {
         console.debug("authentication success");
         jumpToAnchor("environment");
@@ -81,7 +109,7 @@ function handleWhoAmI(XMLHttpRequest) {
         return;
     }
 
-    showAuthenticationResult(false);
+    handleAuthenticationFailed(false);
 }
 
 /** @namespace authInfo.token */
@@ -98,7 +126,7 @@ function handleAuthentication(XMLHttpRequest, userName) {
         return;
     }
 
-    showAuthenticationResult(false);
+    handleAuthenticationFailed(false);
 }
 
 function getSocketUrl() {
@@ -110,7 +138,7 @@ function connectStatusSocket() {
 
     websocket.onopen = function (evt) {
         console.debug(evt.data);
-        showAuthenticationResult(true);
+        handleAuthenticationFailed(true);
         getState();
     };
 
@@ -126,7 +154,7 @@ function connectStatusSocket() {
 
     websocket.onerror = function () {
         removeCookie(TOKEN_COOKIE);
-        showAuthenticationResult(false);
+        handleAuthenticationFailed(false);
     };
 }
 
@@ -138,6 +166,10 @@ function handleStatus(XMLHttpRequest) {
     if (XMLHttpRequest.status == 200) {
         CURRENT_STATUS = JSON.parse(XMLHttpRequest.responseText);
         rebuildNavigation();
+    }
+
+    if (XMLHttpRequest.status == 401) {
+        handleAuthenticationFailed(false);
     }
 }
 
@@ -314,7 +346,7 @@ function newLabeledCheckbox(value, checked, onchange) {
 /** @namespace occupationInfo.occupationTime */
 function getHistoryButton(resource) {
     var btnHistory = newButton("", function () {
-        console.debug("history of resource " + resource.id);
+        showActionsHistoryModal(resource.id, resource.name);
     });
     btnHistory.className = "round-button history-button";
     return btnHistory;
@@ -398,7 +430,7 @@ function handleInteraction(XMLHttpRequest) {
     }
 
     if (XMLHttpRequest.status == 401) {
-        showAuthenticationResult(false);
+        handleAuthenticationFailed(false);
     }
 }
 
@@ -490,7 +522,6 @@ function showActionModal(resourceId, caption) {
     document.addEventListener('keyup', function(e) {
         if (e.keyCode == 27) {
             jumpToAnchor("environment");
-            jumpToAnchor("environment");
         }
     });
 
@@ -510,11 +541,98 @@ function showActionModal(resourceId, caption) {
     jumpToAnchor("action");
 }
 
+function subDays(date, days) {
+    var result = new Date(date);
+    result.setDate(result.getDate() - days);
+    return result;
+}
+
+function showActionsHistoryModal(resourceId, caption) {
+    document.getElementById("btn_hist_today").onclick = function () {
+        var now = new Date();
+        sendHistRequest(resourceId, subDays(now, 1), now);
+    };
+
+    document.getElementById("btn_hist_week").onclick = function () {
+        var now = new Date();
+        sendHistRequest(resourceId, subDays(now, 7), now);
+    };
+
+    document.getElementById("btn_hist_month").onclick = function () {
+        var now = new Date();
+        sendHistRequest(resourceId, subDays(now, 30), now);
+    };
+
+    document.addEventListener('keyup', function(e) {
+        if (e.keyCode == 27) {
+            jumpToAnchor("environment");
+        }
+    });
+
+    var header = document.getElementById("hist_header");
+    removeAllChildren(header);
+    header.appendChild(document.createTextNode(caption));
+
+    var modal = document.querySelector('#hist_modal');
+    modal.addEventListener('click', function () {
+        jumpToAnchor("environment");
+    }, false);
+
+    modal.children[0].addEventListener('click', function(e) {
+        e.stopPropagation();
+    }, false);
+
+    jumpToAnchor("history");
+}
+
 function sendActionRequest(resourceId, action) {
     var xhttp = new XMLHttpRequest();
     xhttp.open("POST", "/teamnotifier/1.0/environment/application/action/" + resourceId, true);
     xhttp.setRequestHeader("ActionDetails", action);
     xhttp.setRequestHeader("Authorization", "Bearer " + USER_TOKEN);
+    xhttp.onreadystatechange = function () {
+        handleRegistration(xhttp, username, password);
+    };
+    xhttp.send();
+}
+
+function showActionsInfo(actions) {
+    var hist = document.getElementById("ul_hist");
+    removeAllChildren(hist);
+    actions.forEach(function(action) {
+       hist.appendChild(decorateWith(document.createElement("li"), actionInfoToLabel(action)));
+    });
+}
+
+function handleHistRequest(XMLHttpRequest) {
+    if (XMLHttpRequest.readyState != 4)
+        return;
+
+    if (XMLHttpRequest.status == 200) {
+        var actionsInfo = JSON.parse(XMLHttpRequest.responseText);
+        showActionsInfo(actionsInfo.actions);
+    }
+
+    if (XMLHttpRequest.status == 401) {
+        handleAuthenticationFailed(false);
+    }
+}
+
+function actionInfoToLabel(info) {
+    return newLabel(info.userName + " " + reformatDate(info.timeStamp) + " " + info.description)
+}
+
+function sendHistRequest(resourceId, from, to) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.open("GET", "/teamnotifier/1.0/environment/application/action/" + resourceId, true);
+    var fromStr = from.dateToISO8601String();
+    var toStr = to.dateToISO8601String();
+    xhttp.setRequestHeader("ActionsFrom", btoa(fromStr));
+    xhttp.setRequestHeader("ActionsTo", btoa(toStr));
+    xhttp.setRequestHeader("Authorization", "Bearer " + USER_TOKEN);
+    xhttp.onreadystatechange = function () {
+        handleHistRequest(xhttp);
+    };
     xhttp.send();
 }
 
@@ -523,10 +641,6 @@ function jumpToAnchor(id) {
 }
 
 window.onload = function () {
-    authenticate();
-    document.getElementById("btn_register").onclick = function () {
-        sendRegisterRequest();
-    };
-
     Notification.requestPermission(newMessage);
+    authenticate();
 };
