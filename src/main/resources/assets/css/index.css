@@ -362,6 +362,21 @@ span.modal-footer a {
     height: 40px;
 }
 
+#hist-content {
+    height: 300px;
+    overflow-y: scroll;
+}
+
+#hist-content label {
+    color: #555;
+}
+
+#hist-content ul {
+    padding: 20px;
+    margin: 0;
+    list-style-type: none;
+}
+
 #workbench_header {
     display: block;
     width: 100%;

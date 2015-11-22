@@ -5,28 +5,25 @@ var SELECTED_ENV_NAME;
 var SELECTED_SRV_ID;
 var CURRENT_STATUS;
 
-Date.prototype.dateToISO8601String  = function() {
-    var padDigits = function padDigits(number, digits) {
-        return new Array(Math.max(digits - String(number).length + 1, 0)).join(0) + number;
-    };
-    var offsetMinutes = this.getTimezoneOffset();
-    var offsetHours = offsetMinutes / 60;
-    var offset= "Z";
-    if (offsetHours < 0)
-        offset = "-" + padDigits(offsetHours.replace("-","") + "00",4);
-    else if (offsetHours > 0)
-        offset = "+" + padDigits(offsetHours  + "00", 4);
+Date.prototype.toLocalISOString = function(){
+    // ISO 8601
+    var d = this
+        , pad = function (n){return n<10 ? '0'+n : n}
+        , tz = d.getTimezoneOffset() //mins
+        , tzs = (tz>0?"-":"+") + pad(parseInt(tz/60));
 
-    return this.getFullYear()
-        + "-" + padDigits((this.getUTCMonth()+1),2)
-        + "-" + padDigits(this.getUTCDate(),2)
-        + "T"
-        + padDigits(this.getUTCHours(),2)
-        + ":" + padDigits(this.getUTCMinutes(),2)
-        + ":" + padDigits(this.getUTCSeconds(),2)
-        + "." + padDigits(this.getUTCMilliseconds(),2)
-        + offset;
+    if (tz%60 != 0)
+        tzs += pad(tz%60);
 
+    if (tz === 0) // Zulu time == UTC
+        tzs = 'Z';
+
+    return d.getFullYear()+'-'
+        + pad(d.getMonth()+1)+'-'
+        + pad(d.getDate())+'T'
+        + pad(d.getHours())+':'
+        + pad(d.getMinutes())+':'
+        + pad(d.getSeconds()) + tzs
 };
 
 function loadCookie(cookieName) {
@@ -619,14 +616,20 @@ function handleHistRequest(XMLHttpRequest) {
 }
 
 function actionInfoToLabel(info) {
-    return newLabel(info.userName + " " + reformatDate(info.timeStamp) + " " + info.description)
+    return newLabel(info.userName + " " + reformatDate(info.timestamp) + " " + info.description)
+}
+
+function toLocalIsoString(date) {
+    var timeOffset = date.getTimezoneOffset() / 60;
+    var localDate = new Date(date.getTime() - timeOffset * 3600 * 1000);
+    return localDate.toISOString();
 }
 
 function sendHistRequest(resourceId, from, to) {
     var xhttp = new XMLHttpRequest();
     xhttp.open("GET", "/teamnotifier/1.0/environment/application/action/" + resourceId, true);
-    var fromStr = from.dateToISO8601String();
-    var toStr = to.dateToISO8601String();
+    var fromStr = toLocalIsoString(from);
+    var toStr = toLocalIsoString(to);
     xhttp.setRequestHeader("ActionsFrom", btoa(fromStr));
     xhttp.setRequestHeader("ActionsTo", btoa(toStr));
     xhttp.setRequestHeader("Authorization", "Bearer " + USER_TOKEN);
