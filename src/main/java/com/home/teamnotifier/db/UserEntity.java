@@ -1,6 +1,7 @@
 package com.home.teamnotifier.db;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 @Entity
@@ -11,9 +12,11 @@ public final class UserEntity implements Serializable {
   private final Integer id;
 
   @Column(nullable = false, unique = true)
+  @Size(min=1)
   private final String name;
 
   @Column(nullable = false)
+  @Size(min=1)
   private final String passHash;
 
   //for hibernate

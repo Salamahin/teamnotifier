@@ -40,6 +40,14 @@ public class DbUserGatewayTest {
     assertThat(credentials).isNull();
   }
 
+  @Test(expected = Exception.class)
+  public void testEmptyCredentialsFails()
+          throws Exception {
+    final String userName = "";
+    final String password = "";
+    userGateway.newUser(userName, password);
+  }
+
   @Before
   public void setUp()
   throws Exception {
