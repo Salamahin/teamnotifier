@@ -14,7 +14,7 @@ public enum BroadcastAction {
     FREE,
     ACTION_ON_RESOURCE;
 
-    private static BiMap<String, BroadcastAction> namesMap = HashBiMap.create();
+    private static final BiMap<String, BroadcastAction> namesMap = HashBiMap.create();
 
     static {
         Arrays.stream(BroadcastAction.values())

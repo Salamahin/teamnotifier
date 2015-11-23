@@ -3,7 +3,7 @@ package com.home.teamnotifier.utils;
 import java.nio.charset.Charset;
 import java.util.Base64;
 
-public final class Base64Decoder {
+final class Base64Decoder {
     private Base64Decoder() {
         throw new AssertionError();
     }
