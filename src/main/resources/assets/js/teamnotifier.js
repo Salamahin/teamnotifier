@@ -119,7 +119,7 @@ function connectStatusSocket() {
     };
 
     websocket.onclose = function (evt) {
-        console.debug(evt.data);
+        connectStatusSocket();
     };
 
     websocket.onmessage = function (evt) {

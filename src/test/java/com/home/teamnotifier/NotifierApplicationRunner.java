@@ -30,28 +30,28 @@ public class NotifierApplicationRunner {
           return null;
       });
 
-      final String userName = "user";
-      final String userPass = "pass";
-
-      final UserEntity actor = gt.transaction(em -> em.merge(new UserEntity(userName, toMd5Hash(userPass))));
-
-      final SharedResourceEntity resource = eu1.getImmutableListOfAppServers().stream()
-              .flatMap(s -> s.getImmutableListOfResources().stream())
-              .findFirst()
-              .get();
-
-      final List<ActionOnSharedResourceEntity> infos = uniqueInfosForResource(actor, resource);
-      gt.transaction(em -> {
-          for (ActionOnSharedResourceEntity info : infos)
-              em.merge(info);
-          return null;
-      });
-
-      LOGGER.info("Lots of actions generated for resource {} {} {}",
-              resource.getAppServer().getEnvironment().getName(),
-              resource.getAppServer().getName(),
-              resource.getName()
-      );
+//      final String userName = "user";
+//      final String userPass = "pass";
+//
+//      final UserEntity actor = gt.transaction(em -> em.merge(new UserEntity(userName, toMd5Hash(userPass))));
+//
+//      final SharedResourceEntity resource = eu1.getImmutableListOfAppServers().stream()
+//              .flatMap(s -> s.getImmutableListOfResources().stream())
+//              .findFirst()
+//              .get();
+//
+//      final List<ActionOnSharedResourceEntity> infos = uniqueInfosForResource(actor, resource);
+//      gt.transaction(em -> {
+//          for (ActionOnSharedResourceEntity info : infos)
+//              em.merge(info);
+//          return null;
+//      });
+//
+//      LOGGER.info("Lots of actions generated for resource {} {} {}",
+//              resource.getAppServer().getEnvironment().getName(),
+//              resource.getAppServer().getName(),
+//              resource.getName()
+//      );
   }
 
   private static EnvironmentEntity getEuEnv(final String name) {
