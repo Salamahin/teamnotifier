@@ -563,7 +563,8 @@ function subDays(date, days) {
 }
 
 function showActionsHistoryModal(resourceId, caption) {
-    document.getElementById("btn_hist_today").onclick = function () {
+    var btnToday = document.getElementById("btn_hist_today");
+    btnToday.onclick = function () {
         var now = new Date();
         sendHistRequest(resourceId, subDays(now, 1), now);
     };
@@ -597,6 +598,7 @@ function showActionsHistoryModal(resourceId, caption) {
         e.stopPropagation();
     }, false);
 
+    btnToday.click();
     jumpToAnchor("history");
 }
 

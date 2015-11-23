@@ -68,7 +68,7 @@ html, body {
     color: #858585;
     margin: 0;
     padding: 30px 0 0 0;
-    font: bold 40px "Source Code Pro", Inconsolata, "Lucida Console", Terminal, "Courier New", Courier;
+    font: bold 40px Tahoma, Verdana, Segoe, sans-serif;
 }
 #subscription {
     color: #858585;
