@@ -1,20 +1,24 @@
 package com.home.teamnotifier.db;
 
-import com.google.common.collect.*;
+import com.google.common.collect.BoundType;
+import com.google.common.collect.Range;
 import com.google.inject.Inject;
 import com.home.teamnotifier.core.responses.action.ActionInfo;
 import com.home.teamnotifier.core.responses.action.ActionsInfo;
 import com.home.teamnotifier.core.responses.notification.BroadcastAction;
 import com.home.teamnotifier.core.responses.notification.NotificationInfo;
-import com.home.teamnotifier.gateways.*;
+import com.home.teamnotifier.gateways.BroadcastInformation;
+import com.home.teamnotifier.gateways.SharedResourceActionsGateway;
 
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
-import java.time.LocalDateTime;
-import java.util.*;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.home.teamnotifier.db.DbGatewayCommons.*;
+import static com.home.teamnotifier.db.DbGatewayCommons.getSubscribersButUser;
+import static com.home.teamnotifier.db.DbGatewayCommons.getUserEntity;
 
 public class DbSharedResourceActionsGateway implements SharedResourceActionsGateway {
     private final TransactionHelper transactionHelper;
@@ -39,7 +43,7 @@ public class DbSharedResourceActionsGateway implements SharedResourceActionsGate
             );
             em.merge(action);
 
-            final LocalDateTime time = action.getActionTime();
+            final Instant time = action.getActionTime();
             return new BroadcastInformation(
                     new NotificationInfo(
                             userName,
@@ -53,7 +57,7 @@ public class DbSharedResourceActionsGateway implements SharedResourceActionsGate
     }
 
     @Override
-    public ActionsInfo getActions(final int resourceId, final Range<LocalDateTime> range) {
+    public ActionsInfo getActions(final int resourceId, final Range<Instant> range) {
         final List<ActionOnSharedResourceEntity> actions = transactionHelper.transaction(em -> {
             final SharedResourceEntity resource = em.find(SharedResourceEntity.class, resourceId);
             final CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -62,7 +66,7 @@ public class DbSharedResourceActionsGateway implements SharedResourceActionsGate
             final Root<ActionOnSharedResourceEntity> rootEntry = cq
                     .from(ActionOnSharedResourceEntity.class);
 
-            final Path<LocalDateTime> time = rootEntry.get("actionTime");
+            final Path<Instant> time = rootEntry.get("actionTime");
 
             final Predicate actionTimeInRange = getPredicateForRange(range, cb, rootEntry);
             final Predicate isEqualToProvidedResource = cb.equal(rootEntry.get("resource"), resource);
@@ -87,13 +91,13 @@ public class DbSharedResourceActionsGateway implements SharedResourceActionsGate
         return new ActionsInfo(actionInfos);
     }
 
-    private Predicate getPredicateForRange(Range<LocalDateTime> range, CriteriaBuilder cb,
+    private Predicate getPredicateForRange(Range<Instant> range, CriteriaBuilder cb,
                                            Root<ActionOnSharedResourceEntity> root) {
-        final Path<LocalDateTime> time = root.get("actionTime");
+        final Path<Instant> time = root.get("actionTime");
         final List<Predicate> predicates = new ArrayList<>();
 
         if (range.hasLowerBound()) {
-            final LocalDateTime lowerEndpoint = range.lowerEndpoint();
+            final Instant lowerEndpoint = range.lowerEndpoint();
             if (range.lowerBoundType() == BoundType.CLOSED) {
                 predicates.add(cb.greaterThanOrEqualTo(time, lowerEndpoint));
             } else {
@@ -102,7 +106,7 @@ public class DbSharedResourceActionsGateway implements SharedResourceActionsGate
         }
 
         if (range.hasUpperBound()) {
-            final LocalDateTime upperEndpoint = range.upperEndpoint();
+            final Instant upperEndpoint = range.upperEndpoint();
             if (range.lowerBoundType() == BoundType.CLOSED) {
                 predicates.add(cb.lessThanOrEqualTo(time, upperEndpoint));
             } else {

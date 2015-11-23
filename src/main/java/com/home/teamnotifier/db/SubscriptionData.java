@@ -1,13 +1,13 @@
 package com.home.teamnotifier.db;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 final class SubscriptionData {
   private final String user;
 
-  private final LocalDateTime subscribtionTime;
+  private final Instant subscribtionTime;
 
-  SubscriptionData(final String user, final LocalDateTime subscribtionTime) {
+  SubscriptionData(final String user, final Instant subscribtionTime) {
     this.user = user;
     this.subscribtionTime = subscribtionTime;
   }
@@ -16,7 +16,7 @@ final class SubscriptionData {
     return user;
   }
 
-  public LocalDateTime getSubscribtionTime() {
+  public Instant getSubscribtionTime() {
     return subscribtionTime;
   }
 }

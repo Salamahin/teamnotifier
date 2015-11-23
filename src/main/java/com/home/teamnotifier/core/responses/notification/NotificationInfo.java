@@ -2,10 +2,9 @@ package com.home.teamnotifier.core.responses.notification;
 
 import com.fasterxml.jackson.annotation.*;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.Objects;
-
-import static com.home.teamnotifier.utils.Iso8601DateTimeHelper.*;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonAutoDetect(
@@ -28,7 +27,7 @@ public class NotificationInfo {
             @JsonProperty("timestamp") final String timestamp,
             @JsonProperty("action") final BroadcastAction action,
             @JsonProperty("targetId") final int targetId,
-            @JsonProperty("targetId") final String details
+            @JsonProperty("details") final String details
     ) {
         this.name = name;
         this.timestamp = timestamp;
@@ -39,13 +38,13 @@ public class NotificationInfo {
 
     public NotificationInfo(
             final String name,
-            final LocalDateTime timestamp,
+            final Instant timestamp,
             final BroadcastAction action,
             final int targetId,
             final String details) {
         this.name = name;
         this.details = details;
-        this.timestamp = toIso8601String(timestamp);
+        this.timestamp = timestamp.toString();
         this.action = action;
         this.targetId = targetId;
     }
@@ -58,8 +57,8 @@ public class NotificationInfo {
         return name;
     }
 
-    public LocalDateTime getTimestamp() {
-        return parseTimestamp(timestamp);
+    public Instant getTimestamp() {
+        return ZonedDateTime.parse(timestamp).toInstant();
     }
 
     public BroadcastAction getAction() {

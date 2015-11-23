@@ -1,10 +1,13 @@
 package com.home.teamnotifier.core.responses.status;
 
-import com.fasterxml.jackson.databind.*;
-import com.google.common.collect.*;
-import com.home.teamnotifier.utils.Iso8601DateTimeHelper;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.google.common.collect.Lists;
 import io.dropwizard.jackson.Jackson;
 import org.junit.Test;
+
+import java.time.Instant;
+
 import static io.dropwizard.testing.FixtureHelpers.fixture;
 import static org.assertj.core.api.StrictAssertions.assertThat;
 
@@ -43,7 +46,7 @@ public class EnvironmentsInfoTest {
   }
 
   private OccupationInfo createFineOccupationInfo() {
-    return new OccupationInfo("user", Iso8601DateTimeHelper.parseTimestamp("2015-11-05T23:44:40.220Z"));
+    return new OccupationInfo("user", Instant.parse("2015-11-05T23:44:40.220Z"));
   }
 
   @Test

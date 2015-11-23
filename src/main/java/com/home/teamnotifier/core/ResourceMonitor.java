@@ -4,11 +4,14 @@ import com.google.common.collect.Range;
 import com.google.inject.Inject;
 import com.home.teamnotifier.core.responses.action.ActionsInfo;
 import com.home.teamnotifier.core.responses.status.EnvironmentsInfo;
-import com.home.teamnotifier.gateways.*;
+import com.home.teamnotifier.gateways.BroadcastInformation;
+import com.home.teamnotifier.gateways.EnvironmentGateway;
+import com.home.teamnotifier.gateways.SharedResourceActionsGateway;
+import com.home.teamnotifier.gateways.SubscriptionGateway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public class ResourceMonitor {
 
@@ -65,7 +68,7 @@ public class ResourceMonitor {
     return environmentGateway.status();
   }
 
-  public ActionsInfo actionsInfo(final int applicationId, final Range<LocalDateTime> range) {
+  public ActionsInfo actionsInfo(final int applicationId, final Range<Instant> range) {
     return sharedResourceActionsGateway.getActions(applicationId, range);
   }
 

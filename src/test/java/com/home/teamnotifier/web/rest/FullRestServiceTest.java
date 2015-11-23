@@ -7,20 +7,29 @@ import com.home.teamnotifier.core.responses.action.ActionsInfo;
 import com.home.teamnotifier.core.responses.status.EnvironmentsInfo;
 import com.home.teamnotifier.core.responses.status.OccupationInfo;
 import com.home.teamnotifier.core.responses.status.SharedResourceInfo;
-import com.home.teamnotifier.utils.Iso8601DateTimeHelper;
 import com.jayway.restassured.http.ContentType;
-import com.jayway.restassured.response.*;
+import com.jayway.restassured.response.Header;
+import com.jayway.restassured.response.Response;
 import io.dropwizard.auth.basic.BasicCredentials;
-import io.federecio.dropwizard.junitrunner.*;
+import io.federecio.dropwizard.junitrunner.DropwizardJunitRunner;
+import io.federecio.dropwizard.junitrunner.DropwizardTestConfig;
 import org.eclipse.jetty.http.HttpStatus;
-import org.junit.*;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Base64;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
 import static com.home.teamnotifier.DbPreparer.getRandomString;
-import static com.jayway.restassured.RestAssured.*;
-import static java.util.stream.Collectors.*;
+import static com.jayway.restassured.RestAssured.given;
+import static com.jayway.restassured.RestAssured.port;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(DropwizardJunitRunner.class)
@@ -176,12 +185,12 @@ public class FullRestServiceTest {
     final String action = getRandomString();
     final int resourceId = helper.getAnyPersistedSharedResourceId();
 
-    final LocalDateTime from = LocalDateTime.now();
+    final Instant from = Instant.now();
     createNewInfo(action, resourceId);
-    final LocalDateTime to = LocalDateTime.now();
+    final Instant to = Instant.now();
 
-    final Header headerFrom = new Header("ActionsFrom", encodeLocalDateTimeToBase64(from));
-    final Header headerTo = new Header("ActionsTo", encodeLocalDateTimeToBase64(to));
+    final Header headerFrom = new Header("ActionsFrom", encodeInstantToBase64(from));
+    final Header headerTo = new Header("ActionsTo", encodeInstantToBase64(to));
 
     final Response response = given().auth().oauth2(token).header(headerFrom).header(headerTo)
         .when().get("/teamnotifier/1.0/environment/application/action/" + resourceId)
@@ -198,8 +207,8 @@ public class FullRestServiceTest {
         .when().post("/teamnotifier/1.0/environment/application/action/" + resourceId);
   }
 
-  private String encodeLocalDateTimeToBase64(final LocalDateTime time) {
-    return new String(Base64.getEncoder().encode(Iso8601DateTimeHelper.toIso8601String(time).getBytes()));
+  private String encodeInstantToBase64(final Instant time) {
+    return new String(Base64.getEncoder().encode(time.toString().getBytes()));
   }
 
   private List<String> getDescriptions(final ActionsInfo info) {

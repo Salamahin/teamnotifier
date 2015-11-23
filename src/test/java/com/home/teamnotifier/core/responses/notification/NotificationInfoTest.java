@@ -5,7 +5,8 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import io.dropwizard.jackson.Jackson;
 import org.junit.Test;
 
-import static com.home.teamnotifier.utils.Iso8601DateTimeHelper.parseTimestamp;
+import java.time.Instant;
+
 import static io.dropwizard.testing.FixtureHelpers.fixture;
 import static org.assertj.core.api.StrictAssertions.assertThat;
 
@@ -14,7 +15,7 @@ public class NotificationInfoTest {
             .enable(SerializationFeature.INDENT_OUTPUT);
 
     private void serializesToJSON(final BroadcastAction action, final String fixturePath) throws Exception {
-        final NotificationInfo userInfo = new NotificationInfo("user", parseTimestamp("2015-11-05T23:44:40.220Z"), action, 1, "details");
+        final NotificationInfo userInfo = new NotificationInfo("user", Instant.parse("2015-11-05T23:44:40.220Z"), action, 1, "details");
         final String expected = MAPPER.writeValueAsString(
                 MAPPER.readValue(fixture(fixturePath), NotificationInfo.class)
         );
@@ -23,7 +24,7 @@ public class NotificationInfoTest {
     }
 
     private void deserializesFromJSON(final BroadcastAction action, final String fixturePath) throws Exception {
-        final NotificationInfo person = new NotificationInfo("user", parseTimestamp("2015-11-05T23:44:40.220Z"), action, 1, "details");
+        final NotificationInfo person = new NotificationInfo("user", Instant.parse("2015-11-05T23:44:40.220Z"), action, 1, "details");
         assertThat(MAPPER.readValue(fixture(fixturePath), NotificationInfo.class))
                 .isEqualTo(person);
     }

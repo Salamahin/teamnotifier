@@ -17,11 +17,11 @@ public class DbSharedResourceActionsGatewayTest {
 
   private EnvironmentEntity environment;
 
-  private LocalDateTime firstEver;
+  private Instant firstEver;
 
-  private LocalDateTime lastEver;
+  private Instant lastEver;
 
-  private LocalDateTime middle;
+  private Instant middle;
 
   private List<ActionData> actionsBeforeMiddle;
 
@@ -100,7 +100,7 @@ public class DbSharedResourceActionsGatewayTest {
     firstEver = actionsEver.get(0).time;
     lastEver = actionsEver.get(actionsEver.size() - 1).time;
 
-    middle = LocalDateTime
+    middle = Instant
         .from(Duration.between(firstEver, lastEver).dividedBy(2).addTo(firstEver));
 
     actionsBeforeMiddle = actionsEver.stream()
@@ -117,11 +117,11 @@ public class DbSharedResourceActionsGatewayTest {
   }
 
   static class ActionData {
-    public final LocalDateTime time;
+    public final Instant time;
 
     public final String description;
 
-    ActionData(LocalDateTime time, String description) {
+    ActionData(Instant time, String description) {
       this.time = time;
       this.description = description;
     }

@@ -2,7 +2,7 @@ package com.home.teamnotifier.db;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 @Table(
@@ -28,7 +28,7 @@ public final class SubscriptionEntity implements Serializable {
   private final UserEntity subscriber;
 
   @Column(nullable = false)
-  private final LocalDateTime timestamp;
+  private final Instant timestamp;
 
   //for hibernate
   private SubscriptionEntity() {
@@ -42,7 +42,7 @@ public final class SubscriptionEntity implements Serializable {
     id = null;
     this.appServer = server;
     this.subscriber = user;
-    this.timestamp = LocalDateTime.now();
+    this.timestamp = Instant.now();
   }
 
   public Integer getId() {
@@ -53,7 +53,7 @@ public final class SubscriptionEntity implements Serializable {
     return subscriber;
   }
 
-  public LocalDateTime getTimestamp() {
+  public Instant getTimestamp() {
     return timestamp;
   }
 }

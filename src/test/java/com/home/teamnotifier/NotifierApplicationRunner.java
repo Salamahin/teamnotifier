@@ -2,19 +2,14 @@ package com.home.teamnotifier;
 
 import com.google.common.io.Resources;
 import com.google.inject.Injector;
-import com.home.teamnotifier.core.responses.action.ActionInfo;
-import com.home.teamnotifier.core.responses.status.EnvironmentInfo;
 import com.home.teamnotifier.db.*;
-import com.home.teamnotifier.gateways.EnvironmentGateway;
-import com.home.teamnotifier.utils.PasswordHasher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.home.teamnotifier.utils.PasswordHasher.*;
+import static com.home.teamnotifier.utils.PasswordHasher.toMd5Hash;
 
 public class NotifierApplicationRunner {
     private static final Logger LOGGER = LoggerFactory.getLogger(NotifierApplicationRunner.class);

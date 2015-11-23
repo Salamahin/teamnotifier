@@ -1,7 +1,7 @@
 package com.home.teamnotifier.db;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 @Table(schema = "teamnotifier", name = "ActionOnSharedResource")
@@ -17,7 +17,7 @@ public final class ActionOnSharedResourceEntity {
   private final UserEntity actor;
 
   @Column(nullable = false)
-  private final LocalDateTime actionTime;
+  private final Instant actionTime;
 
   @Column(nullable = false)
   private final String details;
@@ -37,7 +37,7 @@ public final class ActionOnSharedResourceEntity {
     this.resource = sharedResourceEntity;
     this.actor = actor;
     this.details = details;
-    actionTime = LocalDateTime.now();
+    actionTime = Instant.now();
   }
 
   public UserEntity getActor() {
@@ -48,7 +48,7 @@ public final class ActionOnSharedResourceEntity {
     return details;
   }
 
-  public LocalDateTime getActionTime() {
+  public Instant getActionTime() {
     return actionTime;
   }
 

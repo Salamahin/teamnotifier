@@ -1,13 +1,13 @@
 package com.home.teamnotifier.db;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 final class ReservationData {
   private final UserEntity occupier;
 
-  private final LocalDateTime occupationTime;
+  private final Instant occupationTime;
 
-  ReservationData(final UserEntity occupier, final LocalDateTime occupationTime) {
+  ReservationData(final UserEntity occupier, final Instant occupationTime) {
     this.occupier = occupier;
     this.occupationTime = occupationTime;
   }
@@ -16,7 +16,7 @@ final class ReservationData {
     return occupier;
   }
 
-  public LocalDateTime getOccupationTime() {
+  public Instant getOccupationTime() {
     return occupationTime;
   }
 }

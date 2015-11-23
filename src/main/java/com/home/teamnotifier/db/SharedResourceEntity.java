@@ -1,9 +1,10 @@
 package com.home.teamnotifier.db;
 
 import com.google.common.base.Preconditions;
+
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Optional;
 
 @Entity
@@ -23,7 +24,7 @@ public final class SharedResourceEntity implements Serializable {
   private UserEntity occupier;
 
   @Column(nullable = true)
-  private LocalDateTime occupationStartTime;
+  private Instant occupationStartTime;
 
   //for hibernate
   private SharedResourceEntity() {
@@ -41,7 +42,7 @@ public final class SharedResourceEntity implements Serializable {
   public void reserve(final UserEntity userEntity) {
     Preconditions.checkState(occupier == null);
     occupier = userEntity;
-    occupationStartTime = LocalDateTime.now();
+    occupationStartTime = Instant.now();
   }
 
   public void free() {

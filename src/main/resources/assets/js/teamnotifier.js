@@ -399,7 +399,7 @@ function decorateOccupationInfo(occupationInfo) {
     return decorateWith(
         document.createElement("div"),
         document.createTextNode("Reserved by " + occupationInfo.userName),
-        document.createTextNode(" on " + reformatDate(occupationInfo.occupationTime)));
+        document.createTextNode(" on " + new Date(occupationInfo.occupationTime)).toLocaleString());
 }
 
 /** @namespace occupationInfo.userName */
@@ -423,24 +423,6 @@ function newResourceInfoElem(resource) {
     wrapper.className = "resource";
 
     return decorateWith(wrapper, action, btnAction, btnHistory);
-}
-
-function toLocalDate(date) {
-    var timeOffset = new Date().getTimezoneOffset() / 60;
-    return new Date(date.getTime() - timeOffset * 3600 * 1000);
-}
-
-function reformatDate(date) {
-    var d = new Date(date);
-    var curr_date = d.getDate();
-    var curr_month = d.getMonth();
-    var curr_year = d.getFullYear();
-    var curr_hour = d.getHours();
-    var curr_min = d.getMinutes();
-    var curr_sec = d.getSeconds();
-
-    return curr_hour + ":" + curr_min + ":" + curr_sec + " " +
-        curr_date + "-" + curr_month + "-" + curr_year;
 }
 
 function getState() {
@@ -661,8 +643,8 @@ function sendHistRequest(resourceId, from, to) {
 
     var xhttp = new XMLHttpRequest();
     xhttp.open("GET", "/teamnotifier/1.0/environment/application/action/" + resourceId, true);
-    var fromStr = toLocalDate(from).toISOString();
-    var toStr = toLocalDate(to).toISOString();
+    var fromStr = from.toISOString();
+    var toStr = to.toISOString();
     xhttp.setRequestHeader("ActionsFrom", btoa(fromStr));
     xhttp.setRequestHeader("ActionsTo", btoa(toStr));
     xhttp.setRequestHeader("Authorization", "Bearer " + USER_TOKEN);

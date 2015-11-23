@@ -1,14 +1,11 @@
 package com.home.teamnotifier.core.responses.action;
 
 import com.fasterxml.jackson.annotation.*;
-import com.home.teamnotifier.utils.Iso8601DateTimeHelper;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.Objects;
-
-import static com.home.teamnotifier.utils.Iso8601DateTimeHelper.*;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonAutoDetect(
@@ -38,11 +35,11 @@ public class ActionInfo implements Serializable {
 
   public ActionInfo(
           final String userName,
-          final LocalDateTime timestamp,
+          final Instant timestamp,
           final String description
   ) {
     this.userName = userName;
-    this.timestamp = toIso8601String(timestamp);
+    this.timestamp = timestamp.toString();
     this.description = description;
   }
 
@@ -51,8 +48,8 @@ public class ActionInfo implements Serializable {
     return userName;
   }
 
-  public LocalDateTime getTimestamp() {
-    return parseTimestamp(timestamp);
+  public Instant getTimestamp() {
+    return ZonedDateTime.parse(timestamp).toInstant();
   }
 
   public String getDescription() {

@@ -4,15 +4,24 @@ import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.home.teamnotifier.core.responses.notification.BroadcastAction;
 import com.home.teamnotifier.core.responses.notification.NotificationInfo;
-import com.home.teamnotifier.gateways.*;
-import org.slf4j.*;
+import com.home.teamnotifier.gateways.AlreadyReserved;
+import com.home.teamnotifier.gateways.BroadcastInformation;
+import com.home.teamnotifier.gateways.NotReserved;
+import com.home.teamnotifier.gateways.SubscriptionGateway;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityManager;
-import javax.persistence.criteria.*;
-import java.time.LocalDateTime;
-import java.util.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
 
-import static com.home.teamnotifier.db.DbGatewayCommons.*;
+import static com.home.teamnotifier.db.DbGatewayCommons.getSubscribersButUser;
+import static com.home.teamnotifier.db.DbGatewayCommons.getUserEntity;
 
 public class DbSubscriptionGateway implements SubscriptionGateway {
     private static final Logger LOGGER = LoggerFactory.getLogger(DbSubscriptionGateway.class);
@@ -73,7 +82,7 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
             return new BroadcastInformation(
                     new NotificationInfo(
                             userName,
-                            LocalDateTime.now(),
+                            Instant.now(),
                             BroadcastAction.SUBSCRIBE,
                             serverEntity.getId(),
                             ""),
@@ -133,7 +142,7 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
         return new BroadcastInformation(
                 new NotificationInfo(
                         userName,
-                        LocalDateTime.now(),
+                        Instant.now(),
                         BroadcastAction.FREE,
                         resource.getId(),
                         ""),

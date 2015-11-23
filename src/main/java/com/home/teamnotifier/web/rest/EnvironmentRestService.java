@@ -6,15 +6,14 @@ import com.home.teamnotifier.authentication.AuthenticatedUserData;
 import com.home.teamnotifier.core.ResourceMonitor;
 import com.home.teamnotifier.core.responses.action.ActionsInfo;
 import com.home.teamnotifier.core.responses.status.EnvironmentsInfo;
-import com.home.teamnotifier.utils.Iso8601DateTimeHelper;
 import io.dropwizard.auth.Auth;
+
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.nio.charset.Charset;
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.Base64;
-
-import static com.home.teamnotifier.utils.Iso8601DateTimeHelper.*;
 
 @Path("1.0/environment")
 @Produces(MediaType.APPLICATION_JSON)
@@ -79,9 +78,10 @@ public class EnvironmentRestService {
       @HeaderParam("ActionsFrom") final String encodedBase64From,
       @HeaderParam("ActionsTo") final String encodedBase64To
   ) {
-    final LocalDateTime fromTime = parseTimestamp(decodeBase64String(encodedBase64From));
-    final LocalDateTime toTime = parseTimestamp(decodeBase64String(encodedBase64To));
-    return resourceMonitor.actionsInfo(applicationId, Range.closed(fromTime, toTime));
+    final Instant fromInstant = ZonedDateTime.parse(decodeBase64String(encodedBase64From)).toInstant();
+    final Instant toInstant = ZonedDateTime.parse(decodeBase64String(encodedBase64To)).toInstant();
+
+    return resourceMonitor.actionsInfo(applicationId, Range.closed(fromInstant, toInstant));
   }
 
   private String decodeBase64String(final String encodedString) {
