@@ -1,6 +1,12 @@
-body {
-    background-image: url("https://static.pexels.com/photos/2855/landscape-mountains-nature-lake.jpg");
+#bg {
+    background-image: url("../images/bg.jpg");
     background-size: cover;
+    height: 100%;
+    width:100%;
+    position: fixed;
+    left: 0;
+    right: 0;
+    z-index: -99;
 }
 
 html, body {

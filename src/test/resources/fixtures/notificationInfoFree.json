@@ -3,5 +3,6 @@
   "name": "user",
   "timestamp": "2015-11-05T23:44:40.220Z",
   "action": "FREE",
-  "targetId": 1
+  "targetId": 1,
+  "details" : "details"
 }

@@ -124,7 +124,7 @@ function connectStatusSocket() {
 
     websocket.onmessage = function (evt) {
         console.debug();
-        new Notification(evt.data);
+        new Notification(buildNotification(JSON.parse(evt.data)));
         getState();
     };
 
@@ -133,6 +133,56 @@ function connectStatusSocket() {
         handleAuthenticationFailed(false);
     };
 }
+
+function buildNotification(data) {
+    var target;
+    var action;
+
+    if(data.action == "ACTION_ON_RESOURCE") {
+        target = getResourceFullName(data.targetId);
+        return "[" + (new Date(data.timestamp).toLocaleString()) + "] " + data.name + ": " + target + " " +data.details;
+    } else if(data.action == "RESERVE") {
+        target = getResourceFullName(data.targetId);
+        return "[" + (new Date(data.timestamp).toLocaleString()) + "] " + data.name + ": "+ target + " reserve";
+    } else if(data.action == "FREE") {
+        target = getResourceFullName(data.targetId);
+        return "[" + (new Date(data.timestamp).toLocaleString()) + "] " + data.name + ": " + target+ " free";
+    } else if(data.action == "SUBSCRIBE") {
+          target = getSrvName(data.targetId);
+          return "[" + (new Date(data.timestamp).toLocaleString()) + "] " + data.name + ": " + target+ " subscribe";
+    } else if(data.action == "UNSUBSCRIBE") {
+        target = getSrvName(data.targetId);
+        return "[" + (new Date(data.timestamp).toLocaleString()) + "] " + data.name + ": " + target+ " unsubscribe";
+    }
+
+    return undefined;
+}
+
+function getResourceFullName(resourceId) {
+    for(var i = 0; i<CURRENT_STATUS.environments.length; i++) {
+        var env = CURRENT_STATUS.environments[i];
+        for(var j = 0; j<env.servers.length; j++) {
+            var srv = env.servers[j];
+            for(var k = 0; j<srv.resources.length; k++) {
+                var resource = srv.resources[k];
+                if(resource.id == resourceId)
+                    return srv.name + env.name + " " + resource.name;
+            }
+        }
+    }
+}
+
+function getSrvName(srvId) {
+    for(var i = 0; i<CURRENT_STATUS.environments.length; i++) {
+        var env = CURRENT_STATUS.environments[i];
+        for(var j = 0; j<env.servers.length; j++) {
+            var srv = env.servers[j];
+            if(srv.id == srvId)
+                return srv.name + env.name;
+        }
+    }
+}
+
 
 /** @namespace XMLHttpRequest.responseText */
 function handleStatus(XMLHttpRequest) {
@@ -376,12 +426,12 @@ function newResourceInfoElem(resource) {
 }
 
 function toLocalDate(date) {
-    var timeOffset = date.getTimezoneOffset() / 60;
+    var timeOffset = new Date().getTimezoneOffset() / 60;
     return new Date(date.getTime() - timeOffset * 3600 * 1000);
 }
 
-function reformatDate(dateStr) {
-    var d = new Date(dateStr);
+function reformatDate(date) {
+    var d = new Date(date);
     var curr_date = d.getDate();
     var curr_month = d.getMonth();
     var curr_year = d.getFullYear();
@@ -601,7 +651,7 @@ function handleHistRequest(XMLHttpRequest) {
 }
 
 function actionInfoToLabel(info) {
-    return newLabel(info.userName + " " + reformatDate(info.timestamp) + " " + info.description)
+    return newLabel(info.userName + " " + new Date(info.timestamp).toLocaleString() + " " + info.description)
 }
 
 

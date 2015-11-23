@@ -14,7 +14,7 @@ public class NotificationInfoTest {
             .enable(SerializationFeature.INDENT_OUTPUT);
 
     private void serializesToJSON(final BroadcastAction action, final String fixturePath) throws Exception {
-        final NotificationInfo userInfo = new NotificationInfo("user", parseTimestamp("2015-11-05T23:44:40.220Z"), action, 1);
+        final NotificationInfo userInfo = new NotificationInfo("user", parseTimestamp("2015-11-05T23:44:40.220Z"), action, 1, "details");
         final String expected = MAPPER.writeValueAsString(
                 MAPPER.readValue(fixture(fixturePath), NotificationInfo.class)
         );
@@ -23,7 +23,7 @@ public class NotificationInfoTest {
     }
 
     private void deserializesFromJSON(final BroadcastAction action, final String fixturePath) throws Exception {
-        final NotificationInfo person = new NotificationInfo("user", parseTimestamp("2015-11-05T23:44:40.220Z"), action, 1);
+        final NotificationInfo person = new NotificationInfo("user", parseTimestamp("2015-11-05T23:44:40.220Z"), action, 1, "details");
         assertThat(MAPPER.readValue(fixture(fixturePath), NotificationInfo.class))
                 .isEqualTo(person);
     }

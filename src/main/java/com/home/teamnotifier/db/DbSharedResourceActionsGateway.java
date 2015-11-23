@@ -45,8 +45,8 @@ public class DbSharedResourceActionsGateway implements SharedResourceActionsGate
                             userName,
                             time,
                             BroadcastAction.ACTION_ON_RESOURCE,
-                            resourceEntity.getId()
-                    ),
+                            resourceEntity.getId(),
+                            description),
                     getSubscribersButUser(userName, resourceEntity.getAppServer())
             );
         });
