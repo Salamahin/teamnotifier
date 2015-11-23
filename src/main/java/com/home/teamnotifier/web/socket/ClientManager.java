@@ -67,8 +67,7 @@ public class ClientManager implements NotificationManager {
     try {
       session.getRemote().sendString(message);
     } catch (IOException e) {
-      LOGGER.error(String.format("Failed to push to %s: ", clientSessionsByUsernames.get(session)),
-          e);
+      LOGGER.error(String.format("Failed to push to %s: ", clientSessionsByUsernames.get(session)), e);
     }
   }
 }

@@ -87,6 +87,7 @@ public class BroadcastServlet extends WebSocketServlet {
     @Override
     public void onWebSocketConnect(final Session session) {
       this.session = session;
+      session.setIdleTimeout(Long.MAX_VALUE);
       manager.addNewClient(session, userName);
       LOGGER.info("[{}] Socket connected", userName);
     }
