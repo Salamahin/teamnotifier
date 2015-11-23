@@ -8,6 +8,7 @@ import com.home.teamnotifier.authentication.*;
 import com.home.teamnotifier.gateways.EnvironmentGateway;
 import com.home.teamnotifier.gateways.UserGateway;
 import com.home.teamnotifier.health.DbConnection;
+import com.home.teamnotifier.health.Sessions;
 import com.home.teamnotifier.web.socket.*;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
@@ -61,6 +62,7 @@ public class NotifierApplication extends Application<NotifierConfiguration> {
         .getInstance(EnvironmentGateway.class);
 
     environment.healthChecks().register("DbConnection", new DbConnection(environmentGateway));
+    environment.healthChecks().register("Sessions", new Sessions(clientManager));
   }
 
   private void registerWebsocket(

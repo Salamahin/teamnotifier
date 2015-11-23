@@ -12,6 +12,7 @@ import org.eclipse.jetty.websocket.api.Session;
 import org.slf4j.*;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.*;
 
 public class ClientManager implements NotificationManager {
@@ -25,6 +26,10 @@ public class ClientManager implements NotificationManager {
   public ClientManager(final Executor executor) {
     this.executor = executor;
     clientSessionsByUsernames = HashBiMap.create();
+  }
+
+  public synchronized List<String> getClientNamesList() {
+    return Lists.newArrayList(clientSessionsByUsernames.values());
   }
 
   public synchronized void addNewClient(final Session session, final String userName) {

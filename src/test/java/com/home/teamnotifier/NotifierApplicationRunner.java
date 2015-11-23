@@ -72,6 +72,7 @@ public class NotifierApplicationRunner {
     sst.newSharedResource("nsu_bse2e");
     sst.newSharedResource("para_process");
     sst.newSharedResource("pzt_ffm");
+      sst.newSharedResource("prd_ffm");
 
     return eu;
   }
