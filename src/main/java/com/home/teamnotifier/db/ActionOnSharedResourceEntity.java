@@ -6,57 +6,57 @@ import java.time.Instant;
 @Entity
 @Table(schema = "teamnotifier", name = "ActionOnSharedResource")
 public final class ActionOnSharedResourceEntity {
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private final Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private final Integer id;
 
-  @ManyToOne(optional = false, cascade = CascadeType.ALL)
-  private final SharedResourceEntity resource;
+    @ManyToOne(optional = false, cascade = CascadeType.ALL)
+    private final SharedResourceEntity resource;
 
-  @ManyToOne(optional = false, cascade = CascadeType.ALL)
-  private final UserEntity actor;
+    @ManyToOne(optional = false, cascade = CascadeType.ALL)
+    private final UserEntity actor;
 
-  @Column(nullable = false)
-  private final Instant actionTime;
+    @Column(nullable = false)
+    private final Instant actionTime;
 
-  @Column(nullable = false)
-  private final String details;
+    @Column(nullable = false)
+    private final String details;
 
-  //for hibernate
-  private ActionOnSharedResourceEntity() {
-    id = null;
-    resource = null;
-    actionTime = null;
-    details = null;
-    actor = null;
-  }
+    //for hibernate
+    private ActionOnSharedResourceEntity() {
+        id = null;
+        resource = null;
+        actionTime = null;
+        details = null;
+        actor = null;
+    }
 
-  public ActionOnSharedResourceEntity(final UserEntity actor,
-      final SharedResourceEntity sharedResourceEntity, final String details) {
-    id = null;
-    this.resource = sharedResourceEntity;
-    this.actor = actor;
-    this.details = details;
-    actionTime = Instant.now();
-  }
+    public ActionOnSharedResourceEntity(final UserEntity actor,
+                                        final SharedResourceEntity sharedResourceEntity, final String details) {
+        id = null;
+        this.resource = sharedResourceEntity;
+        this.actor = actor;
+        this.details = details;
+        actionTime = Instant.now();
+    }
 
-  public UserEntity getActor() {
-    return actor;
-  }
+    public UserEntity getActor() {
+        return actor;
+    }
 
-  public String getDetails() {
-    return details;
-  }
+    public String getDetails() {
+        return details;
+    }
 
-  public Instant getActionTime() {
-    return actionTime;
-  }
+    public Instant getActionTime() {
+        return actionTime;
+    }
 
-  public SharedResourceEntity getResource() {
-    return resource;
-  }
+    public SharedResourceEntity getResource() {
+        return resource;
+    }
 
-  public Integer getId() {
-    return id;
-  }
+    public Integer getId() {
+        return id;
+    }
 }

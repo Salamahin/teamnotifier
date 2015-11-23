@@ -3,7 +3,7 @@ package com.home.teamnotifier.health;
 import com.codahale.metrics.health.HealthCheck;
 import com.home.teamnotifier.web.socket.ClientManager;
 
-public class Sessions  extends HealthCheck {
+public class Sessions extends HealthCheck {
 
     private final ClientManager manager;
 

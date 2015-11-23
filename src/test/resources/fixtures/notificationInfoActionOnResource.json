@@ -4,5 +4,5 @@
   "timestamp": "2015-11-05T23:44:40.220Z",
   "action": "ACTION_ON_RESOURCE",
   "targetId": 1,
-  "details" : "details"
+  "details": "details"
 }

@@ -5,40 +5,44 @@ import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
 import com.github.toastshaman.dropwizard.auth.jwt.parser.DefaultJsonWebTokenParser;
 import com.github.toastshaman.dropwizard.auth.jwt.validator.ExpiryValidator;
 import com.google.common.base.Optional;
-import com.home.teamnotifier.gateways.*;
-import io.dropwizard.auth.*;
+import com.home.teamnotifier.gateways.UserCredentials;
+import com.home.teamnotifier.gateways.UserGateway;
+import io.dropwizard.auth.AuthenticationException;
+import io.dropwizard.auth.Authenticator;
 
 public class JwtTokenAuthenticator
-    implements Authenticator<JsonWebToken, AuthenticatedUserData>, WebsocketAuthenticator {
+        implements Authenticator<JsonWebToken, AuthenticatedUserData>, WebsocketAuthenticator {
 
-  private final ExpiryValidator expiryValidator;
-  private final UserGateway userGateway;
-  private final JsonWebTokenVerifier verifier ;
+    private final ExpiryValidator expiryValidator;
+    private final UserGateway userGateway;
+    private final JsonWebTokenVerifier verifier;
 
-  public JwtTokenAuthenticator(final UserGateway userGateway, final JsonWebTokenVerifier verifier) {
-    this.userGateway = userGateway;
-    this.verifier = verifier;
-    expiryValidator = new ExpiryValidator();
-  }
+    public JwtTokenAuthenticator(final UserGateway userGateway, final JsonWebTokenVerifier verifier) {
+        this.userGateway = userGateway;
+        this.verifier = verifier;
+        expiryValidator = new ExpiryValidator();
+    }
 
-  @Override
-  public Optional<AuthenticatedUserData> authenticate(final String jwtToken)
-  throws AuthenticationException {
-    final JsonWebToken token = new DefaultJsonWebTokenParser().parse(jwtToken);
-    verifier.verifySignature(token);
-    return authenticate(token);
-  }
+    @Override
+    public Optional<AuthenticatedUserData> authenticate(final String jwtToken)
+            throws AuthenticationException {
+        final JsonWebToken token = new DefaultJsonWebTokenParser().parse(jwtToken);
+        verifier.verifySignature(token);
+        return authenticate(token);
+    }
 
-  @Override
-  public Optional<AuthenticatedUserData> authenticate(final JsonWebToken credentials)
-  throws AuthenticationException {
-    expiryValidator.validate(credentials);
+    @Override
+    public Optional<AuthenticatedUserData> authenticate(final JsonWebToken credentials)
+            throws AuthenticationException {
+        expiryValidator.validate(credentials);
 
-    final int userId = Integer.valueOf(credentials.claim().subject());
-    final UserCredentials userCredentials = userGateway.userCredentials(userId);
+        final int userId = Integer.valueOf(credentials.claim().subject());
+        final UserCredentials userCredentials = userGateway.userCredentials(userId);
 
-    if (userCredentials == null) { return Optional.absent(); }
+        if (userCredentials == null) {
+            return Optional.absent();
+        }
 
-    return Optional.of(new AuthenticatedUserData(userCredentials.getUserName()));
-  }
+        return Optional.of(new AuthenticatedUserData(userCredentials.getUserName()));
+    }
 }

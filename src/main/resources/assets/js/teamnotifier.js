@@ -110,12 +110,12 @@ function getSocketUrl() {
 function connectStatusSocket() {
     var websocket = new WebSocket(getSocketUrl());
 
-    websocket.onopen = function (evt) {
+    websocket.onopen = function () {
         handleAuthenticationFailed(true);
         getState();
     };
 
-    websocket.onclose = function (evt) {
+    websocket.onclose = function () {
         connectStatusSocket();
     };
 
@@ -132,36 +132,35 @@ function connectStatusSocket() {
 
 function buildNotification(data) {
     var target;
-    var action;
 
-    if(data.action == "ACTION_ON_RESOURCE") {
+    if (data.action == "ACTION_ON_RESOURCE") {
         target = getResourceFullName(data.targetId);
-        return "[" + (new Date(data.timestamp).toLocaleString()) + "] " + data.name + ": " + target + " " +data.details;
-    } else if(data.action == "RESERVE") {
+        return "[" + (new Date(data.timestamp).toLocaleString()) + "] " + data.name + ": " + target + " " + data.details;
+    } else if (data.action == "RESERVE") {
         target = getResourceFullName(data.targetId);
-        return "[" + (new Date(data.timestamp).toLocaleString()) + "] " + data.name + ": "+ target + " reserve";
-    } else if(data.action == "FREE") {
+        return "[" + (new Date(data.timestamp).toLocaleString()) + "] " + data.name + ": " + target + " reserve";
+    } else if (data.action == "FREE") {
         target = getResourceFullName(data.targetId);
-        return "[" + (new Date(data.timestamp).toLocaleString()) + "] " + data.name + ": " + target+ " free";
-    } else if(data.action == "SUBSCRIBE") {
-          target = getSrvName(data.targetId);
-          return "[" + (new Date(data.timestamp).toLocaleString()) + "] " + data.name + ": " + target+ " subscribe";
-    } else if(data.action == "UNSUBSCRIBE") {
+        return "[" + (new Date(data.timestamp).toLocaleString()) + "] " + data.name + ": " + target + " free";
+    } else if (data.action == "SUBSCRIBE") {
         target = getSrvName(data.targetId);
-        return "[" + (new Date(data.timestamp).toLocaleString()) + "] " + data.name + ": " + target+ " unsubscribe";
+        return "[" + (new Date(data.timestamp).toLocaleString()) + "] " + data.name + ": " + target + " subscribe";
+    } else if (data.action == "UNSUBSCRIBE") {
+        target = getSrvName(data.targetId);
+        return "[" + (new Date(data.timestamp).toLocaleString()) + "] " + data.name + ": " + target + " unsubscribe";
     }
 
     return undefined;
 }
 
 function getResourceFullName(resourceId) {
-    for(var i = 0; i<CURRENT_STATUS.environments.length; i++) {
+    for (var i = 0; i < CURRENT_STATUS.environments.length; i++) {
         var env = CURRENT_STATUS.environments[i];
-        for(var j = 0; j<env.servers.length; j++) {
+        for (var j = 0; j < env.servers.length; j++) {
             var srv = env.servers[j];
-            for(var k = 0; k<srv.resources.length; k++) {
+            for (var k = 0; k < srv.resources.length; k++) {
                 var resource = srv.resources[k];
-                if(resource.id == resourceId)
+                if (resource.id == resourceId)
                     return srv.name + env.name + " " + resource.name;
             }
         }
@@ -169,11 +168,11 @@ function getResourceFullName(resourceId) {
 }
 
 function getSrvName(srvId) {
-    for(var i = 0; i<CURRENT_STATUS.environments.length; i++) {
+    for (var i = 0; i < CURRENT_STATUS.environments.length; i++) {
         var env = CURRENT_STATUS.environments[i];
-        for(var j = 0; j<env.servers.length; j++) {
+        for (var j = 0; j < env.servers.length; j++) {
             var srv = env.servers[j];
-            if(srv.id == srvId)
+            if (srv.id == srvId)
                 return srv.name + env.name;
         }
     }
@@ -530,7 +529,7 @@ function showActionModal(resourceId, caption) {
         jumpToAnchor("environment");
     };
 
-    document.addEventListener('keyup', function(e) {
+    document.addEventListener('keyup', function (e) {
         if (e.keyCode == 27) {
             jumpToAnchor("environment");
         }
@@ -541,11 +540,11 @@ function showActionModal(resourceId, caption) {
     header.appendChild(document.createTextNode(caption));
 
     var modal = document.querySelector('#actions_modal');
-    modal.addEventListener('click', function(e) {
+    modal.addEventListener('click', function () {
         jumpToAnchor("environment");
     }, false);
 
-    modal.children[0].addEventListener('click', function(e) {
+    modal.children[0].addEventListener('click', function (e) {
         e.stopPropagation();
     }, false);
 
@@ -575,7 +574,7 @@ function showActionsHistoryModal(resourceId, caption) {
         sendHistRequest(resourceId, subDays(now, 30), now);
     };
 
-    document.addEventListener('keyup', function(e) {
+    document.addEventListener('keyup', function (e) {
         if (e.keyCode == 27) {
             jumpToAnchor("environment");
         }
@@ -590,7 +589,7 @@ function showActionsHistoryModal(resourceId, caption) {
         jumpToAnchor("environment");
     }, false);
 
-    modal.children[0].addEventListener('click', function(e) {
+    modal.children[0].addEventListener('click', function (e) {
         e.stopPropagation();
     }, false);
 
@@ -611,8 +610,8 @@ function sendActionRequest(resourceId, action) {
 
 function showActionsInfo(actions) {
     var hist = document.getElementById("ul_hist");
-    actions.forEach(function(action) {
-       hist.appendChild(decorateWith(document.createElement("li"), actionInfoToLabel(action)));
+    actions.forEach(function (action) {
+        hist.appendChild(decorateWith(document.createElement("li"), actionInfoToLabel(action)));
     });
 }
 

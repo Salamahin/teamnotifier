@@ -1,8 +1,8 @@
 #bg {
-    background-image: url("../images/bg.jpg");
+    /*background-image: url("../images/bg.png");*/
     background-size: cover;
     height: 100%;
-    width:100%;
+    width: 100%;
     position: fixed;
     left: 0;
     right: 0;
@@ -31,7 +31,6 @@ html, body {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
-
 /*==============================NAVIGATION====================================*/
 #navigation {
     float: left;
@@ -42,11 +41,13 @@ html, body {
     background-color: #555555;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
+
 #navigation ul {
-    margin:0;
-    padding:0;
-    list-style:none;
+    margin: 0;
+    padding: 0;
+    list-style: none;
 }
+
 #navigation a {
     display: flex;
     height: 47px;
@@ -56,40 +57,49 @@ html, body {
     padding-left: 20px;
     cursor: pointer;
 }
+
 #navigation a:hover {
-    background-color: #96f5a1;
+    background-color: #70B9E8;
     color: #555555;
 }
+
 #navigation a:active {
-    background-color: #7dcf87;
+    background-color: #269CE9;
     color: #272727;
 }
+
 #server {
     color: #858585;
     margin: 0;
     padding: 30px 0 0 0;
     font: bold 40px Tahoma, Verdana, Segoe, sans-serif;
 }
+
 #subscription {
     color: #858585;
     font: 20px Tahoma, Verdana, Segoe, sans-serif;
 }
+
 #lbl_subscribe {
-     padding-left: 10px;
- }
+    padding-left: 10px;
+}
+
 #subscribers {
     margin: 5px 0 30px 0;
 }
+
 #subscribers li {
     font: 12px Tahoma, Verdana, Segoe, sans-serif;
     color: #4d4d4d;
 }
+
 #subscribers > li {
     display: inline-block;
     padding-right: 20px;
     margin-left: 20px;
 }
-#subscribers > li:before{
+
+#subscribers > li:before {
     content: "";
     display: list-item;
     position: absolute;
@@ -102,7 +112,6 @@ html, body {
 .labeled-checkbox label.toggle_text {
     padding-left: 10px;
 }
-
 
 /*==============================TOGGLE====================================*/
 .toggle {
@@ -157,7 +166,7 @@ input.toggle-round + label:after {
 }
 
 input.toggle-round:checked + label:before {
-    background-color: #8ce196;
+    background-color: #269CE9;
 }
 
 input.toggle-round:checked + label:after {
@@ -187,7 +196,7 @@ input.toggle-round:checked + label:after {
     background-image: url("../images/lightning.png");
 }
 
-.round-button::before{
+.round-button::before {
     content: '';
     position: absolute;
     z-index: -1;
@@ -199,7 +208,7 @@ input.toggle-round:checked + label:after {
 
 .round-button:active {
     top: 1px;
-    background-color: #8ce196;
+    background-color: #269CE9;
 }
 
 /*==============================MODAL====================================*/
@@ -392,13 +401,13 @@ span.modal-footer a {
 }
 
 .button-group,
-.button-group li{
+.button-group li {
     display: inline-block;
     *display: inline;
     zoom: 1;
 }
 
-.button-group{
+.button-group {
     font-size: 0; /* Inline block elements gap - fix */
     margin: 0;
     background: rgba(0, 0, 0, .04);
@@ -407,35 +416,35 @@ span.modal-footer a {
     border-radius: 7px;
 }
 
-.button-group li{
+.button-group li {
     margin-right: -1px; /* Overlap each right button border */
 }
 
-.button-group .button{
+.button-group .button {
     font-size: 13px; /* Set the font size, different from inherited 0 */
     border-radius: 0;
 }
 
-.button-group .button:active{
+.button-group .button:active {
     box-shadow: 0 0 1px rgba(0, 0, 0, .2) inset,
     5px 0 5px -3px rgba(0, 0, 0, .2) inset,
     -5px 0 5px -3px rgba(0, 0, 0, .2) inset;
 }
 
-.button-group li:first-child .button{
+.button-group li:first-child .button {
     border-radius: 3px 0 0 3px;
 }
 
-.button-group li:first-child .button:active{
+.button-group li:first-child .button:active {
     box-shadow: 0 0 1px rgba(0, 0, 0, .2) inset,
     -5px 0 5px -3px rgba(0, 0, 0, .2) inset;
 }
 
-.button-group li:last-child .button{
+.button-group li:last-child .button {
     border-radius: 0 3px 3px 0;
 }
 
-.button-group li:last-child .button:active{
+.button-group li:last-child .button:active {
     box-shadow: 0 0 1px rgba(0, 0, 0, .2) inset,
     5px 0 5px -3px rgba(0, 0, 0, .2) inset;
 }

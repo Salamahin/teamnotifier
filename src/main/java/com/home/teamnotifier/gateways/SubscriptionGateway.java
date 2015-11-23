@@ -1,13 +1,13 @@
 package com.home.teamnotifier.gateways;
 
 public interface SubscriptionGateway {
-  BroadcastInformation subscribe(final String userName, final int serverId);
+    BroadcastInformation subscribe(final String userName, final int serverId);
 
-  BroadcastInformation unsubscribe(final String userName, final int serverId);
+    BroadcastInformation unsubscribe(final String userName, final int serverId);
 
-  BroadcastInformation reserve(final String userName, final int applicationId)
-  throws AlreadyReserved;
+    BroadcastInformation reserve(final String userName, final int applicationId)
+            throws AlreadyReserved;
 
-  BroadcastInformation free(final String userName, final int applicationId)
-  throws NotReserved;
+    BroadcastInformation free(final String userName, final int applicationId)
+            throws NotReserved;
 }
