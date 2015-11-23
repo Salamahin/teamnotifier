@@ -83,7 +83,7 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
                     new NotificationInfo(
                             userName,
                             Instant.now(),
-                            BroadcastAction.SUBSCRIBE,
+                            BroadcastAction.UNSUBSCRIBE,
                             serverEntity.getId(),
                             ""),
                     subscribersNames
