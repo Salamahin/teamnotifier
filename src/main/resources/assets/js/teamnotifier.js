@@ -159,7 +159,7 @@ function getResourceFullName(resourceId) {
         var env = CURRENT_STATUS.environments[i];
         for(var j = 0; j<env.servers.length; j++) {
             var srv = env.servers[j];
-            for(var k = 0; j<srv.resources.length; k++) {
+            for(var k = 0; k<srv.resources.length; k++) {
                 var resource = srv.resources[k];
                 if(resource.id == resourceId)
                     return srv.name + env.name + " " + resource.name;
