@@ -66,10 +66,8 @@ function sendAuthRequest(username, password) {
 
 function handleAuthenticationFailed(success) {
     if (success) {
-        console.debug("authentication success");
         jumpToAnchor("environment");
     } else {
-        console.debug("authentication failed");
         jumpToAnchor("authentication");
     }
 }
@@ -113,7 +111,6 @@ function connectStatusSocket() {
     var websocket = new WebSocket(getSocketUrl());
 
     websocket.onopen = function (evt) {
-        console.debug(evt.data);
         handleAuthenticationFailed(true);
         getState();
     };
@@ -123,7 +120,6 @@ function connectStatusSocket() {
     };
 
     websocket.onmessage = function (evt) {
-        console.debug();
         new Notification(buildNotification(JSON.parse(evt.data)));
         getState();
     };
@@ -395,11 +391,11 @@ function getReservationCheckbox(resource, reserved) {
     );
 }
 
-function decorateOccupationInfo(occupationInfo) {
+function decorateOccupationInfo(occupationInfo, resourceName) {
     return decorateWith(
         document.createElement("div"),
-        document.createTextNode("Reserved by " + occupationInfo.userName),
-        document.createTextNode(" on " + new Date(occupationInfo.occupationTime)).toLocaleString());
+        document.createTextNode("[" + resourceName + "] Reserved by " + occupationInfo.userName),
+        document.createTextNode(" on " + new Date(occupationInfo.occupationTime).toLocaleString()));
 }
 
 /** @namespace occupationInfo.userName */
@@ -416,7 +412,7 @@ function newResourceInfoElem(resource) {
         action = getReservationCheckbox(resource, true);
 
     } else {
-        action = decorateOccupationInfo(occupationInfo);
+        action = decorateOccupationInfo(occupationInfo, resource.name);
     }
 
     var wrapper = document.createElement("div");
