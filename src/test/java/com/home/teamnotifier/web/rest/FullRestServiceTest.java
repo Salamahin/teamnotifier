@@ -233,10 +233,17 @@ public class FullRestServiceTest {
     }
 
     @Test
+    public void testWhoAmI() throws Exception {
+        given().auth().oauth2(token).
+                expect().statusCode(HttpStatus.OK_200).contentType(ContentType.JSON)
+                .when().get("/teamnotifier/1.0/users/whoami");
+    }
+
+    @Test
     public void testIncorrectLogin()
             throws Exception {
-        given().auth().preemptive().basic(credentials.getUsername(), getRandomString())
-                .expect().statusCode(HttpStatus.NO_CONTENT_204)
+        given().auth().preemptive().basic(credentials.getUsername(), credentials.getPassword())
+                .expect().statusCode(HttpStatus.OK_200).contentType(ContentType.JSON)
                 .when().get("/teamnotifier/1.0/users/authenticate");
     }
 
