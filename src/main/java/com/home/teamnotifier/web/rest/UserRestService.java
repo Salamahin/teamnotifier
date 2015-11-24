@@ -50,8 +50,12 @@ public class UserRestService {
         final UserCredentials persistedCredentials = userGateway.userCredentials(username);
 
         if (compareCredentials(credentials, persistedCredentials)) {
-            LOGGER.info("User {} authentication success", credentials.getUsername());
-            return new AuthenticationInfo(tokenCreator.getTokenFor(persistedCredentials.getId()));
+            final String token = tokenCreator.getTokenFor(persistedCredentials.getId());
+            LOGGER.info("User {} authentication success; token=[{}]",
+                    credentials.getUsername(),
+                    token
+            );
+            return new AuthenticationInfo(token);
         }
         LOGGER.error("User {} authentication failed", credentials.getUsername());
 

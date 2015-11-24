@@ -54,7 +54,7 @@ public class ClientManager implements NotificationManager {
                 .forEach(s -> pushAsync(messageString, s));
     }
 
-    private String infoToString(NotificationInfo message) {
+    private String infoToString(final NotificationInfo message) {
         try {
             return mapper.writeValueAsString(message);
         } catch (JsonProcessingException e) {
