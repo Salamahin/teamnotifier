@@ -37,7 +37,7 @@ public class ClientManager implements NotificationManager {
     }
 
     public synchronized void addNewClient(final Session session, final String userName) {
-        clientSessionsByUsernames.put(session, userName);
+        clientSessionsByUsernames.forcePut(session, userName);
     }
 
     public synchronized void removeClient(final Session session) {

@@ -8,7 +8,7 @@ import java.io.Serializable;
 @Table(schema = "teamnotifier", name = "User")
 public final class UserEntity implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private final Integer id;
 
     @Column(nullable = false, unique = true)

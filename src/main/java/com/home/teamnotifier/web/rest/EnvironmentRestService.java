@@ -7,6 +7,8 @@ import com.home.teamnotifier.core.ResourceMonitor;
 import com.home.teamnotifier.core.responses.action.ActionsInfo;
 import com.home.teamnotifier.core.responses.status.EnvironmentsInfo;
 import io.dropwizard.auth.Auth;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -18,6 +20,7 @@ import java.util.Base64;
 @Path("1.0/environment")
 @Produces(MediaType.APPLICATION_JSON)
 public class EnvironmentRestService {
+    private final Logger LOGGER = LoggerFactory.getLogger(EnvironmentRestService.class);
 
     private final ResourceMonitor resourceMonitor;
 
@@ -68,18 +71,27 @@ public class EnvironmentRestService {
 
     @GET
     public EnvironmentsInfo getServerInfo(@Auth final AuthenticatedUserData authenticatedUserData) {
+        LOGGER.info("User {} asks for status", authenticatedUserData.getName());
         return resourceMonitor.status();
     }
 
     @GET
     @Path("/application/action/{applicationId}")
     public ActionsInfo getActionsInfo(
+            @Auth final AuthenticatedUserData authenticatedUserData,
             @PathParam("applicationId") final Integer applicationId,
             @HeaderParam("ActionsFrom") final String encodedBase64From,
             @HeaderParam("ActionsTo") final String encodedBase64To
     ) {
         final Instant fromInstant = ZonedDateTime.parse(decodeBase64String(encodedBase64From)).toInstant();
         final Instant toInstant = ZonedDateTime.parse(decodeBase64String(encodedBase64To)).toInstant();
+
+        LOGGER.info("User {} asks actions on resource {} from {} to {}",
+                authenticatedUserData.getName(),
+                applicationId,
+                fromInstant,
+                toInstant
+        );
 
         return resourceMonitor.actionsInfo(applicationId, Range.closed(fromInstant, toInstant));
     }

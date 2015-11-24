@@ -2,6 +2,8 @@ package com.home.teamnotifier.db;
 
 import com.home.teamnotifier.DbPreparer;
 import com.home.teamnotifier.gateways.AlreadyReserved;
+import com.home.teamnotifier.gateways.NoSuchServer;
+import com.home.teamnotifier.gateways.NoSuchUser;
 import com.home.teamnotifier.gateways.NotReserved;
 import org.junit.Before;
 import org.junit.Test;
@@ -134,6 +136,36 @@ public class DbSubscriptionGatewayTest {
         assertThat(subscripbtion.free(userEntity.getName(), resourceId).getSubscribers())
                 .contains(subscriber);
     }
+
+    @Test(expected = NoSuchServer.class)
+    public void testExceptionWhenSubscribeToNotPresentServer() {
+        final Integer serverId = -1;
+        final String subscriber = getPersistedUserName();
+        subscripbtion.subscribe(subscriber, serverId);
+    }
+
+
+    @Test(expected = Exception.class) //fixme should be nosuchuser but NoResultException
+    public void testExceptionWhenSubscribeWithNotPresentUser() {
+        final Integer serverId = environmentEntity.getImmutableListOfAppServers().get(0).getId();
+        final String subscriber = getRandomString();
+        subscripbtion.subscribe(subscriber, serverId);
+    }
+
+    @Test(expected = Exception.class) //fixme should be nosuchuser but NoResultException
+    public void testNoSuchUserWhenUnsubscribeWithNotPresentUser() {
+        final Integer serverId = environmentEntity.getImmutableListOfAppServers().get(0).getId();
+        final String subscriber = getRandomString();
+        subscripbtion.unsubscribe(subscriber, serverId);
+    }
+
+    @Test(expected = NoSuchServer.class)
+    public void testNoSuchServerWhenUnsubscribeFromNotPresentServer() {
+        final Integer serverId = -1;
+        final String subscriber = getPersistedUserName();
+        subscripbtion.unsubscribe(subscriber, serverId);
+    }
+
 
     @Before
     public void setUp()

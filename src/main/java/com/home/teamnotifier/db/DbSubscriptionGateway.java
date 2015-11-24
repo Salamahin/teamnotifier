@@ -4,10 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.home.teamnotifier.core.responses.notification.BroadcastAction;
 import com.home.teamnotifier.core.responses.notification.NotificationInfo;
-import com.home.teamnotifier.gateways.AlreadyReserved;
-import com.home.teamnotifier.gateways.BroadcastInformation;
-import com.home.teamnotifier.gateways.NotReserved;
-import com.home.teamnotifier.gateways.SubscriptionGateway;
+import com.home.teamnotifier.gateways.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,7 +54,8 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
 
     private AppServerEntity getAppServerEntity(final int serverId, final EntityManager em) {
         final AppServerEntity serverEntity = em.find(AppServerEntity.class, serverId);
-        Preconditions.checkNotNull(serverEntity, "No server with provided id %s", serverId);
+        if(serverEntity == null)
+            throw new NoSuchServer();
         return serverEntity;
     }
 

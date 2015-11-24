@@ -42,7 +42,7 @@ public class DbUserGatewayTest {
         assertThat(credentials).isNull();
     }
 
-    @Test(expected = Exception.class)
+    @Test(expected = Exception.class) //fixme that is the bullshit. should be determinable exception
     public void testEmptyCredentialsFails()
             throws Exception {
         final String userName = "";

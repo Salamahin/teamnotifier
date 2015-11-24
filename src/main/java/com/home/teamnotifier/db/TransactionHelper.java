@@ -3,10 +3,7 @@ package com.home.teamnotifier.db;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
+import javax.persistence.*;
 import java.util.function.Function;
 
 public final class TransactionHelper {
@@ -26,7 +23,7 @@ public final class TransactionHelper {
             tx.begin();
             result = function.apply(em);
             tx.commit();
-        } catch (RuntimeException exc) {
+        } catch (PersistenceException exc) {
             rollback(tx);
             throw exc;
         } finally {

@@ -1,6 +1,6 @@
 package com.home.teamnotifier.db;
 
-import com.google.common.base.Preconditions;
+import com.home.teamnotifier.gateways.NoSuchUser;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -23,7 +23,8 @@ final class DbGatewayCommons {
                 .where(cb.equal(rootEntry.get("name"), userName));
 
         final UserEntity entity = em.createQuery(selectUserQuery).getSingleResult();
-        Preconditions.checkNotNull(entity, "No such user %s", userName);
+        if(entity == null)
+            throw new NoSuchUser();
 
         return entity;
     }

@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 @Table(schema = "teamnotifier", name = "AppServer")
 public final class AppServerEntity implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private final Integer id;
 
     @Column(nullable = false)
