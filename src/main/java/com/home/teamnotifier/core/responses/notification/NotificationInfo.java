@@ -85,4 +85,15 @@ public class NotificationInfo {
     public int hashCode() {
         return Objects.hash(name, timestamp, action, targetId, details);
     }
+
+    @Override
+    public String toString() {
+        return "NotificationInfo{" +
+                "name='" + name + '\'' +
+                ", timestamp='" + timestamp + '\'' +
+                ", action=" + action +
+                ", targetId=" + targetId +
+                ", details='" + details + '\'' +
+                '}';
+    }
 }

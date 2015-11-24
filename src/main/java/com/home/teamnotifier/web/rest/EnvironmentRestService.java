@@ -35,28 +35,38 @@ public class EnvironmentRestService {
             @Auth final AuthenticatedUserData authenticatedUserData,
             @PathParam("applicationId") final Integer applicationId
     ) {
-        resourceMonitor.reserve(authenticatedUserData.getName(), applicationId);
+        final String userName = authenticatedUserData.getName();
+        LOGGER.info("User {} reserve resource id {} request", userName, applicationId);
+        resourceMonitor.reserve(userName, applicationId);
     }
 
     @DELETE
     @Path("/application/reserve/{applicationId}")
     public void free(@Auth final AuthenticatedUserData authenticatedUserData,
-                     @PathParam("applicationId") final Integer applicationId) {
-        resourceMonitor.free(authenticatedUserData.getName(), applicationId);
+                     @PathParam("applicationId") final Integer applicationId
+    ) {
+        final String userName = authenticatedUserData.getName();
+        LOGGER.info("User {} free resource id {} request", userName, applicationId);
+        resourceMonitor.free(userName, applicationId);
     }
 
     @POST
     @Path("/server/subscribe/{serverId}")
     public void subscribe(@Auth final AuthenticatedUserData authenticatedUserData,
-                          @PathParam("serverId") final Integer serverId) {
-        resourceMonitor.subscribe(authenticatedUserData.getName(), serverId);
+                          @PathParam("serverId") final Integer serverId
+    ) {
+        final String userName = authenticatedUserData.getName();
+        LOGGER.info("User {} subscribe on server id {} request", userName, serverId);
+        resourceMonitor.subscribe(userName, serverId);
     }
 
     @DELETE
     @Path("/server/subscribe/{serverId}")
     public void unsubscribe(@Auth final AuthenticatedUserData authenticatedUserData,
                             @PathParam("serverId") final Integer serverId) {
-        resourceMonitor.unsubscribe(authenticatedUserData.getName(), serverId);
+        final String userName = authenticatedUserData.getName();
+        LOGGER.info("User {} unsubscribe from server id {} request", userName, serverId);
+        resourceMonitor.unsubscribe(userName, serverId);
     }
 
     @POST
@@ -66,12 +76,14 @@ public class EnvironmentRestService {
             @PathParam("applicationId") final Integer applicationId,
             @HeaderParam("ActionDetails") final String details
     ) {
-        resourceMonitor.newAction(authenticatedUserData.getName(), applicationId, details);
+        final String userName = authenticatedUserData.getName();
+        LOGGER.info("User {} new action on resource id {} ({}) request", userName, applicationId, details);
+        resourceMonitor.newAction(userName, applicationId, details);
     }
 
     @GET
     public EnvironmentsInfo getServerInfo(@Auth final AuthenticatedUserData authenticatedUserData) {
-        LOGGER.info("User {} asks for status", authenticatedUserData.getName());
+        LOGGER.info("User {} status request", authenticatedUserData.getName());
         return resourceMonitor.status();
     }
 
@@ -86,7 +98,7 @@ public class EnvironmentRestService {
         final Instant fromInstant = ZonedDateTime.parse(decodeBase64String(encodedBase64From)).toInstant();
         final Instant toInstant = ZonedDateTime.parse(decodeBase64String(encodedBase64To)).toInstant();
 
-        LOGGER.info("User {} asks actions on resource {} from {} to {}",
+        LOGGER.info("User {} actions on resource {} from {} to {} request",
                 authenticatedUserData.getName(),
                 applicationId,
                 fromInstant,

@@ -45,13 +45,16 @@ public class UserRestService {
         final BasicCredentials credentials = extract(encodedCredentials);
         final String username = credentials.getUsername();
 
+        LOGGER.info("User {} authentication request", credentials.getUsername());
+
         final UserCredentials persistedCredentials = userGateway.userCredentials(username);
 
         if (compareCredentials(credentials, persistedCredentials)) {
             LOGGER.info("User {} authentication success", credentials.getUsername());
             return new AuthenticationInfo(tokenCreator.getTokenFor(persistedCredentials.getId()));
         }
-        LOGGER.info("User {} authentication failed", credentials.getUsername());
+        LOGGER.error("User {} authentication failed", credentials.getUsername());
+
 
         return null;
     }
@@ -72,8 +75,8 @@ public class UserRestService {
     @Path("/register")
     public void newUser(@HeaderParam(HttpHeaders.AUTHORIZATION) final String encodedCredentials) {
         final BasicCredentials credentials = extract(encodedCredentials);
+        LOGGER.info("New user {} register request", credentials.getUsername());
         userGateway.newUser(credentials.getUsername(), credentials.getPassword());
-        LOGGER.info("New user {} registered", credentials.getUsername());
     }
 
     @GET

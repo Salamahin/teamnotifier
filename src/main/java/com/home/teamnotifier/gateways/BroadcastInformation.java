@@ -25,4 +25,12 @@ public class BroadcastInformation {
     public List<String> getSubscribers() {
         return subscribers;
     }
+
+    @Override
+    public String toString() {
+        return "BroadcastInformation{" +
+                "value=" + value +
+                ", subscribers=" + subscribers +
+                '}';
+    }
 }
