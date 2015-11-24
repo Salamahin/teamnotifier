@@ -11,6 +11,8 @@ import com.home.teamnotifier.gateways.UserGateway;
 import com.home.teamnotifier.utils.PasswordHasher;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.auth.basic.BasicCredentials;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -21,8 +23,9 @@ import static com.home.teamnotifier.utils.BasicAuthenticationCredentialExtractor
 @Path("1.0/users")
 @Produces(MediaType.APPLICATION_JSON)
 public class UserRestService {
-    private final TokenCreator tokenCreator;
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserRestService.class);
 
+    private final TokenCreator tokenCreator;
     private final UserGateway userGateway;
 
     @Inject
@@ -45,8 +48,10 @@ public class UserRestService {
         final UserCredentials persistedCredentials = userGateway.userCredentials(username);
 
         if (compareCredentials(credentials, persistedCredentials)) {
+            LOGGER.info("User {} authentication success", credentials.getUsername());
             return new AuthenticationInfo(tokenCreator.getTokenFor(persistedCredentials.getId()));
         }
+        LOGGER.info("User {} authentication failed", credentials.getUsername());
 
         return null;
     }
@@ -68,11 +73,14 @@ public class UserRestService {
     public void newUser(@HeaderParam(HttpHeaders.AUTHORIZATION) final String encodedCredentials) {
         final BasicCredentials credentials = extract(encodedCredentials);
         userGateway.newUser(credentials.getUsername(), credentials.getPassword());
+        LOGGER.info("New user {} registered", credentials.getUsername());
     }
 
     @GET
     @Path("/whoami")
     public UserInfo whoAmI(@Auth final AuthenticatedUserData authenticatedUserData) {
-        return new UserInfo(authenticatedUserData.getName());
+        final String name = authenticatedUserData.getName();
+        LOGGER.info("WhoAmI request from {}", name);
+        return new UserInfo(name);
     }
 }
