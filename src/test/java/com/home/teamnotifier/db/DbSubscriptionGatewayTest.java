@@ -25,7 +25,16 @@ public class DbSubscriptionGatewayTest {
         subscripbtion.reserve(userEntity.getName(), resourceId);
     }
 
-    @Test(expected = Exception.class)
+    @Test(expected = NotSubscribed.class)
+    public void testUnsubscribeFromNotSubscribed() {
+        final AppServerEntity serverEntity = environmentEntity.getImmutableListOfAppServers().get(0);
+        final Integer serverId = serverEntity.getId();
+        final String userName = userEntity.getName();
+
+        subscripbtion.unsubscribe(userName, serverId);
+    }
+
+    @Test(expected = AlreadySubscribed.class)
     public void testDoubleSubscribeCausesException() {
         final AppServerEntity serverEntity = environmentEntity.getImmutableListOfAppServers().get(0);
         final Integer serverId = serverEntity.getId();
@@ -71,8 +80,7 @@ public class DbSubscriptionGatewayTest {
     }
 
     @Test
-    public void testReturnsSubscribersNamesAfterSubscribe()
-            throws Exception {
+    public void testReturnsSubscribersNamesAfterSubscribe() throws Exception {
         final String userName1 = getPersistedUserName();
         final String userName2 = getPersistedUserName();
 

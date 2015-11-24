@@ -2,6 +2,7 @@ package com.home.teamnotifier.db;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.BoundType;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Range;
 import com.google.inject.Inject;
 import com.home.teamnotifier.core.responses.action.ActionInfo;
@@ -20,6 +21,7 @@ import javax.validation.ConstraintViolationException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.home.teamnotifier.db.DbGatewayCommons.getSubscribersButUser;
@@ -46,12 +48,14 @@ public class DbSharedResourceActionsGateway implements SharedResourceActionsGate
     }
 
     private void rethrowConstraintViolation(Exception exc) {
-        if(exc instanceof ConstraintViolationException)
-            throw new EmptyDescription((ConstraintViolationException)exc);
-        if(exc.getCause() != null && exc.getCause() instanceof ConstraintViolationException)
-            throw new EmptyDescription((ConstraintViolationException)(exc.getCause()));
+        final Optional<Throwable> firstConstraintViolation = Throwables.getCausalChain(exc).stream()
+                .filter((ConstraintViolationException.class)::isInstance)
+                .findFirst();
 
-        Throwables.propagate(exc);
+        if(firstConstraintViolation.isPresent())
+            throw new EmptyDescription(firstConstraintViolation.get());
+        else
+            Throwables.propagate(exc);
     }
 
     private BroadcastInformation tryPersistNewAction(String userName, int resourceId, String description) {

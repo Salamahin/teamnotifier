@@ -104,8 +104,7 @@ public class DbSharedResourceActionsGatewayTest {
 
 
     @Before
-    public void setUp()
-            throws Exception {
+    public void setUp() throws Exception {
         gateway = new DbSharedResourceActionsGateway(helper.TRANSACTION_HELPER);
         final UserEntity user =
                 helper.createPersistedUser(getRandomString(), getRandomString());

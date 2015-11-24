@@ -1,11 +1,11 @@
 package com.home.teamnotifier.db;
 
+import com.google.common.base.Throwables;
 import com.google.inject.Inject;
 import com.home.teamnotifier.core.responses.notification.BroadcastAction;
 import com.home.teamnotifier.core.responses.notification.NotificationInfo;
 import com.home.teamnotifier.gateways.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.hibernate.exception.ConstraintViolationException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -21,8 +21,6 @@ import static com.home.teamnotifier.db.DbGatewayCommons.getSubscribersButUser;
 import static com.home.teamnotifier.db.DbGatewayCommons.getUserEntity;
 
 public class DbSubscriptionGateway implements SubscriptionGateway {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DbSubscriptionGateway.class);
-
     private final TransactionHelper transactionHelper;
 
     @Inject
@@ -32,24 +30,49 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
 
     @Override
     public BroadcastInformation subscribe(final String userName, final int serverId) {
-        return transactionHelper.transaction(em -> {
-            final UserEntity userEntity = getUserEntity(userName, em);
-            final AppServerEntity appServerEntity = getAppServerEntity(serverId, em);
+        try {
+            return transactionHelper.transaction(em -> trySubscribe(userName, serverId, em));
+        } catch (Exception exc) {
+            rethrowConstraintViolation(exc, userName, serverId);
+            return null;
+        }
+    }
 
-            final SubscriptionEntity subscriptionEntity = em
-                    .merge(new SubscriptionEntity(appServerEntity, userEntity));
+    private void rethrowConstraintViolation(Exception exc, String userName, int serverId) {
+        final Optional<Throwable> firstConstraintViolation = Throwables.getCausalChain(exc).stream()
+                .filter(ConstraintViolationException.class::isInstance)
+                .findFirst();
 
-            final List<String> subscribersNames = getSubscribersButUser(userName, appServerEntity);
-            return new BroadcastInformation(
-                    new NotificationInfo(
+        if (firstConstraintViolation.isPresent())
+            throw new AlreadySubscribed(
+                    String.format(
+                            "User %s is already subscribed on server id %d",
                             userName,
-                            subscriptionEntity.getTimestamp(),
-                            BroadcastAction.SUBSCRIBE,
-                            appServerEntity.getId(),
-                            ""),
-                    subscribersNames
+                            serverId
+                    ),
+                    firstConstraintViolation.get()
             );
-        });
+        else
+            Throwables.propagate(exc);
+    }
+
+    private BroadcastInformation trySubscribe(String userName, int serverId, EntityManager em) {
+        final UserEntity userEntity = getUserEntity(userName, em);
+        final AppServerEntity appServerEntity = getAppServerEntity(serverId, em);
+
+        final SubscriptionEntity subscriptionEntity = em
+                .merge(new SubscriptionEntity(appServerEntity, userEntity));
+
+        final List<String> subscribersNames = getSubscribersButUser(userName, appServerEntity);
+        return new BroadcastInformation(
+                new NotificationInfo(
+                        userName,
+                        subscriptionEntity.getTimestamp(),
+                        BroadcastAction.SUBSCRIBE,
+                        appServerEntity.getId(),
+                        ""),
+                subscribersNames
+        );
     }
 
     private AppServerEntity getAppServerEntity(final int serverId, final EntityManager em) {
@@ -69,12 +92,15 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
             final CriteriaBuilder cb = em.getCriteriaBuilder();
             final CriteriaDelete<SubscriptionEntity> delete = cb
                     .createCriteriaDelete(SubscriptionEntity.class);
-            final Root<SubscriptionEntity> _subsctiption = delete.from(SubscriptionEntity.class);
+            final Root<SubscriptionEntity> _subscription = delete.from(SubscriptionEntity.class);
             final Predicate userAndServerEqualToProvided =
-                    cb.and(cb.equal(_subsctiption.get("subscriber"), userEntity),
-                            cb.equal(_subsctiption.get("appServer"), serverEntity));
+                    cb.and(cb.equal(_subscription.get("subscriber"), userEntity),
+                            cb.equal(_subscription.get("appServer"), serverEntity));
 
-            em.createQuery(delete.where(userAndServerEqualToProvided)).executeUpdate();
+            final int rowsAffected = em.createQuery(delete.where(userAndServerEqualToProvided)).executeUpdate();
+
+            if(rowsAffected == 0)
+                throw new NotSubscribed(String.format("User %s was not subscribed on server %d", userName, serverId));
 
             final List<String> subscribersNames = getSubscribersButUser(userName, serverEntity);
             return new BroadcastInformation(
@@ -148,7 +174,7 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
 
     private SharedResourceEntity tryFree(final String userName, final int applicationId) {
         return transactionHelper.transaction(em -> {
-            final UserEntity userEntity = getUserEntity(userName, em);
+            getUserEntity(userName, em);
 
             SharedResourceEntity resourceEntity = getSharedResourceEntity(applicationId, em);
             final Optional<ReservationData> reservationData = resourceEntity.getReservationData();

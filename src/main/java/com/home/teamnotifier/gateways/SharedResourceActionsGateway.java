@@ -10,7 +10,7 @@ public interface SharedResourceActionsGateway {
             final String userName,
             final int resourceId,
             final String description
-    ) throws NoSuchResource, EmptyDescription;
+    ) throws NoSuchResource, EmptyDescription, NoSuchUser;
 
     ActionsInfo getActions(final int resourceId, final Range<Instant> range) throws NoSuchResource;
 }
