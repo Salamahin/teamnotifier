@@ -1,11 +1,15 @@
 package com.home.teamnotifier.db;
 
 import com.google.inject.Inject;
+import com.home.teamnotifier.gateways.NoSuchUser;
 import com.home.teamnotifier.gateways.UserCredentials;
 import com.home.teamnotifier.gateways.UserGateway;
 import com.home.teamnotifier.utils.PasswordHasher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.persistence.EntityNotFoundException;
+import javax.persistence.NoResultException;
 
 import static com.home.teamnotifier.db.DbGatewayCommons.getUserEntity;
 
@@ -24,21 +28,15 @@ public class DbUserGateway implements UserGateway {
         try {
             final UserEntity entity = transactionHelper.transaction(em -> em.find(UserEntity.class, id));
             return new UserCredentials(entity.getId(), entity.getName(), entity.getPassHash());
-        } catch (Exception exc) {
-            LOGGER.error("Failed to get user by name", exc);
+        } catch (EntityNotFoundException exc) {
+            throw new NoSuchUser(String.format("No user with id %d", id), exc);
         }
-
-        return null;
     }
 
     @Override
     public UserCredentials userCredentials(final String userName) {
         final UserEntity entity = getEntityByName(userName);
-        if (entity != null) {
-            return new UserCredentials(entity.getId(), entity.getName(), entity.getPassHash());
-        } else {
-            return null;
-        }
+        return new UserCredentials(entity.getId(), entity.getName(), entity.getPassHash());
     }
 
     @Override
@@ -51,10 +49,8 @@ public class DbUserGateway implements UserGateway {
     private UserEntity getEntityByName(String name) {
         try {
             return transactionHelper.transaction(em -> getUserEntity(name, em));
-        } catch (Exception exc) {
-            LOGGER.error("Failed to get user by name", exc);
+        } catch (NoResultException exc) {
+            throw new NoSuchUser(String.format("No user with name %s", name), exc);
         }
-
-        return null;
     }
 }

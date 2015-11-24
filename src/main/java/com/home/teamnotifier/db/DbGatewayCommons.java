@@ -1,7 +1,5 @@
 package com.home.teamnotifier.db;
 
-import com.home.teamnotifier.gateways.NoSuchUser;
-
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -22,11 +20,7 @@ final class DbGatewayCommons {
         final CriteriaQuery<UserEntity> selectUserQuery = cq
                 .where(cb.equal(rootEntry.get("name"), userName));
 
-        final UserEntity entity = em.createQuery(selectUserQuery).getSingleResult();
-        if(entity == null)
-            throw new NoSuchUser();
-
-        return entity;
+        return em.createQuery(selectUserQuery).getSingleResult();
     }
 
     static List<String> getSubscribersButUser(final String userName, final AppServerEntity server) {
