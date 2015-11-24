@@ -116,7 +116,7 @@ function connectStatusSocket() {
     };
 
     websocket.onclose = function () {
-        connectStatusSocket();
+        removeCookie(TOKEN_COOKIE);
     };
 
     websocket.onmessage = function (evt) {

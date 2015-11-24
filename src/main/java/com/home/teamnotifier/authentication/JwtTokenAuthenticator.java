@@ -1,6 +1,7 @@
 package com.home.teamnotifier.authentication;
 
 import com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenVerifier;
+import com.github.toastshaman.dropwizard.auth.jwt.exceptions.InvalidSignatureException;
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
 import com.github.toastshaman.dropwizard.auth.jwt.parser.DefaultJsonWebTokenParser;
 import com.github.toastshaman.dropwizard.auth.jwt.validator.ExpiryValidator;
@@ -24,16 +25,20 @@ public class JwtTokenAuthenticator
     }
 
     @Override
-    public Optional<AuthenticatedUserData> authenticate(final String jwtToken)
-            throws AuthenticationException {
+    public Optional<AuthenticatedUserData> authenticate(final String jwtToken) throws AuthenticationException {
         final JsonWebToken token = new DefaultJsonWebTokenParser().parse(jwtToken);
-        verifier.verifySignature(token);
+
+        try {
+            verifier.verifySignature(token);
+        } catch (InvalidSignatureException exc) {
+            throw new AuthenticationException(exc);
+        }
+
         return authenticate(token);
     }
 
     @Override
-    public Optional<AuthenticatedUserData> authenticate(final JsonWebToken credentials)
-            throws AuthenticationException {
+    public Optional<AuthenticatedUserData> authenticate(final JsonWebToken credentials) throws AuthenticationException {
         expiryValidator.validate(credentials);
 
         final int userId = Integer.valueOf(credentials.claim().subject());

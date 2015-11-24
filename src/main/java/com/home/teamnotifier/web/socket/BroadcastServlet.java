@@ -21,7 +21,6 @@ public class BroadcastServlet extends WebSocketServlet {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebSocketHandler.class);
 
     private final ClientManager clientManager;
-
     private final WebsocketAuthenticator authenticator;
 
     public BroadcastServlet(
@@ -39,16 +38,15 @@ public class BroadcastServlet extends WebSocketServlet {
             try {
                 final String userName = tryGetAuthenticatedUserName(req);
                 return new WebSocketHandler(clientManager, userName);
-            } catch (Exception exc) {
-                LOGGER.error("Websocket creation failed", exc);
+            } catch (AuthenticationException exc) {
+                LOGGER.warn("Failed to create websocket: authentication failed");
                 sendUnauthorizedErrorResponse(resp, exc);
                 return null;
             }
         });
     }
 
-    private String tryGetAuthenticatedUserName(final ServletUpgradeRequest request)
-            throws AuthenticationException {
+    private String tryGetAuthenticatedUserName(final ServletUpgradeRequest request) throws AuthenticationException {
         final String tokenStr = request.getParameterMap().get("token").get(0);
         final Optional<AuthenticatedUserData> authenticatedUser = authenticator.authenticate(tokenStr);
         if (!authenticatedUser.isPresent()) {
