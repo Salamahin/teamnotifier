@@ -19,11 +19,11 @@ public final class TransactionHelper {
 
         try {
             em = factory.createEntityManager();
-            tx = em.getTransaction();
+            tx =  em.getTransaction();
             tx.begin();
             result = function.apply(em);
             tx.commit();
-        } catch (PersistenceException exc) {
+        } catch (Exception exc) {
             rollback(tx);
             throw exc;
         } finally {
@@ -37,7 +37,7 @@ public final class TransactionHelper {
 
     private void rollback(EntityTransaction tx) {
         try {
-            if (tx != null) {
+            if (tx != null && tx.isActive()) {
                 tx.rollback();
             }
         } catch (RuntimeException e) {

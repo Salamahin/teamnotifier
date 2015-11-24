@@ -1,6 +1,7 @@
 package com.home.teamnotifier.db;
 
 import com.google.inject.Inject;
+import com.home.teamnotifier.gateways.InvalidCredentials;
 import com.home.teamnotifier.gateways.NoSuchUser;
 import com.home.teamnotifier.gateways.UserCredentials;
 import com.home.teamnotifier.gateways.UserGateway;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
+import javax.validation.ConstraintViolationException;
 
 import static com.home.teamnotifier.db.DbGatewayCommons.getUserEntity;
 
@@ -43,7 +45,11 @@ public class DbUserGateway implements UserGateway {
     public void newUser(final String userName, final String password) {
         LOGGER.info("New user {} creation", userName);
         final UserEntity entity = new UserEntity(userName, PasswordHasher.toMd5Hash(password));
-        transactionHelper.transaction(em -> em.merge(entity));
+        try {
+            transactionHelper.transaction(em -> em.merge(entity));
+        } catch (ConstraintViolationException exc) {
+            throw new InvalidCredentials(exc);
+        }
     }
 
     private UserEntity getEntityByName(String name) {

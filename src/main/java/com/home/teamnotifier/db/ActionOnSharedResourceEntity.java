@@ -1,11 +1,13 @@
 package com.home.teamnotifier.db;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.time.Instant;
 
 @Entity
 @Table(schema = "teamnotifier", name = "ActionOnSharedResource")
-public final class ActionOnSharedResourceEntity {
+public final class ActionOnSharedResourceEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private final Integer id;
@@ -20,6 +22,7 @@ public final class ActionOnSharedResourceEntity {
     private final Instant actionTime;
 
     @Column(nullable = false)
+    @Size(min = 1)
     private final String details;
 
     //for hibernate
@@ -32,7 +35,9 @@ public final class ActionOnSharedResourceEntity {
     }
 
     public ActionOnSharedResourceEntity(final UserEntity actor,
-                                        final SharedResourceEntity sharedResourceEntity, final String details) {
+                                        final SharedResourceEntity sharedResourceEntity,
+                                        final String details
+    ) {
         id = null;
         this.resource = sharedResourceEntity;
         this.actor = actor;

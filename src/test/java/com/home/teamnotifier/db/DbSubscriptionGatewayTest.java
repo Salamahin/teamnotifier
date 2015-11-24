@@ -1,10 +1,7 @@
 package com.home.teamnotifier.db;
 
 import com.home.teamnotifier.DbPreparer;
-import com.home.teamnotifier.gateways.AlreadyReserved;
-import com.home.teamnotifier.gateways.NoSuchServer;
-import com.home.teamnotifier.gateways.NoSuchUser;
-import com.home.teamnotifier.gateways.NotReserved;
+import com.home.teamnotifier.gateways.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -145,14 +142,14 @@ public class DbSubscriptionGatewayTest {
     }
 
 
-    @Test(expected = Exception.class) //fixme should be nosuchuser but NoResultException
+    @Test(expected = NoSuchUser.class)
     public void testExceptionWhenSubscribeWithNotPresentUser() {
         final Integer serverId = environmentEntity.getImmutableListOfAppServers().get(0).getId();
         final String subscriber = getRandomString();
         subscripbtion.subscribe(subscriber, serverId);
     }
 
-    @Test(expected = Exception.class) //fixme should be nosuchuser but NoResultException
+    @Test(expected = NoSuchUser.class)
     public void testNoSuchUserWhenUnsubscribeWithNotPresentUser() {
         final Integer serverId = environmentEntity.getImmutableListOfAppServers().get(0).getId();
         final String subscriber = getRandomString();
@@ -164,6 +161,51 @@ public class DbSubscriptionGatewayTest {
         final Integer serverId = -1;
         final String subscriber = getPersistedUserName();
         subscripbtion.unsubscribe(subscriber, serverId);
+    }
+
+    @Test(expected = NoSuchServer.class)
+    public void testNoSuchServerWhenSubscribeToNotPresentServer() {
+        final Integer serverId = -1;
+        final String subscriber = getPersistedUserName();
+        subscripbtion.subscribe(subscriber, serverId);
+    }
+
+    @Test(expected = NoSuchUser.class)
+    public void testNoSuchUserWhenReserveWithNotPresentUser() {
+        final Integer resourceId = environmentEntity.getImmutableListOfAppServers().get(0)
+                .getImmutableListOfResources().get(0).getId();
+        subscripbtion.reserve(getRandomString(), resourceId);
+    }
+
+    @Test(expected = NoSuchUser.class)
+    public void testNoSuchUserWhenFreeWithNotPresentUser() {
+        final Integer resourceId = environmentEntity.getImmutableListOfAppServers().get(0)
+                .getImmutableListOfResources().get(0).getId();
+        subscripbtion.free(getRandomString(), resourceId);
+    }
+
+    @Test(expected = NoSuchResource.class)
+    public void testNoResourceWhenReserveWithNotPresentResource() {
+        final String userName = getPersistedUserName();
+        subscripbtion.reserve(userName, -1);
+    }
+
+    @Test(expected = NoSuchResource.class)
+    public void testNoSuchResourceWhenFreeWithNotPresentResource() {
+        final String userName = getPersistedUserName();
+        subscripbtion.free(userName, -1);
+    }
+
+    @Test(expected = ReservedByDifferentUser.class)
+    public void testFreeWithDifferentUserCausesReservedByOtherUser() {
+        final String userName1 = getPersistedUserName();
+        final String userName2 = getPersistedUserName();
+
+        final Integer resourceId = environmentEntity.getImmutableListOfAppServers().get(0)
+                .getImmutableListOfResources().get(0).getId();
+
+        subscripbtion.reserve(userName1, resourceId);
+        subscripbtion.free(userName2, resourceId);
     }
 
 

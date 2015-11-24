@@ -1,5 +1,6 @@
 package com.home.teamnotifier.db;
 
+import com.google.common.base.Throwables;
 import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
 import com.google.inject.Inject;
@@ -8,10 +9,14 @@ import com.home.teamnotifier.core.responses.action.ActionsInfo;
 import com.home.teamnotifier.core.responses.notification.BroadcastAction;
 import com.home.teamnotifier.core.responses.notification.NotificationInfo;
 import com.home.teamnotifier.gateways.BroadcastInformation;
+import com.home.teamnotifier.gateways.EmptyDescription;
+import com.home.teamnotifier.gateways.NoSuchResource;
 import com.home.teamnotifier.gateways.SharedResourceActionsGateway;
 
+import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
+import javax.validation.ConstraintViolationException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +37,26 @@ public class DbSharedResourceActionsGateway implements SharedResourceActionsGate
 
     @Override
     public BroadcastInformation newAction(String userName, int resourceId, String description) {
+        try {
+            return tryPersistNewAction(userName, resourceId, description);
+        } catch (Exception exc) {
+            rethrowConstraintViolation(exc);
+            return null;
+        }
+    }
+
+    private void rethrowConstraintViolation(Exception exc) {
+        if(exc instanceof ConstraintViolationException)
+            throw new EmptyDescription((ConstraintViolationException)exc);
+        if(exc.getCause() != null && exc.getCause() instanceof ConstraintViolationException)
+            throw new EmptyDescription((ConstraintViolationException)(exc.getCause()));
+
+        Throwables.propagate(exc);
+    }
+
+    private BroadcastInformation tryPersistNewAction(String userName, int resourceId, String description) {
         return transactionHelper.transaction(em -> {
-            final SharedResourceEntity resourceEntity = em.find(SharedResourceEntity.class, resourceId);
+            final SharedResourceEntity resourceEntity = getSharedResourceEntity(resourceId, em);
             final UserEntity userEntity = getUserEntity(userName, em);
 
             final ActionOnSharedResourceEntity action = new ActionOnSharedResourceEntity(
@@ -41,7 +64,7 @@ public class DbSharedResourceActionsGateway implements SharedResourceActionsGate
                     resourceEntity,
                     description
             );
-            em.merge(action);
+            em.persist(action);
 
             final Instant time = action.getActionTime();
             return new BroadcastInformation(
@@ -56,10 +79,18 @@ public class DbSharedResourceActionsGateway implements SharedResourceActionsGate
         });
     }
 
+    private SharedResourceEntity getSharedResourceEntity(int resourceId, EntityManager em) {
+        final SharedResourceEntity entity = em.find(SharedResourceEntity.class, resourceId);
+        if (entity == null)
+            throw new NoSuchResource(String.format("No resource with id %d", resourceId));
+
+        return entity;
+    }
+
     @Override
     public ActionsInfo getActions(final int resourceId, final Range<Instant> range) {
         final List<ActionOnSharedResourceEntity> actions = transactionHelper.transaction(em -> {
-            final SharedResourceEntity resource = em.find(SharedResourceEntity.class, resourceId);
+            final SharedResourceEntity resource = getSharedResourceEntity(resourceId, em);
             final CriteriaBuilder cb = em.getCriteriaBuilder();
             final CriteriaQuery<ActionOnSharedResourceEntity> cq = cb
                     .createQuery(ActionOnSharedResourceEntity.class);

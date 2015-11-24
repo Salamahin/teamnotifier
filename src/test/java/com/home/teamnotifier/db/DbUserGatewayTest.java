@@ -1,6 +1,7 @@
 package com.home.teamnotifier.db;
 
 import com.home.teamnotifier.DbPreparer;
+import com.home.teamnotifier.gateways.InvalidCredentials;
 import com.home.teamnotifier.gateways.NoSuchUser;
 import com.home.teamnotifier.gateways.UserCredentials;
 import com.home.teamnotifier.utils.PasswordHasher;
@@ -40,9 +41,8 @@ public class DbUserGatewayTest {
         userGateway.userCredentials(getRandomString());
     }
 
-    @Test(expected = Exception.class)
-    public void testEmptyCredentialsFails()
-            throws Exception {
+    @Test(expected = InvalidCredentials.class)
+    public void testEmptyCredentialsFails() throws Exception {
         final String userName = "";
         final String password = "";
         userGateway.newUser(userName, password);

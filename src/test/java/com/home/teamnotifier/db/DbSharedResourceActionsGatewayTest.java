@@ -3,6 +3,9 @@ package com.home.teamnotifier.db;
 import com.google.common.collect.Range;
 import com.home.teamnotifier.DbPreparer;
 import com.home.teamnotifier.core.responses.action.ActionsInfo;
+import com.home.teamnotifier.gateways.EmptyDescription;
+import com.home.teamnotifier.gateways.NoSuchResource;
+import com.home.teamnotifier.gateways.NoSuchUser;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,19 +22,12 @@ public class DbSharedResourceActionsGatewayTest {
     private static final DbPreparer helper = new DbPreparer();
 
     private DbSharedResourceActionsGateway gateway;
-
     private EnvironmentEntity environment;
-
     private Instant firstEver;
-
     private Instant lastEver;
-
     private Instant middle;
-
     private List<ActionData> actionsBeforeMiddle;
-
     private List<ActionData> actionAfterMiddle;
-
     private Integer resourceId;
 
     @Test
@@ -84,6 +80,29 @@ public class DbSharedResourceActionsGatewayTest {
                 .contains(userName2);
     }
 
+    @Test(expected = NoSuchResource.class)
+    public void testNoSuchResourceWhenNewActionWithNotPresentResource() {
+        final String userName = helper.createPersistedUser(getRandomString(), getRandomString()).getName();
+        gateway.newAction(userName, -1, "desc");
+    }
+
+    @Test(expected = NoSuchResource.class)
+    public void testNoSuchResourceWhenGetActionsOfNotPersistedResource() {
+        gateway.getActions(-1, Range.closed(firstEver, lastEver));
+    }
+
+    @Test(expected = EmptyDescription.class)
+    public void testEmptyDescriptionWhenNewAction() {
+        final String userName = helper.createPersistedUser(getRandomString(), getRandomString()).getName();
+        gateway.newAction(userName, resourceId, "");
+    }
+
+    @Test(expected = NoSuchUser.class)
+    public void testNoSuchUserWhenNewActionWithNotPresentUser() {
+        gateway.newAction(getRandomString(), resourceId, "");
+    }
+
+
     @Before
     public void setUp()
             throws Exception {
@@ -121,7 +140,7 @@ public class DbSharedResourceActionsGatewayTest {
         return gateway.getActions(resourceId, Range.all());
     }
 
-    static class ActionData {
+    private static class ActionData {
         public final Instant time;
 
         public final String description;

@@ -1,6 +1,9 @@
 package com.home.teamnotifier.db;
 
+import com.home.teamnotifier.gateways.NoSuchUser;
+
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -20,7 +23,11 @@ final class DbGatewayCommons {
         final CriteriaQuery<UserEntity> selectUserQuery = cq
                 .where(cb.equal(rootEntry.get("name"), userName));
 
-        return em.createQuery(selectUserQuery).getSingleResult();
+        try {
+            return em.createQuery(selectUserQuery).getSingleResult();
+        } catch (NoResultException exc) {
+            throw  new NoSuchUser(String.format("No user with name %s found", userName), exc);
+        }
     }
 
     static List<String> getSubscribersButUser(final String userName, final AppServerEntity server) {
