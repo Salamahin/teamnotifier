@@ -11,7 +11,7 @@ import java.util.List;
 @Table(schema = "teamnotifier", name = "Environment")
 public final class EnvironmentEntity implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private final Integer id;
 
     @Column(nullable = false, unique = true)

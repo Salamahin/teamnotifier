@@ -14,7 +14,7 @@ import java.time.Instant;
 )
 public final class SubscriptionEntity implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private final Integer id;
 
     @ManyToOne(optional = false, cascade = {CascadeType.DETACH, CascadeType.MERGE,CascadeType.PERSIST})

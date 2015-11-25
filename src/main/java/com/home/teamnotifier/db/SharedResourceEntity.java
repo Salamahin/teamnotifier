@@ -11,7 +11,7 @@ import java.util.Optional;
 @Table(schema = "teamnotifier", name = "SharedResource")
 public final class SharedResourceEntity implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private final Integer id;
 
     @Column(nullable = false)
