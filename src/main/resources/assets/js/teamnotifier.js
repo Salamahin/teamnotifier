@@ -35,15 +35,28 @@ function sendWhoAmIRequest() {
     xhttp.send();
 }
 
+function setnAuthRequestWithInsertedData() {
+    var username = document.getElementById("ibox_username").value;
+    var password = document.getElementById("ibox_password").value;
+    sendAuthRequest(username, password);
+}
+
 function authenticate() {
     document.getElementById("btn_authenticate").onclick = function () {
-        var username = document.getElementById("ibox_username").value;
-        var password = document.getElementById("ibox_password").value;
-        sendAuthRequest(username, password);
+       setnAuthRequestWithInsertedData();
     };
     document.getElementById("btn_register").onclick = function () {
         sendRegisterRequest();
     };
+
+    document.getElementById("ibox_password").onkeydown=function() {
+        setnAuthRequestWithInsertedData();
+    };
+
+    document.getElementById("ibox_username").onkeydown=function() {
+        setnAuthRequestWithInsertedData();
+    };
+
 
     var loadedToken = loadCookie(TOKEN_COOKIE);
     if (loadedToken != undefined) {
@@ -120,8 +133,13 @@ function connectStatusSocket() {
     };
 
     websocket.onmessage = function (evt) {
-        new Notification(buildNotification(JSON.parse(evt.data)));
-        getState();
+       var info = JSON.parse(evt.data);
+       getState();
+
+       if(info.action == "SUBSCRIBE" || info.action == "UNSUBSCRIBE")
+         return;
+
+       new Notification(buildNotification(JSON.parse(evt.data)));
     };
 
     websocket.onerror = function () {
@@ -142,12 +160,6 @@ function buildNotification(data) {
     } else if (data.action == "FREE") {
         target = getResourceFullName(data.targetId);
         return "[" + (new Date(data.timestamp).toLocaleString()) + "] " + data.name + ": " + target + " free";
-    } else if (data.action == "SUBSCRIBE") {
-        target = getSrvName(data.targetId);
-        return "[" + (new Date(data.timestamp).toLocaleString()) + "] " + data.name + ": " + target + " subscribe";
-    } else if (data.action == "UNSUBSCRIBE") {
-        target = getSrvName(data.targetId);
-        return "[" + (new Date(data.timestamp).toLocaleString()) + "] " + data.name + ": " + target + " unsubscribe";
     }
 
     return undefined;
@@ -384,7 +396,7 @@ function getActionButton(resource) {
 }
 
 function getReservationCheckbox(resource, reserved) {
-    return newLabeledCheckbox(resource.name, reserved, function () {
+    return newLabeledCheckbox("Reserve " + resource.name, reserved, function () {
             reserved ? free(resource.id) : reserve(resource.id);
         }
     );
