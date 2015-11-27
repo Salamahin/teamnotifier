@@ -2,10 +2,10 @@ server:
   rootPath: /teamnotifier/*
   applicationConnectors:
     - type: http
-      port: 7996
+      port: 7998
   adminConnectors:
     - type: http
-      port: 7997
+      port: 7999
   requestLog:
       appenders: []
 

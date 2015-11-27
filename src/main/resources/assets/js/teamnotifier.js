@@ -145,7 +145,7 @@ function connectStatusSocket() {
        if(info.action == "SUBSCRIBE" || info.action == "UNSUBSCRIBE")
          return;
 
-       new Notification(buildNotification(JSON.parse(evt.data)));
+       showNotification(JSON.parse(evt.data));
     };
 
     websocket.onerror = function () {
@@ -154,18 +154,27 @@ function connectStatusSocket() {
     };
 }
 
-function buildNotification(data) {
+function showNotification(info) {
+    var header = info.name;
+    var body = buildNotificationBody(info);
+    new Notification(header, {
+        tag: header,
+        body: body,
+    });
+}
+
+function buildNotificationBody(data) {
     var target;
 
     if (data.action == "ACTION_ON_RESOURCE") {
         target = getResourceFullName(data.targetId);
-        return "[" + (new Date(data.timestamp).toLocaleString()) + "] " + data.name + ": " + target + " " + data.details;
+        return "[" + (new Date(data.timestamp).toLocaleString()) + "] " + target + " " + data.details;
     } else if (data.action == "RESERVE") {
         target = getResourceFullName(data.targetId);
-        return "[" + (new Date(data.timestamp).toLocaleString()) + "] " + data.name + ": " + target + " reserve";
+        return "[" + (new Date(data.timestamp).toLocaleString()) + "] "  + target + " reserve";
     } else if (data.action == "FREE") {
         target = getResourceFullName(data.targetId);
-        return "[" + (new Date(data.timestamp).toLocaleString()) + "] " + data.name + ": " + target + " free";
+        return "[" + (new Date(data.timestamp).toLocaleString()) + "] " + target + " free";
     }
 
     return undefined;
