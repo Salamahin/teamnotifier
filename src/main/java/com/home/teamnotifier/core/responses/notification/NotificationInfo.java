@@ -41,7 +41,8 @@ public class NotificationInfo {
             final Instant timestamp,
             final BroadcastAction action,
             final int targetId,
-            final String details) {
+            final String details
+    ) {
         this.name = name;
         this.details = details;
         this.timestamp = timestamp.toString();

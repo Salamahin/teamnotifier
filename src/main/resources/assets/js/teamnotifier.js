@@ -49,11 +49,17 @@ function authenticate() {
         sendRegisterRequest();
     };
 
-    document.getElementById("ibox_password").onkeydown=function() {
+    document.getElementById("ibox_password").onkeydown=function(e) {
+        if(e.keyCode != 13)
+            return;
+
         setnAuthRequestWithInsertedData();
     };
 
-    document.getElementById("ibox_username").onkeydown=function() {
+    document.getElementById("ibox_username").onkeydown=function(e) {
+        if(e.keyCode != 13)
+            return;
+
         setnAuthRequestWithInsertedData();
     };
 
@@ -396,7 +402,7 @@ function getActionButton(resource) {
 }
 
 function getReservationCheckbox(resource, reserved) {
-    return newLabeledCheckbox("Reserve " + resource.name, reserved, function () {
+    return newLabeledCheckbox("reserve " + resource.name, reserved, function () {
             reserved ? free(resource.id) : reserve(resource.id);
         }
     );
