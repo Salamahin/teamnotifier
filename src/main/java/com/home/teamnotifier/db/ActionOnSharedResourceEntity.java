@@ -7,7 +7,7 @@ import java.time.Instant;
 
 @Entity
 @Table(schema = "teamnotifier", name = "ActionOnSharedResource")
-public final class ActionOnSharedResourceEntity implements Serializable {
+final class ActionOnSharedResourceEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private final Integer id;

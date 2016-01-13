@@ -23,7 +23,7 @@ public class ResourceMonitor {
     private final NotificationManager notificationManager;
 
     @Inject
-    public ResourceMonitor(
+    private ResourceMonitor(
             final EnvironmentGateway environmentGateway,
             final SubscriptionGateway subscriptionGateway,
             final SharedResourceActionsGateway sharedResourceActionsGateway,
@@ -41,7 +41,7 @@ public class ResourceMonitor {
         fireNotification(information);
     }
 
-    void fireNotification(final BroadcastInformation information) {
+    private void fireNotification(final BroadcastInformation information) {
         LOGGER.debug("New notification to be fired: {}", information);
         notificationManager.pushToClients(information.getSubscribers(), information.getValue());
     }

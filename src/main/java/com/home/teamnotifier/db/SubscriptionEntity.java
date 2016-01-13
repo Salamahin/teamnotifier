@@ -12,7 +12,7 @@ import java.time.Instant;
                 @UniqueConstraint(columnNames = {"appServerId", "subscriberId"}, name ="uk_serverId_subscriberId")
         }
 )
-public final class SubscriptionEntity implements Serializable {
+final class SubscriptionEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private final Integer id;
