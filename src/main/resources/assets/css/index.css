@@ -69,14 +69,14 @@ html, body {
 }
 
 #server {
-    color: #858585;
+    color: #e3e3e3;
     margin: 0;
     padding: 30px 0 0 0;
     font: bold 40px Tahoma, Verdana, Segoe, sans-serif;
 }
 
 #subscription {
-    color: #858585;
+    color: #e3e3e3;
     font: 20px Tahoma, Verdana, Segoe, sans-serif;
 }
 
@@ -90,7 +90,7 @@ html, body {
 
 #subscribers li {
     font: 12px Tahoma, Verdana, Segoe, sans-serif;
-    color: #4d4d4d;
+    color: #e3e3e3;
 }
 
 #subscribers > li {
