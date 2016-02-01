@@ -58,17 +58,13 @@ public final class AppServerEntity implements Serializable {
         return name;
     }
 
-    public EnvironmentEntity getEnvironment() {
-        return environment;
-    }
-
     public List<SharedResourceEntity> getImmutableListOfResources() {
         return ImmutableList.copyOf(resources);
     }
 
-    List<SubscriptionData> getImmutableListOfSubscribers() {
+    List<String> getImmutableListOfSubscribers() {
         return ImmutableList.copyOf(subscriptions.stream()
-                .map(s -> new SubscriptionData(s.getSubscriber().getName(), s.getTimestamp()))
+                .map(s -> s.getSubscriber().getName())
                 .collect(Collectors.toList())
         );
     }

@@ -53,10 +53,6 @@ public class DbEnvironmentGateway implements EnvironmentGateway {
     }
 
     private AppServerInfo toAppSever(final AppServerEntity entity) {
-        final List<String> subscribersNames = entity.getImmutableListOfSubscribers().stream()
-                .map(SubscriptionData::getUserName)
-                .collect(toList());
-
         final List<SharedResourceInfo> resources = entity.getImmutableListOfResources().stream()
                 .map(this::toResource)
                 .collect(toList());
@@ -65,7 +61,7 @@ public class DbEnvironmentGateway implements EnvironmentGateway {
                 entity.getId(),
                 entity.getName(),
                 resources,
-                subscribersNames
+                entity.getImmutableListOfSubscribers()
         );
     }
 

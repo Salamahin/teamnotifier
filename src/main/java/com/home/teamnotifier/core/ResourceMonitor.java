@@ -23,6 +23,7 @@ public class ResourceMonitor {
     private final NotificationManager notificationManager;
 
     @Inject
+    @SuppressWarnings("unused")
     private ResourceMonitor(
             final EnvironmentGateway environmentGateway,
             final SubscriptionGateway subscriptionGateway,

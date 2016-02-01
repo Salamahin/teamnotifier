@@ -40,10 +40,6 @@ public final class EnvironmentEntity implements Serializable {
         return appServerEntity;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
     public String getName() {
         return name;
     }

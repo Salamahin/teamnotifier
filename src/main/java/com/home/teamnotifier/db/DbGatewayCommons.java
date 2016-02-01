@@ -32,7 +32,6 @@ final class DbGatewayCommons {
 
     static List<String> getSubscribersButUser(final String userName, final AppServerEntity server) {
         return server.getImmutableListOfSubscribers().stream()
-                .map(SubscriptionData::getUserName)
                 .filter(s -> !Objects.equals(s, userName))
                 .collect(Collectors.toList());
     }

@@ -58,11 +58,4 @@ final class ActionOnSharedResourceEntity implements Serializable {
         return actionTime;
     }
 
-    public SharedResourceEntity getResource() {
-        return resource;
-    }
-
-    public Integer getId() {
-        return id;
-    }
 }
