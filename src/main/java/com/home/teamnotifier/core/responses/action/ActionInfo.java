@@ -42,10 +42,6 @@ public class ActionInfo implements Serializable {
     }
 
 
-    public String getUserName() {
-        return userName;
-    }
-
     public Instant getTimestamp() {
         return ZonedDateTime.parse(timestamp).toInstant();
     }

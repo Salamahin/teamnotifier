@@ -29,10 +29,6 @@ public class EnvironmentInfo {
         this.servers = ImmutableList.copyOf(servers);
     }
 
-    public String getName() {
-        return name;
-    }
-
     public List<AppServerInfo> getServers() {
         return servers;
     }

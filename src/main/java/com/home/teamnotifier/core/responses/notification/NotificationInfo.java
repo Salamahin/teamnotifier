@@ -50,26 +50,6 @@ public class NotificationInfo {
         this.targetId = targetId;
     }
 
-    public String getDetails() {
-        return details;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Instant getTimestamp() {
-        return ZonedDateTime.parse(timestamp).toInstant();
-    }
-
-    public BroadcastAction getAction() {
-        return action;
-    }
-
-    public int getTargetId() {
-        return targetId;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

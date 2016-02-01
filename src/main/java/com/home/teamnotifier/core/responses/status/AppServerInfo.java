@@ -37,10 +37,6 @@ public class AppServerInfo {
         this.subscribers = ImmutableList.copyOf(subscibers);
     }
 
-    public String getName() {
-        return name;
-    }
-
     public int getId() {
         return id;
     }

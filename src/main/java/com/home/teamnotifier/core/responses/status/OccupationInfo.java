@@ -40,10 +40,6 @@ public class OccupationInfo {
         return userName;
     }
 
-    public Instant getOccupationTime() {
-        return ZonedDateTime.parse(occupationTime).toInstant();
-    }
-
     @Override
     public int hashCode() {
         return Objects.hash(userName, occupationTime);

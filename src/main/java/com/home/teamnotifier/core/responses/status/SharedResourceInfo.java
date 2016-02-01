@@ -34,10 +34,6 @@ public class SharedResourceInfo {
         return id;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public OccupationInfo getOccupationInfo() {
         return occupationInfo;
     }
