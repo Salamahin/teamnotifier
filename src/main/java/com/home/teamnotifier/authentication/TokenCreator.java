@@ -13,7 +13,8 @@ public class TokenCreator {
     private final HmacSHA512Signer signer;
 
     @Inject
-    public TokenCreator(final NotifierConfiguration configuration) {
+    @SuppressWarnings("unused")
+    private TokenCreator(final NotifierConfiguration configuration) {
         signer = new HmacSHA512Signer(configuration.getAuthenticationConfiguration().getJwtSecret().getBytes());
     }
 

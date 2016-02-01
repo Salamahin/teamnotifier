@@ -3,7 +3,6 @@ package com.home.teamnotifier.core.responses.status;
 import com.fasterxml.jackson.annotation.*;
 
 import java.time.Instant;
-import java.time.ZonedDateTime;
 import java.util.Objects;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")

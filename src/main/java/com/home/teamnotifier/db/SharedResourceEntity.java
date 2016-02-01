@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Entity
 @Table(schema = "teamnotifier", name = "SharedResource")
-public final class SharedResourceEntity implements Serializable {
+final class SharedResourceEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private final Integer id;

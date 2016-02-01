@@ -10,10 +10,12 @@ public class NotifierConfiguration extends Configuration {
 
     @Valid
     @NotNull
+    @SuppressWarnings("unused")
     private ExecutorsConfiguration executorsConfiguration;
 
     @Valid
     @NotNull
+    @SuppressWarnings("unused")
     private AuthenticationConfiguration authenticationConfiguration;
 
     @JsonProperty(value = "executors")
@@ -26,9 +28,11 @@ public class NotifierConfiguration extends Configuration {
         return authenticationConfiguration;
     }
 
+    @SuppressWarnings("unused")
     public static class AuthenticationConfiguration {
         @Valid
         @NotNull
+        @SuppressWarnings("unused")
         private String jwtSecret;
 
         @JsonProperty(value = "jwtSecret")
@@ -37,9 +41,11 @@ public class NotifierConfiguration extends Configuration {
         }
     }
 
+    @SuppressWarnings("unused")
     public static class ExecutorsConfiguration {
         @Valid
         @NotNull
+        @SuppressWarnings("unused")
         private Integer poolSize;
 
         @JsonProperty(value = "poolSize")

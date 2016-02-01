@@ -15,10 +15,12 @@ import java.time.Instant;
 final class SubscriptionEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @SuppressWarnings("unused")
     private final Integer id;
 
     @ManyToOne(optional = false, cascade = {CascadeType.DETACH, CascadeType.MERGE,CascadeType.PERSIST})
     @JoinColumn(name = "appServerId")
+    @SuppressWarnings("unused")
     private final AppServerEntity appServer;
 
     @ManyToOne(optional = false, cascade = {CascadeType.DETACH, CascadeType.MERGE,CascadeType.PERSIST})
@@ -42,10 +44,6 @@ final class SubscriptionEntity implements Serializable {
         this.appServer = server;
         this.subscriber = user;
         this.timestamp = Instant.now();
-    }
-
-    public Integer getId() {
-        return id;
     }
 
     public UserEntity getSubscriber() {

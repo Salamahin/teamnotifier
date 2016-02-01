@@ -10,9 +10,11 @@ import java.time.Instant;
 final class ActionOnSharedResourceEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @SuppressWarnings("unused")
     private final Integer id;
 
     @ManyToOne(optional = false, cascade = CascadeType.ALL)
+    @SuppressWarnings("unused")
     private final SharedResourceEntity resource;
 
     @ManyToOne(optional = false, cascade = CascadeType.ALL)

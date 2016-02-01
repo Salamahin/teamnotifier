@@ -12,6 +12,7 @@ import java.util.List;
 public final class EnvironmentEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @SuppressWarnings("unused")
     private final Integer id;
 
     @Column(nullable = false, unique = true)
