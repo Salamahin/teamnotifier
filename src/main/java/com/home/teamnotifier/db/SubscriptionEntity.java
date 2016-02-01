@@ -29,6 +29,7 @@ final class SubscriptionEntity implements Serializable {
     private final Instant timestamp;
 
     //for hibernate
+    @SuppressWarnings("unused")
     private SubscriptionEntity() {
         id = null;
         appServer = null;

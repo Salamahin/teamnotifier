@@ -12,10 +12,6 @@ public final class DbPreparer {
 
     public final TransactionHelper TRANSACTION_HELPER;
 
-    public DbPreparer(final TransactionHelper helper) {
-        this.TRANSACTION_HELPER = helper;
-    }
-
     public DbPreparer() {
         TRANSACTION_HELPER = new TransactionHelper();
     }

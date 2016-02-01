@@ -48,6 +48,7 @@ final class NotifierModule extends AbstractModule {
 
     @Provides
     @Singleton
+    @SuppressWarnings("unused")
     public Executor newExecutor(final NotifierConfiguration configuration) {
         return Executors.newFixedThreadPool(
                 configuration.getExecutorsConfiguration().getPoolSize(),

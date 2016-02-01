@@ -2,7 +2,6 @@ package com.home.teamnotifier.db;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.BoundType;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Range;
 import com.google.inject.Inject;
 import com.home.teamnotifier.core.responses.action.ActionInfo;

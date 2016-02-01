@@ -38,9 +38,7 @@ public class ActionInfo implements Serializable {
             final Instant timestamp,
             final String description
     ) {
-        this.userName = userName;
-        this.timestamp = timestamp.toString();
-        this.description = description;
+        this(userName, timestamp.toString(), description);
     }
 
 

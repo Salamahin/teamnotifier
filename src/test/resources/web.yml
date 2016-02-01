@@ -27,3 +27,6 @@ logging:
 
 executors:
   poolSize: 20
+
+authentication:
+  jwtSecret: 'a%$Ggja9324@#35;5i9s;gse.sd23fOGFDkfsk*334'

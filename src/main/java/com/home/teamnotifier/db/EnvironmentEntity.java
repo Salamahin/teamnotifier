@@ -21,6 +21,7 @@ public final class EnvironmentEntity implements Serializable {
     private final List<AppServerEntity> appServers;
 
     //for hibernate
+    @SuppressWarnings("unused")
     private EnvironmentEntity() {
         id = null;
         name = null;

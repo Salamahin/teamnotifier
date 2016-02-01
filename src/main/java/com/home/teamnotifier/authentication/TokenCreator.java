@@ -14,7 +14,7 @@ public class TokenCreator {
 
     @Inject
     public TokenCreator(final NotifierConfiguration configuration) {
-        signer = new HmacSHA512Signer(configuration.getJwtTokenSecret());
+        signer = new HmacSHA512Signer(configuration.getAuthenticationConfiguration().getJwtSecret().getBytes());
     }
 
     public String getTokenFor(final int userId) {

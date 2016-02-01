@@ -15,6 +15,7 @@ import io.federecio.dropwizard.junitrunner.DropwizardJunitRunner;
 import io.federecio.dropwizard.junitrunner.DropwizardTestConfig;
 import org.eclipse.jetty.http.HttpStatus;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -33,6 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(DropwizardJunitRunner.class)
 @DropwizardTestConfig(applicationClass = NotifierApplication.class, yamlFile = "/web.yml")
+@Ignore
 public class FullRestServiceTest {
     private String token;
 

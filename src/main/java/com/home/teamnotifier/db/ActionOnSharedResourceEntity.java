@@ -26,6 +26,7 @@ final class ActionOnSharedResourceEntity implements Serializable {
     private final String details;
 
     //for hibernate
+    @SuppressWarnings("unused")
     private ActionOnSharedResourceEntity() {
         id = null;
         resource = null;

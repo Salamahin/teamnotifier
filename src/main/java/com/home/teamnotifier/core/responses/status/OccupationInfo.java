@@ -19,6 +19,7 @@ public class OccupationInfo {
     private final String occupationTime;
 
     @JsonCreator
+    @SuppressWarnings("unused")
     public OccupationInfo(
             @JsonProperty("userName") final String userName,
             @JsonProperty("occupationTime") final String occupationTime

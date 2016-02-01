@@ -45,16 +45,16 @@ public class NotifierApplication extends Application<NotifierConfiguration> {
                 .getInjector()
                 .getInstance(ClientManager.class);
 
+        final byte[] jwtSecret = configuration.getAuthenticationConfiguration().getJwtSecret().getBytes();
         final JwtTokenAuthenticator authenticator = new JwtTokenAuthenticator(
                 INJECTION_BUNDLE.getInjector().getInstance(UserGateway.class),
-                new HmacSHA512Verifier(configuration.getJwtTokenSecret())
+                new HmacSHA512Verifier(jwtSecret)
         );
 
         registerWebsocket(environment, authenticator, clientManager);
 
         final JsonWebTokenParser tokenParser = new DefaultJsonWebTokenParser();
-        final HmacSHA512Verifier tokenVerifier = new HmacSHA512Verifier(
-                configuration.getJwtTokenSecret());
+        final HmacSHA512Verifier tokenVerifier = new HmacSHA512Verifier(jwtSecret);
 
         environment.jersey().register(new AuthDynamicFeature(
                         new JWTAuthFilter.Builder<AuthenticatedUserData>()

@@ -22,11 +22,13 @@ public enum BroadcastAction {
     }
 
     @JsonCreator
+    @SuppressWarnings("unused")
     public static BroadcastAction forValue(String value) {
         return namesMap.get(value);
     }
 
     @JsonValue
+    @SuppressWarnings("unused")
     public String toValue() {
         return namesMap.inverse().get(this);
     }
