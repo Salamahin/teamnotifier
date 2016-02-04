@@ -15,7 +15,6 @@ import io.federecio.dropwizard.junitrunner.DropwizardJunitRunner;
 import io.federecio.dropwizard.junitrunner.DropwizardTestConfig;
 import org.eclipse.jetty.http.HttpStatus;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -34,7 +33,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(DropwizardJunitRunner.class)
 @DropwizardTestConfig(applicationClass = NotifierApplication.class, yamlFile = "/web.yml")
-@Ignore
 public class FullRestServiceTest {
     private String token;
 
@@ -251,7 +249,7 @@ public class FullRestServiceTest {
 
     @Before
     public void setUp() {
-        port = 7998;
+        port = 7996;
 
         helper = new IntegrationTestHelper();
         helper.prepareEnvironment();

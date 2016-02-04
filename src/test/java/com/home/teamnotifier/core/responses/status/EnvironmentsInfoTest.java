@@ -37,7 +37,8 @@ public class EnvironmentsInfoTest {
                 1,
                 "server",
                 Lists.newArrayList(createFineSharedResourceInfo()),
-                Lists.newArrayList("user")
+                Lists.newArrayList("user"),
+                true
         );
     }
 

@@ -9,6 +9,7 @@
           "type": "AppServer",
           "id": 1,
           "name": "server",
+          "isOnline": true,
           "resources": [
             {
               "type": "SharedResource",

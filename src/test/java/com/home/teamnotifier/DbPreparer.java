@@ -14,6 +14,7 @@ public final class DbPreparer {
 
     public DbPreparer() {
         TRANSACTION_HELPER = new TransactionHelper();
+        TRANSACTION_HELPER.start();
     }
 
     public static String getRandomString() {

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.*;
 import java.time.Instant;
 import java.util.Objects;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonAutoDetect(
         fieldVisibility = JsonAutoDetect.Visibility.ANY,
@@ -14,39 +15,35 @@ import java.util.Objects;
         creatorVisibility = JsonAutoDetect.Visibility.NONE)
 @JsonTypeName("NotificationInfo")
 public class NotificationInfo {
-    private final String name;
+    private final String actor;
     private final String timestamp;
-    private final BroadcastAction action;
+    private final EventType event;
     private final int targetId;
     private final String details;
 
     @JsonCreator
-    public NotificationInfo(
-            @JsonProperty("name") final String name,
+    private NotificationInfo(
+            @JsonProperty("actor") final String actor,
             @JsonProperty("timestamp") final String timestamp,
-            @JsonProperty("action") final BroadcastAction action,
+            @JsonProperty("event") final EventType event,
             @JsonProperty("targetId") final int targetId,
             @JsonProperty("details") final String details
     ) {
-        this.name = name;
+        this.actor = actor;
         this.timestamp = timestamp;
-        this.action = action;
+        this.event = event;
         this.targetId = targetId;
         this.details = details;
     }
 
     public NotificationInfo(
-            final String name,
+            final String actor,
             final Instant timestamp,
-            final BroadcastAction action,
+            final EventType event,
             final int targetId,
             final String details
     ) {
-        this.name = name;
-        this.details = details;
-        this.timestamp = timestamp.toString();
-        this.action = action;
-        this.targetId = targetId;
+        this(actor, timestamp.toString(), event, targetId, details);
     }
 
     @Override
@@ -55,23 +52,23 @@ public class NotificationInfo {
         if (o == null || getClass() != o.getClass()) return false;
         NotificationInfo that = (NotificationInfo) o;
         return targetId == that.targetId &&
-                Objects.equals(name, that.name) &&
+                Objects.equals(actor, that.actor) &&
                 Objects.equals(timestamp, that.timestamp) &&
                 Objects.equals(details, that.details) &&
-                action == that.action;
+                event == that.event;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, timestamp, action, targetId, details);
+        return Objects.hash(actor, timestamp, event, targetId, details);
     }
 
     @Override
     public String toString() {
         return "NotificationInfo{" +
-                "name='" + name + '\'' +
+                "actor='" + actor + '\'' +
                 ", timestamp='" + timestamp + '\'' +
-                ", action=" + action +
+                ", event=" + event +
                 ", targetId=" + targetId +
                 ", details='" + details + '\'' +
                 '}';

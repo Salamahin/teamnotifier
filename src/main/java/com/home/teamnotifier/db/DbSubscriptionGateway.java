@@ -2,7 +2,7 @@ package com.home.teamnotifier.db;
 
 import com.google.common.base.Throwables;
 import com.google.inject.Inject;
-import com.home.teamnotifier.core.responses.notification.BroadcastAction;
+import com.home.teamnotifier.core.responses.notification.EventType;
 import com.home.teamnotifier.core.responses.notification.NotificationInfo;
 import com.home.teamnotifier.gateways.*;
 import org.hibernate.exception.ConstraintViolationException;
@@ -68,7 +68,7 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
                 new NotificationInfo(
                         userName,
                         subscriptionEntity.getTimestamp(),
-                        BroadcastAction.SUBSCRIBE,
+                        EventType.SUBSCRIBE,
                         appServerEntity.getId(),
                         ""),
                 subscribersNames
@@ -99,7 +99,7 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
 
             final int rowsAffected = em.createQuery(delete.where(userAndServerEqualToProvided)).executeUpdate();
 
-            if(rowsAffected == 0)
+            if (rowsAffected == 0)
                 throw new NotSubscribed(String.format("User %s was not subscribed on server %d", userName, serverId));
 
             final List<String> subscribersNames = getSubscribersButUser(userName, serverEntity);
@@ -107,7 +107,7 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
                     new NotificationInfo(
                             userName,
                             Instant.now(),
-                            BroadcastAction.UNSUBSCRIBE,
+                            EventType.UNSUBSCRIBE,
                             serverEntity.getId(),
                             ""),
                     subscribersNames
@@ -122,7 +122,7 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
                 new NotificationInfo(
                         userName,
                         resource.getReservationData().get().getOccupationTime(),
-                        BroadcastAction.RESERVE,
+                        EventType.RESERVE,
                         resource.getId(),
                         ""),
                 getSubscribersButUser(userName, resource.getAppServer())
@@ -165,7 +165,7 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
                 new NotificationInfo(
                         userName,
                         Instant.now(),
-                        BroadcastAction.FREE,
+                        EventType.FREE,
                         resource.getId(),
                         ""),
                 getSubscribersButUser(userName, resource.getAppServer())

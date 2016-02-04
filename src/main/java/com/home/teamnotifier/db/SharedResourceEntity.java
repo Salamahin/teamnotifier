@@ -5,6 +5,7 @@ import com.google.common.base.Preconditions;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.Objects;
 import java.util.Optional;
 
 @Entity
@@ -69,5 +70,19 @@ final class SharedResourceEntity implements Serializable {
         } else {
             return Optional.empty();
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SharedResourceEntity that = (SharedResourceEntity) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
     }
 }

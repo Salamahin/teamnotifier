@@ -7,10 +7,15 @@ import com.github.toastshaman.dropwizard.auth.jwt.parser.DefaultJsonWebTokenPars
 import com.home.teamnotifier.authentication.AuthenticatedUserData;
 import com.home.teamnotifier.authentication.JwtTokenAuthenticator;
 import com.home.teamnotifier.authentication.WebsocketAuthenticator;
+import com.home.teamnotifier.core.AppServerAvailabilityChecker;
 import com.home.teamnotifier.gateways.EnvironmentGateway;
 import com.home.teamnotifier.gateways.UserGateway;
+import com.home.teamnotifier.health.AppServerStates;
 import com.home.teamnotifier.health.DbConnection;
 import com.home.teamnotifier.health.Sessions;
+import com.home.teamnotifier.web.lifecycle.ExecutorsManager;
+import com.home.teamnotifier.web.lifecycle.ServerStatusCheckerManager;
+import com.home.teamnotifier.web.lifecycle.TransactionManager;
 import com.home.teamnotifier.web.socket.BroadcastServlet;
 import com.home.teamnotifier.web.socket.ClientManager;
 import io.dropwizard.Application;
@@ -67,8 +72,7 @@ public class NotifierApplication extends Application<NotifierConfiguration> {
                 )
         );
         environment.jersey().register(RolesAllowedDynamicFeature.class);
-        environment.jersey()
-                .register(new AuthValueFactoryProvider.Binder<>(AuthenticatedUserData.class));
+        environment.jersey().register(new AuthValueFactoryProvider.Binder<>(AuthenticatedUserData.class));
 
         final EnvironmentGateway environmentGateway = INJECTION_BUNDLE
                 .getInjector()
@@ -76,6 +80,13 @@ public class NotifierApplication extends Application<NotifierConfiguration> {
 
         environment.healthChecks().register("DbConnection", new DbConnection(environmentGateway));
         environment.healthChecks().register("Sessions", new Sessions(clientManager));
+        environment.healthChecks().register("ServerStatuses", new AppServerStates(
+                INJECTION_BUNDLE.getInjector().getInstance(AppServerAvailabilityChecker.class))
+        );
+
+        environment.lifecycle().manage(INJECTION_BUNDLE.getInjector().getInstance(ServerStatusCheckerManager.class));
+        environment.lifecycle().manage(INJECTION_BUNDLE.getInjector().getInstance(TransactionManager.class));
+        environment.lifecycle().manage(INJECTION_BUNDLE.getInjector().getInstance(ExecutorsManager.class));
     }
 
     private void registerWebsocket(

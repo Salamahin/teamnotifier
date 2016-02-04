@@ -24,17 +24,21 @@ public class AppServerInfo {
 
     private final List<String> subscribers;
 
+    private final Boolean isOnline;
+
     @JsonCreator
     public AppServerInfo(
             @JsonProperty("id") final int id,
             @JsonProperty("name") final String name,
             @JsonProperty("resources") final List<SharedResourceInfo> resources,
-            @JsonProperty("subscribers") final List<String> subscibers
+            @JsonProperty("subscribers") final List<String> subscribers,
+            @JsonProperty("isOnline") final Boolean isOnline
     ) {
         this.name = name;
         this.id = id;
+        this.isOnline = isOnline;
         this.resources = ImmutableList.copyOf(resources);
-        this.subscribers = ImmutableList.copyOf(subscibers);
+        this.subscribers = ImmutableList.copyOf(subscribers);
     }
 
     public int getId() {
@@ -51,7 +55,7 @@ public class AppServerInfo {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, resources, subscribers, id);
+        return Objects.hash(name, resources, subscribers, id, isOnline);
     }
 
     @Override
@@ -66,6 +70,7 @@ public class AppServerInfo {
         return Objects.equals(name, that.name) &&
                 Objects.equals(resources, that.resources) &&
                 Objects.equals(id, that.id) &&
-                Objects.equals(subscribers, that.subscribers);
+                Objects.equals(subscribers, that.subscribers) &&
+                Objects.equals(isOnline, that.isOnline);
     }
 }

@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(schema = "teamnotifier", name = "Environment")
@@ -41,11 +42,32 @@ public final class EnvironmentEntity implements Serializable {
         return appServerEntity;
     }
 
+    public AppServerEntity newAppServer(final String name, final String checkUrl) {
+        final AppServerEntity appServerEntity = new AppServerEntity(this, name, checkUrl);
+        appServers.add(appServerEntity);
+        return appServerEntity;
+    }
+
     public String getName() {
         return name;
     }
 
     public List<AppServerEntity> getImmutableListOfAppServers() {
         return ImmutableList.copyOf(appServers);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EnvironmentEntity that = (EnvironmentEntity) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(appServers, that.appServers);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, appServers);
     }
 }

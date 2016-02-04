@@ -17,17 +17,17 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 
 public class ClientManager implements NotificationManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientManager.class);
 
-    private final Executor executor;
+    private final ExecutorService executor;
     private final BiMap<Session, String> clientSessionsByUsernames;
     private final ObjectMapper mapper = Jackson.newObjectMapper();
 
     @Inject
-    public ClientManager(final Executor executor) {
+    public ClientManager(final ExecutorService executor) {
         this.executor = executor;
         clientSessionsByUsernames = HashBiMap.create();
     }

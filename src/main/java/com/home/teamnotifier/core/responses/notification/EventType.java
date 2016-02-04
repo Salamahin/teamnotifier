@@ -7,23 +7,26 @@ import com.google.common.collect.HashBiMap;
 
 import java.util.Arrays;
 
-public enum BroadcastAction {
+public enum EventType
+{
     SUBSCRIBE,
     UNSUBSCRIBE,
     RESERVE,
     FREE,
+    SERVER_ONLINE,
+    SERVER_OFFLINE,
     ACTION_ON_RESOURCE;
 
-    private static final BiMap<String, BroadcastAction> namesMap = HashBiMap.create();
+    private static final BiMap<String, EventType> namesMap = HashBiMap.create();
 
     static {
-        Arrays.stream(BroadcastAction.values())
+        Arrays.stream(EventType.values())
                 .forEach(at -> namesMap.put(at.name(), at));
     }
 
     @JsonCreator
     @SuppressWarnings("unused")
-    public static BroadcastAction forValue(String value) {
+    public static EventType forValue(String value) {
         return namesMap.get(value);
     }
 

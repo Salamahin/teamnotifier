@@ -135,7 +135,6 @@ function connectStatusSocket() {
     };
 
     websocket.onclose = function () {
-        removeCookie(TOKEN_COOKIE);
     };
 
     websocket.onmessage = function (evt) {
@@ -175,6 +174,12 @@ function buildNotificationBody(data) {
     } else if (data.action == "FREE") {
         target = getResourceFullName(data.targetId);
         return "[" + (new Date(data.timestamp).toLocaleString()) + "] " + target + " free";
+    } else if (data.action == "SERVER_ONLINE") {
+        target = getSrvName(data.targetId);
+        return "[" + (new Date(data.timestamp).toLocaleString()) + "] " + target + " online"
+    }  else if (data.action == "SERVER_OFFLINE") {
+        target = getSrvName(data.targetId);
+        return "[" + (new Date(data.timestamp).toLocaleString()) + "] " + target + " offline"
     }
 
     return undefined;
@@ -657,7 +662,7 @@ function handleHistRequest(XMLHttpRequest) {
 }
 
 function actionInfoToLabel(info) {
-    return newLabel(info.userName + " " + new Date(info.timestamp).toLocaleString() + " " + info.description)
+    return newLabel(info.actor + " " + new Date(info.timestamp).toLocaleString() + " " + info.description)
 }
 
 

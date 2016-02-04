@@ -26,7 +26,7 @@ public class NotifierApplicationRunner {
 
     private static EnvironmentEntity getEuEnv(final String name) {
         final EnvironmentEntity eu = new EnvironmentEntity(name);
-        final AppServerEntity sst = eu.newAppServer("sst");
+        final AppServerEntity sst = eu.newAppServer("sst", "http://google.com");
         final AppServerEntity wfa = eu.newAppServer("wfa");
         eu.newAppServer("wfe");
 

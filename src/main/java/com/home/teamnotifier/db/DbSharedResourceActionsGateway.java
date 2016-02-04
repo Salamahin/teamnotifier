@@ -6,7 +6,7 @@ import com.google.common.collect.Range;
 import com.google.inject.Inject;
 import com.home.teamnotifier.core.responses.action.ActionInfo;
 import com.home.teamnotifier.core.responses.action.ActionsInfo;
-import com.home.teamnotifier.core.responses.notification.BroadcastAction;
+import com.home.teamnotifier.core.responses.notification.EventType;
 import com.home.teamnotifier.core.responses.notification.NotificationInfo;
 import com.home.teamnotifier.gateways.BroadcastInformation;
 import com.home.teamnotifier.gateways.EmptyDescription;
@@ -51,7 +51,7 @@ public class DbSharedResourceActionsGateway implements SharedResourceActionsGate
                 .filter((ConstraintViolationException.class)::isInstance)
                 .findFirst();
 
-        if(firstConstraintViolation.isPresent())
+        if (firstConstraintViolation.isPresent())
             throw new EmptyDescription(firstConstraintViolation.get());
         else
             Throwables.propagate(exc);
@@ -74,7 +74,7 @@ public class DbSharedResourceActionsGateway implements SharedResourceActionsGate
                     new NotificationInfo(
                             userName,
                             time,
-                            BroadcastAction.ACTION_ON_RESOURCE,
+                            EventType.ACTION_ON_RESOURCE,
                             resourceEntity.getId(),
                             description),
                     getSubscribersButUser(userName, resourceEntity.getAppServer())

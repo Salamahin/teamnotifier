@@ -26,7 +26,7 @@ final class DbGatewayCommons {
         try {
             return em.createQuery(selectUserQuery).getSingleResult();
         } catch (NoResultException exc) {
-            throw  new NoSuchUser(String.format("No user with name %s found", userName), exc);
+            throw new NoSuchUser(String.format("No user with name %s found", userName), exc);
         }
     }
 

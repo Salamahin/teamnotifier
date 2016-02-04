@@ -1,6 +1,8 @@
 package com.home.teamnotifier.db;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
+import com.home.teamnotifier.core.AppServerAvailabilityChecker;
 import com.home.teamnotifier.core.responses.status.*;
 import com.home.teamnotifier.gateways.EnvironmentGateway;
 
@@ -15,17 +17,23 @@ import static java.util.stream.Collectors.toList;
 
 public class DbEnvironmentGateway implements EnvironmentGateway {
     private final TransactionHelper transactionHelper;
+    private final AppServerAvailabilityChecker appServerAvailabilityChecker;
 
     @Inject
-    public DbEnvironmentGateway(final TransactionHelper transactionHelper) {
+    public DbEnvironmentGateway(
+            final TransactionHelper transactionHelper,
+            AppServerAvailabilityChecker appServerAvailabilityChecker
+    ) {
         this.transactionHelper = transactionHelper;
+        this.appServerAvailabilityChecker = appServerAvailabilityChecker;
     }
 
     @Override
     public EnvironmentsInfo status() {
+        final ImmutableMap<Integer, Boolean> availabilityMap = appServerAvailabilityChecker.getAvailability();
         return new EnvironmentsInfo(
                 loadListFromDb().stream()
-                        .map(this::toEnvironment)
+                        .map(e -> toEnvironment(e, availabilityMap))
                         .collect(Collectors.toList())
         );
     }
@@ -43,25 +51,28 @@ public class DbEnvironmentGateway implements EnvironmentGateway {
         });
     }
 
-    private EnvironmentInfo toEnvironment(final EnvironmentEntity entity) {
+    private EnvironmentInfo toEnvironment(final EnvironmentEntity entity, final ImmutableMap<Integer, Boolean> availabilityMap) {
         return new EnvironmentInfo(
                 entity.getName(),
                 entity.getImmutableListOfAppServers().stream()
-                        .map(this::toAppSever)
+                        .map(e -> toAppSever(e, availabilityMap))
                         .collect(toList())
         );
     }
 
-    private AppServerInfo toAppSever(final AppServerEntity entity) {
+    private AppServerInfo toAppSever(final AppServerEntity entity, final ImmutableMap<Integer, Boolean> availabilityMap) {
         final List<SharedResourceInfo> resources = entity.getImmutableListOfResources().stream()
                 .map(this::toResource)
                 .collect(toList());
 
+        final Integer entityId = entity.getId();
+
         return new AppServerInfo(
-                entity.getId(),
+                entityId,
                 entity.getName(),
                 resources,
-                entity.getImmutableListOfSubscribers()
+                entity.getImmutableListOfSubscribers(),
+                availabilityMap.get(entityId)
         );
     }
 

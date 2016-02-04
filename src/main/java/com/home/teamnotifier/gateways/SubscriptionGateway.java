@@ -11,5 +11,5 @@ public interface SubscriptionGateway {
             throws AlreadyReserved, NoSuchResource, NoSuchUser;
 
     BroadcastInformation free(final String userName, final int applicationId)
-            throws NotReserved,  NoSuchResource, NoSuchUser, ReservedByDifferentUser;
+            throws NotReserved, NoSuchResource, NoSuchUser, ReservedByDifferentUser;
 }

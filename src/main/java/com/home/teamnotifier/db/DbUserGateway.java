@@ -2,7 +2,10 @@ package com.home.teamnotifier.db;
 
 import com.google.common.base.Throwables;
 import com.google.inject.Inject;
-import com.home.teamnotifier.gateways.*;
+import com.home.teamnotifier.gateways.InvalidCredentials;
+import com.home.teamnotifier.gateways.NoSuchUser;
+import com.home.teamnotifier.gateways.UserCredentials;
+import com.home.teamnotifier.gateways.UserGateway;
 import com.home.teamnotifier.utils.PasswordHasher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
 import javax.validation.ConstraintViolationException;
-
 import java.util.Optional;
 
 import static com.home.teamnotifier.db.DbGatewayCommons.getUserEntity;
@@ -57,7 +59,7 @@ public class DbUserGateway implements UserGateway {
                 .filter((ConstraintViolationException.class)::isInstance)
                 .findFirst();
 
-        if(firstConstraintViolation.isPresent())
+        if (firstConstraintViolation.isPresent())
             throw new InvalidCredentials(firstConstraintViolation.get());
         else
             Throwables.propagate(exc);

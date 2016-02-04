@@ -14,16 +14,19 @@ public class NotificationInfoTest {
     private static final ObjectMapper MAPPER = Jackson.newObjectMapper()
             .enable(SerializationFeature.INDENT_OUTPUT);
 
-    private void serializesToJSON(final BroadcastAction action, final String fixturePath) throws Exception {
-        final NotificationInfo userInfo = new NotificationInfo("user", Instant.parse("2015-11-05T23:44:40.220Z"), action, 1, "details");
+    private void serializesToJSON(final EventType action, final String fixturePath) throws Exception {
+        final NotificationInfo userInfo = new NotificationInfo(isInfoWithActor(action) ? "user" : null, Instant.parse("2015-11-05T23:44:40.220Z"), action, 1, "details");
         final String expected = MAPPER.writeValueAsString(
                 MAPPER.readValue(fixture(fixturePath), NotificationInfo.class)
         );
-        assertThat(MAPPER.writeValueAsString(userInfo))
-                .isEqualTo(expected);
+        assertThat(MAPPER.writeValueAsString(userInfo)).isEqualTo(expected);
     }
 
-    private void deserializesFromJSON(final BroadcastAction action, final String fixturePath) throws Exception {
+    private boolean isInfoWithActor(EventType action) {
+        return action != EventType.SERVER_OFFLINE && action != EventType.SERVER_ONLINE;
+    }
+
+    private void deserializesFromJSON(final EventType action, final String fixturePath) throws Exception {
         final NotificationInfo person = new NotificationInfo("user", Instant.parse("2015-11-05T23:44:40.220Z"), action, 1, "details");
         assertThat(MAPPER.readValue(fixture(fixturePath), NotificationInfo.class))
                 .isEqualTo(person);
@@ -31,51 +34,71 @@ public class NotificationInfoTest {
 
     @Test
     public void testSubscribeSerialization() throws Exception {
-        serializesToJSON(BroadcastAction.SUBSCRIBE, "fixtures/notificationInfoSubscribe.json");
+        serializesToJSON(EventType.SUBSCRIBE, "fixtures/notificationInfoSubscribe.json");
     }
 
     @Test
     public void testSubscribeDeserialization() throws Exception {
-        deserializesFromJSON(BroadcastAction.SUBSCRIBE, "fixtures/notificationInfoSubscribe.json");
+        deserializesFromJSON(EventType.SUBSCRIBE, "fixtures/notificationInfoSubscribe.json");
+    }
+
+    @Test
+    public void testOnlineSerialization() throws Exception {
+        serializesToJSON(EventType.SERVER_ONLINE, "fixtures/notificationInfoServerOnline.json");
+    }
+
+    @Test
+    public void testOnlineDeserialization() throws Exception {
+        deserializesFromJSON(EventType.SERVER_ONLINE, "fixtures/notificationInfoServerOnline.json");
+    }
+
+    @Test
+    public void testOfflineSerialization() throws Exception {
+        serializesToJSON(EventType.SERVER_OFFLINE, "fixtures/notificationInfoServerOffline.json");
+    }
+
+    @Test
+    public void testOfflineDeserialization() throws Exception {
+        deserializesFromJSON(EventType.SERVER_OFFLINE, "fixtures/notificationInfoServerOffline.json");
     }
 
     @Test
     public void testUnsubscribeSerialization() throws Exception {
-        serializesToJSON(BroadcastAction.UNSUBSCRIBE, "fixtures/notificationInfoUnsubscribe.json");
+        serializesToJSON(EventType.UNSUBSCRIBE, "fixtures/notificationInfoUnsubscribe.json");
     }
 
     @Test
     public void testUnsubscribeDeserialization() throws Exception {
-        deserializesFromJSON(BroadcastAction.UNSUBSCRIBE, "fixtures/notificationInfoUnsubscribe.json");
+        deserializesFromJSON(EventType.UNSUBSCRIBE, "fixtures/notificationInfoUnsubscribe.json");
     }
 
     @Test
     public void testReserveSerialization() throws Exception {
-        serializesToJSON(BroadcastAction.RESERVE, "fixtures/notificationInfoReserve.json");
+        serializesToJSON(EventType.RESERVE, "fixtures/notificationInfoReserve.json");
     }
 
     @Test
     public void testReserveDeserialization() throws Exception {
-        deserializesFromJSON(BroadcastAction.RESERVE, "fixtures/notificationInfoReserve.json");
+        deserializesFromJSON(EventType.RESERVE, "fixtures/notificationInfoReserve.json");
     }
 
     @Test
     public void testFreeSerialization() throws Exception {
-        serializesToJSON(BroadcastAction.FREE, "fixtures/notificationInfoFree.json");
+        serializesToJSON(EventType.FREE, "fixtures/notificationInfoFree.json");
     }
 
     @Test
     public void testFreeDeserialization() throws Exception {
-        deserializesFromJSON(BroadcastAction.FREE, "fixtures/notificationInfoFree.json");
+        deserializesFromJSON(EventType.FREE, "fixtures/notificationInfoFree.json");
     }
 
     @Test
     public void testActionOnResourceSerialization() throws Exception {
-        serializesToJSON(BroadcastAction.ACTION_ON_RESOURCE, "fixtures/notificationInfoActionOnResource.json");
+        serializesToJSON(EventType.ACTION_ON_RESOURCE, "fixtures/notificationInfoActionOnResource.json");
     }
 
     @Test
     public void testActionOnResourceDeserialization() throws Exception {
-        deserializesFromJSON(BroadcastAction.ACTION_ON_RESOURCE, "fixtures/notificationInfoActionOnResource.json");
+        deserializesFromJSON(EventType.ACTION_ON_RESOURCE, "fixtures/notificationInfoActionOnResource.json");
     }
 }
