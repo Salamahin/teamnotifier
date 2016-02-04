@@ -27,7 +27,7 @@ public class NotificationInfoTest {
     }
 
     private void deserializesFromJSON(final EventType action, final String fixturePath) throws Exception {
-        final NotificationInfo person = new NotificationInfo("user", Instant.parse("2015-11-05T23:44:40.220Z"), action, 1, "details");
+        final NotificationInfo person = new NotificationInfo(isInfoWithActor(action) ? "user" : null, Instant.parse("2015-11-05T23:44:40.220Z"), action, 1, "details");
         assertThat(MAPPER.readValue(fixture(fixturePath), NotificationInfo.class))
                 .isEqualTo(person);
     }

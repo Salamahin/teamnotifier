@@ -1,11 +1,11 @@
 package com.home.teamnotifier.core.responses.notification;
 
 import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.time.Instant;
 import java.util.Objects;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonAutoDetect(
         fieldVisibility = JsonAutoDetect.Visibility.ANY,
@@ -14,6 +14,7 @@ import java.util.Objects;
         setterVisibility = JsonAutoDetect.Visibility.NONE,
         creatorVisibility = JsonAutoDetect.Visibility.NONE)
 @JsonTypeName("NotificationInfo")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class NotificationInfo {
     private final String actor;
     private final String timestamp;
