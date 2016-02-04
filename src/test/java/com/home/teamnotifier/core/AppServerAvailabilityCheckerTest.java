@@ -28,7 +28,7 @@ public class AppServerAvailabilityCheckerTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        final int HTTP_PORT = 80;
+        final int HTTP_PORT = 8888;
 
         listeningSocket = new ServerSocket(HTTP_PORT);
         executor = Executors.newScheduledThreadPool(2);
@@ -57,12 +57,12 @@ public class AppServerAvailabilityCheckerTest {
 
     @Test(timeout = 1000)
     public void testValidHostIsReachable() throws Exception {
-        assertTrue(checker.isOnline("http://localhost"));
+        assertTrue(checker.isOnline("http://localhost:8888"));
     }
 
     @Test(timeout = 1000)
     public void testInvalidHostInUnreachable() throws Exception {
-        assertFalse(checker.isOnline("http://localhost:81"));
+        assertFalse(checker.isOnline("http://localhost:8889"));
     }
 
     private static class DummyServerGateway implements AppServerGateway {

@@ -55,19 +55,4 @@ public final class EnvironmentEntity implements Serializable {
     public List<AppServerEntity> getImmutableListOfAppServers() {
         return ImmutableList.copyOf(appServers);
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        EnvironmentEntity that = (EnvironmentEntity) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(name, that.name) &&
-                Objects.equals(appServers, that.appServers);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, appServers);
-    }
 }

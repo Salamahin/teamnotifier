@@ -1,5 +1,6 @@
 package com.home.teamnotifier.core;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import com.home.teamnotifier.core.responses.notification.EventType;
@@ -63,7 +64,11 @@ public class AppServerAvailabilityChecker {
             final Boolean oldStatus = statuses.get(serverEntity.getId());
 
             if (oldStatus == null) {
-                LOGGER.debug("New server with id {} status {}", serverEntity.getId(), newStatus);
+                LOGGER.debug("Server initial [{} {}] status is {}",
+                        serverEntity.getEnvironment().getName(),
+                        serverEntity.getName(),
+                        newStatus
+                );
                 statuses.put(serverEntity.getId(), newStatus);
                 return;
             }
@@ -74,7 +79,11 @@ public class AppServerAvailabilityChecker {
     }
 
     private void updateStatusAndNotifyAboutChange(final AppServerEntity serverEntity, final boolean newStatus) {
-        LOGGER.info("Server id {} status change: is available [{}]", serverEntity.getId(), newStatus);
+        LOGGER.info("Server [{} {}] status change: is available [{}]",
+                serverEntity.getEnvironment().getName(),
+                serverEntity.getName(),
+                newStatus
+        );
         statuses.put(serverEntity.getId(), newStatus);
         notificationManager.pushToClients(
                 serverEntity.getImmutableListOfSubscribers(),
@@ -92,9 +101,9 @@ public class AppServerAvailabilityChecker {
         );
     }
 
-    private Runnable routine() {
+    private Runnable routine(final ImmutableList<AppServerEntity> servers) {
         return () -> {
-            final List<CompletableFuture<Void>> futures = gateway.getObservableServers().stream()
+            final List<CompletableFuture<Void>> futures = servers.stream()
                     .map(s -> CompletableFuture.runAsync(() -> checkStatusAndNotifyAboutChange(s), executor))
                     .collect(toList());
 
@@ -103,22 +112,15 @@ public class AppServerAvailabilityChecker {
     }
 
     public ImmutableMap<Integer, Boolean> getAvailability() {
-        final HashMap<Integer, Boolean> transformedStatuses;
         synchronized (statuses) {
-            transformedStatuses = statuses.entrySet().stream()
-                    .collect(
-                            HashMap::new,
-                            (acc, e) -> acc.put(e.getKey(), e.getValue()),
-                            Map::putAll
-                    );
+            return ImmutableMap.copyOf(statuses);
         }
-        return ImmutableMap.copyOf(transformedStatuses);
     }
 
     public String report() {
         synchronized (statuses) {
             return statuses.entrySet().stream()
-                    .map(e -> String.format("id %d: %s", e.getKey(), e.getValue()))
+                    .map(e -> String.format("[%d]: %s", e.getKey(), e.getValue()))
                     .reduce((s1, s2) -> s1 + "; " + s2)
                     .orElse("");
         }
@@ -128,7 +130,8 @@ public class AppServerAvailabilityChecker {
         if(routine != null)
             return;
 
-        routine = executor.scheduleWithFixedDelay(routine(), 0, 5, TimeUnit.SECONDS);
+        final ImmutableList<AppServerEntity> servers = gateway.getObservableServers();
+        routine = executor.scheduleWithFixedDelay(routine(servers), 0, 5, TimeUnit.SECONDS);
     }
 
     public void stop() throws Exception {

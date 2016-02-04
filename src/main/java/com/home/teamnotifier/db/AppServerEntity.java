@@ -87,19 +87,4 @@ public final class AppServerEntity implements Serializable {
     public String getStatusURL() {
         return statusUrl;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        AppServerEntity that = (AppServerEntity) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(name, that.name) &&
-                Objects.equals(resources, that.resources);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, resources);
-    }
 }
