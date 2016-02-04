@@ -20,7 +20,7 @@ public class DbAppServerGateway implements AppServerGateway {
     }
 
     @Override
-    public ImmutableList<AppServerEntity> getObservableServes() {
+    public ImmutableList<AppServerEntity> getObservableServers() {
         final List<AppServerEntity> servers = transactionHelper.transaction(em -> {
             final CriteriaBuilder cb = em.getCriteriaBuilder();
             final CriteriaQuery<AppServerEntity> cq = cb.createQuery(AppServerEntity.class);

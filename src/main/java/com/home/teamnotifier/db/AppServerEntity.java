@@ -23,7 +23,7 @@ public final class AppServerEntity implements Serializable {
     @SuppressWarnings("unused")
     private final EnvironmentEntity environment;
 
-    @Column(unique = true)
+    @Column
     private final String statusUrl;
 
     @OneToMany(mappedBy = "appServer", fetch = FetchType.EAGER, cascade = CascadeType.ALL)

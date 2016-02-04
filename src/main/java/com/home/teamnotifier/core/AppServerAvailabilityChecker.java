@@ -1,7 +1,6 @@
 package com.home.teamnotifier.core;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.primitives.Booleans;
 import com.google.inject.Inject;
 import com.home.teamnotifier.core.responses.notification.EventType;
 import com.home.teamnotifier.core.responses.notification.NotificationInfo;
@@ -95,7 +94,7 @@ public class AppServerAvailabilityChecker {
 
     private Runnable routine() {
         return () -> {
-            final List<CompletableFuture<Void>> futures = gateway.getObservableServes().stream()
+            final List<CompletableFuture<Void>> futures = gateway.getObservableServers().stream()
                     .map(s -> CompletableFuture.runAsync(() -> checkStatusAndNotifyAboutChange(s), executor))
                     .collect(toList());
 

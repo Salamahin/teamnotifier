@@ -67,7 +67,7 @@ public class AppServerAvailabilityCheckerTest {
 
     private static class DummyServerGateway implements AppServerGateway {
         @Override
-        public ImmutableList<AppServerEntity> getObservableServes() {
+        public ImmutableList<AppServerEntity> getObservableServers() {
             return ImmutableList.of();
         }
     }

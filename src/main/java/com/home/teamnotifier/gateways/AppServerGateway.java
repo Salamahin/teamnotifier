@@ -4,5 +4,5 @@ import com.google.common.collect.ImmutableList;
 import com.home.teamnotifier.db.AppServerEntity;
 
 public interface AppServerGateway {
-    ImmutableList<AppServerEntity> getObservableServes();
+    ImmutableList<AppServerEntity> getObservableServers();
 }
