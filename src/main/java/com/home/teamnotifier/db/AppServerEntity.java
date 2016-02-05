@@ -1,13 +1,12 @@
 package com.home.teamnotifier.db;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.*;
+
+import static java.util.stream.Collectors.toSet;
 
 @Entity
 @Table(schema = "teamnotifier", name = "AppServer")
@@ -27,11 +26,22 @@ public final class AppServerEntity implements Serializable {
     private final String statusUrl;
 
     @OneToMany(mappedBy = "appServer", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private final List<SharedResourceEntity> resources;
+    private final Set<SharedResourceEntity> resources;
 
+    /**
+     * FIXME
+     * Strange hibernate behaviour:
+     * when AppServereGateway is asked for servers, they have dublicated entities in subscribers
+     * The fast fix is to change the collection type to set;
+     * seems a bug in hibernate
+     * http://stackoverflow.com/questions/7903800/hibernate-inserts-duplicates-into-a-onetomany-collection
+     *
+     * =========================================
+     * NEED TO BE FIXED DUE TO PERFORMANCE NEEDS
+     */
     @OneToMany(mappedBy = "appServer", fetch = FetchType.EAGER, cascade = CascadeType.ALL,
             orphanRemoval = true)
-    private final List<SubscriptionEntity> subscriptions;
+    private final Set<SubscriptionEntity> subscriptions;
 
     //for hibernate
     private AppServerEntity() {
@@ -39,8 +49,8 @@ public final class AppServerEntity implements Serializable {
         name = null;
         environment = null;
         statusUrl = null;
-        resources = new ArrayList<>();
-        subscriptions = new ArrayList<>();
+        resources = new HashSet<>();
+        subscriptions = new HashSet<>();
     }
 
     AppServerEntity(final EnvironmentEntity environment, final String name) {
@@ -52,8 +62,8 @@ public final class AppServerEntity implements Serializable {
         this.statusUrl = checkUrl;
         this.environment = environment;
         this.name = name;
-        this.resources = new ArrayList<>();
-        subscriptions = new ArrayList<>();
+        this.resources = new HashSet<>();
+        subscriptions = new HashSet<>();
     }
 
     public void newSharedResource(final String name) {
@@ -69,14 +79,14 @@ public final class AppServerEntity implements Serializable {
         return name;
     }
 
-    public List<SharedResourceEntity> getImmutableListOfResources() {
-        return ImmutableList.copyOf(resources);
+    public Set<SharedResourceEntity> getImmutableSetOfResources() {
+        return ImmutableSet.copyOf(resources);
     }
 
-    public List<String> getImmutableListOfSubscribers() {
-        return ImmutableList.copyOf(subscriptions.stream()
+    public Set<String> getImmutableSetOfSubscribers() {
+        return ImmutableSet.copyOf(subscriptions.stream()
                 .map(s -> s.getSubscriber().getName())
-                .collect(Collectors.toList())
+                .collect(toSet())
         );
     }
 
@@ -86,5 +96,21 @@ public final class AppServerEntity implements Serializable {
 
     public String getStatusURL() {
         return statusUrl;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AppServerEntity that = (AppServerEntity) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(statusUrl, that.statusUrl) &&
+                Objects.equals(resources, that.resources);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, statusUrl, resources);
     }
 }

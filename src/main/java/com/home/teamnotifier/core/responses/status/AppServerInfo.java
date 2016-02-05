@@ -1,10 +1,10 @@
 package com.home.teamnotifier.core.responses.status;
 
 import com.fasterxml.jackson.annotation.*;
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonAutoDetect(
@@ -20,9 +20,9 @@ public class AppServerInfo {
 
     private final int id;
 
-    private final List<SharedResourceInfo> resources;
+    private final Set<SharedResourceInfo> resources;
 
-    private final List<String> subscribers;
+    private final Set<String> subscribers;
 
     private final Boolean isOnline;
 
@@ -30,26 +30,26 @@ public class AppServerInfo {
     public AppServerInfo(
             @JsonProperty("id") final int id,
             @JsonProperty("name") final String name,
-            @JsonProperty("resources") final List<SharedResourceInfo> resources,
-            @JsonProperty("subscribers") final List<String> subscribers,
+            @JsonProperty("resources") final Set<SharedResourceInfo> resources,
+            @JsonProperty("subscribers") final Set<String> subscribers,
             @JsonProperty("isOnline") final Boolean isOnline
     ) {
         this.name = name;
         this.id = id;
         this.isOnline = isOnline;
-        this.resources = ImmutableList.copyOf(resources);
-        this.subscribers = ImmutableList.copyOf(subscribers);
+        this.resources = ImmutableSet.copyOf(resources);
+        this.subscribers = ImmutableSet.copyOf(subscribers);
     }
 
     public int getId() {
         return id;
     }
 
-    public List<SharedResourceInfo> getResources() {
+    public Set<SharedResourceInfo> getResources() {
         return resources;
     }
 
-    public List<String> getSubscribers() {
+    public Set<String> getSubscribers() {
         return subscribers;
     }
 

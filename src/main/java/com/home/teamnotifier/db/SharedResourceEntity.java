@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Entity
 @Table(schema = "teamnotifier", name = "SharedResource")
-final class SharedResourceEntity implements Serializable {
+public final class SharedResourceEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private final Integer id;
@@ -70,5 +70,19 @@ final class SharedResourceEntity implements Serializable {
         } else {
             return Optional.empty();
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SharedResourceEntity that = (SharedResourceEntity) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
     }
 }

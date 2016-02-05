@@ -141,7 +141,7 @@ function connectStatusSocket() {
        var info = JSON.parse(evt.data);
        getState();
 
-       if(info.action == "SUBSCRIBE" || info.action == "UNSUBSCRIBE")
+       if(info.event == "SUBSCRIBE" || info.event == "UNSUBSCRIBE")
          return;
 
        showNotification(JSON.parse(evt.data));
@@ -155,6 +155,8 @@ function connectStatusSocket() {
 
 function showNotification(info) {
     var header = info.name;
+    if(!header)
+        header = "system"
     var body = buildNotificationBody(info);
     new Notification(header, {
         tag: header,
@@ -165,19 +167,19 @@ function showNotification(info) {
 function buildNotificationBody(data) {
     var target;
 
-    if (data.action == "ACTION_ON_RESOURCE") {
+    if (data.event == "ACTION_ON_RESOURCE") {
         target = getResourceFullName(data.targetId);
         return "[" + (new Date(data.timestamp).toLocaleString()) + "] " + target + " " + data.details;
-    } else if (data.action == "RESERVE") {
+    } else if (data.event == "RESERVE") {
         target = getResourceFullName(data.targetId);
         return "[" + (new Date(data.timestamp).toLocaleString()) + "] "  + target + " reserve";
-    } else if (data.action == "FREE") {
+    } else if (data.event == "FREE") {
         target = getResourceFullName(data.targetId);
         return "[" + (new Date(data.timestamp).toLocaleString()) + "] " + target + " free";
-    } else if (data.action == "SERVER_ONLINE") {
+    } else if (data.event == "SERVER_ONLINE") {
         target = getSrvName(data.targetId);
         return "[" + (new Date(data.timestamp).toLocaleString()) + "] " + target + " online"
-    }  else if (data.action == "SERVER_OFFLINE") {
+    }  else if (data.event == "SERVER_OFFLINE") {
         target = getSrvName(data.targetId);
         return "[" + (new Date(data.timestamp).toLocaleString()) + "] " + target + " offline"
     }
@@ -580,7 +582,7 @@ function showActionModal(resourceId, caption) {
         e.stopPropagation();
     }, false);
 
-    jumpToAnchor("action");
+    jumpToAnchor("actions");
 }
 
 function subDays(date, days) {

@@ -1,5 +1,6 @@
 package com.home.teamnotifier.db;
 
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Range;
 import com.home.teamnotifier.DbPreparer;
 import com.home.teamnotifier.core.responses.action.ActionsInfo;
@@ -65,11 +66,8 @@ public class DbSharedResourceActionsGatewayTest {
         final String userName2 = helper.createPersistedUser(getRandomString(), getRandomString())
                 .getName();
 
-        final Integer serverId = environment.getImmutableListOfAppServers().get(0).getId();
-        final Integer resourceId = environment
-                .getImmutableListOfAppServers().get(0)
-                .getImmutableListOfResources().get(0)
-                .getId();
+        final Integer serverId = helper.anyServerId(environment);
+        final Integer resourceId = helper.anyResourceId(environment, serverId);
 
         final DbSubscriptionGateway subscription = new DbSubscriptionGateway(helper.TRANSACTION_HELPER);
         subscription.subscribe(userName1, serverId);
@@ -108,10 +106,12 @@ public class DbSharedResourceActionsGatewayTest {
         gateway = new DbSharedResourceActionsGateway(helper.TRANSACTION_HELPER);
         final UserEntity user =
                 helper.createPersistedUser(getRandomString(), getRandomString());
+
         environment = helper.createPersistedEnvironmentWithOneServerAndOneResource(
-                getRandomString(), getRandomString(), getRandomString());
-        resourceId = environment.getImmutableListOfAppServers().get(0)
-                .getImmutableListOfResources().get(0).getId();
+                getRandomString(), getRandomString(), getRandomString()
+        );
+
+        resourceId = helper.anyResourceId(environment);
 
         for (int i = 0; i < 10; i++) {
             gateway.newAction(user.getName(), resourceId, getRandomString());

@@ -1,8 +1,9 @@
 package com.home.teamnotifier.gateways;
 
-import com.google.common.collect.ImmutableList;
 import com.home.teamnotifier.db.AppServerEntity;
 
+import java.util.Set;
+
 public interface AppServerGateway {
-    ImmutableList<AppServerEntity> getObservableServers();
+    Set<AppServerEntity> getImmutableSetOfObservableServers();
 }

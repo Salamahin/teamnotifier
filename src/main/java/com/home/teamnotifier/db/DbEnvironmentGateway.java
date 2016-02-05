@@ -11,9 +11,11 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 public class DbEnvironmentGateway implements EnvironmentGateway {
     private final TransactionHelper transactionHelper;
@@ -54,16 +56,16 @@ public class DbEnvironmentGateway implements EnvironmentGateway {
     private EnvironmentInfo toEnvironment(final EnvironmentEntity entity, final ImmutableMap<Integer, Boolean> availabilityMap) {
         return new EnvironmentInfo(
                 entity.getName(),
-                entity.getImmutableListOfAppServers().stream()
+                entity.getImmutableSetOfAppServers().stream()
                         .map(e -> toAppSever(e, availabilityMap))
                         .collect(toList())
         );
     }
 
     private AppServerInfo toAppSever(final AppServerEntity entity, final ImmutableMap<Integer, Boolean> availabilityMap) {
-        final List<SharedResourceInfo> resources = entity.getImmutableListOfResources().stream()
+        final Set<SharedResourceInfo> resources = entity.getImmutableSetOfResources().stream()
                 .map(this::toResource)
-                .collect(toList());
+                .collect(toSet());
 
         final Integer entityId = entity.getId();
 
@@ -71,7 +73,7 @@ public class DbEnvironmentGateway implements EnvironmentGateway {
                 entityId,
                 entity.getName(),
                 resources,
-                entity.getImmutableListOfSubscribers(),
+                entity.getImmutableSetOfSubscribers(),
                 availabilityMap.get(entityId)
         );
     }

@@ -14,7 +14,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.time.Instant;
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
@@ -42,13 +42,13 @@ public class AppServerAvailabilityChecker {
         this.gateway = gateway;
         this.notificationManager = notificationManager;
 
-        statuses = new HashMap<>();
+        statuses = new ConcurrentHashMap<>();
     }
 
     boolean isOnline(final String url) {
         try {
             final URLConnection connection = new URL(url).openConnection();
-            connection.setConnectTimeout(100);
+            connection.setConnectTimeout(2000);
             connection.connect();
             return true;
         } catch (MalformedURLException me) {
@@ -86,7 +86,7 @@ public class AppServerAvailabilityChecker {
         );
         statuses.put(serverEntity.getId(), newStatus);
         notificationManager.pushToClients(
-                serverEntity.getImmutableListOfSubscribers(),
+                serverEntity.getImmutableSetOfSubscribers(),
                 buildMessage(newStatus, serverEntity.getId())
         );
     }
@@ -101,7 +101,7 @@ public class AppServerAvailabilityChecker {
         );
     }
 
-    private Runnable routine(final ImmutableList<AppServerEntity> servers) {
+    private Runnable routine(final Collection<AppServerEntity> servers) {
         return () -> {
             final List<CompletableFuture<Void>> futures = servers.stream()
                     .map(s -> CompletableFuture.runAsync(() -> checkStatusAndNotifyAboutChange(s), executor))
@@ -129,9 +129,7 @@ public class AppServerAvailabilityChecker {
     public void start() {
         if(routine != null)
             return;
-
-        final ImmutableList<AppServerEntity> servers = gateway.getObservableServers();
-        routine = executor.scheduleWithFixedDelay(routine(servers), 0, 5, TimeUnit.SECONDS);
+        routine = executor.scheduleWithFixedDelay(routine(gateway.getImmutableSetOfObservableServers()), 0, 10, TimeUnit.SECONDS);
     }
 
     public void stop() throws Exception {

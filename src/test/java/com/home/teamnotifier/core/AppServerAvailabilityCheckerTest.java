@@ -1,6 +1,6 @@
 package com.home.teamnotifier.core;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.home.teamnotifier.core.responses.notification.NotificationInfo;
 import com.home.teamnotifier.db.AppServerEntity;
 import com.home.teamnotifier.gateways.AppServerGateway;
@@ -9,9 +9,8 @@ import org.junit.*;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.URI;
-import java.net.URL;
 import java.util.Collection;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
@@ -55,20 +54,20 @@ public class AppServerAvailabilityCheckerTest {
         acceptFuture.cancel(true);
     }
 
-    @Test(timeout = 1000)
+    @Test(timeout = 5000)
     public void testValidHostIsReachable() throws Exception {
         assertTrue(checker.isOnline("http://localhost:8888"));
     }
 
-    @Test(timeout = 1000)
+    @Test(timeout = 5000)
     public void testInvalidHostInUnreachable() throws Exception {
         assertFalse(checker.isOnline("http://localhost:8889"));
     }
 
     private static class DummyServerGateway implements AppServerGateway {
         @Override
-        public ImmutableList<AppServerEntity> getObservableServers() {
-            return ImmutableList.of();
+        public Set<AppServerEntity> getImmutableSetOfObservableServers() {
+            return ImmutableSet.of();
         }
     }
 

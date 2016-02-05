@@ -3,6 +3,7 @@ package com.home.teamnotifier.core.responses.status;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import io.dropwizard.jackson.Jackson;
 import org.junit.Test;
 
@@ -36,8 +37,8 @@ public class EnvironmentsInfoTest {
         return new AppServerInfo(
                 1,
                 "server",
-                Lists.newArrayList(createFineSharedResourceInfo()),
-                Lists.newArrayList("user"),
+                Sets.newHashSet(createFineSharedResourceInfo()),
+                Sets.newHashSet("user"),
                 true
         );
     }

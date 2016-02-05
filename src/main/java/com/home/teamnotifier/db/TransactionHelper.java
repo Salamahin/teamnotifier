@@ -12,7 +12,7 @@ import java.util.function.Function;
 public final class TransactionHelper {
     private static final Logger LOGGER = LoggerFactory.getLogger(TransactionHelper.class);
 
-    private EntityManagerFactory factory;
+    private EntityManagerFactory factory = Persistence.createEntityManagerFactory("teamnotifier");
 
     public <U> U transaction(Function<EntityManager, U> function) {
         U result = null;
@@ -45,11 +45,6 @@ public final class TransactionHelper {
         } catch (RuntimeException e) {
             LOGGER.error("Failed to rollback", e);
         }
-    }
-
-    public void start() {
-        if (factory == null || !factory.isOpen())
-            factory = Persistence.createEntityManagerFactory("teamnotifier");
     }
 
     public void stop() {

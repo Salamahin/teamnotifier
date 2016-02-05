@@ -14,7 +14,7 @@ public class TransactionManager implements Managed {
 
     @Override
     public void start() throws Exception {
-        transactionHelper.start();
+        //nop
     }
 
     @Override

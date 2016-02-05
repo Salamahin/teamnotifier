@@ -12,6 +12,10 @@ import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import javax.validation.ConstraintViolationException;
 import java.util.Optional;
 
@@ -30,9 +34,21 @@ public class DbUserGateway implements UserGateway {
     @Override
     public UserCredentials userCredentials(final int id) {
         try {
-            final UserEntity entity = transactionHelper.transaction(em -> em.find(UserEntity.class, id));
+            final UserEntity entity = transactionHelper.transaction(em -> {
+                final CriteriaBuilder cb = em.getCriteriaBuilder();
+                final CriteriaQuery<UserEntity> query = cb.createQuery(UserEntity.class);
+                final Root<UserEntity> root = query.from(UserEntity.class);
+
+                final TypedQuery<UserEntity> typedQuery = em.createQuery(
+                        query
+                                .select(root)
+                                .where(cb.equal(root.get("id"), id))
+                );
+
+                return typedQuery.getSingleResult();
+            });
             return new UserCredentials(entity.getId(), entity.getName(), entity.getPassHash());
-        } catch (EntityNotFoundException exc) {
+        } catch (NoResultException exc) {
             throw new NoSuchUser(String.format("No user with id %d", id), exc);
         }
     }

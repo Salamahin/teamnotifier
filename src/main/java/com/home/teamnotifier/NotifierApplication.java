@@ -84,9 +84,9 @@ public class NotifierApplication extends Application<NotifierConfiguration> {
                 INJECTION_BUNDLE.getInjector().getInstance(AppServerAvailabilityChecker.class))
         );
 
-        environment.lifecycle().manage(INJECTION_BUNDLE.getInjector().getInstance(ServerStatusCheckerManager.class));
-        environment.lifecycle().manage(INJECTION_BUNDLE.getInjector().getInstance(TransactionManager.class));
         environment.lifecycle().manage(INJECTION_BUNDLE.getInjector().getInstance(ExecutorsManager.class));
+        environment.lifecycle().manage(INJECTION_BUNDLE.getInjector().getInstance(TransactionManager.class));
+        environment.lifecycle().manage(INJECTION_BUNDLE.getInjector().getInstance(ServerStatusCheckerManager.class));
     }
 
     private void registerWebsocket(

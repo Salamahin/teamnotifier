@@ -18,17 +18,14 @@ public class DbSubscriptionGatewayTest {
     private DbSubscriptionGateway subscripbtion;
 
     @Test
-    public void testReserve()
-            throws Exception {
-        final Integer resourceId = environmentEntity.getImmutableListOfAppServers().get(0)
-                .getImmutableListOfResources().get(0).getId();
+    public void testReserve() throws Exception {
+        final Integer resourceId = helper.anyResourceId(environmentEntity);
         subscripbtion.reserve(userEntity.getName(), resourceId);
     }
 
     @Test(expected = NotSubscribed.class)
     public void testUnsubscribeFromNotSubscribed() {
-        final AppServerEntity serverEntity = environmentEntity.getImmutableListOfAppServers().get(0);
-        final Integer serverId = serverEntity.getId();
+        final Integer serverId = helper.anyServerId(environmentEntity);
         final String userName = userEntity.getName();
 
         subscripbtion.unsubscribe(userName, serverId);
@@ -36,8 +33,7 @@ public class DbSubscriptionGatewayTest {
 
     @Test(expected = AlreadySubscribed.class)
     public void testDoubleSubscribeCausesException() {
-        final AppServerEntity serverEntity = environmentEntity.getImmutableListOfAppServers().get(0);
-        final Integer serverId = serverEntity.getId();
+        final Integer serverId = helper.anyServerId(environmentEntity);
         final String userName = userEntity.getName();
 
         subscripbtion.subscribe(userName, serverId);
@@ -48,9 +44,7 @@ public class DbSubscriptionGatewayTest {
     public void testDoubleReserveCausesException()
             throws Exception {
         final String userName = userEntity.getName();
-        final Integer resourceId = environmentEntity.getImmutableListOfAppServers().get(0)
-                .getImmutableListOfResources().get(0)
-                .getId();
+        final Integer resourceId = helper.anyResourceId(environmentEntity);
 
         subscripbtion.reserve(userName, resourceId);
         subscripbtion.reserve(userName, resourceId);
@@ -60,9 +54,7 @@ public class DbSubscriptionGatewayTest {
     public void testFree()
             throws Exception {
         final String userName = userEntity.getName();
-        final Integer resourceId = environmentEntity.getImmutableListOfAppServers().get(0)
-                .getImmutableListOfResources().get(0)
-                .getId();
+        final Integer resourceId = helper.anyResourceId(environmentEntity);
 
         subscripbtion.reserve(userName, resourceId);
         subscripbtion.free(userName, resourceId);
@@ -72,9 +64,7 @@ public class DbSubscriptionGatewayTest {
     public void testFreeNotReservedResourceCausesException()
             throws Exception {
         final String userName = userEntity.getName();
-        final Integer resourceId = environmentEntity.getImmutableListOfAppServers().get(0)
-                .getImmutableListOfResources().get(0)
-                .getId();
+        final Integer resourceId = helper.anyResourceId(environmentEntity);
 
         subscripbtion.free(userName, resourceId);
     }
@@ -84,7 +74,7 @@ public class DbSubscriptionGatewayTest {
         final String userName1 = getPersistedUserName();
         final String userName2 = getPersistedUserName();
 
-        final Integer serverId = environmentEntity.getImmutableListOfAppServers().get(0).getId();
+        final Integer serverId = helper.anyServerId(environmentEntity);
 
         assertThat(subscripbtion.subscribe(userName1, serverId).getSubscribers())
                 .doesNotContain(userName1);
@@ -102,7 +92,7 @@ public class DbSubscriptionGatewayTest {
         final String userName1 = getPersistedUserName();
         final String userName2 = getPersistedUserName();
 
-        final Integer serverId = environmentEntity.getImmutableListOfAppServers().get(0).getId();
+        final Integer serverId = helper.anyServerId(environmentEntity);
 
         subscripbtion.subscribe(userName1, serverId);
         subscripbtion.subscribe(userName2, serverId);
@@ -117,9 +107,8 @@ public class DbSubscriptionGatewayTest {
     public void testReturnsSubscribersNamesAfterReserve()
             throws Exception {
         final String subscriber = getPersistedUserName();
-        final Integer serverId = environmentEntity.getImmutableListOfAppServers().get(0).getId();
-        final Integer resourceId = environmentEntity.getImmutableListOfAppServers().get(0)
-                .getImmutableListOfResources().get(0).getId();
+        final Integer serverId = helper.anyServerId(environmentEntity);
+        final Integer resourceId = helper.anyResourceId(environmentEntity, serverId);
 
         subscripbtion.subscribe(subscriber, serverId);
 
@@ -131,9 +120,8 @@ public class DbSubscriptionGatewayTest {
     public void testReturnsSubscribersNamesAfterFree()
             throws Exception {
         final String subscriber = getPersistedUserName();
-        final Integer serverId = environmentEntity.getImmutableListOfAppServers().get(0).getId();
-        final Integer resourceId = environmentEntity.getImmutableListOfAppServers().get(0)
-                .getImmutableListOfResources().get(0).getId();
+        final Integer serverId = helper.anyServerId(environmentEntity);
+        final Integer resourceId = helper.anyResourceId(environmentEntity);
 
         subscripbtion.subscribe(subscriber, serverId);
         subscripbtion.reserve(userEntity.getName(), resourceId);
@@ -152,14 +140,14 @@ public class DbSubscriptionGatewayTest {
 
     @Test(expected = NoSuchUser.class)
     public void testExceptionWhenSubscribeWithNotPresentUser() {
-        final Integer serverId = environmentEntity.getImmutableListOfAppServers().get(0).getId();
+        final Integer serverId = helper.anyServerId(environmentEntity);
         final String subscriber = getRandomString();
         subscripbtion.subscribe(subscriber, serverId);
     }
 
     @Test(expected = NoSuchUser.class)
     public void testNoSuchUserWhenUnsubscribeWithNotPresentUser() {
-        final Integer serverId = environmentEntity.getImmutableListOfAppServers().get(0).getId();
+        final Integer serverId = helper.anyServerId(environmentEntity);
         final String subscriber = getRandomString();
         subscripbtion.unsubscribe(subscriber, serverId);
     }
@@ -180,15 +168,13 @@ public class DbSubscriptionGatewayTest {
 
     @Test(expected = NoSuchUser.class)
     public void testNoSuchUserWhenReserveWithNotPresentUser() {
-        final Integer resourceId = environmentEntity.getImmutableListOfAppServers().get(0)
-                .getImmutableListOfResources().get(0).getId();
+        final Integer resourceId = helper.anyResourceId(environmentEntity);
         subscripbtion.reserve(getRandomString(), resourceId);
     }
 
     @Test(expected = NoSuchUser.class)
     public void testNoSuchUserWhenFreeWithNotPresentUser() {
-        final Integer resourceId = environmentEntity.getImmutableListOfAppServers().get(0)
-                .getImmutableListOfResources().get(0).getId();
+        final Integer resourceId = helper.anyResourceId(environmentEntity);
         subscripbtion.free(getRandomString(), resourceId);
     }
 
@@ -209,8 +195,7 @@ public class DbSubscriptionGatewayTest {
         final String userName1 = getPersistedUserName();
         final String userName2 = getPersistedUserName();
 
-        final Integer resourceId = environmentEntity.getImmutableListOfAppServers().get(0)
-                .getImmutableListOfResources().get(0).getId();
+        final Integer resourceId = helper.anyResourceId(environmentEntity);
 
         subscripbtion.reserve(userName1, resourceId);
         subscripbtion.free(userName2, resourceId);

@@ -1,11 +1,9 @@
 package com.home.teamnotifier;
 
-import com.home.teamnotifier.db.AppServerEntity;
-import com.home.teamnotifier.db.EnvironmentEntity;
-import com.home.teamnotifier.db.TransactionHelper;
-import com.home.teamnotifier.db.UserEntity;
+import com.home.teamnotifier.db.*;
 import com.home.teamnotifier.utils.PasswordHasher;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public final class DbPreparer {
@@ -14,7 +12,6 @@ public final class DbPreparer {
 
     public DbPreparer() {
         TRANSACTION_HELPER = new TransactionHelper();
-        TRANSACTION_HELPER.start();
     }
 
     public static String getRandomString() {
@@ -39,5 +36,29 @@ public final class DbPreparer {
         appServerEntity.newSharedResource(appName);
 
         return TRANSACTION_HELPER.transaction(em -> em.merge(entity));
+    }
+
+    public int anyServerId(final EnvironmentEntity notEmptyEntity) {
+        return notEmptyEntity.getImmutableSetOfAppServers().stream()
+                .map(AppServerEntity::getId)
+                .findFirst()
+                .get();
+    }
+
+    public int anyResourceId(final EnvironmentEntity notEmptyEntity, final int serverId) {
+        return notEmptyEntity.getImmutableSetOfAppServers().stream()
+                .filter(s -> Objects.equals(s.getId(), serverId))
+                .flatMap(e -> e.getImmutableSetOfResources().stream())
+                .map(SharedResourceEntity::getId)
+                .findFirst()
+                .get();
+    }
+
+    public int anyResourceId(final EnvironmentEntity notEmptyEntity) {
+        return notEmptyEntity.getImmutableSetOfAppServers().stream()
+                .flatMap(e -> e.getImmutableSetOfResources().stream())
+                .map(SharedResourceEntity::getId)
+                .findFirst()
+                .get();
     }
 }

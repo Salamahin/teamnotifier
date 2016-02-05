@@ -42,7 +42,7 @@ public class DbAppServerGatewayTest {
 
         store(env);
 
-        final List<String> servers = gateway.getObservableServers().stream()
+        final List<String> servers = gateway.getImmutableSetOfObservableServers().stream()
                 .map(AppServerEntity::getName)
                 .collect(toList());
 

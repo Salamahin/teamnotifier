@@ -41,6 +41,11 @@ public class DbUserGatewayTest {
         userGateway.userCredentials(getRandomString());
     }
 
+    @Test(expected = NoSuchUser.class)
+    public void testIncorrectUserIdThrowsNoSuchUser() throws Exception {
+        userGateway.userCredentials(-1);
+    }
+
     @Test(expected = InvalidCredentials.class)
     public void testEmptyCredentialsFails() throws Exception {
         final String userName = "";
