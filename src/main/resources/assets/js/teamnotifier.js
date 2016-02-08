@@ -154,7 +154,7 @@ function connectStatusSocket() {
 }
 
 function showNotification(info) {
-    var header = info.name;
+    var header = info.actor;
     if(!header)
         header = "system"
     var body = buildNotificationBody(info);
