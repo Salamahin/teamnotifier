@@ -54,12 +54,12 @@ public class AppServerAvailabilityCheckerTest {
         acceptFuture.cancel(true);
     }
 
-    @Test(timeout = 5000)
+    @Test(timeout = 20000)
     public void testValidHostIsReachable() throws Exception {
         assertTrue(checker.isOnline("http://localhost:8888"));
     }
 
-    @Test(timeout = 5000)
+    @Test(timeout = 20000)
     public void testInvalidHostInUnreachable() throws Exception {
         assertFalse(checker.isOnline("http://localhost:8889"));
     }
