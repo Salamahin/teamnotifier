@@ -1,6 +1,5 @@
 package com.home.teamnotifier.core;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import com.home.teamnotifier.core.responses.notification.EventType;
@@ -46,9 +45,10 @@ public class AppServerAvailabilityChecker {
     }
 
     boolean isOnline(final String url) {
+        final int timeoutMs = 10 * 1000;
         try {
             final URLConnection connection = new URL(url).openConnection();
-            connection.setConnectTimeout(2000);
+            connection.setConnectTimeout(timeoutMs);
             connection.connect();
             return true;
         } catch (MalformedURLException me) {
@@ -127,9 +127,17 @@ public class AppServerAvailabilityChecker {
     }
 
     public void start() {
-        if(routine != null)
-            return;
-        routine = executor.scheduleWithFixedDelay(routine(gateway.getImmutableSetOfObservableServers()), 0, 10, TimeUnit.SECONDS);
+        final int initialDelaySec = 0;
+        final int delayBetweenSeriesSec = 30;
+
+        if(routine != null) return;
+
+        routine = executor.scheduleWithFixedDelay(
+                routine(gateway.getImmutableSetOfObservableServers()),
+                initialDelaySec,
+                delayBetweenSeriesSec,
+                TimeUnit.SECONDS
+        );
     }
 
     public void stop() throws Exception {

@@ -42,8 +42,9 @@ public class EnvironmentRestService {
 
     @DELETE
     @Path("/application/reserve/{applicationId}")
-    public void free(@Auth final AuthenticatedUserData authenticatedUserData,
-                     @PathParam("applicationId") final Integer applicationId
+    public void free(
+            @Auth final AuthenticatedUserData authenticatedUserData,
+            @PathParam("applicationId") final Integer applicationId
     ) {
         final String userName = authenticatedUserData.getName();
         LOGGER.info("User {} free resource id {} request", userName, applicationId);
@@ -52,8 +53,9 @@ public class EnvironmentRestService {
 
     @POST
     @Path("/server/subscribe/{serverId}")
-    public void subscribe(@Auth final AuthenticatedUserData authenticatedUserData,
-                          @PathParam("serverId") final Integer serverId
+    public void subscribe(
+            @Auth final AuthenticatedUserData authenticatedUserData,
+            @PathParam("serverId") final Integer serverId
     ) {
         final String userName = authenticatedUserData.getName();
         LOGGER.info("User {} subscribe on server id {} request", userName, serverId);
@@ -62,8 +64,9 @@ public class EnvironmentRestService {
 
     @DELETE
     @Path("/server/subscribe/{serverId}")
-    public void unsubscribe(@Auth final AuthenticatedUserData authenticatedUserData,
-                            @PathParam("serverId") final Integer serverId) {
+    public void unsubscribe(
+            @Auth final AuthenticatedUserData authenticatedUserData,
+            @PathParam("serverId") final Integer serverId) {
         final String userName = authenticatedUserData.getName();
         LOGGER.info("User {} unsubscribe from server id {} request", userName, serverId);
         resourceMonitor.unsubscribe(userName, serverId);
