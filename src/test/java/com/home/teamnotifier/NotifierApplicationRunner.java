@@ -6,10 +6,15 @@ import com.home.teamnotifier.db.AppServerEntity;
 import com.home.teamnotifier.db.EnvironmentEntity;
 import com.home.teamnotifier.db.TransactionHelper;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
+
 public class NotifierApplicationRunner {
 
     public static void main(String[] args)
             throws Exception {
+
         final String yamlPath = Resources.getResource("web.yml").getFile();
         final NotifierApplication application = new NotifierApplication();
         application.run("server", yamlPath);

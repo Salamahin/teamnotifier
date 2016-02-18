@@ -9,9 +9,8 @@ import com.home.teamnotifier.gateways.AppServerGateway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.MalformedURLException;
+import java.io.BufferedInputStream;
 import java.net.URL;
-import java.net.URLConnection;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
@@ -45,15 +44,12 @@ public class AppServerAvailabilityChecker {
     }
 
     boolean isOnline(final String url) {
-        final int timeoutMs = 10 * 1000;
         try {
-            final URLConnection connection = new URL(url).openConnection();
-            connection.setConnectTimeout(timeoutMs);
-            connection.connect();
-            return true;
-        } catch (MalformedURLException me) {
-            throw new IllegalArgumentException(me);
-        } catch (Exception e) {
+            final URL checkUrl = new URL(url);
+            try (BufferedInputStream r = new BufferedInputStream(checkUrl.openStream())) {
+                return r.read() != -1;
+            }
+        } catch (Exception exc) {
             return false;
         }
     }
@@ -130,7 +126,7 @@ public class AppServerAvailabilityChecker {
         final int initialDelaySec = 0;
         final int delayBetweenSeriesSec = 30;
 
-        if(routine != null) return;
+        if (routine != null) return;
 
         routine = executor.scheduleWithFixedDelay(
                 routine(gateway.getImmutableSetOfObservableServers()),
@@ -141,7 +137,7 @@ public class AppServerAvailabilityChecker {
     }
 
     public void stop() throws Exception {
-        if(routine == null)
+        if (routine == null)
             return;
 
         routine.cancel(true);
