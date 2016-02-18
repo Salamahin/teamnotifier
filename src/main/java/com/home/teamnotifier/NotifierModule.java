@@ -73,7 +73,7 @@ final class NotifierModule extends AbstractModule {
     public ScheduledExecutorService newScheduledExecutor(final NotifierConfiguration configuration) {
         return Executors.newScheduledThreadPool(
                 configuration.getExecutorsConfiguration().getPoolSize(),
-                new ThreadFactoryBuilder().setNameFormat("url-checker-pool").build()
+                new ThreadFactoryBuilder().setNameFormat("url-checker-pool-%d").build()
         );
     }
 }
