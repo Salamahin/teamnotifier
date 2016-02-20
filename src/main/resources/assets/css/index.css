@@ -11,6 +11,7 @@
 
 html, body {
     height: 100%;
+     width: 100%;
     margin: 0;
     padding: 0;
 }
@@ -89,6 +90,11 @@ a.tooltip:hover:after, a.tooltip:hover:before {
     background-color: WHITE;
     margin: 5px 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+#resources {
+    display: block;
+    width: 90%;
 }
 
 /*==============================NAVIGATION====================================*/
@@ -450,14 +456,6 @@ span.modal-footer a {
     padding: 20px;
     margin: 0;
     list-style-type: none;
-}
-
-#workbench_header {
-    display: block;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(255, 255, 255, 0.5);
-    filter: blur(5px);
 }
 
 .button-group,

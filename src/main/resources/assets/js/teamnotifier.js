@@ -250,9 +250,14 @@ function showCurrentResourcesStatus() {
     var resourceFrame = document.getElementById("resources");
     removeAllChildren(resourceFrame);
 
+    srv.resources.sort(sortFactory('name'));
     srv.resources.forEach(function (resource) {
         resourceFrame.appendChild(newResourceInfoElem(resource))
     });
+}
+
+function sortFactory(prop) {
+   return function(a,b){ return a[prop].localeCompare(b[prop]); };
 }
 
 function rebuildNavigation() {
@@ -260,8 +265,10 @@ function rebuildNavigation() {
     removeAllChildren(navigationElemsList);
 
     var environments = CURRENT_STATUS.environments;
+
     environments.forEach(function (env) {
         var servers = env.servers;
+
         servers.forEach(function (srv) {
             var currentName = env.name +" "+ srv.name;
             var btn = newButton(currentName, function () {
