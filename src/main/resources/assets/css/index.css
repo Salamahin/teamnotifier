@@ -85,7 +85,7 @@ a.tooltip:hover:after, a.tooltip:hover:before {
     display: inline-block;
     vertical-align: middle;
     border-radius: 5px;
-    color: #999;
+    color: #5a5a5a;
     background-color: WHITE;
     margin: 5px 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
