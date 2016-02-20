@@ -15,6 +15,66 @@ html, body {
     padding: 0;
 }
 
+/*===================TOOLTIP=====================*/
+a.tooltip{
+  position: relative;
+  display: inline;
+}
+a.tooltip:after{
+  display: inline-block;
+  visibility: hidden;
+  position: absolute;
+  bottom: 0;
+  left: 20%;
+  opacity: 0;
+  content: attr(tip-text); /* might also use attr(title) */
+  height: auto;
+  min-width: 100px;
+  min-height: 15px;
+  padding: 5px 8px;
+  z-index: 999;
+  color: #fff;
+  text-decoration: none;
+  text-align: center;
+  background: rgba(0,0,0,0.85);
+  border-radius: 5px;
+}
+
+a.tooltip:before {
+  position: absolute;
+  visibility: hidden;
+  width: 0;
+  height: 0;
+  left: 50%;
+  bottom: 0px;
+  opacity: 0;
+  content: "";
+  border-style: solid;
+  border-width: 6px 6px 0 6px;
+  border-color: rgba(0,0,0,0.85) transparent transparent transparent;
+}
+a.tooltip:hover:after{ visibility: visible; opacity: 1; bottom: 20px; }
+a.tooltip:hover:before{ visibility: visible; opacity: 1; bottom: 14px; }
+
+/* tips on bottom */
+a.tooltip:after { bottom: auto; top: 0; }
+a.tooltip:hover:after { top: 28px; }
+a.tooltip:before {
+  border-width: 0 5px 8.7px 5px;
+  border-color: transparent transparent rgba(0,0,0,0.85) transparent;
+  top: 0px
+}
+a.tooltip:hover:before { top: 20px; }
+
+/* tooltip colors (add your own!) */
+a.tooltip:after { background:#555555; }
+a.tooltip:before { border-color: #555555 transparent transparent transparent; }
+a.tooltip.bottom:before{ border-color: transparent transparent #555555 transparent; }
+
+a.tooltip:hover:after, a.tooltip:hover:before {
+  transition: all 0.2s ease-in-out 1s;
+}
+
 /*==============================TREE====================================*/
 
 .resource {

@@ -23,7 +23,7 @@ public class NotifierApplicationRunner {
 //        final TransactionHelper gt = injector.getInstance(TransactionHelper.class);
 //
 //        gt.transaction(em -> {
-//            em.persist(getEuEnv("eu2"));
+//            em.persist(getEuEnv("omgeu"));
 //            return null;
 //        });
 

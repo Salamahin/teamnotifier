@@ -263,7 +263,7 @@ function rebuildNavigation() {
     environments.forEach(function (env) {
         var servers = env.servers;
         servers.forEach(function (srv) {
-            var currentName = srv.name + "" + env.name;
+            var currentName = env.name +" "+ srv.name;
             var btn = newButton(currentName, function () {
                 handleCurrentChange(env, srv, currentName);
             });
@@ -405,7 +405,8 @@ function getHistoryButton(resource) {
         removeAllChildren(hist);
         showActionsHistoryModal(resource.id, resource.name);
     });
-    btnHistory.className = "round-button history-button";
+    btnHistory.className = "round-button history-button tooltip";
+    btnHistory.setAttribute("tip-text", "show history")
     return btnHistory;
 }
 
@@ -413,7 +414,8 @@ function getActionButton(resource) {
     var btnAction = newButton("", function () {
         showActionModal(resource.id, resource.name)
     });
-    btnAction.className = "round-button action-button";
+    btnAction.className = "round-button action-button tooltip";
+    btnAction.setAttribute("tip-text", "new action")
     return btnAction;
 }
 
