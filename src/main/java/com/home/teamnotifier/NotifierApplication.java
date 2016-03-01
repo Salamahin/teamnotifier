@@ -4,9 +4,7 @@ import com.github.toastshaman.dropwizard.auth.jwt.JWTAuthFilter;
 import com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenParser;
 import com.github.toastshaman.dropwizard.auth.jwt.hmac.HmacSHA512Verifier;
 import com.github.toastshaman.dropwizard.auth.jwt.parser.DefaultJsonWebTokenParser;
-import com.home.teamnotifier.authentication.AuthenticatedUserData;
-import com.home.teamnotifier.authentication.JwtTokenAuthenticator;
-import com.home.teamnotifier.authentication.WebsocketAuthenticator;
+import com.home.teamnotifier.authentication.*;
 import com.home.teamnotifier.core.AppServerAvailabilityChecker;
 import com.home.teamnotifier.gateways.EnvironmentGateway;
 import com.home.teamnotifier.gateways.UserGateway;
@@ -23,6 +21,7 @@ import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
 import io.dropwizard.auth.PermitAllAuthorizer;
+import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
@@ -50,43 +49,63 @@ public class NotifierApplication extends Application<NotifierConfiguration> {
                 .getInjector()
                 .getInstance(ClientManager.class);
 
-        final byte[] jwtSecret = configuration.getAuthenticationConfiguration().getJwtSecret().getBytes();
-        final JwtTokenAuthenticator authenticator = new JwtTokenAuthenticator(
-                INJECTION_BUNDLE.getInjector().getInstance(UserGateway.class),
-                new HmacSHA512Verifier(jwtSecret)
+        final WebsocketAuthenticator websocketAuthenticator = registerJwtAuthenticator(configuration, environment);
+        registerWebsocket(environment, websocketAuthenticator, clientManager);
+        addHealthcheks(environment, clientManager);
+
+        addLifecycleHooks(environment);
+    }
+
+    private void addLifecycleHooks(final Environment environment) {
+        environment.lifecycle().manage(INJECTION_BUNDLE.getInjector().getInstance(ExecutorsManager.class));
+        environment.lifecycle().manage(INJECTION_BUNDLE.getInjector().getInstance(TransactionManager.class));
+        environment.lifecycle().manage(INJECTION_BUNDLE.getInjector().getInstance(ServerStatusCheckerManager.class));
+    }
+
+    private void addHealthcheks(final Environment environment, final ClientManager clientManager) {
+        environment.healthChecks().register("DbConnection", new DbConnection(
+                INJECTION_BUNDLE.getInjector().getInstance(EnvironmentGateway.class))
         );
+        environment.healthChecks().register("Sessions", new Sessions(clientManager));
+        environment.healthChecks().register("ServerStatuses", new AppServerStates(
+                INJECTION_BUNDLE.getInjector().getInstance(AppServerAvailabilityChecker.class))
+        );
+    }
 
-        registerWebsocket(environment, authenticator, clientManager);
-
+    private WebsocketAuthenticator registerJwtAuthenticator(
+            NotifierConfiguration configuration, 
+            Environment environment
+    ) {
+        final byte[] jwtSecret = configuration.getAuthenticationConfiguration().getJwtSecret().getBytes();
         final JsonWebTokenParser tokenParser = new DefaultJsonWebTokenParser();
         final HmacSHA512Verifier tokenVerifier = new HmacSHA512Verifier(jwtSecret);
+        
+        final JwtTokenAuthenticator jwt = new JwtTokenAuthenticator(
+                INJECTION_BUNDLE.getInjector().getInstance(UserGateway.class),
+               tokenVerifier
+        );
 
         environment.jersey().register(new AuthDynamicFeature(
-                        new JWTAuthFilter.Builder<AuthenticatedUserData>()
+                new BasicCredentialAuthFilter.Builder<BasicPrincipal>()
+                        .setAuthenticator(new BasicAuthenticator())
+                        .setAuthorizer(new ExampleAuthorizer())
+                        .setRealm("SUPER SECRET STUFF")
+                        .buildAuthFilter()));
+
+        environment.jersey().register(new AuthDynamicFeature(
+                        new JWTAuthFilter.Builder<OathPrincipal>()
                                 .setTokenParser(tokenParser)
                                 .setTokenVerifier(tokenVerifier)
                                 .setPrefix("Bearer")
-                                .setAuthenticator(authenticator)
+                                .setAuthenticator(jwt)
                                 .setAuthorizer(new PermitAllAuthorizer<>())
                                 .buildAuthFilter()
                 )
         );
         environment.jersey().register(RolesAllowedDynamicFeature.class);
-        environment.jersey().register(new AuthValueFactoryProvider.Binder<>(AuthenticatedUserData.class));
-
-        final EnvironmentGateway environmentGateway = INJECTION_BUNDLE
-                .getInjector()
-                .getInstance(EnvironmentGateway.class);
-
-        environment.healthChecks().register("DbConnection", new DbConnection(environmentGateway));
-        environment.healthChecks().register("Sessions", new Sessions(clientManager));
-        environment.healthChecks().register("ServerStatuses", new AppServerStates(
-                INJECTION_BUNDLE.getInjector().getInstance(AppServerAvailabilityChecker.class))
-        );
-
-        environment.lifecycle().manage(INJECTION_BUNDLE.getInjector().getInstance(ExecutorsManager.class));
-        environment.lifecycle().manage(INJECTION_BUNDLE.getInjector().getInstance(TransactionManager.class));
-        environment.lifecycle().manage(INJECTION_BUNDLE.getInjector().getInstance(ServerStatusCheckerManager.class));
+        environment.jersey().register(new AuthValueFactoryProvider.Binder<>(OathPrincipal.class));
+        
+        return jwt;
     }
 
     private void registerWebsocket(

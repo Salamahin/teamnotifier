@@ -2,7 +2,7 @@ package com.home.teamnotifier.web.rest;
 
 import com.google.common.collect.Range;
 import com.google.inject.Inject;
-import com.home.teamnotifier.authentication.AuthenticatedUserData;
+import com.home.teamnotifier.authentication.OathPrincipal;
 import com.home.teamnotifier.core.ResourceMonitor;
 import com.home.teamnotifier.core.responses.action.ActionsInfo;
 import com.home.teamnotifier.core.responses.status.EnvironmentsInfo;
@@ -32,10 +32,10 @@ public class EnvironmentRestService {
     @POST
     @Path("/application/reserve/{applicationId}")
     public void reserve(
-            @Auth final AuthenticatedUserData authenticatedUserData,
+            @Auth final OathPrincipal oathPrincipal,
             @PathParam("applicationId") final Integer applicationId
     ) {
-        final String userName = authenticatedUserData.getName();
+        final String userName = oathPrincipal.getName();
         LOGGER.info("User {} reserve resource id {} request", userName, applicationId);
         resourceMonitor.reserve(userName, applicationId);
     }
@@ -43,10 +43,10 @@ public class EnvironmentRestService {
     @DELETE
     @Path("/application/reserve/{applicationId}")
     public void free(
-            @Auth final AuthenticatedUserData authenticatedUserData,
+            @Auth final OathPrincipal oathPrincipal,
             @PathParam("applicationId") final Integer applicationId
     ) {
-        final String userName = authenticatedUserData.getName();
+        final String userName = oathPrincipal.getName();
         LOGGER.info("User {} free resource id {} request", userName, applicationId);
         resourceMonitor.free(userName, applicationId);
     }
@@ -54,10 +54,10 @@ public class EnvironmentRestService {
     @POST
     @Path("/server/subscribe/{serverId}")
     public void subscribe(
-            @Auth final AuthenticatedUserData authenticatedUserData,
+            @Auth final OathPrincipal oathPrincipal,
             @PathParam("serverId") final Integer serverId
     ) {
-        final String userName = authenticatedUserData.getName();
+        final String userName = oathPrincipal.getName();
         LOGGER.info("User {} subscribe on server id {} request", userName, serverId);
         resourceMonitor.subscribe(userName, serverId);
     }
@@ -65,9 +65,9 @@ public class EnvironmentRestService {
     @DELETE
     @Path("/server/subscribe/{serverId}")
     public void unsubscribe(
-            @Auth final AuthenticatedUserData authenticatedUserData,
+            @Auth final OathPrincipal oathPrincipal,
             @PathParam("serverId") final Integer serverId) {
-        final String userName = authenticatedUserData.getName();
+        final String userName = oathPrincipal.getName();
         LOGGER.info("User {} unsubscribe from server id {} request", userName, serverId);
         resourceMonitor.unsubscribe(userName, serverId);
     }
@@ -75,25 +75,25 @@ public class EnvironmentRestService {
     @POST
     @Path("/application/action/{applicationId}")
     public void newInfo(
-            @Auth final AuthenticatedUserData authenticatedUserData,
+            @Auth final OathPrincipal oathPrincipal,
             @PathParam("applicationId") final Integer applicationId,
             @HeaderParam("ActionDetails") final String details
     ) {
-        final String userName = authenticatedUserData.getName();
+        final String userName = oathPrincipal.getName();
         LOGGER.info("User {} new action on resource id {} ({}) request", userName, applicationId, details);
         resourceMonitor.newAction(userName, applicationId, details);
     }
 
     @GET
-    public EnvironmentsInfo getServerInfo(@Auth final AuthenticatedUserData authenticatedUserData) {
-        LOGGER.info("User {} status request", authenticatedUserData.getName());
+    public EnvironmentsInfo getServerInfo(@Auth final OathPrincipal oathPrincipal) {
+        LOGGER.info("User {} status request", oathPrincipal.getName());
         return resourceMonitor.status();
     }
 
     @GET
     @Path("/application/action/{applicationId}")
     public ActionsInfo getActionsInfo(
-            @Auth final AuthenticatedUserData authenticatedUserData,
+            @Auth final OathPrincipal oathPrincipal,
             @PathParam("applicationId") final Integer applicationId,
             @HeaderParam("ActionsFrom") final String encodedBase64From,
             @HeaderParam("ActionsTo") final String encodedBase64To
@@ -102,7 +102,7 @@ public class EnvironmentRestService {
         final Instant toInstant = ZonedDateTime.parse(decodeBase64String(encodedBase64To)).toInstant();
 
         LOGGER.info("User {} actions on resource {} from {} to {} request",
-                authenticatedUserData.getName(),
+                oathPrincipal.getName(),
                 applicationId,
                 fromInstant,
                 toInstant

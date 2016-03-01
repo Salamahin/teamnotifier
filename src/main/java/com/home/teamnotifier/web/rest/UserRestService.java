@@ -2,10 +2,12 @@ package com.home.teamnotifier.web.rest;
 
 import com.google.common.net.HttpHeaders;
 import com.google.inject.Inject;
-import com.home.teamnotifier.authentication.AuthenticatedUserData;
+import com.home.teamnotifier.authentication.BasicPrincipal;
+import com.home.teamnotifier.authentication.OathPrincipal;
 import com.home.teamnotifier.authentication.AuthenticationInfo;
 import com.home.teamnotifier.authentication.TokenCreator;
 import com.home.teamnotifier.core.responses.authentication.UserInfo;
+import com.home.teamnotifier.gateways.NoSuchUser;
 import com.home.teamnotifier.gateways.UserCredentials;
 import com.home.teamnotifier.gateways.UserGateway;
 import com.home.teamnotifier.utils.PasswordHasher;
@@ -16,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.Objects;
 
 import static com.home.teamnotifier.utils.BasicAuthenticationCredentialExtractor.extract;
@@ -39,40 +42,8 @@ public class UserRestService {
 
     @GET
     @Path("/authenticate")
-    public AuthenticationInfo authenticate(
-            @HeaderParam(HttpHeaders.AUTHORIZATION) final String encodedCredentials
-    ) {
-        final BasicCredentials credentials = extract(encodedCredentials);
-        final String username = credentials.getUsername();
-
-        LOGGER.info("User {} authentication request", credentials.getUsername());
-
-        final UserCredentials persistedCredentials = userGateway.userCredentials(username);
-
-        if (compareCredentials(credentials, persistedCredentials)) {
-            final String token = tokenCreator.getTokenFor(persistedCredentials.getId());
-            LOGGER.info("User {} authentication success; token=[{}]",
-                    credentials.getUsername(),
-                    token
-            );
-            return new AuthenticationInfo(token);
-        }
-        LOGGER.error("User {} authentication failed", credentials.getUsername());
-
-
-        return null;
-    }
-
-    private boolean compareCredentials(
-            final BasicCredentials provided,
-            final UserCredentials persisted
-    ) {
-        if (persisted == null) {
-            return false;
-        }
-
-        final String providedPassHash = PasswordHasher.toMd5Hash(provided.getPassword());
-        return Objects.equals(providedPassHash, persisted.getPassHash());
+    public AuthenticationInfo authenticate(@Auth BasicPrincipal principal) {
+        return new AuthenticationInfo(tokenCreator.getTokenFor(principal.getId()));
     }
 
     @POST
@@ -85,9 +56,13 @@ public class UserRestService {
 
     @GET
     @Path("/whoami")
-    public UserInfo whoAmI(@Auth final AuthenticatedUserData authenticatedUserData) {
-        final String name = authenticatedUserData.getName();
-        LOGGER.info("WhoAmI request from {}", name);
-        return new UserInfo(name);
+    public UserInfo whoAmI(final OathPrincipal oathPrincipal) {
+        try {
+            final String name = oathPrincipal.getName();
+            LOGGER.info("WhoAmI request from {}", name);
+            return new UserInfo(name);
+        } catch (Exception ignored) {
+            throw new WebApplicationException(Response.Status.FORBIDDEN);
+        }
     }
 }

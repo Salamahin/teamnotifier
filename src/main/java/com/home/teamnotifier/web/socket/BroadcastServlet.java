@@ -1,7 +1,7 @@
 package com.home.teamnotifier.web.socket;
 
 import com.google.common.base.Optional;
-import com.home.teamnotifier.authentication.AuthenticatedUserData;
+import com.home.teamnotifier.authentication.OathPrincipal;
 import com.home.teamnotifier.authentication.WebsocketAuthenticator;
 import io.dropwizard.auth.AuthenticationException;
 import org.eclipse.jetty.http.HttpStatus;
@@ -48,7 +48,7 @@ public class BroadcastServlet extends WebSocketServlet {
 
     private String tryGetAuthenticatedUserName(final ServletUpgradeRequest request) throws AuthenticationException {
         final String tokenStr = request.getParameterMap().get("token").get(0);
-        final Optional<AuthenticatedUserData> authenticatedUser = authenticator.authenticate(tokenStr);
+        final Optional<OathPrincipal> authenticatedUser = authenticator.authenticate(tokenStr);
         if (!authenticatedUser.isPresent()) {
             throw new AuthenticationException("Authentication failed");
         }

@@ -12,7 +12,7 @@ import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.Authenticator;
 
 public class JwtTokenAuthenticator
-        implements Authenticator<JsonWebToken, AuthenticatedUserData>, WebsocketAuthenticator {
+        implements Authenticator<JsonWebToken, OathPrincipal>, WebsocketAuthenticator {
 
     private final ExpiryValidator expiryValidator;
     private final UserGateway userGateway;
@@ -25,7 +25,7 @@ public class JwtTokenAuthenticator
     }
 
     @Override
-    public Optional<AuthenticatedUserData> authenticate(final String jwtToken) throws AuthenticationException {
+    public Optional<OathPrincipal> authenticate(final String jwtToken) throws AuthenticationException {
         final JsonWebToken token = new DefaultJsonWebTokenParser().parse(jwtToken);
 
         try {
@@ -38,7 +38,7 @@ public class JwtTokenAuthenticator
     }
 
     @Override
-    public Optional<AuthenticatedUserData> authenticate(final JsonWebToken credentials) throws AuthenticationException {
+    public Optional<OathPrincipal> authenticate(final JsonWebToken credentials) throws AuthenticationException {
         expiryValidator.validate(credentials);
 
         final int userId = Integer.valueOf(credentials.claim().subject());
@@ -48,6 +48,6 @@ public class JwtTokenAuthenticator
             return Optional.absent();
         }
 
-        return Optional.of(new AuthenticatedUserData(userCredentials.getUserName()));
+        return Optional.of(new OathPrincipal(userCredentials.getUserName()));
     }
 }
