@@ -1,13 +1,15 @@
 package com.home.teamnotifier.health;
 
 import com.codahale.metrics.health.HealthCheck;
+import com.google.inject.Inject;
 import com.home.teamnotifier.web.socket.ClientManager;
 
 public class Sessions extends HealthCheck {
 
     private final ClientManager manager;
 
-    public Sessions(ClientManager manager) {
+    @Inject
+    public Sessions(final ClientManager manager) {
         this.manager = manager;
     }
 

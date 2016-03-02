@@ -1,6 +1,7 @@
 package com.home.teamnotifier.authentication;
 
 import com.google.common.base.Optional;
+import com.google.inject.Inject;
 import com.home.teamnotifier.gateways.NoSuchUser;
 import com.home.teamnotifier.gateways.UserCredentials;
 import com.home.teamnotifier.gateways.UserGateway;
@@ -11,33 +12,34 @@ import io.dropwizard.auth.basic.BasicCredentials;
 
 import java.util.Objects;
 
-public class BasicAuthenticator implements Authenticator<BasicCredentials, BasicPrincipal> {
+public class BasicAuthenticator implements Authenticator<BasicCredentials, UserPrincipal> {
     private final UserGateway userGateway;
 
+    @Inject
     public BasicAuthenticator(final UserGateway userGateway) {
         this.userGateway = userGateway;
     }
 
-    private boolean compareCredentials(final BasicCredentials provided, final UserCredentials persisted) {
-        if (persisted == null) {
-            return false;
-        }
-
+    private boolean providedCredentialsAreCorrect(final BasicCredentials provided, final UserCredentials persisted) {
         final String providedPassHash = PasswordHasher.toMd5Hash(provided.getPassword());
         return Objects.equals(providedPassHash, persisted.getPassHash());
     }
 
     @Override
-    public Optional<BasicPrincipal> authenticate(final BasicCredentials basicCredentials) throws AuthenticationException {
+    public Optional<UserPrincipal> authenticate(final BasicCredentials basicCredentials) throws AuthenticationException {
         try {
-            final UserCredentials credentials = userGateway.userCredentials(basicCredentials.getUsername());
-
-            if(compareCredentials(basicCredentials, credentials))
-                return Optional.of(new BasicPrincipal(credentials.getUserName(), credentials.getId()));
-
-            return Optional.absent();
+            return getUser(basicCredentials);
         } catch (NoSuchUser e) {
             return Optional.absent();
         }
+    }
+
+    private Optional<UserPrincipal> getUser(BasicCredentials basicCredentials) {
+        final UserCredentials credentials = userGateway.userCredentials(basicCredentials.getUsername());
+
+        if (providedCredentialsAreCorrect(basicCredentials, credentials))
+            return Optional.of(UserPrincipal.basic(credentials.getId(), credentials.getUserName()));
+
+        return Optional.absent();
     }
 }

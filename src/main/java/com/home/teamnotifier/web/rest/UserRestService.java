@@ -2,24 +2,20 @@ package com.home.teamnotifier.web.rest;
 
 import com.google.common.net.HttpHeaders;
 import com.google.inject.Inject;
-import com.home.teamnotifier.authentication.BasicPrincipal;
-import com.home.teamnotifier.authentication.OathPrincipal;
 import com.home.teamnotifier.authentication.AuthenticationInfo;
+import com.home.teamnotifier.authentication.AuthenticationMethod;
 import com.home.teamnotifier.authentication.TokenCreator;
+import com.home.teamnotifier.authentication.UserPrincipal;
 import com.home.teamnotifier.core.responses.authentication.UserInfo;
-import com.home.teamnotifier.gateways.NoSuchUser;
-import com.home.teamnotifier.gateways.UserCredentials;
 import com.home.teamnotifier.gateways.UserGateway;
-import com.home.teamnotifier.utils.PasswordHasher;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.auth.basic.BasicCredentials;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import java.util.Objects;
 
 import static com.home.teamnotifier.utils.BasicAuthenticationCredentialExtractor.extract;
 
@@ -42,7 +38,9 @@ public class UserRestService {
 
     @GET
     @Path("/authenticate")
-    public AuthenticationInfo authenticate(@Auth BasicPrincipal principal) {
+    @RolesAllowed(AuthenticationMethod.BASIC_AUTHENTICATED)
+    public AuthenticationInfo authenticate(@Auth final UserPrincipal principal) {
+        LOGGER.info("{} authenticated", principal.getName());
         return new AuthenticationInfo(tokenCreator.getTokenFor(principal.getId()));
     }
 
@@ -56,13 +54,10 @@ public class UserRestService {
 
     @GET
     @Path("/whoami")
-    public UserInfo whoAmI(final OathPrincipal oathPrincipal) {
-        try {
-            final String name = oathPrincipal.getName();
-            LOGGER.info("WhoAmI request from {}", name);
-            return new UserInfo(name);
-        } catch (Exception ignored) {
-            throw new WebApplicationException(Response.Status.FORBIDDEN);
-        }
+    @RolesAllowed(AuthenticationMethod.JWT_AUTHENTICATED)
+    public UserInfo whoAmI(@Auth final UserPrincipal userPrincipal) {
+        final String name = userPrincipal.getName();
+        LOGGER.info("WhoAmI request from {}", name);
+        return new UserInfo(name);
     }
 }
