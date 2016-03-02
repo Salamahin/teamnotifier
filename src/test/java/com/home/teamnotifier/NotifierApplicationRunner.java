@@ -19,13 +19,13 @@ public class NotifierApplicationRunner {
         final NotifierApplication application = new NotifierApplication();
         application.run("server", yamlPath);
 
-//        final Injector injector = Injection.INJECTION_BUNDLE.getInjector();
-//        final TransactionHelper gt = injector.getInstance(TransactionHelper.class);
-//
-//        gt.transaction(em -> {
-//            em.persist(getEuEnv("omgeu"));
-//            return null;
-//        });
+        final Injector injector = Injection.INJECTION_BUNDLE.getInjector();
+        final TransactionHelper gt = injector.getInstance(TransactionHelper.class);
+
+        gt.transaction(em -> {
+            em.persist(getEuEnv("eu1"));
+            return null;
+        });
 
     }
 

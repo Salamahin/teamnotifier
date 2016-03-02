@@ -1,11 +1,13 @@
 package com.home.teamnotifier.health;
 
 import com.codahale.metrics.health.HealthCheck;
+import com.google.inject.Inject;
 import com.home.teamnotifier.gateways.EnvironmentGateway;
 
 public class DbConnection extends HealthCheck {
     private final EnvironmentGateway gateway;
 
+    @Inject
     public DbConnection(final EnvironmentGateway gateway) {
         this.gateway = gateway;
     }

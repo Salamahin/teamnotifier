@@ -105,6 +105,12 @@ function handleWhoAmI(XMLHttpRequest) {
     handleAuthenticationFailed(false);
 }
 
+function removeClassFromElement(element, className) {
+    element.className =
+       element.className.replace
+          ( /(?:^|\s)MyClass(?!\S)/g , '' );
+}
+
 /** @namespace authInfo.token */
 function handleAuthentication(XMLHttpRequest, userName) {
     if (XMLHttpRequest.readyState != 4)
@@ -116,10 +122,11 @@ function handleAuthentication(XMLHttpRequest, userName) {
         USER_NAME = userName;
         storeCookie(TOKEN_COOKIE, USER_TOKEN);
         connectStatusSocket();
+        removeClassFromElement(document.getElementById("ibox_password"), "invalid");
         return;
     }
 
-    handleAuthenticationFailed(false);
+    document.getElementById("ibox_password").className += " invalid";
 }
 
 function getSocketUrl() {

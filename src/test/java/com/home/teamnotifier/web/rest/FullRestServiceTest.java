@@ -259,10 +259,10 @@ public class FullRestServiceTest {
     }
 
     private String getToken(final String userName, final String password) {
-        final Response response =
-                given().auth().preemptive().basic(userName, password)
-                        .when().get("/teamnotifier/1.0/users/authenticate")
-                        .then().contentType(ContentType.JSON).extract().response();
+        final Response response = given().auth().preemptive().basic(userName, password)
+                .when().get("/teamnotifier/1.0/users/authenticate")
+                .then().contentType(ContentType.JSON).extract().response();
+
 
         return helper.deserialize(AuthenticationInfo.class, response.asString()).getToken();
     }

@@ -1,11 +1,13 @@
 package com.home.teamnotifier.health;
 
 import com.codahale.metrics.health.HealthCheck;
+import com.google.inject.Inject;
 import com.home.teamnotifier.core.AppServerAvailabilityChecker;
 
 public class AppServerStates extends HealthCheck {
     private final AppServerAvailabilityChecker checker;
 
+    @Inject
     public AppServerStates(final AppServerAvailabilityChecker checker) {
         this.checker = checker;
     }
