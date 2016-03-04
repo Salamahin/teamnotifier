@@ -1,5 +1,7 @@
 package com.home.teamnotifier.gateways;
 
+import com.home.teamnotifier.core.BroadcastInformation;
+
 public interface SubscriptionGateway {
     BroadcastInformation subscribe(final String userName, final int serverId)
             throws NoSuchServer, NoSuchUser, AlreadySubscribed;

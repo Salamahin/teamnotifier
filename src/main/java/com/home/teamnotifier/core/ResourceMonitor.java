@@ -4,7 +4,6 @@ import com.google.common.collect.Range;
 import com.google.inject.Inject;
 import com.home.teamnotifier.core.responses.action.ActionsInfo;
 import com.home.teamnotifier.core.responses.status.EnvironmentsInfo;
-import com.home.teamnotifier.gateways.BroadcastInformation;
 import com.home.teamnotifier.gateways.EnvironmentGateway;
 import com.home.teamnotifier.gateways.SharedResourceActionsGateway;
 import com.home.teamnotifier.gateways.SubscriptionGateway;

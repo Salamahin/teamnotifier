@@ -3,8 +3,6 @@ package com.home.teamnotifier.db;
 import com.home.teamnotifier.DbPreparer;
 import com.home.teamnotifier.gateways.InvalidCredentials;
 import com.home.teamnotifier.gateways.NoSuchUser;
-import com.home.teamnotifier.gateways.UserCredentials;
-import com.home.teamnotifier.utils.PasswordHasher;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,31 +17,30 @@ public class DbUserGatewayTest {
     private UserEntity user;
 
     @Test
-    public void testCanCreateNewUser()
-            throws Exception {
+    public void testCanCreateNewUser() throws Exception {
         final String userName = getRandomString();
         final String password = getRandomString();
         userGateway.newUser(userName, password);
-        final UserCredentials credentials = userGateway.userCredentials(userName);
-        assertThat(credentials.getUserName()).isEqualTo(userName);
-        assertThat(credentials.getPassHash()).isEqualTo(PasswordHasher.toMd5Hash(password));
+
+        final UserEntity credentials = userGateway.get(userName);
+        assertThat(credentials.getName()).isEqualTo(userName);
     }
 
     @Test
     public void testUserCredentials() throws Exception {
-        final UserCredentials credentials = userGateway.userCredentials(user.getName());
-        assertThat(credentials.getUserName()).isEqualTo(user.getName());
+        final UserEntity credentials = userGateway.get(user.getName());
+        assertThat(credentials.getName()).isEqualTo(user.getName());
         assertThat(credentials.getPassHash()).isEqualTo(user.getPassHash());
     }
 
     @Test(expected = NoSuchUser.class)
     public void testIncorrectLoginThrowsNoSuchUser() throws Exception {
-        userGateway.userCredentials(getRandomString());
+        userGateway.get(getRandomString());
     }
 
     @Test(expected = NoSuchUser.class)
     public void testIncorrectUserIdThrowsNoSuchUser() throws Exception {
-        userGateway.userCredentials(-1);
+        userGateway.get(-1);
     }
 
     @Test(expected = InvalidCredentials.class)

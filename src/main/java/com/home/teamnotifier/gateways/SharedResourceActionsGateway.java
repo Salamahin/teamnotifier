@@ -1,6 +1,7 @@
 package com.home.teamnotifier.gateways;
 
 import com.google.common.collect.Range;
+import com.home.teamnotifier.core.BroadcastInformation;
 import com.home.teamnotifier.core.responses.action.ActionsInfo;
 
 import java.time.Instant;

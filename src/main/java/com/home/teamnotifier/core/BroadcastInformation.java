@@ -1,4 +1,4 @@
-package com.home.teamnotifier.gateways;
+package com.home.teamnotifier.core;
 
 import com.google.common.collect.ImmutableList;
 import com.home.teamnotifier.core.responses.notification.NotificationInfo;

@@ -2,15 +2,16 @@ package com.home.teamnotifier.authentication;
 
 import com.google.common.base.Optional;
 import com.google.inject.Inject;
+import com.home.teamnotifier.db.UserEntity;
 import com.home.teamnotifier.gateways.NoSuchUser;
-import com.home.teamnotifier.gateways.UserCredentials;
 import com.home.teamnotifier.gateways.UserGateway;
-import com.home.teamnotifier.utils.PasswordHasher;
 import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.Authenticator;
 import io.dropwizard.auth.basic.BasicCredentials;
 
 import java.util.Objects;
+
+import static com.home.teamnotifier.utils.PasswordHasher.toHash;
 
 public class BasicAuthenticator implements Authenticator<BasicCredentials, UserPrincipal> {
     private final UserGateway userGateway;
@@ -20,8 +21,9 @@ public class BasicAuthenticator implements Authenticator<BasicCredentials, UserP
         this.userGateway = userGateway;
     }
 
-    private boolean providedCredentialsAreCorrect(final BasicCredentials provided, final UserCredentials persisted) {
-        final String providedPassHash = PasswordHasher.toMd5Hash(provided.getPassword());
+    private boolean providedCredentialsAreCorrect(final BasicCredentials provided, final UserEntity persisted) {
+        final String salt = persisted.getSalt();
+        final String providedPassHash = toHash(provided.getPassword(), salt);
         return Objects.equals(providedPassHash, persisted.getPassHash());
     }
 
@@ -35,10 +37,10 @@ public class BasicAuthenticator implements Authenticator<BasicCredentials, UserP
     }
 
     private Optional<UserPrincipal> getUser(BasicCredentials basicCredentials) {
-        final UserCredentials credentials = userGateway.userCredentials(basicCredentials.getUsername());
+        final UserEntity credentials = userGateway.get(basicCredentials.getUsername());
 
         if (providedCredentialsAreCorrect(basicCredentials, credentials))
-            return Optional.of(UserPrincipal.basic(credentials.getId(), credentials.getUserName()));
+            return Optional.of(UserPrincipal.basic(credentials.getId(), credentials.getName()));
 
         return Optional.absent();
     }

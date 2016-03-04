@@ -6,6 +6,8 @@ import com.home.teamnotifier.utils.PasswordHasher;
 import java.util.Objects;
 import java.util.UUID;
 
+import static com.home.teamnotifier.utils.PasswordHasher.*;
+
 public final class DbPreparer {
 
     public final TransactionHelper TRANSACTION_HELPER;
@@ -22,7 +24,9 @@ public final class DbPreparer {
             final String userName,
             final String pass
     ) {
-        final UserEntity entity = new UserEntity(userName, PasswordHasher.toMd5Hash(pass));
+        final String salt = UUID.randomUUID().toString();
+
+        final UserEntity entity = new UserEntity(userName, toHash(pass, salt), salt);
         return TRANSACTION_HELPER.transaction(em -> em.merge(entity));
     }
 

@@ -1,9 +1,11 @@
 package com.home.teamnotifier.gateways;
 
-public interface UserGateway {
-    UserCredentials userCredentials(final int id) throws NoSuchUser;
+import com.home.teamnotifier.db.UserEntity;
 
-    UserCredentials userCredentials(final String userName) throws NoSuchUser;
+public interface UserGateway {
+    UserEntity get(final int id) throws NoSuchUser;
+
+    UserEntity get(final String userName) throws NoSuchUser;
 
     void newUser(final String userName, final String password);
 }

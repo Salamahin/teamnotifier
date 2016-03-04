@@ -2,6 +2,7 @@ package com.home.teamnotifier.db;
 
 import com.google.common.base.Throwables;
 import com.google.inject.Inject;
+import com.home.teamnotifier.core.BroadcastInformation;
 import com.home.teamnotifier.core.responses.notification.EventType;
 import com.home.teamnotifier.core.responses.notification.NotificationInfo;
 import com.home.teamnotifier.gateways.*;

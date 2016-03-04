@@ -47,7 +47,7 @@ public class JwtTokenAuthenticator implements Authenticator<JsonWebToken, UserPr
         final UserCredentials userCredentials;
 
         try {
-            userCredentials = userGateway.userCredentials(userId);
+            userCredentials = userGateway.get(userId);
         } catch (NoSuchUser e) {
             return Optional.absent();
         }

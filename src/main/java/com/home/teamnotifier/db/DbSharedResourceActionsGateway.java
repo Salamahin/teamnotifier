@@ -8,7 +8,7 @@ import com.home.teamnotifier.core.responses.action.ActionInfo;
 import com.home.teamnotifier.core.responses.action.ActionsInfo;
 import com.home.teamnotifier.core.responses.notification.EventType;
 import com.home.teamnotifier.core.responses.notification.NotificationInfo;
-import com.home.teamnotifier.gateways.BroadcastInformation;
+import com.home.teamnotifier.core.BroadcastInformation;
 import com.home.teamnotifier.gateways.EmptyDescription;
 import com.home.teamnotifier.gateways.NoSuchResource;
 import com.home.teamnotifier.gateways.SharedResourceActionsGateway;

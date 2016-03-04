@@ -69,7 +69,7 @@ function authenticate() {
         USER_TOKEN = loadedToken;
         sendWhoAmIRequest();
     } else {
-        handleAuthenticationFailed(false);
+        showConnectionError();
     }
 }
 
@@ -83,12 +83,8 @@ function sendAuthRequest(username, password) {
     xhttp.send();
 }
 
-function handleAuthenticationFailed(success) {
-    if (success) {
-        jumpToAnchor("environment");
-    } else {
-        jumpToAnchor("authentication");
-    }
+function showConnectionError() {
+    jumpToAnchor("authentication");
 }
 
 function handleWhoAmI(XMLHttpRequest) {
@@ -102,7 +98,7 @@ function handleWhoAmI(XMLHttpRequest) {
         return;
     }
 
-    handleAuthenticationFailed(false);
+    showConnectionError();
 }
 
 function removeClassFromElement(element, className) {
@@ -137,11 +133,12 @@ function connectStatusSocket() {
     var websocket = new WebSocket(getSocketUrl());
 
     websocket.onopen = function () {
-        handleAuthenticationFailed(true);
+        jumpToAnchor("environment");
         getState();
     };
 
     websocket.onclose = function () {
+        showConnectionError();
     };
 
     websocket.onmessage = function (evt) {
@@ -156,7 +153,7 @@ function connectStatusSocket() {
 
     websocket.onerror = function () {
         removeCookie(TOKEN_COOKIE);
-        handleAuthenticationFailed(false);
+        showConnectionError();
     };
 }
 
@@ -231,7 +228,7 @@ function handleStatus(XMLHttpRequest) {
     }
 
     if (XMLHttpRequest.status == 401) {
-        handleAuthenticationFailed(false);
+        showConnectionError(false);
     }
 }
 
@@ -490,7 +487,7 @@ function handleInteraction(XMLHttpRequest) {
     }
 
     if (XMLHttpRequest.status == 401) {
-        handleAuthenticationFailed(false);
+        showConnectionError(false);
     }
 }
 
@@ -675,7 +672,7 @@ function handleHistRequest(XMLHttpRequest) {
     }
 
     if (XMLHttpRequest.status == 401) {
-        handleAuthenticationFailed(false);
+        showConnectionError(false);
     }
 }
 
