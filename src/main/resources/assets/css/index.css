@@ -385,9 +385,8 @@ input.authentication {
     margin: 20px;
 }
 
-#ibox_password.invalid {
-    outline-color: red;
-    animation: shake .6s linear;
+#auth_box.invalid {
+    animation: shake .4s linear;
 }
 
 .button {

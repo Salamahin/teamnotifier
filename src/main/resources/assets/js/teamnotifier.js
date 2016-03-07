@@ -102,9 +102,7 @@ function handleWhoAmI(XMLHttpRequest) {
 }
 
 function removeClassFromElement(element, className) {
-    element.className =
-       element.className.replace
-          ( /(?:^|\s)MyClass(?!\S)/g , '' );
+    element.classList.remove(className);
 }
 
 /** @namespace authInfo.token */
@@ -118,11 +116,15 @@ function handleAuthentication(XMLHttpRequest, userName) {
         USER_NAME = userName;
         storeCookie(TOKEN_COOKIE, USER_TOKEN);
         connectStatusSocket();
-        removeClassFromElement(document.getElementById("ibox_password"), "invalid");
         return;
     }
 
-    document.getElementById("ibox_password").className += " invalid";
+    var auth_box = document.getElementById("auth_box");
+    auth_box.addEventListener("animationend", function() {
+      removeClassFromElement(auth_box, "invalid");
+    });
+    auth_box.className += " invalid";
+    document.getElementById("ibox_password").value = "";
 }
 
 function getSocketUrl() {
