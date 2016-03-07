@@ -19,9 +19,11 @@ import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.Base64;
 
+import static com.home.teamnotifier.authentication.AuthenticationMethod.*;
+
 @Path("1.0/environment")
 @Produces(MediaType.APPLICATION_JSON)
-@RolesAllowed(AuthenticationMethod.JWT_AUTHENTICATED)
+@RolesAllowed(JWT_AUTHENTICATED)
 public class EnvironmentRestService {
     private final Logger LOGGER = LoggerFactory.getLogger(EnvironmentRestService.class);
 
@@ -77,6 +79,7 @@ public class EnvironmentRestService {
 
     @POST
     @Path("/application/action/{applicationId}")
+    @RolesAllowed({BASIC_AUTHENTICATED, JWT_AUTHENTICATED})
     public void newInfo(
             @Auth final UserPrincipal userPrincipal,
             @PathParam("applicationId") final Integer applicationId,
