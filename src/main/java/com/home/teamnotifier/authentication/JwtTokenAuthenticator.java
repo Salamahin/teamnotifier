@@ -7,8 +7,8 @@ import com.github.toastshaman.dropwizard.auth.jwt.parser.DefaultJsonWebTokenPars
 import com.github.toastshaman.dropwizard.auth.jwt.validator.ExpiryValidator;
 import com.google.common.base.Optional;
 import com.google.inject.Inject;
+import com.home.teamnotifier.db.UserEntity;
 import com.home.teamnotifier.gateways.NoSuchUser;
-import com.home.teamnotifier.gateways.UserCredentials;
 import com.home.teamnotifier.gateways.UserGateway;
 import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.Authenticator;
@@ -44,14 +44,14 @@ public class JwtTokenAuthenticator implements Authenticator<JsonWebToken, UserPr
         expiryValidator.validate(credentials);
 
         final int userId = Integer.valueOf(credentials.claim().subject());
-        final UserCredentials userCredentials;
+        final UserEntity user;
 
         try {
-            userCredentials = userGateway.get(userId);
+            user = userGateway.get(userId);
         } catch (NoSuchUser e) {
             return Optional.absent();
         }
 
-        return Optional.of(UserPrincipal.jwt(userId, userCredentials.getUserName()));
+        return Optional.of(UserPrincipal.jwt(userId, user.getName()));
     }
 }
