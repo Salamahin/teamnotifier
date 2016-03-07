@@ -1,5 +1,6 @@
 package com.home.teamnotifier.web.rest;
 
+import com.home.teamnotifier.DbPreparer;
 import com.home.teamnotifier.NotifierApplication;
 import com.home.teamnotifier.authentication.AuthenticationInfo;
 import com.home.teamnotifier.core.responses.action.ActionInfo;
@@ -19,11 +20,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.time.Instant;
-import java.util.Base64;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
+import static com.home.teamnotifier.DbPreparer.*;
 import static com.home.teamnotifier.DbPreparer.getRandomString;
 import static com.jayway.restassured.RestAssured.given;
 import static com.jayway.restassured.RestAssured.port;
@@ -217,33 +216,55 @@ public class FullRestServiceTest {
     }
 
     @Test
-    public void testRegistration()
-            throws Exception {
-        given().auth().preemptive().basic(getRandomString(), getRandomString()).
-                expect().statusCode(HttpStatus.NO_CONTENT_204)
+    public void testRegistration() throws Exception {
+        given().auth().preemptive().basic(getRandomString(), getRandomString())
+                .expect().statusCode(HttpStatus.NO_CONTENT_204)
                 .when().post("/teamnotifier/1.0/users/register");
     }
 
     @Test
     public void testAuthentication()
             throws Exception {
-        given().auth().preemptive().basic(credentials.getUsername(), credentials.getPassword()).
-                expect().statusCode(HttpStatus.OK_200).contentType(ContentType.JSON)
+        given().auth().preemptive().basic(credentials.getUsername(), credentials.getPassword())
+                .expect().statusCode(HttpStatus.OK_200)
+                .contentType(ContentType.JSON)
                 .when().get("/teamnotifier/1.0/users/authenticate");
     }
 
     @Test
     public void testWhoAmI() throws Exception {
-        given().auth().oauth2(token).
-                expect().statusCode(HttpStatus.OK_200).contentType(ContentType.JSON)
+        given().auth().oauth2(token)
+                .expect().statusCode(HttpStatus.OK_200).contentType(ContentType.JSON)
                 .when().get("/teamnotifier/1.0/users/whoami");
     }
 
     @Test
-    public void testIncorrectLogin()
-            throws Exception {
-        given().auth().preemptive().basic(credentials.getUsername(), credentials.getPassword())
-                .expect().statusCode(HttpStatus.OK_200).contentType(ContentType.JSON)
+    public void testNewActionWithJwt() throws Exception {
+        final String action = "action";
+        final int resourceId = helper.getAnyPersistedSharedResourceId();
+
+        given()
+                .auth().oauth2(token).header(new Header("ActionDetails", action))
+                .expect().statusCode(HttpStatus.NO_CONTENT_204)
+                .when().post("/teamnotifier/1.0/environment/application/action/" + resourceId);
+    }
+
+    @Test
+    public void testNewActionWithBasic() throws Exception {
+        final String action = "action";
+        final int resourceId = helper.getAnyPersistedSharedResourceId();
+
+        given()
+                .auth().preemptive().basic(credentials.getUsername(), credentials.getPassword())
+                .header(new Header("ActionDetails", action))
+                .expect().statusCode(HttpStatus.NO_CONTENT_204)
+                .when().post("/teamnotifier/1.0/environment/application/action/" + resourceId);
+    }
+
+    @Test
+    public void testIncorrectLogin() throws Exception {
+        given().auth().preemptive().basic(credentials.getUsername(), getRandomString())
+                .expect().statusCode(HttpStatus.UNAUTHORIZED_401)
                 .when().get("/teamnotifier/1.0/users/authenticate");
     }
 
