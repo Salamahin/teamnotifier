@@ -1,8 +1,13 @@
 package com.home.teamnotifier.db;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -15,6 +20,11 @@ public final class UserEntity implements Serializable {
     @Column(nullable = false, unique = true)
     @Size(min = 1)
     private final String name;
+
+    @ElementCollection(targetClass = RoleEntity.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "UserInRole", schema = "teamnotifier", joinColumns = @JoinColumn(name = "userId"))
+    @Column(name = "RoleId")
+    private final Set<RoleEntity> roles;
 
     @Column(nullable = false, unique = true)
     @Size(min = 1)
@@ -30,6 +40,7 @@ public final class UserEntity implements Serializable {
         name = null;
         passHash = null;
         salt = null;
+        roles = new HashSet<>();
     }
 
     public UserEntity(final String name, final String passHash, final String salt) {
@@ -37,6 +48,11 @@ public final class UserEntity implements Serializable {
         this.name = name;
         this.passHash = passHash;
         this.salt = salt;
+        roles = Sets.newHashSet(RoleEntity.USER);
+    }
+
+    public Set<RoleEntity> getRolesImmutable() {
+        return ImmutableSet.copyOf(roles);
     }
 
     public Integer getId() {
