@@ -13,7 +13,7 @@ import java.util.Objects;
 
 import static com.home.teamnotifier.utils.PasswordHasher.toHash;
 
-public class BasicAuthenticator implements Authenticator<BasicCredentials, UserPrincipal> {
+public class BasicAuthenticator implements Authenticator<BasicCredentials, BasicAuthenticated> {
     private final UserGateway userGateway;
 
     @Inject
@@ -28,7 +28,7 @@ public class BasicAuthenticator implements Authenticator<BasicCredentials, UserP
     }
 
     @Override
-    public Optional<UserPrincipal> authenticate(final BasicCredentials basicCredentials) throws AuthenticationException {
+    public Optional<BasicAuthenticated> authenticate(final BasicCredentials basicCredentials) throws AuthenticationException {
         try {
             return getUser(basicCredentials);
         } catch (NoSuchUser e) {
@@ -36,11 +36,11 @@ public class BasicAuthenticator implements Authenticator<BasicCredentials, UserP
         }
     }
 
-    private Optional<UserPrincipal> getUser(BasicCredentials basicCredentials) {
+    private Optional<BasicAuthenticated> getUser(BasicCredentials basicCredentials) {
         final UserEntity credentials = userGateway.get(basicCredentials.getUsername());
 
         if (providedCredentialsAreCorrect(basicCredentials, credentials))
-            return Optional.of(UserPrincipal.basic(credentials.getId(), credentials.getName()));
+            return Optional.of(new BasicAuthenticated(credentials.getName(),credentials.getId()));
 
         return Optional.absent();
     }

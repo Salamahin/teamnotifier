@@ -19,7 +19,6 @@ import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthFilter;
 import io.dropwizard.auth.AuthValueFactoryProvider;
-import io.dropwizard.auth.PermitAllAuthorizer;
 import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
 import io.dropwizard.auth.chained.ChainedAuthFilter;
 import io.dropwizard.setup.Bootstrap;
@@ -73,15 +72,15 @@ public class NotifierApplication extends Application<NotifierConfiguration> {
         final Injector injector = INJECTION_BUNDLE.getInjector();
         final JsonWebTokenParser tokenParser = injector.getInstance(JsonWebTokenParser.class);
         final JsonWebTokenVerifier tokenVerifier = injector.getInstance(JsonWebTokenVerifier.class);
-        final JwtTokenAuthenticator jwtTokenAuthenticator = injector.getInstance(JwtTokenAuthenticator.class);
+        final TokenAuthenticator tokenAuthenticator = injector.getInstance(TokenAuthenticator.class);
         final BasicAuthenticator basicAuthenticator = injector.getInstance(BasicAuthenticator.class);
         final UserAuthorizer userAuthorizer = new UserAuthorizer();
 
-        final JWTAuthFilter<UserPrincipal> jwt = new JWTAuthFilter.Builder<UserPrincipal>()
+        final JWTAuthFilter<? extends UserPrincipal> jwt = new JWTAuthFilter.Builder<TokenAuthenticated>()
                 .setTokenParser(tokenParser)
                 .setTokenVerifier(tokenVerifier)
                 .setPrefix("Bearer")
-                .setAuthenticator(jwtTokenAuthenticator)
+                .setAuthenticator(tokenAuthenticator)
                 .setAuthorizer(userAuthorizer)
                 .buildAuthFilter();
 

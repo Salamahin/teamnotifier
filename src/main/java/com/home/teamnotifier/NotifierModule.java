@@ -11,7 +11,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.home.teamnotifier.authentication.BasicAuthenticator;
-import com.home.teamnotifier.authentication.JwtTokenAuthenticator;
+import com.home.teamnotifier.authentication.TokenAuthenticator;
 import com.home.teamnotifier.authentication.WebsocketAuthenticator;
 import com.home.teamnotifier.core.AppServerAvailabilityChecker;
 import com.home.teamnotifier.core.NotificationManager;
@@ -69,14 +69,14 @@ final class NotifierModule extends AbstractModule {
         bind(BasicAuthenticator.class)
                 .in(Singleton.class);
 
-        bind(JwtTokenAuthenticator.class)
+        bind(TokenAuthenticator.class)
                 .in(Singleton.class);
 
         bind(JsonWebTokenParser.class)
                 .toInstance(new DefaultJsonWebTokenParser());
 
         bind(WebsocketAuthenticator.class)
-                .to(JwtTokenAuthenticator.class)
+                .to(TokenAuthenticator.class)
                 .in(Singleton.class);
 
         bind(JsonWebTokenHeader.class)

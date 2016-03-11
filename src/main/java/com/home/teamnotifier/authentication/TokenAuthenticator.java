@@ -13,21 +13,21 @@ import com.home.teamnotifier.gateways.UserGateway;
 import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.Authenticator;
 
-public class JwtTokenAuthenticator implements Authenticator<JsonWebToken, UserPrincipal>, WebsocketAuthenticator {
+public class TokenAuthenticator implements Authenticator<JsonWebToken, TokenAuthenticated>, WebsocketAuthenticator {
 
     private final ExpiryValidator expiryValidator;
     private final UserGateway userGateway;
     private final JsonWebTokenVerifier verifier;
 
     @Inject
-    public JwtTokenAuthenticator(final UserGateway userGateway, final JsonWebTokenVerifier verifier) {
+    public TokenAuthenticator(final UserGateway userGateway, final JsonWebTokenVerifier verifier) {
         this.userGateway = userGateway;
         this.verifier = verifier;
         expiryValidator = new ExpiryValidator();
     }
 
     @Override
-    public Optional<UserPrincipal> authenticate(final String jwtToken) throws AuthenticationException {
+    public Optional<TokenAuthenticated> authenticate(final String jwtToken) throws AuthenticationException {
         final JsonWebToken token = new DefaultJsonWebTokenParser().parse(jwtToken);
 
         try {
@@ -40,7 +40,7 @@ public class JwtTokenAuthenticator implements Authenticator<JsonWebToken, UserPr
     }
 
     @Override
-    public Optional<UserPrincipal> authenticate(final JsonWebToken credentials) throws AuthenticationException {
+    public Optional<TokenAuthenticated> authenticate(final JsonWebToken credentials) throws AuthenticationException {
         expiryValidator.validate(credentials);
 
         final int userId = Integer.valueOf(credentials.claim().subject());
@@ -52,6 +52,6 @@ public class JwtTokenAuthenticator implements Authenticator<JsonWebToken, UserPr
             return Optional.absent();
         }
 
-        return Optional.of(UserPrincipal.jwt(userId, user.getName()));
+        return Optional.of(new TokenAuthenticated(user.getName(), userId));
     }
 }

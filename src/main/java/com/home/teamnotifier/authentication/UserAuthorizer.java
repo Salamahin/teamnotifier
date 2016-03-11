@@ -2,10 +2,11 @@ package com.home.teamnotifier.authentication;
 
 import io.dropwizard.auth.Authorizer;
 
-public class UserAuthorizer implements Authorizer<UserPrincipal> {
+public class UserAuthorizer<T extends UserPrincipal> implements Authorizer<T> {
 
     @Override
-    public boolean authorize(final UserPrincipal principal, final String role) {
-        return principal.getOrigin().equalsIgnoreCase(role);
+    public boolean authorize(final T principal, final String role) {
+        return true;
+//        return principal.getOrigin().equalsIgnoreCase(role);
     }
 }
