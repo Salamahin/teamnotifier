@@ -26,7 +26,6 @@ import io.dropwizard.setup.Environment;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 
 import javax.servlet.ServletRegistration;
-
 import java.util.List;
 
 import static com.home.teamnotifier.Injection.INJECTION_BUNDLE;
@@ -74,26 +73,29 @@ public class NotifierApplication extends Application<NotifierConfiguration> {
         final JsonWebTokenVerifier tokenVerifier = injector.getInstance(JsonWebTokenVerifier.class);
         final TokenAuthenticator tokenAuthenticator = injector.getInstance(TokenAuthenticator.class);
         final BasicAuthenticator basicAuthenticator = injector.getInstance(BasicAuthenticator.class);
-        final UserAuthorizer userAuthorizer = new UserAuthorizer();
 
-        final JWTAuthFilter<? extends UserPrincipal> jwt = new JWTAuthFilter.Builder<TokenAuthenticated>()
+        final UserAuthorizer<TokenAuthenticated> tokenUserAuthorizer = new UserAuthorizer<>();
+        final UserAuthorizer<BasicAuthenticated> basicUserAuthorizer = new UserAuthorizer<>();
+
+        final JWTAuthFilter<? extends AnyAuthenticated> jwt = new JWTAuthFilter.Builder<TokenAuthenticated>()
                 .setTokenParser(tokenParser)
                 .setTokenVerifier(tokenVerifier)
                 .setPrefix("Bearer")
                 .setAuthenticator(tokenAuthenticator)
-                .setAuthorizer(userAuthorizer)
+                .setAuthorizer(tokenUserAuthorizer)
                 .buildAuthFilter();
 
-        final BasicCredentialAuthFilter<UserPrincipal> simple = new BasicCredentialAuthFilter.Builder<UserPrincipal>()
+        final BasicCredentialAuthFilter<? extends AnyAuthenticated> simple = new BasicCredentialAuthFilter.Builder<BasicAuthenticated>()
                 .setAuthenticator(basicAuthenticator)
-                .setAuthorizer(userAuthorizer)
+                .setAuthorizer(basicUserAuthorizer)
                 .buildAuthFilter();
 
         final List<AuthFilter<?, ?>> filters = Lists.newArrayList(jwt, simple);
 
         environment.jersey().register(new AuthDynamicFeature(new ChainedAuthFilter(filters)));
 
-        environment.jersey().register(new AuthValueFactoryProvider.Binder<>(UserPrincipal.class));
+        environment.jersey().register(new AuthValueFactoryProvider.Binder<>(TokenAuthenticated.class));
+        environment.jersey().register(new AuthValueFactoryProvider.Binder<>(BasicAuthenticated.class));
 
         environment.jersey().register(RolesAllowedDynamicFeature.class);
     }

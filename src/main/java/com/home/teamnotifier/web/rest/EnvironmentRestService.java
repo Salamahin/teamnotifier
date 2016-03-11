@@ -2,8 +2,8 @@ package com.home.teamnotifier.web.rest;
 
 import com.google.common.collect.Range;
 import com.google.inject.Inject;
-import com.home.teamnotifier.authentication.AuthenticationMethod;
-import com.home.teamnotifier.authentication.UserPrincipal;
+import com.home.teamnotifier.authentication.TokenAuthenticated;
+import com.home.teamnotifier.authentication.AnyAuthenticated;
 import com.home.teamnotifier.core.ResourceMonitor;
 import com.home.teamnotifier.core.responses.action.ActionsInfo;
 import com.home.teamnotifier.core.responses.status.EnvironmentsInfo;
@@ -11,7 +11,6 @@ import io.dropwizard.auth.Auth;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.nio.charset.Charset;
@@ -19,11 +18,8 @@ import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.Base64;
 
-import static com.home.teamnotifier.authentication.AuthenticationMethod.*;
-
 @Path("1.0/environment")
 @Produces(MediaType.APPLICATION_JSON)
-@RolesAllowed(JWT_AUTHENTICATED)
 public class EnvironmentRestService {
     private final Logger LOGGER = LoggerFactory.getLogger(EnvironmentRestService.class);
 
@@ -37,7 +33,7 @@ public class EnvironmentRestService {
     @POST
     @Path("/application/reserve/{applicationId}")
     public void reserve(
-            @Auth final UserPrincipal userPrincipal,
+            @Auth final TokenAuthenticated userPrincipal,
             @PathParam("applicationId") final Integer applicationId
     ) {
         final String userName = userPrincipal.getName();
@@ -48,7 +44,7 @@ public class EnvironmentRestService {
     @DELETE
     @Path("/application/reserve/{applicationId}")
     public void free(
-            @Auth final UserPrincipal userPrincipal,
+            @Auth final TokenAuthenticated userPrincipal,
             @PathParam("applicationId") final Integer applicationId
     ) {
         final String userName = userPrincipal.getName();
@@ -59,7 +55,7 @@ public class EnvironmentRestService {
     @POST
     @Path("/server/subscribe/{serverId}")
     public void subscribe(
-            @Auth final UserPrincipal userPrincipal,
+            @Auth final TokenAuthenticated userPrincipal,
             @PathParam("serverId") final Integer serverId
     ) {
         final String userName = userPrincipal.getName();
@@ -70,7 +66,7 @@ public class EnvironmentRestService {
     @DELETE
     @Path("/server/subscribe/{serverId}")
     public void unsubscribe(
-            @Auth final UserPrincipal userPrincipal,
+            @Auth final TokenAuthenticated userPrincipal,
             @PathParam("serverId") final Integer serverId) {
         final String userName = userPrincipal.getName();
         LOGGER.info("User {} unsubscribe from server id {} request", userName, serverId);
@@ -79,9 +75,8 @@ public class EnvironmentRestService {
 
     @POST
     @Path("/application/action/{applicationId}")
-    @RolesAllowed({BASIC_AUTHENTICATED, JWT_AUTHENTICATED})
     public void newInfo(
-            @Auth final UserPrincipal userPrincipal,
+            @Auth final AnyAuthenticated userPrincipal,
             @PathParam("applicationId") final Integer applicationId,
             @HeaderParam("ActionDetails") final String details
     ) {
@@ -91,7 +86,7 @@ public class EnvironmentRestService {
     }
 
     @GET
-    public EnvironmentsInfo getServerInfo(@Auth final UserPrincipal userPrincipal) {
+    public EnvironmentsInfo getServerInfo(@Auth final TokenAuthenticated userPrincipal) {
         LOGGER.info("User {} status request", userPrincipal.getName());
         return resourceMonitor.status();
     }
@@ -99,7 +94,7 @@ public class EnvironmentRestService {
     @GET
     @Path("/application/action/{applicationId}")
     public ActionsInfo getActionsInfo(
-            @Auth final UserPrincipal userPrincipal,
+            @Auth final TokenAuthenticated userPrincipal,
             @PathParam("applicationId") final Integer applicationId,
             @HeaderParam("ActionsFrom") final String encodedBase64From,
             @HeaderParam("ActionsTo") final String encodedBase64To
