@@ -77,7 +77,7 @@ public class NotifierApplication extends Application<NotifierConfiguration> {
         final UserAuthorizer<TokenAuthenticated> tokenUserAuthorizer = new UserAuthorizer<>();
         final UserAuthorizer<BasicAuthenticated> basicUserAuthorizer = new UserAuthorizer<>();
 
-        final JWTAuthFilter<? extends AnyAuthenticated> jwt = new JWTAuthFilter.Builder<TokenAuthenticated>()
+        final JWTAuthFilter<TokenAuthenticated> jwt = new JWTAuthFilter.Builder<TokenAuthenticated>()
                 .setTokenParser(tokenParser)
                 .setTokenVerifier(tokenVerifier)
                 .setPrefix("Bearer")
@@ -85,7 +85,7 @@ public class NotifierApplication extends Application<NotifierConfiguration> {
                 .setAuthorizer(tokenUserAuthorizer)
                 .buildAuthFilter();
 
-        final BasicCredentialAuthFilter<? extends AnyAuthenticated> simple = new BasicCredentialAuthFilter.Builder<BasicAuthenticated>()
+        final BasicCredentialAuthFilter<BasicAuthenticated> simple = new BasicCredentialAuthFilter.Builder<BasicAuthenticated>()
                 .setAuthenticator(basicAuthenticator)
                 .setAuthorizer(basicUserAuthorizer)
                 .buildAuthFilter();
@@ -94,8 +94,9 @@ public class NotifierApplication extends Application<NotifierConfiguration> {
 
         environment.jersey().register(new AuthDynamicFeature(new ChainedAuthFilter(filters)));
 
-        environment.jersey().register(new AuthValueFactoryProvider.Binder<>(TokenAuthenticated.class));
+        environment.jersey().register(new AuthValueFactoryProvider.Binder<>(AnyAuthenticated.class));
         environment.jersey().register(new AuthValueFactoryProvider.Binder<>(BasicAuthenticated.class));
+        environment.jersey().register(new AuthValueFactoryProvider.Binder<>(TokenAuthenticated.class));
 
         environment.jersey().register(RolesAllowedDynamicFeature.class);
     }
