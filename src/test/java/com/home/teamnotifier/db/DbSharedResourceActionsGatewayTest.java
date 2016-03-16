@@ -1,8 +1,8 @@
 package com.home.teamnotifier.db;
 
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Range;
 import com.home.teamnotifier.DbPreparer;
+import com.home.teamnotifier.core.BroadcastInformation;
 import com.home.teamnotifier.core.responses.action.ActionsInfo;
 import com.home.teamnotifier.gateways.EmptyDescription;
 import com.home.teamnotifier.gateways.NoSuchResource;
@@ -76,6 +76,18 @@ public class DbSharedResourceActionsGatewayTest {
         assertThat(gateway.newAction(userName1, resourceId, getRandomString()).getSubscribers())
                 .doesNotContain(userName1)
                 .contains(userName2);
+    }
+
+    @Test
+    public void testActionByResourceNameAndServerName() throws Exception {
+        final String envName = "env";
+        final String srvName = "srv";
+        final String appName = "app";
+
+        helper.createPersistedEnvironmentWithOneServerAndOneResource(envName, srvName, appName);
+        final String userName = helper.createPersistedUser(getRandomString(), getRandomString()).getName();
+
+        assertThat(gateway.newAction(userName, envName, srvName, appName, "test")).isNotNull();
     }
 
     @Test(expected = NoSuchResource.class)

@@ -38,6 +38,10 @@ public class SharedResourceInfo {
         return occupationInfo;
     }
 
+    public String getName() {
+        return name;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(name, occupationInfo, id);

@@ -13,5 +13,13 @@ public interface SharedResourceActionsGateway {
             final String description
     ) throws NoSuchResource, EmptyDescription, NoSuchUser;
 
+    BroadcastInformation newAction(
+            final String userName,
+            final String environmentName,
+            final String serverName,
+            final String resourceName,
+            final String description
+    ) throws NoSuchResource, EmptyDescription, NoSuchUser;
+
     ActionsInfo getActions(final int resourceId, final Range<Instant> range) throws NoSuchResource;
 }

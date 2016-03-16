@@ -4,16 +4,18 @@ import com.google.common.base.Throwables;
 import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
 import com.google.inject.Inject;
+import com.home.teamnotifier.core.BroadcastInformation;
 import com.home.teamnotifier.core.responses.action.ActionInfo;
 import com.home.teamnotifier.core.responses.action.ActionsInfo;
 import com.home.teamnotifier.core.responses.notification.EventType;
 import com.home.teamnotifier.core.responses.notification.NotificationInfo;
-import com.home.teamnotifier.core.BroadcastInformation;
 import com.home.teamnotifier.gateways.EmptyDescription;
 import com.home.teamnotifier.gateways.NoSuchResource;
+import com.home.teamnotifier.gateways.NoSuchUser;
 import com.home.teamnotifier.gateways.SharedResourceActionsGateway;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import javax.validation.ConstraintViolationException;
@@ -37,57 +39,134 @@ public class DbSharedResourceActionsGateway implements SharedResourceActionsGate
     }
 
     @Override
-    public BroadcastInformation newAction(String userName, int resourceId, String description) {
+    public BroadcastInformation newAction(final String userName, final int resourceId, final String description) {
         try {
             return tryPersistNewAction(userName, resourceId, description);
         } catch (Exception exc) {
-            rethrowConstraintViolation(exc);
+            rethrowIfContainsConstraintViolation(exc);
             return null;
         }
     }
 
-    private void rethrowConstraintViolation(Exception exc) {
+    @Override
+    public BroadcastInformation newAction(
+            final String userName,
+            final String environmentName,
+            final String serverName,
+            final String resourceName,
+            final String description
+    ) throws NoSuchResource, EmptyDescription, NoSuchUser {
+        try {
+            return tryPersistNewAction(userName, environmentName, serverName, resourceName, description);
+        } catch (NoResultException exc) {
+            throw new NoSuchResource(String.format("No resource env=%s srv=%s res=%s", environmentName, serverName, resourceName));
+        } catch (Exception exc) {
+            rethrowIfContainsConstraintViolation(exc);
+            return null;
+        }
+    }
+
+    private void rethrowIfContainsConstraintViolation(Exception exc) {
         final Optional<Throwable> firstConstraintViolation = Throwables.getCausalChain(exc).stream()
                 .filter((ConstraintViolationException.class)::isInstance)
                 .findFirst();
 
         if (firstConstraintViolation.isPresent())
             throw new EmptyDescription(firstConstraintViolation.get());
-        else
-            Throwables.propagate(exc);
+        throw Throwables.propagate(exc);
     }
 
-    private BroadcastInformation tryPersistNewAction(String userName, int resourceId, String description) {
+    private BroadcastInformation tryPersistNewAction(final String userName, final int resourceId, final String description) {
         return transactionHelper.transaction(em -> {
             final SharedResourceEntity resourceEntity = getSharedResourceEntity(resourceId, em);
             final UserEntity userEntity = getUserEntity(userName, em);
 
-            final ActionOnSharedResourceEntity action = new ActionOnSharedResourceEntity(
-                    userEntity,
-                    resourceEntity,
-                    description
-            );
-            em.persist(action);
-
-            final Instant time = action.getActionTime();
-            return new BroadcastInformation(
-                    new NotificationInfo(
-                            userName,
-                            time,
-                            EventType.ACTION_ON_RESOURCE,
-                            resourceEntity.getId(),
-                            description),
-                    getSubscribersButUser(userName, resourceEntity.getAppServer())
-            );
+            return newAction(userEntity, resourceEntity, description, em);
         });
     }
 
-    private SharedResourceEntity getSharedResourceEntity(int resourceId, EntityManager em) {
+    private BroadcastInformation tryPersistNewAction(
+            final String userName,
+            final String envName,
+            final String serverName,
+            final String resourceName,
+            final String description
+    ) {
+        return transactionHelper.transaction(em -> {
+            final SharedResourceEntity resourceEntity = getSharedResourceEntity(envName, serverName, resourceName, em);
+            final UserEntity userEntity = getUserEntity(userName, em);
+
+            return newAction(userEntity, resourceEntity, description, em);
+        });
+    }
+
+    private BroadcastInformation newAction(
+            final UserEntity userEntity,
+            final SharedResourceEntity resourceEntity,
+            final String description,
+            final EntityManager em
+    ) {
+        final ActionOnSharedResourceEntity action = new ActionOnSharedResourceEntity(
+                userEntity,
+                resourceEntity,
+                description
+        );
+        em.persist(action);
+
+        String userName = userEntity.getName();
+
+        final Instant time = action.getActionTime();
+        return new BroadcastInformation(
+                new NotificationInfo(
+                        userName,
+                        time,
+                        EventType.ACTION_ON_RESOURCE,
+                        resourceEntity.getId(),
+                        description),
+                getSubscribersButUser(userName, resourceEntity.getAppServer())
+        );
+    }
+
+    private SharedResourceEntity getSharedResourceEntity(final int resourceId, final EntityManager em) {
         final SharedResourceEntity entity = em.find(SharedResourceEntity.class, resourceId);
         if (entity == null)
             throw new NoSuchResource(String.format("No resource with id %d", resourceId));
 
         return entity;
+    }
+
+    private SharedResourceEntity getSharedResourceEntity(
+            final String envName,
+            final String serverName,
+            final String resourceName,
+            final EntityManager em
+    ) {
+
+        final CriteriaBuilder cb = em.getCriteriaBuilder();
+
+        CriteriaQuery<SharedResourceEntity> cqRes = cb.createQuery(SharedResourceEntity.class);
+        Subquery<AppServerEntity> srvByName = cqRes.subquery(AppServerEntity.class);
+        Subquery<EnvironmentEntity> envByName = srvByName.subquery(EnvironmentEntity.class);
+
+        final Root<SharedResourceEntity> rootRes = cqRes.from(SharedResourceEntity.class);
+        final Root<AppServerEntity> rootSrv = srvByName.from(AppServerEntity.class);
+        final Root<EnvironmentEntity> rootEnv = envByName.from(EnvironmentEntity.class);
+
+        envByName = envByName.select(rootEnv).where(cb.equal(rootEnv.get("name"), envName));
+
+        srvByName = srvByName.select(rootSrv).where(cb.and(
+                cb.equal(rootSrv.get("name"), serverName),
+                cb.equal(rootSrv.get("environment"), envByName)
+        ));
+
+        cqRes.select(rootRes).where(cb.and(
+                cb.equal(rootRes.get("name"), resourceName),
+                cb.equal(rootRes.get("appServer"), srvByName)
+        ));
+
+        return em
+                .createQuery(cqRes)
+                .getSingleResult();
     }
 
     @Override
@@ -125,8 +204,11 @@ public class DbSharedResourceActionsGateway implements SharedResourceActionsGate
         return new ActionsInfo(actionInfos);
     }
 
-    private Predicate getPredicateForRange(Range<Instant> range, CriteriaBuilder cb,
-                                           Root<ActionOnSharedResourceEntity> root) {
+    private Predicate getPredicateForRange(
+            final Range<Instant> range,
+            final CriteriaBuilder cb,
+            final Root<ActionOnSharedResourceEntity> root
+    ) {
         final Path<Instant> time = root.get("actionTime");
         final List<Predicate> predicates = new ArrayList<>();
 

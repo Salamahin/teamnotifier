@@ -70,8 +70,12 @@ public class ResourceMonitor {
     }
 
     public void newAction(final String userName, final int applicationId, final String desc) {
-        final BroadcastInformation information =
-                sharedResourceActionsGateway.newAction(userName, applicationId, desc);
+        final BroadcastInformation information = sharedResourceActionsGateway.newAction(userName, applicationId, desc);
+        fireNotification(information);
+    }
+
+    public void newAction(final String userName, final String environmentName, final String serverName, final String applicationName, final String desc) {
+        final BroadcastInformation information = sharedResourceActionsGateway.newAction(userName, environmentName, serverName, applicationName, desc);
         fireNotification(information);
     }
 }

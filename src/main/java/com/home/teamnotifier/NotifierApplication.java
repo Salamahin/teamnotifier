@@ -3,12 +3,17 @@ package com.home.teamnotifier;
 import com.github.toastshaman.dropwizard.auth.jwt.JWTAuthFilter;
 import com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenParser;
 import com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenVerifier;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.inject.Injector;
 import com.home.teamnotifier.authentication.*;
 import com.home.teamnotifier.health.AppServerStates;
 import com.home.teamnotifier.health.DbConnection;
 import com.home.teamnotifier.health.Sessions;
+import com.home.teamnotifier.repo.PolymorphicAuthDynamicFeature;
+import com.home.teamnotifier.repo.PolymorphicAuthValueFactoryProvider;
 import com.home.teamnotifier.web.lifecycle.ExecutorsManager;
 import com.home.teamnotifier.web.lifecycle.ServerStatusCheckerManager;
 import com.home.teamnotifier.web.lifecycle.TransactionManager;
@@ -26,7 +31,10 @@ import io.dropwizard.setup.Environment;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 
 import javax.servlet.ServletRegistration;
+import java.security.Principal;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static com.home.teamnotifier.Injection.INJECTION_BUNDLE;
 
@@ -90,13 +98,9 @@ public class NotifierApplication extends Application<NotifierConfiguration> {
                 .setAuthorizer(basicUserAuthorizer)
                 .buildAuthFilter();
 
-        final List<AuthFilter<?, ?>> filters = Lists.newArrayList(jwt, simple);
 
-        environment.jersey().register(new AuthDynamicFeature(new ChainedAuthFilter(filters)));
-
-        environment.jersey().register(new AuthValueFactoryProvider.Binder<>(AnyAuthenticated.class));
-        environment.jersey().register(new AuthValueFactoryProvider.Binder<>(BasicAuthenticated.class));
-        environment.jersey().register(new AuthValueFactoryProvider.Binder<>(TokenAuthenticated.class));
+        environment.jersey().register(new PolymorphicAuthDynamicFeature<>(ImmutableMap.of(TokenAuthenticated.class, jwt, BasicAuthenticated.class, simple)));
+        environment.jersey().register(new PolymorphicAuthValueFactoryProvider.Binder<>(ImmutableSet.of(AnyAuthenticated.class, BasicAuthenticated.class, TokenAuthenticated.class)));
 
         environment.jersey().register(RolesAllowedDynamicFeature.class);
     }

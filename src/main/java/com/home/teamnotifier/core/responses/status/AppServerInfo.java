@@ -53,6 +53,10 @@ public class AppServerInfo {
         return subscribers;
     }
 
+    public String getName() {
+        return name;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(name, resources, subscribers, id, isOnline);

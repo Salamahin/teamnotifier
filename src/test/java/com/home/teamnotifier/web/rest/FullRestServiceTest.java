@@ -8,6 +8,7 @@ import com.home.teamnotifier.core.responses.action.ActionsInfo;
 import com.home.teamnotifier.core.responses.status.EnvironmentsInfo;
 import com.home.teamnotifier.core.responses.status.OccupationInfo;
 import com.home.teamnotifier.core.responses.status.SharedResourceInfo;
+import com.home.teamnotifier.db.EnvironmentEntity;
 import com.jayway.restassured.http.ContentType;
 import com.jayway.restassured.response.Header;
 import com.jayway.restassured.response.Response;
@@ -20,9 +21,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.Base64;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
-import static com.home.teamnotifier.DbPreparer.*;
 import static com.home.teamnotifier.DbPreparer.getRandomString;
 import static com.jayway.restassured.RestAssured.given;
 import static com.jayway.restassured.RestAssured.port;
@@ -33,16 +36,35 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(DropwizardJunitRunner.class)
 @DropwizardTestConfig(applicationClass = NotifierApplication.class, yamlFile = "/web.yml")
 public class FullRestServiceTest {
+
     private String token;
-
-    private IntegrationTestHelper helper;
-
+    private Deserializer deserializer;
     private BasicCredentials credentials;
+    private EnvironmentEntity environment;
+    private DbPreparer dbPreparer;
+
+    @Before
+    public void setUp() {
+        port = 7996;
+        deserializer = new Deserializer();
+
+        credentials = new BasicCredentials(getRandomString(), getRandomString());
+
+        dbPreparer = new DbPreparer();
+        environment = dbPreparer.createPersistedEnvironmentWithOneServerAndOneResource(
+                getRandomString(),
+                getRandomString(),
+                getRandomString()
+        );
+        dbPreparer.createPersistedUser(credentials.getUsername(), credentials.getPassword());
+
+        token = getToken(credentials.getUsername(), credentials.getPassword());
+    }
+
 
     @Test
-    public void testReserve()
-            throws Exception {
-        final int resourceId = helper.getAnyPersistedSharedResourceId();
+    public void testReserve() throws Exception {
+        final int resourceId = dbPreparer.anyResourceId(environment);
         final String username = credentials.getUsername();
 
         Optional<OccupationInfo> occupationInfo = getOccupationInfo(resourceId);
@@ -78,13 +100,12 @@ public class FullRestServiceTest {
                 .when().get("/teamnotifier/1.0/environment")
                 .then().contentType(ContentType.JSON).extract().response();
 
-        return helper.deserialize(EnvironmentsInfo.class, response.asString());
+        return deserializer.deserialize(EnvironmentsInfo.class, response.asString());
     }
 
     @Test
-    public void testFree()
-            throws Exception {
-        final int resourceId = helper.getAnyPersistedSharedResourceId();
+    public void testFree() throws Exception {
+        final int resourceId = dbPreparer.anyResourceId(environment);
         final String username = credentials.getUsername();
 
         reserve(resourceId);
@@ -107,9 +128,8 @@ public class FullRestServiceTest {
     }
 
     @Test
-    public void testSubscribe()
-            throws Exception {
-        final int serverId = helper.getAnyPersistedServerId();
+    public void testSubscribe() throws Exception {
+        final int serverId = dbPreparer.anyServerId(environment);
         final String userName = credentials.getUsername();
 
         Set<String> subscriberNames = getSubscribersNames(serverId);
@@ -139,9 +159,8 @@ public class FullRestServiceTest {
     }
 
     @Test
-    public void testUnsubscribe()
-            throws Exception {
-        final int serverId = helper.getAnyPersistedServerId();
+    public void testUnsubscribe() throws Exception {
+        final int serverId = dbPreparer.anyServerId(environment);
         final String userName = credentials.getUsername();
 
         subscribe(serverId);
@@ -161,8 +180,7 @@ public class FullRestServiceTest {
     }
 
     @Test
-    public void testAuthenticatedUserCanGetServerInfo()
-            throws Exception {
+    public void testAuthenticatedUserCanGetServerInfo() throws Exception {
         given()
                 .auth().oauth2(token)
                 .expect().statusCode(HttpStatus.OK_200).contentType(ContentType.JSON)
@@ -178,10 +196,9 @@ public class FullRestServiceTest {
     }
 
     @Test
-    public void testGetActionsInfo()
-            throws Exception {
+    public void testGetActionsInfo() throws Exception {
         final String action = getRandomString();
-        final int resourceId = helper.getAnyPersistedSharedResourceId();
+        final int resourceId = dbPreparer.anyResourceId(environment);
 
         final Instant from = Instant.now();
         createNewInfo(action, resourceId);
@@ -194,7 +211,7 @@ public class FullRestServiceTest {
                 .when().get("/teamnotifier/1.0/environment/application/action/" + resourceId)
                 .then().contentType(ContentType.JSON).extract().response();
 
-        final ActionsInfo info = helper.deserialize(ActionsInfo.class, response.asString());
+        final ActionsInfo info = deserializer.deserialize(ActionsInfo.class, response.asString());
         assertThat(getDescriptions(info)).contains(action);
     }
 
@@ -241,7 +258,7 @@ public class FullRestServiceTest {
     @Test
     public void testNewActionWithJwt() throws Exception {
         final String action = "action";
-        final int resourceId = helper.getAnyPersistedSharedResourceId();
+        final int resourceId = dbPreparer.anyResourceId(environment);
 
         given()
                 .auth().oauth2(token).header(new Header("ActionDetails", action))
@@ -252,13 +269,25 @@ public class FullRestServiceTest {
     @Test
     public void testNewActionWithBasic() throws Exception {
         final String action = "action";
-        final int resourceId = helper.getAnyPersistedSharedResourceId();
+
+        final String envName = environment.getName();
+        final String srvName = environment.getImmutableSetOfAppServers().stream()
+                .findFirst()
+                .get()
+                .getName();
+
+        final String resName = environment.getImmutableSetOfAppServers().stream()
+                .filter(s -> s.getName().equals(srvName))
+                .flatMap(s -> s.getImmutableSetOfResources().stream())
+                .findFirst()
+                .get()
+                .getName();
 
         given()
                 .auth().preemptive().basic(credentials.getUsername(), credentials.getPassword())
                 .header(new Header("ActionDetails", action))
                 .expect().statusCode(HttpStatus.NO_CONTENT_204)
-                .when().post("/teamnotifier/1.0/environment/application/action/" + resourceId);
+                .when().post(String.format("/teamnotifier/1.0/environment/application/action?environment=%s&server=%s&application=%s", envName, srvName, resName));
     }
 
     @Test
@@ -268,23 +297,12 @@ public class FullRestServiceTest {
                 .when().get("/teamnotifier/1.0/users/authenticate");
     }
 
-    @Before
-    public void setUp() {
-        port = 7996;
-
-        helper = new IntegrationTestHelper();
-        helper.prepareEnvironment();
-
-        credentials = helper.createNewPersistedUser();
-        token = getToken(credentials.getUsername(), credentials.getPassword());
-    }
-
     private String getToken(final String userName, final String password) {
         final Response response = given().auth().preemptive().basic(userName, password)
                 .when().get("/teamnotifier/1.0/users/authenticate")
                 .then().contentType(ContentType.JSON).extract().response();
 
 
-        return helper.deserialize(AuthenticationInfo.class, response.asString()).getToken();
+        return deserializer.deserialize(AuthenticationInfo.class, response.asString()).getToken();
     }
 }

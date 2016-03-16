@@ -4,6 +4,7 @@ import com.google.common.net.HttpHeaders;
 import com.google.inject.Inject;
 import com.home.teamnotifier.authentication.AuthenticationInfo;
 import com.home.teamnotifier.authentication.BasicAuthenticated;
+import com.home.teamnotifier.authentication.TokenAuthenticated;
 import com.home.teamnotifier.authentication.TokenCreator;
 import com.home.teamnotifier.core.responses.authentication.UserInfo;
 import com.home.teamnotifier.gateways.UserGateway;
@@ -51,7 +52,7 @@ public class UserRestService {
 
     @GET
     @Path("/whoami")
-    public UserInfo whoAmI(@Auth final BasicAuthenticated userPrincipal) {
+    public UserInfo whoAmI(@Auth final TokenAuthenticated userPrincipal) {
         final String name = userPrincipal.getName();
         LOGGER.info("WhoAmI request from {}", name);
         return new UserInfo(name);

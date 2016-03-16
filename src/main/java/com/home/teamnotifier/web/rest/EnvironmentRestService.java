@@ -2,12 +2,14 @@ package com.home.teamnotifier.web.rest;
 
 import com.google.common.collect.Range;
 import com.google.inject.Inject;
+import com.home.teamnotifier.authentication.BasicAuthenticated;
 import com.home.teamnotifier.authentication.TokenAuthenticated;
 import com.home.teamnotifier.authentication.AnyAuthenticated;
 import com.home.teamnotifier.core.ResourceMonitor;
 import com.home.teamnotifier.core.responses.action.ActionsInfo;
 import com.home.teamnotifier.core.responses.status.EnvironmentsInfo;
 import io.dropwizard.auth.Auth;
+import org.hibernate.validator.constraints.URL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,13 +78,27 @@ public class EnvironmentRestService {
     @POST
     @Path("/application/action/{applicationId}")
     public void newInfo(
-            @Auth final AnyAuthenticated userPrincipal,
+            @Auth final TokenAuthenticated userPrincipal,
             @PathParam("applicationId") final Integer applicationId,
             @HeaderParam("ActionDetails") final String details
     ) {
         final String userName = userPrincipal.getName();
         LOGGER.info("User {} new action on resource id {} ({}) request", userName, applicationId, details);
         resourceMonitor.newAction(userName, applicationId, details);
+    }
+
+    @POST
+    @Path("/application/action/")
+    public void newInfo(
+            @Auth final BasicAuthenticated userPrincipal,
+            @QueryParam("environment") final String environmentName,
+            @QueryParam("server") final String serverName,
+            @QueryParam("application") final String resourceName,
+            @HeaderParam("ActionDetails") final String details
+    ) {
+        final String userName = userPrincipal.getName();
+        LOGGER.info("User {} new action on resource {} {} ({}) request", userName, serverName, resourceName, details);
+        resourceMonitor.newAction(userName, environmentName, serverName, resourceName, details);
     }
 
     @GET
