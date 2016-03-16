@@ -2,7 +2,6 @@ package com.home.teamnotifier.db;
 
 import com.google.common.collect.Range;
 import com.home.teamnotifier.DbPreparer;
-import com.home.teamnotifier.core.BroadcastInformation;
 import com.home.teamnotifier.core.responses.action.ActionsInfo;
 import com.home.teamnotifier.gateways.EmptyDescription;
 import com.home.teamnotifier.gateways.NoSuchResource;
@@ -19,10 +18,10 @@ import static com.home.teamnotifier.DbPreparer.getRandomString;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DbSharedResourceActionsGatewayTest {
+public class DbActionsGatewayTest {
     private static final DbPreparer helper = new DbPreparer();
 
-    private DbSharedResourceActionsGateway gateway;
+    private DbActionsGateway gateway;
     private EnvironmentEntity environment;
     private Instant firstEver;
     private Instant lastEver;
@@ -30,6 +29,7 @@ public class DbSharedResourceActionsGatewayTest {
     private List<ActionData> actionsBeforeMiddle;
     private List<ActionData> actionAfterMiddle;
     private Integer resourceId;
+    private Integer serverId;
 
     @Test
     public void testDoesntHaveBeforeMiddle()
@@ -73,7 +73,7 @@ public class DbSharedResourceActionsGatewayTest {
         subscription.subscribe(userName1, serverId);
         subscription.subscribe(userName2, serverId);
 
-        assertThat(gateway.newAction(userName1, resourceId, getRandomString()).getSubscribers())
+        assertThat(gateway.newActionOnSharedResource(userName1, resourceId, getRandomString()).getSubscribers())
                 .doesNotContain(userName1)
                 .contains(userName2);
     }
@@ -87,13 +87,13 @@ public class DbSharedResourceActionsGatewayTest {
         helper.createPersistedEnvironmentWithOneServerAndOneResource(envName, srvName, appName);
         final String userName = helper.createPersistedUser(getRandomString(), getRandomString()).getName();
 
-        assertThat(gateway.newAction(userName, envName, srvName, appName, "test")).isNotNull();
+        assertThat(gateway.newActionOnSharedResource(userName, envName, srvName, appName, "test")).isNotNull();
     }
 
     @Test(expected = NoSuchResource.class)
     public void testNoSuchResourceWhenNewActionWithNotPresentResource() {
         final String userName = helper.createPersistedUser(getRandomString(), getRandomString()).getName();
-        gateway.newAction(userName, -1, "desc");
+        gateway.newActionOnSharedResource(userName, -1, "desc");
     }
 
     @Test(expected = NoSuchResource.class)
@@ -102,31 +102,37 @@ public class DbSharedResourceActionsGatewayTest {
     }
 
     @Test(expected = EmptyDescription.class)
-    public void testEmptyDescriptionWhenNewAction() {
+    public void testEmptyDescriptionWhenNewActionOnSharedResource() {
         final String userName = helper.createPersistedUser(getRandomString(), getRandomString()).getName();
-        gateway.newAction(userName, resourceId, "");
+        gateway.newActionOnSharedResource(userName, resourceId, "");
+    }
+
+    @Test(expected = EmptyDescription.class)
+    public void testEmptyDescriptionWhenNewActionOnAppServer() {
+        final String userName = helper.createPersistedUser(getRandomString(), getRandomString()).getName();
+        gateway.newActionOnAppSever(userName, serverId, "");
     }
 
     @Test(expected = NoSuchUser.class)
     public void testNoSuchUserWhenNewActionWithNotPresentUser() {
-        gateway.newAction(getRandomString(), resourceId, "");
+        gateway.newActionOnSharedResource(getRandomString(), resourceId, "");
     }
 
 
     @Before
     public void setUp() throws Exception {
-        gateway = new DbSharedResourceActionsGateway(helper.TRANSACTION_HELPER);
-        final UserEntity user =
-                helper.createPersistedUser(getRandomString(), getRandomString());
+        gateway = new DbActionsGateway(helper.TRANSACTION_HELPER);
+        final UserEntity user = helper.createPersistedUser(getRandomString(), getRandomString());
 
         environment = helper.createPersistedEnvironmentWithOneServerAndOneResource(
                 getRandomString(), getRandomString(), getRandomString()
         );
 
         resourceId = helper.anyResourceId(environment);
+        serverId = helper.anyServerId(environment);
 
         for (int i = 0; i < 10; i++) {
-            gateway.newAction(user.getName(), resourceId, getRandomString());
+            gateway.newActionOnSharedResource(user.getName(), resourceId, getRandomString());
         }
 
         final ActionsInfo allActionsEver = getAllActionsEver();

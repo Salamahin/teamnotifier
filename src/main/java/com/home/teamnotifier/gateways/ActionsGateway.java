@@ -6,14 +6,20 @@ import com.home.teamnotifier.core.responses.action.ActionsInfo;
 
 import java.time.Instant;
 
-public interface SharedResourceActionsGateway {
-    BroadcastInformation newAction(
+public interface ActionsGateway {
+    BroadcastInformation newActionOnSharedResource(
             final String userName,
             final int resourceId,
             final String description
     ) throws NoSuchResource, EmptyDescription, NoSuchUser;
 
-    BroadcastInformation newAction(
+    BroadcastInformation newActionOnAppSever(
+            final String userName,
+            final int serverId,
+            final String description
+    ) throws NoSuchServer, EmptyDescription, NoSuchUser;
+
+    BroadcastInformation newActionOnSharedResource(
             final String userName,
             final String environmentName,
             final String serverName,

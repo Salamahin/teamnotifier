@@ -5,7 +5,7 @@ import com.google.inject.Inject;
 import com.home.teamnotifier.core.responses.action.ActionsInfo;
 import com.home.teamnotifier.core.responses.status.EnvironmentsInfo;
 import com.home.teamnotifier.gateways.EnvironmentGateway;
-import com.home.teamnotifier.gateways.SharedResourceActionsGateway;
+import com.home.teamnotifier.gateways.ActionsGateway;
 import com.home.teamnotifier.gateways.SubscriptionGateway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +18,7 @@ public class ResourceMonitor {
 
     private final EnvironmentGateway environmentGateway;
     private final SubscriptionGateway subscriptionGateway;
-    private final SharedResourceActionsGateway sharedResourceActionsGateway;
+    private final ActionsGateway actionsGateway;
     private final NotificationManager notificationManager;
 
     @Inject
@@ -26,13 +26,13 @@ public class ResourceMonitor {
     private ResourceMonitor(
             final EnvironmentGateway environmentGateway,
             final SubscriptionGateway subscriptionGateway,
-            final SharedResourceActionsGateway sharedResourceActionsGateway,
+            final ActionsGateway actionsGateway,
             final NotificationManager notificationManager
     ) {
 
         this.environmentGateway = environmentGateway;
         this.subscriptionGateway = subscriptionGateway;
-        this.sharedResourceActionsGateway = sharedResourceActionsGateway;
+        this.actionsGateway = actionsGateway;
         this.notificationManager = notificationManager;
     }
 
@@ -66,16 +66,16 @@ public class ResourceMonitor {
     }
 
     public ActionsInfo actionsInfo(final int applicationId, final Range<Instant> range) {
-        return sharedResourceActionsGateway.getActions(applicationId, range);
+        return actionsGateway.getActions(applicationId, range);
     }
 
     public void newAction(final String userName, final int applicationId, final String desc) {
-        final BroadcastInformation information = sharedResourceActionsGateway.newAction(userName, applicationId, desc);
+        final BroadcastInformation information = actionsGateway.newActionOnSharedResource(userName, applicationId, desc);
         fireNotification(information);
     }
 
     public void newAction(final String userName, final String environmentName, final String serverName, final String applicationName, final String desc) {
-        final BroadcastInformation information = sharedResourceActionsGateway.newAction(userName, environmentName, serverName, applicationName, desc);
+        final BroadcastInformation information = actionsGateway.newActionOnSharedResource(userName, environmentName, serverName, applicationName, desc);
         fireNotification(information);
     }
 }

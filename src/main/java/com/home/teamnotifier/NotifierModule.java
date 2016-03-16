@@ -37,8 +37,8 @@ final class NotifierModule extends AbstractModule {
                 .to(DbEnvironmentGateway.class)
                 .in(Singleton.class);
 
-        bind(SharedResourceActionsGateway.class)
-                .to(DbSharedResourceActionsGateway.class)
+        bind(ActionsGateway.class)
+                .to(DbActionsGateway.class)
                 .in(Singleton.class);
 
         bind(SubscriptionGateway.class)

@@ -7,57 +7,23 @@ import java.time.Instant;
 
 @Entity
 @Table(schema = "teamnotifier", name = "ActionOnSharedResource")
-final class ActionOnSharedResourceEntity implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @SuppressWarnings("unused")
-    private final Integer id;
+final class ActionOnSharedResourceEntity extends ActionEntity implements Serializable {
 
     @ManyToOne(optional = false, cascade = CascadeType.ALL)
     @SuppressWarnings("unused")
     private final SharedResourceEntity resource;
 
-    @ManyToOne(optional = false, cascade = CascadeType.ALL)
-    private final UserEntity actor;
-
-    @Column(nullable = false)
-    private final Instant actionTime;
-
-    @Column(nullable = false)
-    @Size(min = 1)
-    private final String details;
-
     //for hibernate
     @SuppressWarnings("unused")
     private ActionOnSharedResourceEntity() {
-        id = null;
         resource = null;
-        actionTime = null;
-        details = null;
-        actor = null;
     }
 
     public ActionOnSharedResourceEntity(final UserEntity actor,
                                         final SharedResourceEntity sharedResourceEntity,
                                         final String details
     ) {
-        id = null;
+        super(actor, details);
         this.resource = sharedResourceEntity;
-        this.actor = actor;
-        this.details = details;
-        actionTime = Instant.now();
     }
-
-    public UserEntity getActor() {
-        return actor;
-    }
-
-    public String getDetails() {
-        return details;
-    }
-
-    public Instant getActionTime() {
-        return actionTime;
-    }
-
 }

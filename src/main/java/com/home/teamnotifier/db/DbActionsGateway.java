@@ -9,10 +9,7 @@ import com.home.teamnotifier.core.responses.action.ActionInfo;
 import com.home.teamnotifier.core.responses.action.ActionsInfo;
 import com.home.teamnotifier.core.responses.notification.EventType;
 import com.home.teamnotifier.core.responses.notification.NotificationInfo;
-import com.home.teamnotifier.gateways.EmptyDescription;
-import com.home.teamnotifier.gateways.NoSuchResource;
-import com.home.teamnotifier.gateways.NoSuchUser;
-import com.home.teamnotifier.gateways.SharedResourceActionsGateway;
+import com.home.teamnotifier.gateways.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -28,18 +25,22 @@ import java.util.stream.Collectors;
 import static com.home.teamnotifier.db.DbGatewayCommons.getSubscribersButUser;
 import static com.home.teamnotifier.db.DbGatewayCommons.getUserEntity;
 
-public class DbSharedResourceActionsGateway implements SharedResourceActionsGateway {
+public class DbActionsGateway implements ActionsGateway {
     private final TransactionHelper transactionHelper;
 
     @Inject
-    public DbSharedResourceActionsGateway(
+    public DbActionsGateway(
             final TransactionHelper transactionHelper
     ) {
         this.transactionHelper = transactionHelper;
     }
 
     @Override
-    public BroadcastInformation newAction(final String userName, final int resourceId, final String description) {
+    public BroadcastInformation newActionOnSharedResource(
+            final String userName,
+            final int resourceId,
+            final String description
+    ) {
         try {
             return tryPersistNewAction(userName, resourceId, description);
         } catch (Exception exc) {
@@ -49,7 +50,16 @@ public class DbSharedResourceActionsGateway implements SharedResourceActionsGate
     }
 
     @Override
-    public BroadcastInformation newAction(
+    public BroadcastInformation newActionOnAppSever(
+            final String userName,
+            final int serverId,
+            final String description
+    ) throws NoSuchServer, EmptyDescription, NoSuchUser {
+        throw new AssertionError("Not implemented yet");
+    }
+
+    @Override
+    public BroadcastInformation newActionOnSharedResource(
             final String userName,
             final String environmentName,
             final String serverName,
@@ -81,7 +91,7 @@ public class DbSharedResourceActionsGateway implements SharedResourceActionsGate
             final SharedResourceEntity resourceEntity = getSharedResourceEntity(resourceId, em);
             final UserEntity userEntity = getUserEntity(userName, em);
 
-            return newAction(userEntity, resourceEntity, description, em);
+            return newActionOnSharedResource(userEntity, resourceEntity, description, em);
         });
     }
 
@@ -96,11 +106,11 @@ public class DbSharedResourceActionsGateway implements SharedResourceActionsGate
             final SharedResourceEntity resourceEntity = getSharedResourceEntity(envName, serverName, resourceName, em);
             final UserEntity userEntity = getUserEntity(userName, em);
 
-            return newAction(userEntity, resourceEntity, description, em);
+            return newActionOnSharedResource(userEntity, resourceEntity, description, em);
         });
     }
 
-    private BroadcastInformation newAction(
+    private BroadcastInformation newActionOnSharedResource(
             final UserEntity userEntity,
             final SharedResourceEntity resourceEntity,
             final String description,
