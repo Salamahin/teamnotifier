@@ -1,30 +1,15 @@
 package com.home.teamnotifier.core.responses.status;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import io.dropwizard.jackson.Jackson;
 import org.junit.Test;
 
 import java.time.Instant;
 
-import static io.dropwizard.testing.FixtureHelpers.fixture;
-import static org.assertj.core.api.StrictAssertions.assertThat;
+import static com.home.teamnotifier.core.responses.SerializationTestHelper.testDeserializeFromJson;
+import static com.home.teamnotifier.core.responses.SerializationTestHelper.testSerializesToJson;
 
 public class EnvironmentsInfoTest {
-    private static final ObjectMapper MAPPER = Jackson.newObjectMapper()
-            .enable(SerializationFeature.INDENT_OUTPUT);
-
-    @Test
-    public void serializesToJSON()
-            throws Exception {
-        final EnvironmentsInfo info = createFineInfo();
-        final String expected = MAPPER.writeValueAsString(
-                MAPPER.readValue(fixture("fixtures/envConfig.json"), EnvironmentsInfo.class));
-        assertThat(MAPPER.writeValueAsString(info)).isEqualTo(expected);
-    }
-
     private EnvironmentsInfo createFineInfo() {
         return new EnvironmentsInfo(Lists.newArrayList(createFineEnvironmentInfo()));
     }
@@ -52,15 +37,12 @@ public class EnvironmentsInfoTest {
     }
 
     @Test
-    public void deserializesFromJSON()
-            throws Exception {
-        final EnvironmentsInfo info = createFineInfo();
+    public void serializesToJSON() throws Exception {
+        testSerializesToJson(EnvironmentsInfo.class, createFineInfo(), "fixtures/envConfig.json");
+    }
 
-        final EnvironmentsInfo expected = MAPPER.readValue(
-                fixture("fixtures/envConfig.json"),
-                EnvironmentsInfo.class
-        );
-
-        assertThat(expected).isEqualTo(info);
+    @Test
+    public void deserializesFromJSON() throws Exception {
+        testDeserializeFromJson(EnvironmentsInfo.class, createFineInfo(), "fixtures/envConfig.json");
     }
 }

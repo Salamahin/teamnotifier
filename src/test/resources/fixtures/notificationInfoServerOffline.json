@@ -1,7 +1,0 @@
-{
-  "type": "NotificationInfo",
-  "timestamp": "2015-11-05T23:44:40.220Z",
-  "event": "SERVER_OFFLINE",
-  "targetId": 1,
-  "details": "details"
-}
