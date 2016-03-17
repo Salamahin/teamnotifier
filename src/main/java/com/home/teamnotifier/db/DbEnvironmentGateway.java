@@ -32,7 +32,7 @@ public class DbEnvironmentGateway implements EnvironmentGateway {
 
     @Override
     public EnvironmentsInfo status() {
-        final ImmutableMap<Integer, Boolean> availabilityMap = appServerAvailabilityChecker.getAvailability();
+        final ImmutableMap<AppServerEntity, Boolean> availabilityMap = appServerAvailabilityChecker.getAvailability();
         return new EnvironmentsInfo(
                 loadListFromDb().stream()
                         .map(e -> toEnvironment(e, availabilityMap))
@@ -53,7 +53,7 @@ public class DbEnvironmentGateway implements EnvironmentGateway {
         });
     }
 
-    private EnvironmentInfo toEnvironment(final EnvironmentEntity entity, final ImmutableMap<Integer, Boolean> availabilityMap) {
+    private EnvironmentInfo toEnvironment(final EnvironmentEntity entity, final ImmutableMap<AppServerEntity, Boolean> availabilityMap) {
         return new EnvironmentInfo(
                 entity.getName(),
                 entity.getImmutableSetOfAppServers().stream()
@@ -62,19 +62,17 @@ public class DbEnvironmentGateway implements EnvironmentGateway {
         );
     }
 
-    private AppServerInfo toAppSever(final AppServerEntity entity, final ImmutableMap<Integer, Boolean> availabilityMap) {
+    private AppServerInfo toAppSever(final AppServerEntity entity, final ImmutableMap<AppServerEntity, Boolean> availabilityMap) {
         final Set<SharedResourceInfo> resources = entity.getImmutableSetOfResources().stream()
                 .map(this::toResource)
                 .collect(toSet());
 
-        final Integer entityId = entity.getId();
-
         return new AppServerInfo(
-                entityId,
+                entity.getId(),
                 entity.getName(),
                 resources,
                 entity.getImmutableSetOfSubscribers(),
-                availabilityMap.get(entityId)
+                availabilityMap.get(entity)
         );
     }
 

@@ -18,14 +18,14 @@ public class ActionsInfoTest {
     @Test
     public void serializesToJSON()
             throws Exception {
-        final ActionsInfo info = createFineInfo();
+        final ActionsOnSharedResourceInfo info = createFineInfo();
         final String expected = MAPPER.writeValueAsString(
-                MAPPER.readValue(fixture("fixtures/actionsInfo.json"), ActionsInfo.class));
+                MAPPER.readValue(fixture("fixtures/actionsInfo.json"), ActionsOnSharedResourceInfo.class));
         assertThat(MAPPER.writeValueAsString(info)).isEqualTo(expected);
     }
 
-    private ActionsInfo createFineInfo() {
-        return new ActionsInfo(Lists.newArrayList(createFineActionInfo()));
+    private ActionsOnSharedResourceInfo createFineInfo() {
+        return new ActionsOnSharedResourceInfo(Lists.newArrayList(createFineActionInfo()));
     }
 
 
@@ -36,11 +36,11 @@ public class ActionsInfoTest {
     @Test
     public void deserializesFromJSON()
             throws Exception {
-        final ActionsInfo info = createFineInfo();
+        final ActionsOnSharedResourceInfo info = createFineInfo();
 
-        final ActionsInfo expected = MAPPER.readValue(
+        final ActionsOnSharedResourceInfo expected = MAPPER.readValue(
                 fixture("fixtures/actionsInfo.json"),
-                ActionsInfo.class
+                ActionsOnSharedResourceInfo.class
         );
 
         assertThat(expected).isEqualTo(info);

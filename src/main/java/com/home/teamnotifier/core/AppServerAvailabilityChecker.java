@@ -2,8 +2,7 @@ package com.home.teamnotifier.core;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
-import com.home.teamnotifier.core.responses.notification.EventType;
-import com.home.teamnotifier.core.responses.notification.NotificationInfo;
+import com.home.teamnotifier.core.responses.notification.ServerState;
 import com.home.teamnotifier.db.AppServerEntity;
 import com.home.teamnotifier.gateways.AppServerGateway;
 import org.slf4j.Logger;
@@ -11,7 +10,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.BufferedInputStream;
 import java.net.URL;
-import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +25,7 @@ public class AppServerAvailabilityChecker {
     private final AppServerGateway gateway;
     private final NotificationManager notificationManager;
 
-    private final Map<Integer, Boolean> statuses;
+    private final Map<AppServerEntity, Boolean> statuses;
     private ScheduledFuture<?> routine;
 
     @Inject
@@ -57,7 +55,7 @@ public class AppServerAvailabilityChecker {
     private void checkStatusAndNotifyAboutChange(final AppServerEntity serverEntity) {
         final boolean newStatus = isOnline(serverEntity.getStatusURL());
         synchronized (statuses) {
-            final Boolean oldStatus = statuses.get(serverEntity.getId());
+            final Boolean oldStatus = statuses.get(serverEntity);
 
             if (oldStatus == null) {
                 LOGGER.debug("Server initial [{} {}] status is {}",
@@ -65,7 +63,7 @@ public class AppServerAvailabilityChecker {
                         serverEntity.getName(),
                         newStatus
                 );
-                statuses.put(serverEntity.getId(), newStatus);
+                statuses.put(serverEntity, newStatus);
                 return;
             }
 
@@ -80,21 +78,18 @@ public class AppServerAvailabilityChecker {
                 serverEntity.getName(),
                 newStatus
         );
-        statuses.put(serverEntity.getId(), newStatus);
+        statuses.put(serverEntity, newStatus);
         notificationManager.pushToClients(
                 serverEntity.getImmutableSetOfSubscribers(),
-                buildMessage(newStatus, serverEntity.getId())
+                buildMessage(newStatus, serverEntity)
         );
     }
 
-    private NotificationInfo buildMessage(final boolean isOnline, final int serverId) {
-        return new NotificationInfo(
-                null,
-                Instant.now(),
-                isOnline ? EventType.SERVER_ONLINE : EventType.SERVER_OFFLINE,
-                serverId,
-                ""
-        );
+    private ServerState buildMessage(final boolean isOnline, final AppServerEntity server) {
+        if(isOnline)
+            return ServerState.online(server);
+        else
+            return ServerState.offline(server);
     }
 
     private Runnable routine(final Collection<AppServerEntity> servers) {
@@ -107,7 +102,7 @@ public class AppServerAvailabilityChecker {
         };
     }
 
-    public ImmutableMap<Integer, Boolean> getAvailability() {
+    public ImmutableMap<AppServerEntity, Boolean> getAvailability() {
         synchronized (statuses) {
             return ImmutableMap.copyOf(statuses);
         }
@@ -116,7 +111,7 @@ public class AppServerAvailabilityChecker {
     public String report() {
         synchronized (statuses) {
             return statuses.entrySet().stream()
-                    .map(e -> String.format("[%d]: %s", e.getKey(), e.getValue()))
+                    .map(e -> String.format("[%s]: %s", e.getKey(), e.getValue()))
                     .reduce((s1, s2) -> s1 + "; " + s2)
                     .orElse("");
         }

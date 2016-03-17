@@ -3,7 +3,8 @@ package com.home.teamnotifier.db;
 import com.google.common.collect.Range;
 import com.home.teamnotifier.DbPreparer;
 import com.home.teamnotifier.core.BroadcastInformation;
-import com.home.teamnotifier.core.responses.action.ActionsInfo;
+import com.home.teamnotifier.core.responses.action.ActionsOnSharedResourceInfo;
+import com.home.teamnotifier.core.responses.notification.SharedResourceAction;
 import com.home.teamnotifier.gateways.ActionsGateway;
 import com.home.teamnotifier.gateways.ResourceDescription;
 import com.home.teamnotifier.gateways.exceptions.EmptyDescription;
@@ -19,7 +20,7 @@ import static org.assertj.core.api.StrictAssertions.assertThat;
 
 public class DbActionsOnSharedResourceGatewayTest {
 
-    private static ActionsTester tester;
+    private static ActionsTester<ActionsOnSharedResourceInfo, SharedResourceAction> tester;
     private static DbPreparer helper;
     private static ActionsGateway gateway;
     private static EnvironmentEntity environment;
@@ -35,9 +36,9 @@ public class DbActionsOnSharedResourceGatewayTest {
                 getRandomString()
         );
 
-        tester = new ActionsTester(helper) {
+        tester = new ActionsTester<ActionsOnSharedResourceInfo, SharedResourceAction>(helper) {
             @Override
-            BroadcastInformation newAction(String userName, int id, String description) {
+            BroadcastInformation<SharedResourceAction> newAction(String userName, int id, String description) {
                 return gateway.newActionOnSharedResource(userName, id, description);
             }
 
@@ -47,7 +48,7 @@ public class DbActionsOnSharedResourceGatewayTest {
             }
 
             @Override
-            ActionsInfo actionsInRange(int id, Range<Instant> range) {
+            ActionsOnSharedResourceInfo actionsInRange(int id, Range<Instant> range) {
                 return gateway.getActionsOnResource(id, range);
             }
         };

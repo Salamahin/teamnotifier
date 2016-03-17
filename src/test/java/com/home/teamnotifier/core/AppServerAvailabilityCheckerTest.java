@@ -1,7 +1,7 @@
 package com.home.teamnotifier.core;
 
 import com.google.common.collect.ImmutableSet;
-import com.home.teamnotifier.core.responses.notification.NotificationInfo;
+import com.home.teamnotifier.core.responses.notification.Notification;
 import com.home.teamnotifier.db.AppServerEntity;
 import com.home.teamnotifier.gateways.AppServerGateway;
 import org.eclipse.jetty.server.Request;
@@ -81,7 +81,7 @@ public class AppServerAvailabilityCheckerTest {
 
     private static class DummyNotificationManager implements NotificationManager {
         @Override
-        public void pushToClients(Collection<String> userNames, NotificationInfo message) {
+        public void pushToClients(Collection<String> userNames, Notification message) {
             //nop
         }
     }

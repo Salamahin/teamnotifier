@@ -3,9 +3,9 @@ package com.home.teamnotifier.db;
 import com.google.common.base.Throwables;
 import com.google.inject.Inject;
 import com.home.teamnotifier.core.BroadcastInformation;
-import com.home.teamnotifier.core.responses.notification.EventType;
-import com.home.teamnotifier.core.responses.notification.NotificationInfo;
-import com.home.teamnotifier.gateways.*;
+import com.home.teamnotifier.core.responses.notification.Reservation;
+import com.home.teamnotifier.core.responses.notification.Subscription;
+import com.home.teamnotifier.gateways.SubscriptionGateway;
 import com.home.teamnotifier.gateways.exceptions.*;
 import org.hibernate.exception.ConstraintViolationException;
 
@@ -14,8 +14,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.time.Instant;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -31,9 +29,16 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
     }
 
     @Override
-    public BroadcastInformation subscribe(final String userName, final int serverId) {
+    public BroadcastInformation<Subscription> subscribe(final String userName, final int serverId) {
         try {
-            return transactionHelper.transaction(em -> trySubscribe(userName, serverId, em));
+            return transactionHelper.transaction(em -> {
+                final UserEntity u = getUserEntity(userName, em);
+                final AppServerEntity s = getAppServerEntity(serverId, em);
+
+                em.persist(new SubscriptionEntity(s, u));
+
+                return new BroadcastInformation<>(Subscription.subscribe(u, s), getSubscribersButUser(u.getName(), s));
+            });
         } catch (Exception exc) {
             rethrowConstraintViolation(exc, userName, serverId);
             return null;
@@ -58,25 +63,6 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
             Throwables.propagate(exc);
     }
 
-    private BroadcastInformation trySubscribe(String userName, int serverId, EntityManager em) {
-        final UserEntity userEntity = getUserEntity(userName, em);
-        final AppServerEntity appServerEntity = getAppServerEntity(serverId, em);
-
-        final SubscriptionEntity subscriptionEntity = em
-                .merge(new SubscriptionEntity(appServerEntity, userEntity));
-
-        final List<String> subscribersNames = getSubscribersButUser(userName, appServerEntity);
-        return new BroadcastInformation(
-                new NotificationInfo(
-                        userName,
-                        subscriptionEntity.getTimestamp(),
-                        EventType.SUBSCRIBE,
-                        appServerEntity.getId(),
-                        ""),
-                subscribersNames
-        );
-    }
-
     private AppServerEntity getAppServerEntity(final int serverId, final EntityManager em) {
         final AppServerEntity serverEntity = em.find(AppServerEntity.class, serverId);
         if (serverEntity == null)
@@ -86,7 +72,7 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
 
 
     @Override
-    public BroadcastInformation unsubscribe(final String userName, final int serverId) {
+    public BroadcastInformation<Subscription> unsubscribe(final String userName, final int serverId) {
         return transactionHelper.transaction(em -> {
             final UserEntity userEntity = getUserEntity(userName, em);
             final AppServerEntity serverEntity = getAppServerEntity(serverId, em);
@@ -104,53 +90,43 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
             if (rowsAffected == 0)
                 throw new NotSubscribed(String.format("User %s was not subscribed on server %d", userName, serverId));
 
-            final List<String> subscribersNames = getSubscribersButUser(userName, serverEntity);
-            return new BroadcastInformation(
-                    new NotificationInfo(
-                            userName,
-                            Instant.now(),
-                            EventType.UNSUBSCRIBE,
-                            serverEntity.getId(),
-                            ""),
-                    subscribersNames
+            return new BroadcastInformation<>(
+                    Subscription.unsubscribe(userEntity, serverEntity),
+                    getSubscribersButUser(userName, serverEntity)
             );
         });
     }
 
     @Override
-    public BroadcastInformation reserve(final String userName, final int applicationId) throws AlreadyReserved {
-        final SharedResourceEntity resource = tryReserve(userName, applicationId);
-        return new BroadcastInformation(
-                new NotificationInfo(
-                        userName,
-                        resource.getReservationData().get().getOccupationTime(),
-                        EventType.RESERVE,
-                        resource.getId(),
-                        ""),
-                getSubscribersButUser(userName, resource.getAppServer())
-        );
+    public BroadcastInformation<Reservation> reserve(final String userName, final int applicationId) throws AlreadyReserved {
+        return transactionHelper.transaction(em -> {
+            final UserEntity u = getUserEntity(userName, em);
+            final SharedResourceEntity r = getSharedResourceEntity(applicationId, em);
+
+            tryReserve(u, r, em);
+
+            return new BroadcastInformation<>(
+                    Reservation.reserve(u, r),
+                    getSubscribersButUser(u.getName(), r.getAppServer())
+            );
+        });
     }
 
-    private SharedResourceEntity tryReserve(final String userName, final int applicationId) {
-        return transactionHelper.transaction(em -> {
-            SharedResourceEntity resourceEntity = getSharedResourceEntity(applicationId, em);
+    private void tryReserve(final UserEntity user, final SharedResourceEntity resource, EntityManager em) {
 
-            final Optional<ReservationData> reservationData = resourceEntity.getReservationData();
+        final Optional<ReservationData> reservationData = resource.getReservationData();
 
-            if (reservationData.isPresent()) {
-                throw new AlreadyReserved(String.format(
-                        "Resource %d already reserved by user %s",
-                        applicationId,
-                        reservationData.get().getOccupier().getName()
-                ));
-            }
+        if (reservationData.isPresent()) {
+            throw new AlreadyReserved(String.format(
+                    "Resource %d already reserved by user %s",
+                    resource.getId(),
+                    reservationData.get().getOccupier().getName()
+            ));
+        }
 
-            final UserEntity newOccupier = getUserEntity(userName, em);
-            resourceEntity.reserve(newOccupier);
-
-            resourceEntity = em.merge(resourceEntity);
-            return resourceEntity;
-        });
+        final UserEntity newOccupier = getUserEntity(user.getName(), em);
+        resource.reserve(newOccupier);
+        em.merge(resource);
     }
 
     private SharedResourceEntity getSharedResourceEntity(final int applicationId, final EntityManager em) {
@@ -161,46 +137,41 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
     }
 
     @Override
-    public BroadcastInformation free(final String userName, final int applicationId) throws NotReserved {
-        final SharedResourceEntity resource = tryFree(userName, applicationId);
-        return new BroadcastInformation(
-                new NotificationInfo(
-                        userName,
-                        Instant.now(),
-                        EventType.FREE,
-                        resource.getId(),
-                        ""),
-                getSubscribersButUser(userName, resource.getAppServer())
-        );
+    public BroadcastInformation<Reservation> free(final String userName, final int applicationId) throws NotReserved {
+        return transactionHelper.transaction(em -> {
+            final UserEntity u = getUserEntity(userName, em);
+            final SharedResourceEntity s = getSharedResourceEntity(applicationId, em);
+
+            tryFree(u, s, em);
+
+            return new BroadcastInformation<>(
+                    Reservation.free(u, s),
+                    getSubscribersButUser(u.getName(), s.getAppServer())
+            );
+
+        });
     }
 
-    private SharedResourceEntity tryFree(final String userName, final int applicationId) {
-        return transactionHelper.transaction(em -> {
-            getUserEntity(userName, em);
+    private void tryFree(final UserEntity user, final SharedResourceEntity resource, final EntityManager em) {
+        final Optional<ReservationData> reservationData = resource.getReservationData();
 
-            SharedResourceEntity resourceEntity = getSharedResourceEntity(applicationId, em);
-            final Optional<ReservationData> reservationData = resourceEntity.getReservationData();
+        if (!reservationData.isPresent())
+            throw new NotReserved(String.format("Resource id %d is not reserved", resource.getId()));
 
-            if (!reservationData.isPresent()) {
-                throw new NotReserved(String.format("Resource id %d is not reserved", applicationId));
-            }
+        final String occupierName = reservationData
+                .map(ReservationData::getOccupier)
+                .map(UserEntity::getName)
+                .get();
 
-            final String occupierName = reservationData
-                    .map(ReservationData::getOccupier)
-                    .map(UserEntity::getName)
-                    .get();
+        if (!Objects.equals(user.getName(), occupierName))
+            throw new ReservedByDifferentUser(String.format(
+                    "Resource %d was reserved by user %s",
+                    resource.getId(),
+                    user.getName()
+            ));
 
-            if (!Objects.equals(userName, occupierName))
-                throw new ReservedByDifferentUser(String.format(
-                        "Resource %d was reserved by user %s",
-                        applicationId,
-                        userName
-                ));
+        resource.free();
+        em.merge(resource);
 
-            resourceEntity.free();
-            resourceEntity = em.merge(resourceEntity);
-
-            return resourceEntity;
-        });
     }
 }

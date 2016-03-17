@@ -6,9 +6,10 @@ import com.google.common.collect.Range;
 import com.google.inject.Inject;
 import com.home.teamnotifier.core.BroadcastInformation;
 import com.home.teamnotifier.core.responses.action.ActionInfo;
-import com.home.teamnotifier.core.responses.action.ActionsInfo;
-import com.home.teamnotifier.core.responses.notification.EventType;
-import com.home.teamnotifier.core.responses.notification.NotificationInfo;
+import com.home.teamnotifier.core.responses.action.ActionsOnAppServerInfo;
+import com.home.teamnotifier.core.responses.action.ActionsOnSharedResourceInfo;
+import com.home.teamnotifier.core.responses.notification.ServerAction;
+import com.home.teamnotifier.core.responses.notification.SharedResourceAction;
 import com.home.teamnotifier.gateways.ActionsGateway;
 import com.home.teamnotifier.gateways.ResourceDescription;
 import com.home.teamnotifier.gateways.exceptions.EmptyDescription;
@@ -41,7 +42,7 @@ public class DbActionsGateway implements ActionsGateway {
     }
 
     @Override
-    public BroadcastInformation newActionOnSharedResource(
+    public BroadcastInformation<SharedResourceAction> newActionOnSharedResource(
             final String userName,
             final int resourceId,
             final String description
@@ -55,7 +56,7 @@ public class DbActionsGateway implements ActionsGateway {
     }
 
     @Override
-    public BroadcastInformation newActionOnAppSever(
+    public BroadcastInformation<ServerAction> newActionOnAppSever(
             final String userName,
             final int serverId,
             final String description
@@ -69,7 +70,7 @@ public class DbActionsGateway implements ActionsGateway {
     }
 
     @Override
-    public BroadcastInformation newActionOnSharedResource(
+    public BroadcastInformation<SharedResourceAction> newActionOnSharedResource(
             final String userName,
             final ResourceDescription resourceDescription,
             final String description
@@ -88,7 +89,7 @@ public class DbActionsGateway implements ActionsGateway {
         }
     }
 
-    private void rethrowIfContainsConstraintViolation(Exception exc) {
+    private void rethrowIfContainsConstraintViolation(final Exception exc) {
         final Optional<Throwable> firstConstraintViolation = Throwables.getCausalChain(exc).stream()
                 .filter((ConstraintViolationException.class)::isInstance)
                 .findFirst();
@@ -98,25 +99,44 @@ public class DbActionsGateway implements ActionsGateway {
         throw Throwables.propagate(exc);
     }
 
-    private BroadcastInformation tryPersistNewActionOnAppServer(final String userName, final int appServerId, final String description) {
+    private BroadcastInformation<ServerAction> tryPersistNewActionOnAppServer(
+            final String userName,
+            final int appServerId,
+            final String description
+    ) {
         return transactionHelper.transaction(em -> {
             final AppServerEntity appServer = getAppServerEntity(appServerId, em);
             final UserEntity userEntity = getUserEntity(userName, em);
 
-            return newActionOnAppServer(userEntity, appServer, description, em);
+            final ServerAction action = newActionOnAppServer(userEntity, appServer, description, em);
+            return new BroadcastInformation<>(action, getSubscribersButUser(userName, appServer));
         });
     }
 
-    private BroadcastInformation tryPersistNewActionOnResource(final String userName, final int resourceId, final String description) {
+    private BroadcastInformation<SharedResourceAction> tryPersistNewActionOnResource(
+            final String userName,
+            final int resourceId,
+            final String description
+    ) {
         return transactionHelper.transaction(em -> {
             final SharedResourceEntity resourceEntity = getSharedResourceEntity(resourceId, em);
             final UserEntity userEntity = getUserEntity(userName, em);
 
-            return newActionOnSharedResource(userEntity, resourceEntity, description, em);
+            final SharedResourceAction sharedResourceAction = newActionOnSharedResource(
+                    userEntity,
+                    resourceEntity,
+                    description,
+                    em
+            );
+
+            return new BroadcastInformation<>(
+                    sharedResourceAction,
+                    getSubscribersButUser(userName, resourceEntity.getAppServer())
+            );
         });
     }
 
-    private BroadcastInformation tryPersistNewActionOnResource(
+    private BroadcastInformation<SharedResourceAction> tryPersistNewActionOnResource(
             final String userName,
             final String envName,
             final String serverName,
@@ -127,11 +147,12 @@ public class DbActionsGateway implements ActionsGateway {
             final SharedResourceEntity resourceEntity = getSharedResourceEntity(envName, serverName, resourceName, em);
             final UserEntity userEntity = getUserEntity(userName, em);
 
-            return newActionOnSharedResource(userEntity, resourceEntity, description, em);
+            final SharedResourceAction action = newActionOnSharedResource(userEntity, resourceEntity, description, em);
+            return new BroadcastInformation<>(action, getSubscribersButUser(userName, resourceEntity.getAppServer()));
         });
     }
 
-    private BroadcastInformation newActionOnAppServer(
+    private ServerAction newActionOnAppServer(
             final UserEntity userEntity,
             final AppServerEntity appServer,
             final String description,
@@ -144,16 +165,10 @@ public class DbActionsGateway implements ActionsGateway {
         );
         em.persist(action);
 
-        final String userName = userEntity.getName();
-        final Instant time = action.getActionTime();
-
-        return new BroadcastInformation(
-                new NotificationInfo(userName, time, EventType.ACTION_ON_RESOURCE, appServer.getId(), description),
-                getSubscribersButUser(userName, appServer)
-        );
+        return new ServerAction(userEntity, appServer, description);
     }
 
-    private BroadcastInformation newActionOnSharedResource(
+    private SharedResourceAction newActionOnSharedResource(
             final UserEntity userEntity,
             final SharedResourceEntity resourceEntity,
             final String description,
@@ -166,13 +181,7 @@ public class DbActionsGateway implements ActionsGateway {
         );
         em.persist(action);
 
-        final String userName = userEntity.getName();
-        final Instant time = action.getActionTime();
-
-        return new BroadcastInformation(
-                new NotificationInfo(userName, time, EventType.ACTION_ON_RESOURCE, resourceEntity.getId(), description),
-                getSubscribersButUser(userName, resourceEntity.getAppServer())
-        );
+        return new SharedResourceAction(userEntity, resourceEntity, description);
     }
 
     private AppServerEntity getAppServerEntity(final int appServerId, final EntityManager em) {
@@ -226,7 +235,7 @@ public class DbActionsGateway implements ActionsGateway {
     }
 
     @Override
-    public ActionsInfo getActionsOnResource(final int resourceId, final Range<Instant> range) {
+    public ActionsOnSharedResourceInfo getActionsOnResource(final int resourceId, final Range<Instant> range) {
         final List<ActionOnSharedResourceEntity> actions = transactionHelper.transaction(em -> {
             final SharedResourceEntity resource = getSharedResourceEntity(resourceId, em);
             final CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -248,20 +257,11 @@ public class DbActionsGateway implements ActionsGateway {
             return allQuery.getResultList();
         });
 
-        final List<ActionInfo> actionInfos = actions.stream()
-                .map(a -> new ActionInfo(
-                                a.getActor().getName(),
-                                a.getActionTime(),
-                                a.getDetails()
-                        )
-                )
-                .collect(Collectors.toList());
-
-        return new ActionsInfo(actionInfos);
+        return new ActionsOnSharedResourceInfo(toActionInfos(actions));
     }
 
     @Override
-    public ActionsInfo getActionsOnServer(int serverId, Range<Instant> range) throws NoSuchResource {
+    public ActionsOnAppServerInfo getActionsOnServer(int serverId, Range<Instant> range) throws NoSuchResource {
         final List<ActionOnAppServerEntity> actions = transactionHelper.transaction(em -> {
             final AppServerEntity resource = getAppServerEntity(serverId, em);
             final CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -283,7 +283,11 @@ public class DbActionsGateway implements ActionsGateway {
             return allQuery.getResultList();
         });
 
-        final List<ActionInfo> actionInfos = actions.stream()
+        return new ActionsOnAppServerInfo(toActionInfos(actions));
+    }
+
+    private <T extends ActionEntity> List<ActionInfo> toActionInfos(List<T> actions) {
+        return actions.stream()
                 .map(a -> new ActionInfo(
                                 a.getActor().getName(),
                                 a.getActionTime(),
@@ -291,8 +295,6 @@ public class DbActionsGateway implements ActionsGateway {
                         )
                 )
                 .collect(Collectors.toList());
-
-        return new ActionsInfo(actionInfos);
     }
 
     private <T extends ActionEntity> Predicate getPredicateForRange(

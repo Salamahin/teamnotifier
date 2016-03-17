@@ -4,7 +4,9 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Range;
 import com.home.teamnotifier.DbPreparer;
 import com.home.teamnotifier.core.BroadcastInformation;
-import com.home.teamnotifier.core.responses.action.ActionsInfo;
+import com.home.teamnotifier.core.responses.action.AbstractActionsInfo;
+import com.home.teamnotifier.core.responses.action.ActionsOnSharedResourceInfo;
+import com.home.teamnotifier.core.responses.notification.DescribedUserNotification;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -15,7 +17,7 @@ import static com.home.teamnotifier.DbPreparer.getRandomString;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-abstract class ActionsTester {
+abstract class ActionsTester<T extends AbstractActionsInfo, K extends DescribedUserNotification> {
     private final DbPreparer helper;
 
     private Instant firstEver;
@@ -53,11 +55,11 @@ abstract class ActionsTester {
                 .collect(toList());
     }
 
-    abstract BroadcastInformation newAction(final String userName, final int id, final String description);
+    abstract BroadcastInformation<K> newAction(final String userName, final int id, final String description);
 
     abstract int persistedId();
 
-    abstract ActionsInfo actionsInRange(final int id, final Range<Instant> range);
+    abstract T actionsInRange(final int id, final Range<Instant> range);
 
     private static class ActionData {
         public final Instant time;
@@ -88,7 +90,7 @@ abstract class ActionsTester {
         }
     }
 
-    private List<ActionData> toActionDataList(ActionsInfo allActionsEver) {
+    private List<ActionData> toActionDataList(T allActionsEver) {
         return ImmutableList.copyOf(
                 allActionsEver.getActions().stream()
                         .map(a -> new ActionData(a.getTimestamp(), a.getDescription()))
@@ -98,7 +100,7 @@ abstract class ActionsTester {
     }
 
     public void testDoesntHaveBeforeMiddle() throws Exception {
-        final ActionsInfo actions = actionsInRange(id, Range.closed(firstEver, middle));
+        final T actions = actionsInRange(id, Range.closed(firstEver, middle));
         final List<ActionData> loadedData = toActionDataList(actions);
 
         assertThat(loadedData).containsAll(actionsBeforeMiddle);
@@ -107,7 +109,7 @@ abstract class ActionsTester {
 
 
     public void testDoesntHaveAfter() throws Exception {
-        final ActionsInfo actions =actionsInRange(id, Range.closed(middle, lastEver));
+        final T actions =actionsInRange(id, Range.closed(middle, lastEver));
         final List<ActionData> loadedData = toActionDataList(actions);
 
         assertThat(loadedData).containsAll(actionAfterMiddle);

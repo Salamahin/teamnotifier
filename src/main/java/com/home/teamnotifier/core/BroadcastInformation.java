@@ -1,24 +1,23 @@
 package com.home.teamnotifier.core;
 
 import com.google.common.collect.ImmutableList;
-import com.home.teamnotifier.core.responses.notification.NotificationInfo;
+import com.home.teamnotifier.core.responses.notification.Notification;
 
 import java.util.List;
 
-public class BroadcastInformation {
-    private final NotificationInfo value;
-
+public class BroadcastInformation<T extends Notification> {
+    private final T value;
     private final List<String> subscribers;
 
     public BroadcastInformation(
-            final NotificationInfo value,
+            final T value,
             final List<String> subscribers
     ) {
         this.value = value;
         this.subscribers = ImmutableList.copyOf(subscribers);
     }
 
-    public NotificationInfo getValue() {
+    public T getValue() {
         return value;
     }
 

@@ -3,7 +3,10 @@ package com.home.teamnotifier.db;
 import com.google.common.collect.Range;
 import com.home.teamnotifier.DbPreparer;
 import com.home.teamnotifier.core.BroadcastInformation;
-import com.home.teamnotifier.core.responses.action.ActionsInfo;
+import com.home.teamnotifier.core.responses.action.ActionsOnAppServerInfo;
+import com.home.teamnotifier.core.responses.action.ActionsOnSharedResourceInfo;
+import com.home.teamnotifier.core.responses.notification.ServerAction;
+import com.home.teamnotifier.core.responses.notification.SharedResourceAction;
 import com.home.teamnotifier.gateways.ActionsGateway;
 import com.home.teamnotifier.gateways.exceptions.EmptyDescription;
 import com.home.teamnotifier.gateways.exceptions.NoSuchServer;
@@ -16,7 +19,7 @@ import java.time.Instant;
 import static com.home.teamnotifier.DbPreparer.getRandomString;
 
 public class DbActionsOnServerGatewayTest {
-    private static ActionsTester tester;
+    private static ActionsTester<ActionsOnAppServerInfo, ServerAction> tester;
     private static DbPreparer helper;
     private static ActionsGateway gateway;
     private static EnvironmentEntity environment;
@@ -32,9 +35,9 @@ public class DbActionsOnServerGatewayTest {
                 getRandomString()
         );
 
-        tester = new ActionsTester(helper) {
+        tester = new ActionsTester<ActionsOnAppServerInfo, ServerAction>(helper) {
             @Override
-            BroadcastInformation newAction(String userName, int id, String description) {
+            BroadcastInformation<ServerAction> newAction(String userName, int id, String description) {
                 return gateway.newActionOnAppSever(userName, id, description);
             }
 
@@ -44,7 +47,7 @@ public class DbActionsOnServerGatewayTest {
             }
 
             @Override
-            ActionsInfo actionsInRange(int id, Range<Instant> range) {
+            ActionsOnAppServerInfo actionsInRange(int id, Range<Instant> range) {
                 return gateway.getActionsOnServer(id, range);
             }
         };

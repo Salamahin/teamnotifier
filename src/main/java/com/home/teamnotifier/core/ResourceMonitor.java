@@ -2,7 +2,7 @@ package com.home.teamnotifier.core;
 
 import com.google.common.collect.Range;
 import com.google.inject.Inject;
-import com.home.teamnotifier.core.responses.action.ActionsInfo;
+import com.home.teamnotifier.core.responses.action.ActionsOnSharedResourceInfo;
 import com.home.teamnotifier.core.responses.status.EnvironmentsInfo;
 import com.home.teamnotifier.gateways.EnvironmentGateway;
 import com.home.teamnotifier.gateways.ActionsGateway;
@@ -66,7 +66,7 @@ public class ResourceMonitor {
         return environmentGateway.status();
     }
 
-    public ActionsInfo actionsInfo(final int applicationId, final Range<Instant> range) {
+    public ActionsOnSharedResourceInfo actionsInfo(final int applicationId, final Range<Instant> range) {
         return actionsGateway.getActionsOnResource(applicationId, range);
     }
 

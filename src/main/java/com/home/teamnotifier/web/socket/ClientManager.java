@@ -7,7 +7,7 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.home.teamnotifier.core.NotificationManager;
-import com.home.teamnotifier.core.responses.notification.NotificationInfo;
+import com.home.teamnotifier.core.responses.notification.Notification;
 import io.dropwizard.jackson.Jackson;
 import org.eclipse.jetty.websocket.api.Session;
 import org.slf4j.Logger;
@@ -45,7 +45,7 @@ public class ClientManager implements NotificationManager {
     }
 
     @Override
-    public synchronized void pushToClients(final Collection<String> userNames, final NotificationInfo message) {
+    public synchronized void pushToClients(final Collection<String> userNames, final Notification message) {
         final BiMap<String, Session> clientsByNames = clientSessionsByUsernames.inverse();
         final String messageString = infoToString(message);
         userNames.stream()
@@ -54,7 +54,7 @@ public class ClientManager implements NotificationManager {
                 .forEach(s -> pushAsync(messageString, s));
     }
 
-    private String infoToString(final NotificationInfo message) {
+    private String infoToString(final Notification message) {
         try {
             return mapper.writeValueAsString(message);
         } catch (JsonProcessingException e) {

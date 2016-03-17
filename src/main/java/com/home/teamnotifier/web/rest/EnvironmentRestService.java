@@ -5,7 +5,7 @@ import com.google.inject.Inject;
 import com.home.teamnotifier.authentication.BasicAuthenticated;
 import com.home.teamnotifier.authentication.TokenAuthenticated;
 import com.home.teamnotifier.core.ResourceMonitor;
-import com.home.teamnotifier.core.responses.action.ActionsInfo;
+import com.home.teamnotifier.core.responses.action.ActionsOnSharedResourceInfo;
 import com.home.teamnotifier.core.responses.status.EnvironmentsInfo;
 import com.home.teamnotifier.gateways.ResourceDescription;
 import io.dropwizard.auth.Auth;
@@ -115,7 +115,7 @@ public class EnvironmentRestService {
 
     @GET
     @Path("/application/action/{applicationId}")
-    public ActionsInfo getActionsInfo(
+    public ActionsOnSharedResourceInfo getActionsInfo(
             @Auth final TokenAuthenticated userPrincipal,
             @PathParam("applicationId") final Integer applicationId,
             @HeaderParam("ActionsFrom") final String encodedBase64From,

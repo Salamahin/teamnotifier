@@ -113,4 +113,9 @@ public final class AppServerEntity implements Serializable {
     public int hashCode() {
         return Objects.hash(id, name, statusUrl, resources);
     }
+
+    @Override
+    public String toString() {
+        return environment.getName() + " " + name;
+    }
 }
