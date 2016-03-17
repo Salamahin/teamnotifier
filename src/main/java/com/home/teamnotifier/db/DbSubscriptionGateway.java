@@ -6,6 +6,7 @@ import com.home.teamnotifier.core.BroadcastInformation;
 import com.home.teamnotifier.core.responses.notification.EventType;
 import com.home.teamnotifier.core.responses.notification.NotificationInfo;
 import com.home.teamnotifier.gateways.*;
+import com.home.teamnotifier.gateways.exceptions.*;
 import org.hibernate.exception.ConstraintViolationException;
 
 import javax.persistence.EntityManager;

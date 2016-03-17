@@ -4,12 +4,11 @@ import com.google.common.collect.Range;
 import com.google.inject.Inject;
 import com.home.teamnotifier.authentication.BasicAuthenticated;
 import com.home.teamnotifier.authentication.TokenAuthenticated;
-import com.home.teamnotifier.authentication.AnyAuthenticated;
 import com.home.teamnotifier.core.ResourceMonitor;
 import com.home.teamnotifier.core.responses.action.ActionsInfo;
 import com.home.teamnotifier.core.responses.status.EnvironmentsInfo;
+import com.home.teamnotifier.gateways.ResourceDescription;
 import io.dropwizard.auth.Auth;
-import org.hibernate.validator.constraints.URL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -98,7 +97,14 @@ public class EnvironmentRestService {
     ) {
         final String userName = userPrincipal.getName();
         LOGGER.info("User {} new action on resource {} {} ({}) request", userName, serverName, resourceName, details);
-        resourceMonitor.newAction(userName, environmentName, serverName, resourceName, details);
+
+        final ResourceDescription resourceDescription = ResourceDescription.newBuilder()
+                .withResourceName(resourceName)
+                .withServerName(serverName)
+                .withEnvironmentName(environmentName)
+                .build();
+
+        resourceMonitor.newAction(userName, resourceDescription, details);
     }
 
     @GET

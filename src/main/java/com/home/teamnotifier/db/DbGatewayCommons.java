@@ -1,6 +1,6 @@
 package com.home.teamnotifier.db;
 
-import com.home.teamnotifier.gateways.NoSuchUser;
+import com.home.teamnotifier.gateways.exceptions.NoSuchUser;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;

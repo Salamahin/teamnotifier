@@ -1,7 +1,7 @@
 package com.home.teamnotifier.db;
 
 import com.home.teamnotifier.DbPreparer;
-import com.home.teamnotifier.gateways.*;
+import com.home.teamnotifier.gateways.exceptions.*;
 import org.junit.Before;
 import org.junit.Test;
 

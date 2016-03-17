@@ -15,7 +15,8 @@ public enum EventType
     FREE,
     SERVER_ONLINE,
     SERVER_OFFLINE,
-    ACTION_ON_RESOURCE;
+    ACTION_ON_RESOURCE,
+    ACTION_ON_SERVER;
 
     private static final BiMap<String, EventType> namesMap = HashBiMap.create();
 

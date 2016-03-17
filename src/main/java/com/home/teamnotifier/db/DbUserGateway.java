@@ -2,8 +2,8 @@ package com.home.teamnotifier.db;
 
 import com.google.common.base.Throwables;
 import com.google.inject.Inject;
-import com.home.teamnotifier.gateways.InvalidCredentials;
-import com.home.teamnotifier.gateways.NoSuchUser;
+import com.home.teamnotifier.gateways.exceptions.InvalidCredentials;
+import com.home.teamnotifier.gateways.exceptions.NoSuchUser;
 import com.home.teamnotifier.gateways.UserGateway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

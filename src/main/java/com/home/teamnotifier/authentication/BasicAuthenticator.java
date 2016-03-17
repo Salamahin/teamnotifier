@@ -3,7 +3,7 @@ package com.home.teamnotifier.authentication;
 import com.google.common.base.Optional;
 import com.google.inject.Inject;
 import com.home.teamnotifier.db.UserEntity;
-import com.home.teamnotifier.gateways.NoSuchUser;
+import com.home.teamnotifier.gateways.exceptions.NoSuchUser;
 import com.home.teamnotifier.gateways.UserGateway;
 import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.Authenticator;

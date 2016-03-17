@@ -6,6 +6,7 @@ import com.home.teamnotifier.core.responses.action.ActionsInfo;
 import com.home.teamnotifier.core.responses.status.EnvironmentsInfo;
 import com.home.teamnotifier.gateways.EnvironmentGateway;
 import com.home.teamnotifier.gateways.ActionsGateway;
+import com.home.teamnotifier.gateways.ResourceDescription;
 import com.home.teamnotifier.gateways.SubscriptionGateway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,7 +67,7 @@ public class ResourceMonitor {
     }
 
     public ActionsInfo actionsInfo(final int applicationId, final Range<Instant> range) {
-        return actionsGateway.getActions(applicationId, range);
+        return actionsGateway.getActionsOnResource(applicationId, range);
     }
 
     public void newAction(final String userName, final int applicationId, final String desc) {
@@ -74,8 +75,12 @@ public class ResourceMonitor {
         fireNotification(information);
     }
 
-    public void newAction(final String userName, final String environmentName, final String serverName, final String applicationName, final String desc) {
-        final BroadcastInformation information = actionsGateway.newActionOnSharedResource(userName, environmentName, serverName, applicationName, desc);
+    public void newAction(
+            final String userName,
+            final ResourceDescription resourceDescription,
+            final String desc
+    ) {
+        final BroadcastInformation information = actionsGateway.newActionOnSharedResource(userName, resourceDescription, desc);
         fireNotification(information);
     }
 }

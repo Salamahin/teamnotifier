@@ -1,6 +1,7 @@
 package com.home.teamnotifier.gateways;
 
 import com.home.teamnotifier.core.BroadcastInformation;
+import com.home.teamnotifier.gateways.exceptions.*;
 
 public interface SubscriptionGateway {
     BroadcastInformation subscribe(final String userName, final int serverId)

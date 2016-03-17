@@ -1,8 +1,8 @@
 package com.home.teamnotifier.db;
 
 import com.home.teamnotifier.DbPreparer;
-import com.home.teamnotifier.gateways.InvalidCredentials;
-import com.home.teamnotifier.gateways.NoSuchUser;
+import com.home.teamnotifier.gateways.exceptions.InvalidCredentials;
+import com.home.teamnotifier.gateways.exceptions.NoSuchUser;
 import org.junit.Before;
 import org.junit.Test;
 
