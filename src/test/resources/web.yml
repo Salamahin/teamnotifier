@@ -13,7 +13,7 @@ logging:
   level: INFO
   loggers:
     com.home.teamnotifier: DEBUG
-    org.hibernate: DEBUG
+    org.hibernate: WARN
   appenders:
     - type: console
     - type: file
@@ -24,6 +24,10 @@ logging:
       archivedFileCount: 7
       timeZone: UTC
       maxFileSize: 10MB
+
+assets:
+  overrides:
+    /: src/main/assets/
 
 executors:
   poolSize: 20

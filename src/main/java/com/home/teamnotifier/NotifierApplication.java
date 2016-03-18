@@ -1,12 +1,11 @@
 package com.home.teamnotifier;
 
+import com.bazaarvoice.dropwizard.assets.ConfiguredAssetsBundle;
 import com.github.toastshaman.dropwizard.auth.jwt.JWTAuthFilter;
 import com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenParser;
 import com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenVerifier;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import com.google.inject.Injector;
 import com.home.teamnotifier.authentication.*;
 import com.home.teamnotifier.health.AppServerStates;
@@ -20,21 +19,12 @@ import com.home.teamnotifier.web.lifecycle.TransactionManager;
 import com.home.teamnotifier.web.socket.BroadcastServlet;
 import com.home.teamnotifier.web.socket.ClientManager;
 import io.dropwizard.Application;
-import io.dropwizard.assets.AssetsBundle;
-import io.dropwizard.auth.AuthDynamicFeature;
-import io.dropwizard.auth.AuthFilter;
-import io.dropwizard.auth.AuthValueFactoryProvider;
 import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
-import io.dropwizard.auth.chained.ChainedAuthFilter;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 
 import javax.servlet.ServletRegistration;
-import java.security.Principal;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 import static com.home.teamnotifier.Injection.INJECTION_BUNDLE;
 
@@ -47,7 +37,7 @@ public class NotifierApplication extends Application<NotifierConfiguration> {
 
     @Override
     public void initialize(final Bootstrap<NotifierConfiguration> bootstrap) {
-        bootstrap.addBundle(new AssetsBundle("/assets", "/"));
+        bootstrap.addBundle(new ConfiguredAssetsBundle("/src/main/assets", "/"));
         bootstrap.addBundle(INJECTION_BUNDLE);
     }
 
