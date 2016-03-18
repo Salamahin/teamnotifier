@@ -466,7 +466,7 @@ span.modal-footer a {
     display: table-caption;
 }
 
-#ibox_other {
+.action_box {
     width: 200px;
     height: 40px;
 }

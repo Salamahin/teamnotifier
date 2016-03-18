@@ -412,20 +412,20 @@ function newLabeledCheckbox(value, checked, onchange) {
 
 /** @namespace resource.occupationInfo */
 /** @namespace occupationInfo.occupationTime */
-function getHistoryButton(resource) {
+function getHistoryButton(isResource, target) {
     var btnHistory = newButton("", function () {
         var hist = document.getElementById("ul_hist");
         removeAllChildren(hist);
-        showActionsHistoryModal(resource.id, resource.name);
+        showHistoryModal(isResource, target.id, target.name);
     });
     btnHistory.className = "round-button history-button tooltip";
     btnHistory.setAttribute("tip-text", "show history")
     return btnHistory;
 }
 
-function getActionButton(resource) {
+function getActionButton(isResource, target) {
     var btnAction = newButton("", function () {
-        showActionModal(resource.id, resource.name)
+        showActionModal(isResource, target.id, target.name)
     });
     btnAction.className = "round-button action-button tooltip";
     btnAction.setAttribute("tip-text", "new action")
@@ -450,7 +450,7 @@ function decorateOccupationInfo(occupationInfo, resourceName) {
 function newResourceInfoElem(resource) {
     var occupationInfo = resource.occupationInfo;
 
-    var btnHistory = getHistoryButton(resource);
+    var btnHistory = getHistoryButton(true, resource);
     var btnAction = getActionButton(resource);
     var action;
 
@@ -560,44 +560,44 @@ function sendRegisterRequest() {
     xhttp.send();
 }
 
-
-function showActionModal(resourceId, caption) {
-    document.getElementById("btn_deploy").onclick = function () {
-        sendActionRequest(resourceId, "deploy");
-        jumpToAnchor("environment");
-    };
-
-    document.getElementById("btn_polite").onclick = function () {
-        sendActionRequest(resourceId, "polite");
-        jumpToAnchor("environment");
-    };
-
+function showServerActionModal(caption) {
     document.getElementById("btn_other").onclick = function () {
         var action = document.getElementById("ibox_other").value;
-        sendActionRequest(resourceId, action);
+        sendResourceActionRequest(resourceId, SELECTED_SRV_ID);
         jumpToAnchor("environment");
     };
 
-    document.addEventListener('keyup', function (e) {
-        if (e.keyCode == 27) {
-            jumpToAnchor("environment");
-        }
-    });
 
     var header = document.getElementById("action_header");
     removeAllChildren(header);
     header.appendChild(document.createTextNode(caption));
 
-    var modal = document.querySelector('#actions_modal');
-    modal.addEventListener('click', function () {
+    jumpToAnchor("server_actions");
+}
+
+function showResourceActionModal(targetId, caption) {
+    
+    document.getElementById("btn_resource_other_action").onclick = function () {
+        sendResourceActionRequest(resourceId, "deploy");
         jumpToAnchor("environment");
-    }, false);
+    };
 
-    modal.children[0].addEventListener('click', function (e) {
-        e.stopPropagation();
-    }, false);
+    document.getElementById("btn_polite").onclick = function () {
+        sendResourceActionRequest(resourceId, "polite");
+        jumpToAnchor("environment");
+    };
 
-    jumpToAnchor("actions");
+    document.getElementById("btn_server_action").onclick = function () {
+        var action = document.getElementById("ibox_other").value;
+        sendResourceActionRequest(resourceId, action);
+        jumpToAnchor("environment");
+    };
+
+    var header = document.getElementById("action_header");
+    removeAllChildren(header);
+    header.appendChild(document.createTextNode(caption));
+
+    jumpToAnchor("resource_actions");
 }
 
 function subDays(date, days) {
@@ -623,36 +623,28 @@ function showHistoryModal(isResource, targetId, caption) {
         sendHistRequest(isResource, targetId, subDays(now, 30), now);
     };
 
-    document.addEventListener('keyup', function (e) {
-        if (e.keyCode == 27) {
-            jumpToAnchor("environment");
-        }
-    });
-
-    var header = document.getElementById("hist_header");
-    removeAllChildren(header);
-    header.appendChild(document.createTextNode(caption));
-
-    var modal = document.querySelector('#hist_modal');
-    modal.addEventListener('click', function () {
-        jumpToAnchor("environment");
-    }, false);
-
-    modal.children[0].addEventListener('click', function (e) {
-        e.stopPropagation();
-    }, false);
-
     btnToday.click();
     jumpToAnchor("history");
 }
 
-function sendActionRequest(resourceId, action) {
+function sendResourceActionRequest(resourceId, action) {
     var xhttp = new XMLHttpRequest();
     xhttp.open("POST", "/teamnotifier/1.0/environment/application/action/" + resourceId, true);
     xhttp.setRequestHeader("ActionDetails", action);
     xhttp.setRequestHeader("Authorization", "Bearer " + USER_TOKEN);
-    xhttp.onreadystatechange = function () {
-        handleRegistration(xhttp, username, password);
+     xhttp.onreadystatechange = function () {
+        handleInteraction(xhttp);
+    };
+    xhttp.send();
+}
+
+function sendServerActionRequest(serverId, action) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.open("POST", "/teamnotifier/1.0/environment/server/action/" + serverId, true);
+    xhttp.setRequestHeader("ActionDetails", action);
+    xhttp.setRequestHeader("Authorization", "Bearer " + USER_TOKEN);
+     xhttp.onreadystatechange = function () {
+        handleInteraction(xhttp);
     };
     xhttp.send();
 }
@@ -691,7 +683,7 @@ function sendHistRequest(isResource, targetId, from, to) {
     if(isResource)
         xhttp.open("GET", "/teamnotifier/1.0/environment/application/action/" + targetId, true);
     else
-        xhttp.open("GET", "/teamnotifier/1.0/environment/application/action/" + targetId, true);
+        xhttp.open("GET", "/teamnotifier/1.0/environment/server/action/" + targetId, true);
     var fromStr = from.toISOString();
     var toStr = to.toISOString();
     xhttp.setRequestHeader("ActionsFrom", btoa(fromStr));
@@ -708,6 +700,21 @@ function jumpToAnchor(id) {
 }
 
 window.onload = function () {
+    var modal = document.querySelector('#actions_modal');
+    modal.addEventListener('click', function () {
+        jumpToAnchor("environment");
+    }, false);
+
+    modal.children[0].addEventListener('click', function (e) {
+        e.stopPropagation();
+    }, false);
+
+    document.addEventListener('keyup', function (e) {
+        if (e.keyCode == 27) {
+            jumpToAnchor("environment");
+        }
+    });
+
     Notification.requestPermission(newMessage);
     authenticate();
 };
