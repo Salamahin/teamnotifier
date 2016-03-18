@@ -7,7 +7,7 @@ import io.dropwizard.jackson.Jackson;
 import java.io.IOException;
 
 import static io.dropwizard.testing.FixtureHelpers.fixture;
-import static org.assertj.core.api.StrictAssertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public final class SerializationTestHelper {
 

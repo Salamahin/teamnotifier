@@ -85,6 +85,7 @@ public class NotifierApplication extends Application<NotifierConfiguration> {
 
         final BasicCredentialAuthFilter<BasicAuthenticated> simple = new BasicCredentialAuthFilter.Builder<BasicAuthenticated>()
                 .setAuthenticator(basicAuthenticator)
+                .setPrefix("x-Basic")
                 .setAuthorizer(basicUserAuthorizer)
                 .buildAuthFilter();
 

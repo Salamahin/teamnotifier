@@ -10,13 +10,14 @@ import com.home.teamnotifier.gateways.ResourceDescription;
 import com.home.teamnotifier.gateways.exceptions.EmptyDescription;
 import com.home.teamnotifier.gateways.exceptions.NoSuchResource;
 import com.home.teamnotifier.gateways.exceptions.NoSuchUser;
+import org.assertj.core.api.Assertions;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.time.Instant;
 
 import static com.home.teamnotifier.DbPreparer.getRandomString;
-import static org.assertj.core.api.StrictAssertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 public class DbResourceActionsGatewayTest {
 

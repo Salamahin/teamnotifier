@@ -6,6 +6,7 @@ import com.home.teamnotifier.authentication.BasicAuthenticated;
 import com.home.teamnotifier.authentication.TokenAuthenticated;
 import com.home.teamnotifier.core.ResourceMonitor;
 import com.home.teamnotifier.core.responses.action.ResourceActionsHistory;
+import com.home.teamnotifier.core.responses.action.ServerActionsHistory;
 import com.home.teamnotifier.core.responses.status.EnvironmentsInfo;
 import com.home.teamnotifier.gateways.ResourceDescription;
 import io.dropwizard.auth.Auth;
@@ -76,19 +77,31 @@ public class EnvironmentRestService {
 
     @POST
     @Path("/application/action/{applicationId}")
-    public void newInfo(
+    public void newResourceAction(
             @Auth final TokenAuthenticated userPrincipal,
             @PathParam("applicationId") final Integer applicationId,
             @HeaderParam("ActionDetails") final String details
     ) {
         final String userName = userPrincipal.getName();
         LOGGER.info("User {} new action on resource id {} ({}) request", userName, applicationId, details);
-        resourceMonitor.newAction(userName, applicationId, details);
+        resourceMonitor.newResourceAction(userName, applicationId, details);
+    }
+
+    @POST
+    @Path("/server/action/{serverId}")
+    public void newServerAction(
+            @Auth final TokenAuthenticated userPrincipal,
+            @PathParam("serverId") final Integer serverId,
+            @HeaderParam("ActionDetails") final String details
+    ) {
+        final String userName = userPrincipal.getName();
+        LOGGER.info("User {} new action on server id {} ({}) request", userName, serverId, details);
+        resourceMonitor.newServerAction(userName, serverId, details);
     }
 
     @POST
     @Path("/application/action/")
-    public void newInfo(
+    public void newResourceAction(
             @Auth final BasicAuthenticated userPrincipal,
             @QueryParam("environment") final String environmentName,
             @QueryParam("server") final String serverName,
@@ -104,7 +117,7 @@ public class EnvironmentRestService {
                 .withEnvironmentName(environmentName)
                 .build();
 
-        resourceMonitor.newAction(userName, resourceDescription, details);
+        resourceMonitor.newResourceAction(userName, resourceDescription, details);
     }
 
     @GET
@@ -115,7 +128,7 @@ public class EnvironmentRestService {
 
     @GET
     @Path("/application/action/{applicationId}")
-    public ResourceActionsHistory getActionsInfo(
+    public ResourceActionsHistory getResourceActionsHistory(
             @Auth final TokenAuthenticated userPrincipal,
             @PathParam("applicationId") final Integer applicationId,
             @HeaderParam("ActionsFrom") final String encodedBase64From,
@@ -131,7 +144,28 @@ public class EnvironmentRestService {
                 toInstant
         );
 
-        return resourceMonitor.actionsInfo(applicationId, Range.closed(fromInstant, toInstant));
+        return resourceMonitor.resourceActions(applicationId, Range.closed(fromInstant, toInstant));
+    }
+
+    @GET
+    @Path("/server/action/{serverId}")
+    public ServerActionsHistory getServerActionsHistory(
+            @Auth final TokenAuthenticated userPrincipal,
+            @PathParam("serverId") final Integer serverId,
+            @HeaderParam("ActionsFrom") final String encodedBase64From,
+            @HeaderParam("ActionsTo") final String encodedBase64To
+    ) {
+        final Instant fromInstant = ZonedDateTime.parse(decodeBase64String(encodedBase64From)).toInstant();
+        final Instant toInstant = ZonedDateTime.parse(decodeBase64String(encodedBase64To)).toInstant();
+
+        LOGGER.info("User {} actions on resource {} from {} to {} request",
+                userPrincipal.getName(),
+                serverId,
+                fromInstant,
+                toInstant
+        );
+
+        return resourceMonitor.serverActions(serverId, Range.closed(fromInstant, toInstant));
     }
 
     private String decodeBase64String(final String encodedString) {

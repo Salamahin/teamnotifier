@@ -76,7 +76,7 @@ function authenticate() {
 function sendAuthRequest(username, password) {
     var xhttp = new XMLHttpRequest();
     xhttp.open("GET", "/teamnotifier/1.0/users/authenticate", true);
-    xhttp.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password));
+    xhttp.setRequestHeader("Authorization", "x-Basic " + btoa(username + ":" + password));
     xhttp.onreadystatechange = function () {
         handleAuthentication(xhttp, username);
     };
@@ -318,13 +318,13 @@ function showCurrentServerName(currentName) {
 }
 
 function showCurrentSubscriptionStatus(srv) {
-    var subscriptionInfoContainer = document.getElementById("subscription");
-    removeAllChildren(subscriptionInfoContainer);
+    var subscriptionContainer = document.getElementById("subscription");
+    removeAllChildren(subscriptionContainer);
     const subscribed = isSubscribedOnServer(srv);
     var cbSubscribe = newLabeledCheckbox("subscribe", subscribed, function () {
         subscribed ? unsubscribe(srv.id) : subscribe(srv.id);
     });
-    subscriptionInfoContainer.appendChild(cbSubscribe);
+    subscriptionContainer.appendChild(cbSubscribe);
 }
 
 function showSubscribers(srv) {
@@ -606,21 +606,21 @@ function subDays(date, days) {
     return result;
 }
 
-function showActionsHistoryModal(resourceId, caption) {
+function showHistoryModal(isResource, targetId, caption) {
     var btnToday = document.getElementById("btn_hist_today");
     btnToday.onclick = function () {
         var now = new Date();
-        sendHistRequest(resourceId, subDays(now, 1), now);
+        sendHistRequest(isResource, targetId, subDays(now, 1), now);
     };
 
     document.getElementById("btn_hist_week").onclick = function () {
         var now = new Date();
-        sendHistRequest(resourceId, subDays(now, 7), now);
+        sendHistRequest(isResource, targetId, subDays(now, 7), now);
     };
 
     document.getElementById("btn_hist_month").onclick = function () {
         var now = new Date();
-        sendHistRequest(resourceId, subDays(now, 30), now);
+        sendHistRequest(isResource, targetId, subDays(now, 30), now);
     };
 
     document.addEventListener('keyup', function (e) {
@@ -683,12 +683,15 @@ function actionInfoToLabel(info) {
 }
 
 
-function sendHistRequest(resourceId, from, to) {
+function sendHistRequest(isResource, targetId, from, to) {
     var hist = document.getElementById("ul_hist");
     removeAllChildren(hist);
 
     var xhttp = new XMLHttpRequest();
-    xhttp.open("GET", "/teamnotifier/1.0/environment/application/action/" + resourceId, true);
+    if(isResource)
+        xhttp.open("GET", "/teamnotifier/1.0/environment/application/action/" + targetId, true);
+    else
+        xhttp.open("GET", "/teamnotifier/1.0/environment/application/action/" + targetId, true);
     var fromStr = from.toISOString();
     var toStr = to.toISOString();
     xhttp.setRequestHeader("ActionsFrom", btoa(fromStr));

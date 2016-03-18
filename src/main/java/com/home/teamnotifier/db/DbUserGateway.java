@@ -79,7 +79,7 @@ public class DbUserGateway implements UserGateway {
         if (firstConstraintViolation.isPresent())
             throw new InvalidCredentials(firstConstraintViolation.get());
         else
-            Throwables.propagate(exc);
+            throw Throwables.propagate(exc);
     }
 
     private UserEntity getEntityByName(String name) {

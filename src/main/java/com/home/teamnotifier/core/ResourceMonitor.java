@@ -3,6 +3,7 @@ package com.home.teamnotifier.core;
 import com.google.common.collect.Range;
 import com.google.inject.Inject;
 import com.home.teamnotifier.core.responses.action.ResourceActionsHistory;
+import com.home.teamnotifier.core.responses.action.ServerActionsHistory;
 import com.home.teamnotifier.core.responses.status.EnvironmentsInfo;
 import com.home.teamnotifier.gateways.EnvironmentGateway;
 import com.home.teamnotifier.gateways.ActionsGateway;
@@ -42,7 +43,7 @@ public class ResourceMonitor {
         fireNotification(information);
     }
 
-    private void fireNotification(final BroadcastInformation information) {
+    private void fireNotification(final BroadcastInformation<?> information) {
         LOGGER.debug("New notification to be fired: {}", information);
         notificationManager.pushToClients(information.getSubscribers(), information.getValue());
     }
@@ -66,16 +67,25 @@ public class ResourceMonitor {
         return environmentGateway.status();
     }
 
-    public ResourceActionsHistory actionsInfo(final int applicationId, final Range<Instant> range) {
+    public ResourceActionsHistory resourceActions(final int applicationId, final Range<Instant> range) {
         return actionsGateway.getActionsOnResource(applicationId, range);
     }
 
-    public void newAction(final String userName, final int applicationId, final String desc) {
+    public ServerActionsHistory serverActions(final int serverId, final Range<Instant> range) {
+        return actionsGateway.getActionsOnServer(serverId, range);
+    }
+
+    public void newServerAction(final String userName, final int serverId, final String desc) {
+        final BroadcastInformation information = actionsGateway.newActionOnAppSever(userName, serverId, desc);
+        fireNotification(information);
+    }
+
+    public void newResourceAction(final String userName, final int applicationId, final String desc) {
         final BroadcastInformation information = actionsGateway.newActionOnSharedResource(userName, applicationId, desc);
         fireNotification(information);
     }
 
-    public void newAction(
+    public void newResourceAction(
             final String userName,
             final ResourceDescription resourceDescription,
             final String desc

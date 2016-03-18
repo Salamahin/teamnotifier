@@ -7,7 +7,6 @@ import java.time.Instant;
 
 import static com.home.teamnotifier.core.responses.SerializationTestHelper.testDeserializeFromJson;
 import static com.home.teamnotifier.core.responses.SerializationTestHelper.testSerializesToJson;
-import static org.assertj.core.api.StrictAssertions.assertThat;
 
 public class ActionsHistoryTest {
 
