@@ -3,13 +3,12 @@ package com.home.teamnotifier.db;
 import com.google.common.collect.Range;
 import com.home.teamnotifier.DbPreparer;
 import com.home.teamnotifier.core.BroadcastInformation;
-import com.home.teamnotifier.core.responses.action.ActionsOnAppServerInfo;
-import com.home.teamnotifier.core.responses.action.ActionsOnSharedResourceInfo;
-import com.home.teamnotifier.core.responses.notification.ServerAction;
-import com.home.teamnotifier.core.responses.notification.SharedResourceAction;
+import com.home.teamnotifier.core.responses.action.ResourceActionsHistory;
+import com.home.teamnotifier.core.responses.notification.ResourceAction;
 import com.home.teamnotifier.gateways.ActionsGateway;
+import com.home.teamnotifier.gateways.ResourceDescription;
 import com.home.teamnotifier.gateways.exceptions.EmptyDescription;
-import com.home.teamnotifier.gateways.exceptions.NoSuchServer;
+import com.home.teamnotifier.gateways.exceptions.NoSuchResource;
 import com.home.teamnotifier.gateways.exceptions.NoSuchUser;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -17,9 +16,11 @@ import org.junit.Test;
 import java.time.Instant;
 
 import static com.home.teamnotifier.DbPreparer.getRandomString;
+import static org.assertj.core.api.StrictAssertions.assertThat;
 
-public class DbActionsOnServerGatewayTest {
-    private static ActionsTester<ActionsOnAppServerInfo, ServerAction> tester;
+public class DbResourceActionsGatewayTest {
+
+    private static ActionsTester<ResourceActionsHistory, ResourceAction> tester;
     private static DbPreparer helper;
     private static ActionsGateway gateway;
     private static EnvironmentEntity environment;
@@ -35,20 +36,20 @@ public class DbActionsOnServerGatewayTest {
                 getRandomString()
         );
 
-        tester = new ActionsTester<ActionsOnAppServerInfo, ServerAction>(helper) {
+        tester = new ActionsTester<ResourceActionsHistory, ResourceAction>(helper) {
             @Override
-            BroadcastInformation<ServerAction> newAction(String userName, int id, String description) {
-                return gateway.newActionOnAppSever(userName, id, description);
+            BroadcastInformation<ResourceAction> newAction(String userName, int id, String description) {
+                return gateway.newActionOnSharedResource(userName, id, description);
             }
 
             @Override
             int persistedId() {
-                return helper.anyServerId(environment);
+                return helper.anyResourceId(environment);
             }
 
             @Override
-            ActionsOnAppServerInfo actionsInRange(int id, Range<Instant> range) {
-                return gateway.getActionsOnServer(id, range);
+            ResourceActionsHistory actionsInRange(int id, Range<Instant> range) {
+                return gateway.getActionsOnResource(id, range);
             }
         };
     }
@@ -68,8 +69,26 @@ public class DbActionsOnServerGatewayTest {
         tester.testReturnsSubscribersNamesAfterAction(environment);
     }
 
-    @Test(expected = NoSuchServer.class)
-    public void testNoSuchServerWhenGetActionsOfNotPersistedEntity() {
+    @Test
+    public void testActionByResourceNameAndServerName() throws Exception {
+        final String envName = "env";
+        final String srvName = "srv";
+        final String appName = "app";
+
+        helper.createPersistedEnvironmentWithOneServerAndOneResource(envName, srvName, appName);
+        final String userName = helper.createPersistedUser(getRandomString(), getRandomString()).getName();
+
+        final ResourceDescription resourceDescription = ResourceDescription.newBuilder()
+                .withResourceName(appName)
+                .withEnvironmentName(envName)
+                .withServerName(srvName)
+                .build();
+
+        assertThat(gateway.newActionOnSharedResource(userName, resourceDescription, "test")).isNotNull();
+    }
+
+    @Test(expected = NoSuchResource.class)
+    public void testNoSuchResourceWhenGetActionsOfNotPersistedEntity() {
         tester.testNoSuchEntityWhenGetActionsOfNotPersistedEntity();
     }
 

@@ -13,7 +13,7 @@ import com.google.inject.Provides;
 import com.home.teamnotifier.authentication.BasicAuthenticator;
 import com.home.teamnotifier.authentication.TokenAuthenticator;
 import com.home.teamnotifier.authentication.WebsocketAuthenticator;
-import com.home.teamnotifier.core.AppServerAvailabilityChecker;
+import com.home.teamnotifier.core.ServerAvailabilityChecker;
 import com.home.teamnotifier.core.NotificationManager;
 import com.home.teamnotifier.core.ResourceMonitor;
 import com.home.teamnotifier.db.*;
@@ -46,15 +46,15 @@ final class NotifierModule extends AbstractModule {
                 .in(Singleton.class);
 
 
-        bind(AppServerGateway.class)
-                .to(DbAppServerGateway.class)
+        bind(ServerGateway.class)
+                .to(DbServerGateway.class)
                 .in(Singleton.class);
 
         bind(NotificationManager.class)
                 .to(ClientManager.class)
                 .in(Singleton.class);
 
-        bind(AppServerAvailabilityChecker.class)
+        bind(ServerAvailabilityChecker.class)
                 .in(Singleton.class);
 
         bind(ClientManager.class)

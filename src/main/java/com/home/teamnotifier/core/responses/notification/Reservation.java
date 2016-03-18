@@ -1,7 +1,7 @@
 package com.home.teamnotifier.core.responses.notification;
 
 import com.fasterxml.jackson.annotation.*;
-import com.home.teamnotifier.db.SharedResourceEntity;
+import com.home.teamnotifier.db.ResourceEntity;
 import com.home.teamnotifier.db.UserEntity;
 
 import java.time.Instant;
@@ -27,15 +27,15 @@ public class Reservation extends UserStateChange {
         super(actor, targetId, timestamp, state);
     }
 
-    private Reservation(final UserEntity actor, final SharedResourceEntity target, final boolean state) {
+    private Reservation(final UserEntity actor, final ResourceEntity target, final boolean state) {
         super(actor.getName(), target.getId(), Instant.now().toString(), state);
     }
 
-    public static Reservation reserve(final UserEntity actor, final SharedResourceEntity resource) {
+    public static Reservation reserve(final UserEntity actor, final ResourceEntity resource) {
         return new Reservation(actor, resource, true);
     }
 
-    public static Reservation free(final UserEntity actor, final SharedResourceEntity resource) {
+    public static Reservation free(final UserEntity actor, final ResourceEntity resource) {
         return new Reservation(actor, resource, false);
     }
 }

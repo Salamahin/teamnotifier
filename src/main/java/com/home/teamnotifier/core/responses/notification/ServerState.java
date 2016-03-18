@@ -43,10 +43,6 @@ public class ServerState extends Notification {
         return new ServerState(appServerEntity, false);
     }
 
-    public final boolean isOnline() {
-        return online;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -59,5 +55,12 @@ public class ServerState extends Notification {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), online);
+    }
+
+    @Override
+    public String toString() {
+        return "ServerState{" +
+                "online=" + online +
+                "} " + super.toString();
     }
 }

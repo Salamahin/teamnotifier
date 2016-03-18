@@ -2,7 +2,7 @@ package com.home.teamnotifier.db;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
-import com.home.teamnotifier.core.AppServerAvailabilityChecker;
+import com.home.teamnotifier.core.ServerAvailabilityChecker;
 import com.home.teamnotifier.core.responses.status.*;
 import com.home.teamnotifier.gateways.EnvironmentGateway;
 
@@ -19,20 +19,20 @@ import static java.util.stream.Collectors.toSet;
 
 public class DbEnvironmentGateway implements EnvironmentGateway {
     private final TransactionHelper transactionHelper;
-    private final AppServerAvailabilityChecker appServerAvailabilityChecker;
+    private final ServerAvailabilityChecker serverAvailabilityChecker;
 
     @Inject
     public DbEnvironmentGateway(
             final TransactionHelper transactionHelper,
-            AppServerAvailabilityChecker appServerAvailabilityChecker
+            ServerAvailabilityChecker serverAvailabilityChecker
     ) {
         this.transactionHelper = transactionHelper;
-        this.appServerAvailabilityChecker = appServerAvailabilityChecker;
+        this.serverAvailabilityChecker = serverAvailabilityChecker;
     }
 
     @Override
     public EnvironmentsInfo status() {
-        final ImmutableMap<AppServerEntity, Boolean> availabilityMap = appServerAvailabilityChecker.getAvailability();
+        final ImmutableMap<AppServerEntity, Boolean> availabilityMap = serverAvailabilityChecker.getAvailability();
         return new EnvironmentsInfo(
                 loadListFromDb().stream()
                         .map(e -> toEnvironment(e, availabilityMap))
@@ -76,8 +76,8 @@ public class DbEnvironmentGateway implements EnvironmentGateway {
         );
     }
 
-    private SharedResourceInfo toResource(final SharedResourceEntity sharedResourceEntity) {
-        final OccupationInfo occupationInfo = sharedResourceEntity.getReservationData()
+    private SharedResourceInfo toResource(final ResourceEntity resourceEntity) {
+        final OccupationInfo occupationInfo = resourceEntity.getReservationData()
                 .map(od -> new OccupationInfo(
                                 od.getOccupier().getName(),
                                 od.getOccupationTime()
@@ -86,8 +86,8 @@ public class DbEnvironmentGateway implements EnvironmentGateway {
                 .orElse(null);
 
         return new SharedResourceInfo(
-                sharedResourceEntity.getId(),
-                sharedResourceEntity.getName(),
+                resourceEntity.getId(),
+                resourceEntity.getName(),
                 occupationInfo
         );
     }

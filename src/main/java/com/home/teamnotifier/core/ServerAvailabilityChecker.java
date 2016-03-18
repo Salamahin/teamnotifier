@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import com.home.teamnotifier.core.responses.notification.ServerState;
 import com.home.teamnotifier.db.AppServerEntity;
-import com.home.teamnotifier.gateways.AppServerGateway;
+import com.home.teamnotifier.gateways.ServerGateway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,20 +18,20 @@ import java.util.concurrent.*;
 import static com.home.teamnotifier.utils.FutureUtils.allAsList;
 import static java.util.stream.Collectors.toList;
 
-public class AppServerAvailabilityChecker {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AppServerAvailabilityChecker.class);
+public class ServerAvailabilityChecker {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ServerAvailabilityChecker.class);
 
     private final ScheduledExecutorService executor;
-    private final AppServerGateway gateway;
+    private final ServerGateway gateway;
     private final NotificationManager notificationManager;
 
     private final Map<AppServerEntity, Boolean> statuses;
     private ScheduledFuture<?> routine;
 
     @Inject
-    public AppServerAvailabilityChecker(
+    public ServerAvailabilityChecker(
             final ScheduledExecutorService executor,
-            final AppServerGateway gateway,
+            final ServerGateway gateway,
             final NotificationManager notificationManager
     ) {
         this.executor = executor;

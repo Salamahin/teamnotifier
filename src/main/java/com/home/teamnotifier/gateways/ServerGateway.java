@@ -4,6 +4,6 @@ import com.home.teamnotifier.db.AppServerEntity;
 
 import java.util.Set;
 
-public interface AppServerGateway {
+public interface ServerGateway {
     Set<AppServerEntity> getImmutableSetOfObservableServers();
 }

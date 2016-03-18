@@ -11,11 +11,11 @@ import java.util.List;
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE,
         creatorVisibility = JsonAutoDetect.Visibility.ANY)
-@JsonTypeName("ActionsOnAppServer")
-public class ActionsOnAppServerInfo extends AbstractActionsInfo {
+@JsonTypeName("ServerActionsHistory")
+public class ServerActionsHistory extends AbstractActionsInfo {
 
     @JsonCreator
-    public ActionsOnAppServerInfo(@JsonProperty("actions") final List<ActionInfo> actions) {
+    public ServerActionsHistory(@JsonProperty("actions") final List<ActionInfo> actions) {
         super(actions);
     }
 }

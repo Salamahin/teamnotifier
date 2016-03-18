@@ -1,9 +1,7 @@
 package com.home.teamnotifier.db;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.time.Instant;
 
 @Entity
 @Table(schema = "teamnotifier", name = "ActionOnSharedResource")
@@ -11,7 +9,7 @@ final class ActionOnSharedResourceEntity extends ActionEntity implements Seriali
 
     @ManyToOne(optional = false, cascade = CascadeType.ALL)
     @SuppressWarnings("unused")
-    private final SharedResourceEntity resource;
+    private final ResourceEntity resource;
 
     //for hibernate
     @SuppressWarnings("unused")
@@ -20,10 +18,10 @@ final class ActionOnSharedResourceEntity extends ActionEntity implements Seriali
     }
 
     public ActionOnSharedResourceEntity(final UserEntity actor,
-                                        final SharedResourceEntity sharedResourceEntity,
+                                        final ResourceEntity resourceEntity,
                                         final String details
     ) {
         super(actor, details);
-        this.resource = sharedResourceEntity;
+        this.resource = resourceEntity;
     }
 }

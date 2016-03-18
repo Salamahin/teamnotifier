@@ -3,7 +3,7 @@ package com.home.teamnotifier.core;
 import com.google.common.collect.ImmutableSet;
 import com.home.teamnotifier.core.responses.notification.Notification;
 import com.home.teamnotifier.db.AppServerEntity;
-import com.home.teamnotifier.gateways.AppServerGateway;
+import com.home.teamnotifier.gateways.ServerGateway;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.AbstractHandler;
@@ -20,9 +20,9 @@ import java.util.concurrent.Executors;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class AppServerAvailabilityCheckerTest {
+public class ServerAvailabilityCheckerTest {
 
-    private static AppServerAvailabilityChecker checker;
+    private static ServerAvailabilityChecker checker;
     private static Server server;
 
     static class HelloHandler extends AbstractHandler {
@@ -42,7 +42,7 @@ public class AppServerAvailabilityCheckerTest {
 
     @BeforeClass
     public static void preinit() throws Exception {
-        checker = new AppServerAvailabilityChecker(
+        checker = new ServerAvailabilityChecker(
                 Executors.newScheduledThreadPool(10),
                 new DummyServerGateway(),
                 new DummyNotificationManager()
@@ -72,7 +72,7 @@ public class AppServerAvailabilityCheckerTest {
         assertFalse(checker.isOnline("http://localhost:8081"));
     }
 
-    private static class DummyServerGateway implements AppServerGateway {
+    private static class DummyServerGateway implements ServerGateway {
         @Override
         public Set<AppServerEntity> getImmutableSetOfObservableServers() {
             return ImmutableSet.of();

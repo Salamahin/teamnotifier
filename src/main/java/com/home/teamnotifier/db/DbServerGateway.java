@@ -2,9 +2,8 @@ package com.home.teamnotifier.db;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
-import com.home.teamnotifier.gateways.AppServerGateway;
+import com.home.teamnotifier.gateways.ServerGateway;
 
-import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -12,11 +11,11 @@ import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Set;
 
-public class DbAppServerGateway implements AppServerGateway {
+public class DbServerGateway implements ServerGateway {
     private final TransactionHelper transactionHelper;
 
     @Inject
-    public DbAppServerGateway(final TransactionHelper transactionHelper) {
+    public DbServerGateway(final TransactionHelper transactionHelper) {
         this.transactionHelper = transactionHelper;
     }
 

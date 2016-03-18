@@ -101,7 +101,7 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
     public BroadcastInformation<Reservation> reserve(final String userName, final int applicationId) throws AlreadyReserved {
         return transactionHelper.transaction(em -> {
             final UserEntity u = getUserEntity(userName, em);
-            final SharedResourceEntity r = getSharedResourceEntity(applicationId, em);
+            final ResourceEntity r = getSharedResourceEntity(applicationId, em);
 
             tryReserve(u, r, em);
 
@@ -112,7 +112,7 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
         });
     }
 
-    private void tryReserve(final UserEntity user, final SharedResourceEntity resource, EntityManager em) {
+    private void tryReserve(final UserEntity user, final ResourceEntity resource, EntityManager em) {
 
         final Optional<ReservationData> reservationData = resource.getReservationData();
 
@@ -129,8 +129,8 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
         em.merge(resource);
     }
 
-    private SharedResourceEntity getSharedResourceEntity(final int applicationId, final EntityManager em) {
-        final SharedResourceEntity entity = em.find(SharedResourceEntity.class, applicationId);
+    private ResourceEntity getSharedResourceEntity(final int applicationId, final EntityManager em) {
+        final ResourceEntity entity = em.find(ResourceEntity.class, applicationId);
         if (entity == null)
             throw new NoSuchResource(String.format("No resource with id %d", applicationId));
         return entity;
@@ -140,7 +140,7 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
     public BroadcastInformation<Reservation> free(final String userName, final int applicationId) throws NotReserved {
         return transactionHelper.transaction(em -> {
             final UserEntity u = getUserEntity(userName, em);
-            final SharedResourceEntity s = getSharedResourceEntity(applicationId, em);
+            final ResourceEntity s = getSharedResourceEntity(applicationId, em);
 
             tryFree(u, s, em);
 
@@ -152,7 +152,7 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
         });
     }
 
-    private void tryFree(final UserEntity user, final SharedResourceEntity resource, final EntityManager em) {
+    private void tryFree(final UserEntity user, final ResourceEntity resource, final EntityManager em) {
         final Optional<ReservationData> reservationData = resource.getReservationData();
 
         if (!reservationData.isPresent())

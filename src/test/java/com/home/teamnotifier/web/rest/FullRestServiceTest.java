@@ -4,7 +4,7 @@ import com.home.teamnotifier.DbPreparer;
 import com.home.teamnotifier.NotifierApplication;
 import com.home.teamnotifier.authentication.AuthenticationInfo;
 import com.home.teamnotifier.core.responses.action.ActionInfo;
-import com.home.teamnotifier.core.responses.action.ActionsOnSharedResourceInfo;
+import com.home.teamnotifier.core.responses.action.ResourceActionsHistory;
 import com.home.teamnotifier.core.responses.status.EnvironmentsInfo;
 import com.home.teamnotifier.core.responses.status.OccupationInfo;
 import com.home.teamnotifier.core.responses.status.SharedResourceInfo;
@@ -211,7 +211,7 @@ public class FullRestServiceTest {
                 .when().get("/teamnotifier/1.0/environment/application/action/" + resourceId)
                 .then().contentType(ContentType.JSON).extract().response();
 
-        final ActionsOnSharedResourceInfo info = deserializer.deserialize(ActionsOnSharedResourceInfo.class, response.asString());
+        final ResourceActionsHistory info = deserializer.deserialize(ResourceActionsHistory.class, response.asString());
         assertThat(getDescriptions(info)).contains(action);
     }
 
@@ -226,7 +226,7 @@ public class FullRestServiceTest {
         return new String(Base64.getEncoder().encode(time.toString().getBytes()));
     }
 
-    private List<String> getDescriptions(final ActionsOnSharedResourceInfo info) {
+    private List<String> getDescriptions(final ResourceActionsHistory info) {
         return info.getActions().stream()
                 .map(ActionInfo::getDescription)
                 .collect(toList());

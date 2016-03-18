@@ -13,11 +13,11 @@ import java.util.Objects;
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE,
         creatorVisibility = JsonAutoDetect.Visibility.ANY)
-@JsonTypeName("ActionsOnSharedResource")
-public class ActionsOnSharedResourceInfo extends AbstractActionsInfo{
+@JsonTypeName("ResourceActionsHistory")
+public class ResourceActionsHistory extends AbstractActionsInfo{
 
     @JsonCreator
-    public ActionsOnSharedResourceInfo(@JsonProperty("actions") final List<ActionInfo> actions) {
+    public ResourceActionsHistory(@JsonProperty("actions") final List<ActionInfo> actions) {
         super(actions);
     }
 }

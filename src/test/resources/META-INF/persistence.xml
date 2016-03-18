@@ -10,7 +10,7 @@
 
         <class>com.home.teamnotifier.db.AppServerEntity</class>
         <class>com.home.teamnotifier.db.EnvironmentEntity</class>
-        <class>com.home.teamnotifier.db.SharedResourceEntity</class>
+        <class>com.home.teamnotifier.db.ResourceEntity</class>
         <class>com.home.teamnotifier.db.UserEntity</class>
         <class>com.home.teamnotifier.db.SubscriptionEntity</class>
         <class>com.home.teamnotifier.db.ActionOnSharedResourceEntity</class>

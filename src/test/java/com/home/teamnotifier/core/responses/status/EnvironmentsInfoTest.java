@@ -38,11 +38,11 @@ public class EnvironmentsInfoTest {
 
     @Test
     public void serializesToJSON() throws Exception {
-        testSerializesToJson(EnvironmentsInfo.class, createFineInfo(), "fixtures/envConfig.json");
+        testSerializesToJson(EnvironmentsInfo.class, createFineInfo(), "fixtures/environmentsInfo.json");
     }
 
     @Test
     public void deserializesFromJSON() throws Exception {
-        testDeserializeFromJson(EnvironmentsInfo.class, createFineInfo(), "fixtures/envConfig.json");
+        testDeserializeFromJson(EnvironmentsInfo.class, createFineInfo(), "fixtures/environmentsInfo.json");
     }
 }

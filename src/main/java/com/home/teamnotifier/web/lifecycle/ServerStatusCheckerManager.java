@@ -1,14 +1,14 @@
 package com.home.teamnotifier.web.lifecycle;
 
 import com.google.inject.Inject;
-import com.home.teamnotifier.core.AppServerAvailabilityChecker;
+import com.home.teamnotifier.core.ServerAvailabilityChecker;
 import io.dropwizard.lifecycle.Managed;
 
 public class ServerStatusCheckerManager implements Managed {
-    public final AppServerAvailabilityChecker checker;
+    public final ServerAvailabilityChecker checker;
 
     @Inject
-    public ServerStatusCheckerManager(AppServerAvailabilityChecker checker) {
+    public ServerStatusCheckerManager(ServerAvailabilityChecker checker) {
         this.checker = checker;
     }
 

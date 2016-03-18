@@ -10,7 +10,7 @@ import static java.util.stream.Collectors.toSet;
 
 @Entity
 @Table(schema = "teamnotifier", name = "AppServer")
-public final class AppServerEntity implements Serializable {
+public class AppServerEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private final Integer id;
@@ -26,7 +26,7 @@ public final class AppServerEntity implements Serializable {
     private final String statusUrl;
 
     @OneToMany(mappedBy = "appServer", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private final Set<SharedResourceEntity> resources;
+    private final Set<ResourceEntity> resources;
 
     /**
      * FIXME
@@ -67,7 +67,7 @@ public final class AppServerEntity implements Serializable {
     }
 
     public void newSharedResource(final String name) {
-        final SharedResourceEntity entity = new SharedResourceEntity(this, name);
+        final ResourceEntity entity = new ResourceEntity(this, name);
         resources.add(entity);
     }
 
@@ -79,7 +79,7 @@ public final class AppServerEntity implements Serializable {
         return name;
     }
 
-    public Set<SharedResourceEntity> getImmutableSetOfResources() {
+    public Set<ResourceEntity> getImmutableSetOfResources() {
         return ImmutableSet.copyOf(resources);
     }
 

@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Entity
 @Table(schema = "teamnotifier", name = "SharedResource")
-public final class SharedResourceEntity implements Serializable {
+public class ResourceEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private final Integer id;
@@ -28,13 +28,13 @@ public final class SharedResourceEntity implements Serializable {
     private Instant occupationStartTime;
 
     //for hibernate
-    private SharedResourceEntity() {
+    private ResourceEntity() {
         id = null;
         name = null;
         appServer = null;
     }
 
-    SharedResourceEntity(final AppServerEntity appServer, final String name) {
+    ResourceEntity(final AppServerEntity appServer, final String name) {
         id = null;
         this.name = name;
         this.appServer = appServer;
@@ -76,7 +76,7 @@ public final class SharedResourceEntity implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        SharedResourceEntity that = (SharedResourceEntity) o;
+        ResourceEntity that = (ResourceEntity) o;
         return Objects.equals(id, that.id) &&
                 Objects.equals(name, that.name);
     }

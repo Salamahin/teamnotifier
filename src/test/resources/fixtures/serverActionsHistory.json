@@ -1,5 +1,5 @@
 {
-  "type": "ActionsOnSharedResource",
+  "type": "ServerActionsHistory",
   "actions": [
     {
       "type": "ActionInfo",

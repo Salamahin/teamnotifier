@@ -11,7 +11,7 @@ import java.util.Objects;
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE,
         creatorVisibility = JsonAutoDetect.Visibility.NONE)
-@JsonTypeName("Authentication")
+@JsonTypeName("AuthenticationInfo")
 public class AuthenticationInfo {
     private final String token;
 

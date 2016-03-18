@@ -1,0 +1,6 @@
+{
+  "type": "ServerStateNotification",
+  "timestamp": "2015-11-05T23:44:40.220Z",
+  "targetId": 1,
+  "online": false
+}

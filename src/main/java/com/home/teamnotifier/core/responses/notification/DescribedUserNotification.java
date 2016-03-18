@@ -28,4 +28,11 @@ public abstract class DescribedUserNotification extends UserNotification {
     public int hashCode() {
         return Objects.hash(super.hashCode(), description);
     }
+
+    @Override
+    public String toString() {
+        return "DescribedUserNotification{" +
+                "description='" + description + '\'' +
+                "} " + super.toString();
+    }
 }

@@ -12,7 +12,7 @@ import java.util.UUID;
 
 @Entity
 @Table(schema = "teamnotifier", name = "User")
-public final class UserEntity implements Serializable {
+public class UserEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private final Integer id;

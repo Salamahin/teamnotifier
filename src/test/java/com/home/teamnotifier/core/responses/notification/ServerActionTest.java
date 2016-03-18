@@ -11,28 +11,26 @@ import static com.home.teamnotifier.core.responses.notification.ReflectionTools.
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
-public class SubscriptionTest {
-
-    private Subscription getFineSubscribtion() throws NoSuchFieldException, IllegalAccessException {
+public class ServerActionTest {
+    private ServerAction getFineAction() throws NoSuchFieldException, IllegalAccessException {
         final AppServerEntity server = mock(AppServerEntity.class);
         doReturn(1).when(server).getId();
 
         final UserEntity userEntity = mock(UserEntity.class);
         doReturn("user").when(userEntity).getName();
 
-        final Subscription subscription = Subscription.subscribe(userEntity, server);
-        setValueInFinalField(subscription,  getField(Reservation.class, "timestamp"), "2015-11-05T23:44:40.220Z");
-
-        return subscription;
+        final ServerAction action = new ServerAction(userEntity, server, "action");
+        setValueInFinalField(action, getField(ServerAction.class, "timestamp"), "2015-11-05T23:44:40.220Z");
+        return action;
     }
 
     @Test
     public void serializesToJSON() throws Exception {
-        testSerializesToJson(Subscription.class, getFineSubscribtion(), "fixtures/subscriptionNotification.json");
+        testSerializesToJson(ServerAction.class, getFineAction(), "fixtures/serverActionNotification.json");
     }
 
     @Test
     public void deserializesFromJSON() throws Exception {
-        testDeserializeFromJson(Subscription.class, getFineSubscribtion(), "fixtures/subscriptionNotification.json");
+        testDeserializeFromJson(ServerAction.class, getFineAction(), "fixtures/serverActionNotification.json");
     }
 }

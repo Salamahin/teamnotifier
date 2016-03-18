@@ -30,11 +30,11 @@ public class Subscription extends UserStateChange {
         super(actor.getName(), target.getId(), Instant.now().toString(), state);
     }
 
-    public static Subscription subscribe(final UserEntity actor, final AppServerEntity resource) {
-        return new Subscription(actor, resource, true);
+    public static Subscription subscribe(final UserEntity actor, final AppServerEntity server) {
+        return new Subscription(actor, server, true);
     }
 
-    public static Subscription unsubscribe(final UserEntity actor, final AppServerEntity resource) {
-        return new Subscription(actor, resource, false);
+    public static Subscription unsubscribe(final UserEntity actor, final AppServerEntity server) {
+        return new Subscription(actor, server, false);
     }
 }

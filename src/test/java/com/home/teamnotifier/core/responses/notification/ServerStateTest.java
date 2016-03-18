@@ -8,31 +8,27 @@ import static com.home.teamnotifier.core.responses.SerializationTestHelper.testD
 import static com.home.teamnotifier.core.responses.SerializationTestHelper.testSerializesToJson;
 import static com.home.teamnotifier.core.responses.notification.ReflectionTools.getField;
 import static com.home.teamnotifier.core.responses.notification.ReflectionTools.setValueInFinalField;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
-public class SubscriptionTest {
-
-    private Subscription getFineSubscribtion() throws NoSuchFieldException, IllegalAccessException {
+public class ServerStateTest {
+    private ServerState getFineState() throws NoSuchFieldException, IllegalAccessException {
         final AppServerEntity server = mock(AppServerEntity.class);
         doReturn(1).when(server).getId();
 
-        final UserEntity userEntity = mock(UserEntity.class);
-        doReturn("user").when(userEntity).getName();
-
-        final Subscription subscription = Subscription.subscribe(userEntity, server);
-        setValueInFinalField(subscription,  getField(Reservation.class, "timestamp"), "2015-11-05T23:44:40.220Z");
-
-        return subscription;
+        final ServerState state = ServerState.offline(server);
+        setValueInFinalField(state, getField(ServerState.class, "timestamp"), "2015-11-05T23:44:40.220Z");
+        return state;
     }
 
     @Test
     public void serializesToJSON() throws Exception {
-        testSerializesToJson(Subscription.class, getFineSubscribtion(), "fixtures/subscriptionNotification.json");
+        testSerializesToJson(ServerState.class, getFineState(), "fixtures/serverStateNotification.json");
     }
 
     @Test
     public void deserializesFromJSON() throws Exception {
-        testDeserializeFromJson(Subscription.class, getFineSubscribtion(), "fixtures/subscriptionNotification.json");
+        testDeserializeFromJson(ServerState.class, getFineState(), "fixtures/serverStateNotification.json");
     }
 }

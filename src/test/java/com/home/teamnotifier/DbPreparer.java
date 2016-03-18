@@ -1,7 +1,6 @@
 package com.home.teamnotifier;
 
 import com.home.teamnotifier.db.*;
-import com.home.teamnotifier.utils.PasswordHasher;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -53,7 +52,7 @@ public final class DbPreparer {
         return notEmptyEntity.getImmutableSetOfAppServers().stream()
                 .filter(s -> Objects.equals(s.getId(), serverId))
                 .flatMap(e -> e.getImmutableSetOfResources().stream())
-                .map(SharedResourceEntity::getId)
+                .map(ResourceEntity::getId)
                 .findFirst()
                 .get();
     }
@@ -61,7 +60,7 @@ public final class DbPreparer {
     public int anyResourceId(final EnvironmentEntity notEmptyEntity) {
         return notEmptyEntity.getImmutableSetOfAppServers().stream()
                 .flatMap(e -> e.getImmutableSetOfResources().stream())
-                .map(SharedResourceEntity::getId)
+                .map(ResourceEntity::getId)
                 .findFirst()
                 .get();
     }

@@ -31,4 +31,11 @@ abstract class UserNotification extends Notification {
     public int hashCode() {
         return Objects.hash(super.hashCode(), actor);
     }
+
+    @Override
+    public String toString() {
+        return "UserNotification{" +
+                "actor='" + actor + '\'' +
+                "} " + super.toString();
+    }
 }

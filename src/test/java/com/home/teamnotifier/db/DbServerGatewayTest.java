@@ -10,10 +10,10 @@ import static com.home.teamnotifier.DbPreparer.getRandomString;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DbAppServerGatewayTest {
+public class DbServerGatewayTest {
     private static final DbPreparer helper = new DbPreparer();
 
-    private DbAppServerGateway gateway;
+    private DbServerGateway gateway;
 
     private EnvironmentEntity getNotPersistedEnvironmentEntity() {
         return new EnvironmentEntity(getRandomString());
@@ -29,7 +29,7 @@ public class DbAppServerGatewayTest {
 
     @Before
     public void setUp() throws Exception {
-        gateway = new DbAppServerGateway(helper.TRANSACTION_HELPER);
+        gateway = new DbServerGateway(helper.TRANSACTION_HELPER);
     }
 
     @Test

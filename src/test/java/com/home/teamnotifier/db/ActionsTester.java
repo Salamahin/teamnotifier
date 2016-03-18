@@ -5,7 +5,6 @@ import com.google.common.collect.Range;
 import com.home.teamnotifier.DbPreparer;
 import com.home.teamnotifier.core.BroadcastInformation;
 import com.home.teamnotifier.core.responses.action.AbstractActionsInfo;
-import com.home.teamnotifier.core.responses.action.ActionsOnSharedResourceInfo;
 import com.home.teamnotifier.core.responses.notification.DescribedUserNotification;
 
 import java.time.Duration;

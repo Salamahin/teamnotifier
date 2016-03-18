@@ -13,7 +13,7 @@ import java.time.Instant;
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE,
         creatorVisibility = JsonAutoDetect.Visibility.ANY)
-@JsonTypeName("ActionOnAppServerNotification")
+@JsonTypeName("ServerActionNotification")
 public class ServerAction extends DescribedUserNotification {
     @JsonCreator
     private ServerAction(
@@ -22,7 +22,7 @@ public class ServerAction extends DescribedUserNotification {
             @JsonProperty("timestamp") final String timestamp,
             @JsonProperty("description") final String description
     ) {
-        super(actor, targetId, timestamp, description);
+        super(actor, targetId, description, timestamp);
     }
 
     public ServerAction(final UserEntity actor, final AppServerEntity target, final String description) {

@@ -15,10 +15,6 @@ abstract class UserStateChange extends UserNotification {
         this.state = state;
     }
 
-    public final boolean isActive() {
-        return state;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -31,5 +27,12 @@ abstract class UserStateChange extends UserNotification {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), state);
+    }
+
+    @Override
+    public String toString() {
+        return "UserStateChange{" +
+                "state=" + state +
+                "} " + super.toString();
     }
 }
