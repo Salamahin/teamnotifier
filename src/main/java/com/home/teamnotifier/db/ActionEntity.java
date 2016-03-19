@@ -4,6 +4,7 @@ package com.home.teamnotifier.db;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.time.Instant;
+import java.util.Objects;
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
@@ -51,5 +52,21 @@ abstract class ActionEntity {
 
     public final String getDetails() {
         return details;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ActionEntity that = (ActionEntity) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(actor, that.actor) &&
+                Objects.equals(actionTime, that.actionTime) &&
+                Objects.equals(details, that.details);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, actor, actionTime, details);
     }
 }

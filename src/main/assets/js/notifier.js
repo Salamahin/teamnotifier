@@ -2,6 +2,12 @@ function Notifier() {
     this.connectionSuccessHandler = function() {};
     this.connectionErrorHandler = function() {};
     this.connectionSuccessHandler = function() {};
+    this.eventHandler = function() {};
+    this.token = "";
+}
+
+Notifier.prototype = {
+    constructor: Notifier;
 }
 
 Notifier.prototype.requestPermissions = function() {
@@ -11,24 +17,8 @@ Notifier.prototype.requestPermissions = function() {
     Notification.requestPermission(newMessage);
 }
 
-Notifier.prototype.setConnectionCloseHandler() = function(handler) {
-    this.connectionCloseHandler = handler;
-}
-
-Notifier.prototype.setConnectionErrorHandler() = function(handler) {
-    this.connectionErrorHandler = handler;
-}
-
-Notifier.prototype.setConnectionSuccessHandler() = function(handler) {
-    this.connectionSuccessHandler = handler;
-}
-
-Notifier.prototype.setConnectionCloseHandler() = function(handler) {
-    this.connectionCloseHandler = handler;
-}
-
-Notifier.prototype.connect = function(token) {
-    var websocket = new WebSocket(getSocketUrl());
+Notifier.prototype.connect = function() {
+    var websocket = new WebSocket("ws://" + location.host + "/state/?token=" + token);
 
     websocket.onopen = function () {
         connectionSuccessHandler();
@@ -39,13 +29,8 @@ Notifier.prototype.connect = function(token) {
     };
 
     websocket.onmessage = function (evt) {
-        var info = JSON.parse(evt.data);
-        getState();
-
-        if(info.event == "SUBSCRIBE" || info.event == "UNSUBSCRIBE")
-         return;
-
-        showNotification(JSON.parse(evt.data));
+        var event = JSON.parse(evt.data);
+        eventHandler(info);
     };
 
     websocket.onerror = function () {
