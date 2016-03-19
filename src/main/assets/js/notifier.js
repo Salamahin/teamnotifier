@@ -1,13 +1,9 @@
 function Notifier() {
     this.connectionSuccessHandler = function() {};
-    this.connectionErrorHandler = function() {};
-    this.connectionSuccessHandler = function() {};
+    this.connectionCloseHandler = function() {};
+    this.errorHandler = function() {};
     this.eventHandler = function() {};
     this.token = "";
-}
-
-Notifier.prototype = {
-    constructor: Notifier;
 }
 
 Notifier.prototype.requestPermissions = function() {
@@ -15,7 +11,7 @@ Notifier.prototype.requestPermissions = function() {
         return permission == "granted";
     }
     Notification.requestPermission(newMessage);
-}
+};
 
 Notifier.prototype.connect = function() {
     var websocket = new WebSocket("ws://" + location.host + "/state/?token=" + token);
@@ -34,8 +30,8 @@ Notifier.prototype.connect = function() {
     };
 
     websocket.onerror = function () {
-        connectionErrorHandler();
+        errorHandler();
     };
-}
+};
 
 
