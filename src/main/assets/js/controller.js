@@ -18,7 +18,6 @@ var VIEW;
 
 var ENVIRONMENTS;
 var CURRENT_SERVER;
-var CURRENT_ENVIRONMENT;
 
 function onAuthenticationSuccess(login, token) {
     STORAGE.store(login, token);
@@ -29,15 +28,29 @@ function onAuthenticationSuccess(login, token) {
     WORKBENCH.token = token;
 
     NOTIFIER.connect();
+    VIEW.jumpToEnvironment();
 }
 
+function onServerChange(server) {
+    WORKBENCH.server = server;
+}
 
-function onStatus(xhttp) {
-    if(xhttp.status != 200)
-        return;
+function onNotifierConnected() {
+    console.log("notifier connected");
+    WORKBENCH.status();
+}
 
-    ENVIRONMENTS = JSON.parse(xhttp.responseText).environments;
-    rebuildNavigation();
+function onNotifierError(error) {
+    console.error("notifier error: " + error)
+}
+
+function onNotifierDisconnect() {
+    console.log("notifier disconnected");
+    VIEW.jumpToAuthentication();
+}
+
+function onNotifierEvent(event) {
+    console.log("notifier event");
 }
 
 function init() {
@@ -46,13 +59,26 @@ function init() {
 
     if(!STORAGE.token || !STORAGE.login)
         VIEW.jumpToAuthentication();
+    else
+        onAuthenticationSuccess(STORAGE.login, STORAGE.token);
 }
 
 function bind() {
     if(!WORKBENCH || !NOTIFIER || !AUTHENTICATOR || !STORAGE || !VIEW)
         return;
 
-    AUTHENTICATOR.connectionSuccessHandler = onAuthenticationSuccess;
+    NOTIFIER.connectionSuccessHandler = onNotifierConnected;
+    NOTIFIER.connectionCloseHandler = onNotifierDisconnect;
+    NOTIFIER.errorHandler = onNotifierError;
+    NOTIFIER.eventHandler = onNotifierEvent;
+
+    AUTHENTICATOR.authenticationSuccessHandler = onAuthenticationSuccess;
+    AUTHENTICATOR.authenticationErrorHandler = VIEW.showAuthenticationError;
+    AUTHENTICATOR.registrationErrorHandler = VIEW.showAuthenticationError;
+
+    VIEW.authenticationAttemptHandler = AUTHENTICATOR.authenticate;
+    VIEW.registrationHandler = AUTHENTICATOR.register;
+    VIEW.serverSelectionHandler = onServerChange;
 
     init();
 }

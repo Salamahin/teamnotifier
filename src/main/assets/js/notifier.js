@@ -12,7 +12,7 @@ function Notifier() {
     };
 
     Notifier.prototype.connect = function () {
-        var websocket = new WebSocket("ws://" + location.host + "/state/?token=" + Notifier.prototype.token);
+        var websocket = new WebSocket("ws://" + location.host + "/state/?token=" + that.token);
 
         websocket.onopen = function () {
             that.connectionSuccessHandler();
@@ -27,7 +27,7 @@ function Notifier() {
             that.eventHandler(event);
         };
 
-        websocket.onerror = function () {
+        websocket.onerror = function (error) {
             that.errorHandler();
         };
     };
@@ -41,7 +41,7 @@ Notifier.prototype.connectionCloseHandler = function () {
     throw new Error("not bound");
 };
 
-Notifier.prototype.errorHandler = function () {
+Notifier.prototype.errorHandler = function (error) {
     throw new Error("not bound");
 };
 

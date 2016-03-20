@@ -1,7 +1,10 @@
 function View() {
     const that = this;
-    var login;
+
+    this.login = undefined;
     var password;
+
+    var server = undefined;
 
     function jumpToAnchor(id) {
         window.location.hash = "#" + id;
@@ -94,45 +97,111 @@ function View() {
 
     };
 
-    View.prototype.removeAllChildren = function (parent) {
+    function removeAllChildren (parent) {
         while (parent.firstChild) {
             parent.removeChild(parent.firstChild);
         }
+    }
+    
+    View.prototype.showAuthenticationError = function () {
+        var auth_box = document.getElementById("auth_box");
+        auth_box.addEventListener("animationend", function() {
+            auth_box.classList.remove("invalid");
+        });
+        auth_box.className += " invalid";
+        document.getElementById("ibox_password").value = "";
     };
 
-    View.prototype.showServerStatus = function (server) {
-
-        function showCurrentServerName(serverName) {
-            var currentNameContainer = document.getElementById("server");
-            removeAllChildren(currentNameContainer);
-            currentNameContainer.appendChild(document.createTextNode(serverName));
+    function decorateWith() {
+        var parent = arguments[0];
+        for (var i = 1; i < arguments.length; i++) {
+            if (arguments[i] == undefined)
+                continue;
+            parent.appendChild(arguments[i]);
         }
+        return parent;
+    }
 
-        function isSubscribedOnServer(server) {
-            var subscribers = server.subscribers;
-            for (var i = 0; i < subscribers.length; i++)
-                if (subscribers[i] == View.prototype.login)
-                    return true;
+    function newButton(value, onclick) {
+        var button = decorateWith(document.createElement("a"), document.createTextNode(value));
+        button.onclick = onclick;
+        return button;
+    }
 
-            return false;
-        }
+    function showCurrentServerName() {
+        var currentNameContainer = document.getElementById("server");
+        removeAllChildren(currentNameContainer);
+        currentNameContainer.appendChild(document.createTextNode(that.server.name));
+    }
 
-        function showCurrentSubscriptionStatus(server) {
-            var subscriptionContainer = document.getElementById("subscription");
-            removeAllChildren(subscriptionContainer);
-            const subscribed = isSubscribedOnServer(server);
-            var cbSubscribe = newLabeledCheckbox("subscribe", subscribed, function () {
-                subscribed ? unsubscribe(server.id) : subscribe(server.id);
+    function isSubscribedOnServer() {
+        var subscribers = server.subscribers;
+        for (var i = 0; i < subscribers.length; i++)
+            if (subscribers[i] == login)
+                return true;
+
+        return false;
+    }
+
+    function showCurrentSubscriptionStatus(server) {
+        var subscriptionContainer = document.getElementById("subscription");
+        removeAllChildren(subscriptionContainer);
+        const subscribed = isSubscribedOnServer(server);
+        var cbSubscribe = newLabeledCheckbox("subscribe", subscribed, function () {
+            subscribed ? unsubscribe(server.id) : subscribe(server.id);
+        });
+        subscriptionContainer.appendChild(cbSubscribe);
+    }
+
+    function showNavigation(environments) {
+        var navigationElemsList = document.getElementById("navigation-elems");
+        removeAllChildren(navigationElemsList);
+
+        environments.forEach(function (env) {
+            var servers = env.servers;
+
+            servers.forEach(function (srv) {
+                var currentName = env.name +" "+ srv.name;
+                var btn = newButton(currentName, function () {
+                    that.server = srv;
+                    that.serverSelectionHandler(srv);
+                });
+                navigationElemsList.appendChild(btn);
             });
-            subscriptionContainer.appendChild(cbSubscribe);
-        }
+        });
+    }
 
-        showCurrentServerName(server.name);
-        showCurrentSubscriptionStatus(srv);
-        showSubscribers(srv);
-        showCurrentResourcesStatus(srv);
+    View.prototype.showEnvironments = function (environments) {
+        showNavigation(environments);
+        if(server != undefined)
+            showCurrentServerName();
     };
+    
+    // View.prototype.showServerStatus = function (server) {
+    //
+    //
+
+    //
+
+    //
+    //     showCurrentServerName(server.name);
+    //     showCurrentSubscriptionStatus(srv);
+    //     showSubscribers(srv);
+    //     showCurrentResourcesStatus(srv);
+    // };
 }
+
+View.prototype.subscribtionHandler = function (subscribes) {
+    throw new Error("not bound");
+};
+
+View.prototype.reservationHandler = function (reserve) {
+    throw new Error("not bound");
+};
+
+View.prototype.serverSelectionHandler = function (server) {
+    throw new Error("not bound");
+};
 
 View.prototype.authenticationAttemptHandler = function (login, password) {
     throw new Error("not bound");
