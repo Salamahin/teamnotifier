@@ -40,6 +40,11 @@ function onNotifierConnected() {
     WORKBENCH.status();
 }
 
+function onInteractionComplete(xhttp) {
+    if(xhttp.status != 204)
+        throw new Error("Interaction failed: " + xhttp);
+}
+
 function onNotifierError(error) {
     console.error("notifier error: " + error)
 }
@@ -79,6 +84,13 @@ function bind() {
     VIEW.authenticationAttemptHandler = AUTHENTICATOR.authenticate;
     VIEW.registrationHandler = AUTHENTICATOR.register;
     VIEW.serverSelectionHandler = onServerChange;
+    VIEW.subscribeHandler = WORKBENCH.subscribe;
+    VIEW.unsubscribeHandler = WORKBENCH.unsubscribe;
+    VIEW.reserveHandler = WORKBENCH.reserve;
+    VIEW.freeHandler = WORKBENCH.free;
+    
+    WORKBENCH.statusHandler = VIEW.showStatus;
+    WORKBENCH.interactionHandler = onInteractionComplete;
 
     init();
 }

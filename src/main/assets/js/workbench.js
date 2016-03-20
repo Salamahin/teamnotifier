@@ -1,7 +1,6 @@
 function Workbench() {
     const that = this;
-    this.token = "";
-    this.server = undefined;
+    this.token = undefined;
 
 
     function prehandler(xhttp, handler) {
@@ -9,6 +8,18 @@ function Workbench() {
             return;
 
         handler(xhttp);
+    }
+    
+    function environmentPrehandler(xhttp) {
+        if(xhttp.readyState != 4)
+            return;
+        
+        if(xhttp.status == 200) {
+            that.statusHandler(JSON.parse(xhttp.responseText).environments);
+            return;
+        }
+        
+        throw new Error("Failed to get status");
     }
 
     Workbench.prototype.newResourceAction = function (resource, description) {
@@ -22,9 +33,9 @@ function Workbench() {
         xhttp.send();
     };
 
-    Workbench.prototype.newServerAction = function (description) {
+    Workbench.prototype.newServerAction = function (server, description) {
         var xhttp = new XMLHttpRequest();
-        xhttp.open("POST", "/teamnotifier/1.0/environment/server/action/" + that.server.id, true);
+        xhttp.open("POST", "/teamnotifier/1.0/environment/server/action/" + server.id, true);
         xhttp.setRequestHeader("ActionDetails", description);
         xhttp.setRequestHeader("Authorization", "Bearer " + that.token);
         xhttp.onreadystatechange = function () {
@@ -33,9 +44,9 @@ function Workbench() {
         xhttp.send();
     };
 
-    Workbench.prototype.subscribe = function () {
+    Workbench.prototype.subscribe = function (server) {
         var xhttp = new XMLHttpRequest();
-        xhttp.open("POST", "/teamnotifier/1.0/environment/server/subscribe/" + that.server.id, true);
+        xhttp.open("POST", "/teamnotifier/1.0/environment/server/subscribe/" + server.id, true);
         xhttp.setRequestHeader("Authorization", "Bearer " + that.token);
         xhttp.onreadystatechange = function () {
             prehandler(xhttp, that.interactionHandler);
@@ -43,9 +54,9 @@ function Workbench() {
         xhttp.send();
     };
 
-    Workbench.prototype.unsubscribe = function () {
+    Workbench.prototype.unsubscribe = function (server) {
         var xhttp = new XMLHttpRequest();
-        xhttp.open("DELETE", "/teamnotifier/1.0/environment/server/subscribe/" + that.server.id, true);
+        xhttp.open("DELETE", "/teamnotifier/1.0/environment/server/subscribe/" + server.id, true);
         xhttp.setRequestHeader("Authorization", "Bearer " + that.token);
         xhttp.onreadystatechange = function () {
             prehandler(xhttp, that.interactionHandler);
@@ -88,9 +99,9 @@ function Workbench() {
         xhttp.send();
     };
 
-    Workbench.prototype.getServerActions = function (from, to) {
+    Workbench.prototype.getServerActions = function (server, from, to) {
         var xhttp = new XMLHttpRequest();
-        xhttp.open("GET", "/teamnotifier/1.0/environment/server/action/" + that.server.id, true);
+        xhttp.open("GET", "/teamnotifier/1.0/environment/server/action/" + server.id, true);
 
         var fromStr = from.toISOString();
         var toStr = to.toISOString();
@@ -108,7 +119,7 @@ function Workbench() {
         xhttp.open("GET", "/teamnotifier/1.0/environment", true);
         xhttp.setRequestHeader("Authorization", "Bearer " + that.token);
         xhttp.onreadystatechange = function () {
-            prehandler(xhttp, that.statusHandler);
+            environmentPrehandler(xhttp);
         };
         xhttp.send();
     };
@@ -122,6 +133,6 @@ Workbench.prototype.historyHandler = function (xhttp) {
     throw new Error("not bound");
 };
 
-Workbench.prototype.statusHandler = function (xhttp) {
+Workbench.prototype.statusHandler = function (environments) {
     throw new Error("not bound");
 };

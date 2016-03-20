@@ -4,7 +4,8 @@ function View() {
     this.login = undefined;
     var password;
 
-    var server = undefined;
+    var selectedServer = undefined;
+    var currentEnvironments = undefined;
 
     function jumpToAnchor(id) {
         window.location.hash = "#" + id;
@@ -25,12 +26,10 @@ function View() {
     this.jumpToResourceActions = function () {
         jumpToAnchor("resource_actions");
     };
-    
-    this.jumpToAuthentication = function () {
-        jumpToAnchor("authentication");  
-    };
 
-    this.login = "";
+    this.jumpToAuthentication = function () {
+        jumpToAnchor("authentication");
+    };
 
     function jumpToEnvironmentOnFocusLost(modal) {
         modal.addEventListener('click', function () {
@@ -51,13 +50,13 @@ function View() {
     }
 
     function getInsertedData() {
-        login = document.getElementById("ibox_username").value;
+        that.login = document.getElementById("ibox_username").value;
         password = document.getElementById("ibox_password").value;
     }
 
     function authenticationAttempt() {
         getInsertedData();
-        that.authenticationAttemptHandler(login, password);
+        that.authenticationAttemptHandler(that.login, password);
         password = "";
     }
 
@@ -91,10 +90,9 @@ function View() {
         };
         document.getElementById("btn_register").onclick = function () {
             getInsertedData();
-            that.registrationHandler(login, password);
+            that.registrationHandler(that.login, password);
             password = "";
         };
-
     };
 
     function removeAllChildren (parent) {
@@ -102,7 +100,7 @@ function View() {
             parent.removeChild(parent.firstChild);
         }
     }
-    
+
     View.prototype.showAuthenticationError = function () {
         var auth_box = document.getElementById("auth_box");
         auth_box.addEventListener("animationend", function() {
@@ -131,39 +129,139 @@ function View() {
     function showCurrentServerName() {
         var currentNameContainer = document.getElementById("server");
         removeAllChildren(currentNameContainer);
-        currentNameContainer.appendChild(document.createTextNode(that.server.name));
+        currentNameContainer.appendChild(document.createTextNode(selectedServer.name));
     }
 
     function isSubscribedOnServer() {
-        var subscribers = server.subscribers;
+        var subscribers = selectedServer.subscribers;
         for (var i = 0; i < subscribers.length; i++)
-            if (subscribers[i] == login)
+            if (subscribers[i] == that.login)
                 return true;
 
         return false;
     }
 
-    function showCurrentSubscriptionStatus(server) {
+    function showCurrentSubscriptionStatus() {
         var subscriptionContainer = document.getElementById("subscription");
         removeAllChildren(subscriptionContainer);
-        const subscribed = isSubscribedOnServer(server);
+        const subscribed = isSubscribedOnServer(selectedServer);
         var cbSubscribe = newLabeledCheckbox("subscribe", subscribed, function () {
-            subscribed ? unsubscribe(server.id) : subscribe(server.id);
+            subscribed ? that.unsubscribeHandler(selectedServer) : that.subscribeHandler(selectedServer);
         });
         subscriptionContainer.appendChild(cbSubscribe);
     }
 
-    function showNavigation(environments) {
+    function getHistoryButton(isResource, target) {
+        var btnHistory = newButton("", function () {
+            var hist = document.getElementById("ul_hist");
+            removeAllChildren(hist);
+            showHistoryModal(isResource, target.id, target.name);
+        });
+        btnHistory.className = "round-button history-button tooltip";
+        btnHistory.setAttribute("tip-text", "show history");
+        return btnHistory;
+    }
+
+    function getActionButton(isResource, target) {
+        var btnAction = newButton("", function () {
+            showActionModal(isResource, target.id, target.name)
+        });
+        btnAction.className = "round-button action-button tooltip";
+        btnAction.setAttribute("tip-text", "new action");
+        return btnAction;
+    }
+
+    function getUniqueId() {
+        return "id" + Math.random().toString(16).slice(2);
+    }
+
+    function newLabel(value) {
+        var label = document.createElement("label");
+        label.appendChild(document.createTextNode(value));
+        return label;
+    }
+
+    function newLabeledCheckbox(value, checked, onchange) {
+        var uniqueId = getUniqueId();
+
+        var checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.onchange = onchange;
+        checkbox.checked = checked;
+        checkbox.className = "toggle toggle-round";
+        checkbox.id = uniqueId;
+
+        var label = document.createElement("label");
+        label.htmlFor = uniqueId;
+
+        var element = document.createElement("div");
+        element.className = "labeled-checkbox";
+
+        var text = newLabel(value);
+        text.className = "toggle_text";
+        return decorateWith(element, checkbox, label, text);
+    }
+
+    function getReservationCheckbox(resource, reserved) {
+        return newLabeledCheckbox("reserve " + resource.name, reserved, function () {
+                reserved ? that.freeHandler(resource) : that.reserveHandler(resource);
+            }
+        );
+    }
+
+    function sortFactory(prop) {
+        return function(a,b){ return a[prop].localeCompare(b[prop]); };
+    }
+
+    function newResourceInfoElem(resource) {
+        var occupationInfo = resource.occupationInfo;
+
+        var btnHistory = getHistoryButton(true, resource);
+        var btnAction = getActionButton(resource);
+        var action;
+
+        if (!occupationInfo) {
+            action = getReservationCheckbox(resource, false);
+        } else if (occupationInfo.userName == that.login) {
+            action = getReservationCheckbox(resource, true);
+        } else {
+            action = decorateOccupationInfo(occupationInfo, resource.name);
+        }
+
+        var wrapper = document.createElement("div");
+        wrapper.className = "resource";
+
+        return decorateWith(wrapper, action, btnAction, btnHistory);
+    }
+
+    function showCurrentResourcesStatus() {
+        var resourceFrame = document.getElementById("resources");
+        removeAllChildren(resourceFrame);
+
+        selectedServer.resources.forEach(function (resource) {
+            resourceFrame.appendChild(newResourceInfoElem(resource))
+        });
+    }
+
+    function showCurrentServerInfo() {
+        showCurrentServerName();
+        showCurrentSubscriptionStatus();
+        showCurrentResourcesStatus();
+    }
+
+    function showNavigation() {
         var navigationElemsList = document.getElementById("navigation-elems");
         removeAllChildren(navigationElemsList);
 
-        environments.forEach(function (env) {
+        currentEnvironments.forEach(function (env) {
             var servers = env.servers;
 
             servers.forEach(function (srv) {
                 var currentName = env.name +" "+ srv.name;
                 var btn = newButton(currentName, function () {
-                    that.server = srv;
+                    selectedServer = srv;
+                    showCurrentServerInfo();
+
                     that.serverSelectionHandler(srv);
                 });
                 navigationElemsList.appendChild(btn);
@@ -171,31 +269,39 @@ function View() {
         });
     }
 
-    View.prototype.showEnvironments = function (environments) {
-        showNavigation(environments);
-        if(server != undefined)
-            showCurrentServerName();
+    function selectFirstIfServerIsNotDefined() {
+        if(selectedServer != undefined)
+            return;
+
+        selectedServer = Object.create(currentEnvironments[0].servers[0]);
+        selectedServer.resources.sort(sortFactory('name'));
+
+        that.serverSelectionHandler(selectedServer);
+    }
+
+    View.prototype.showStatus = function (environments) {
+        currentEnvironments = Object.create(environments);
+
+        selectFirstIfServerIsNotDefined();
+
+        showNavigation();
+        showCurrentServerInfo();
     };
-    
-    // View.prototype.showServerStatus = function (server) {
-    //
-    //
-
-    //
-
-    //
-    //     showCurrentServerName(server.name);
-    //     showCurrentSubscriptionStatus(srv);
-    //     showSubscribers(srv);
-    //     showCurrentResourcesStatus(srv);
-    // };
 }
 
-View.prototype.subscribtionHandler = function (subscribes) {
+View.prototype.subscribeHandler = function (server) {
     throw new Error("not bound");
 };
 
-View.prototype.reservationHandler = function (reserve) {
+View.prototype.unsubscribeHandler = function (server) {
+    throw new Error("not bound");
+};
+
+View.prototype.reserveHandler = function (resource) {
+    throw new Error("not bound");
+};
+
+View.prototype.freeHandler = function (resource) {
     throw new Error("not bound");
 };
 

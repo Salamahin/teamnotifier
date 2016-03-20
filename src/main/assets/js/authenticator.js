@@ -24,11 +24,11 @@ function Authenticator() {
         xhttp.send();
     };
 
-    function handleRegistration(login, password, xhttp) {
+    function handleRegistration(xhttp, login, password) {
         if(xhttp.readyState != 4)
             return;
 
-        if(xhttp.status == 200) {
+        if(xhttp.status == 204) {
             that.authenticate(login, password);
             return;
         }
