@@ -1,15 +1,16 @@
 function Storage() {
-    this.tokenKey = "teamnotifier_token";
-    this.loginKey = "teamnotifier_login";
+    var tokenKey = "teamnotifier_token";
+    var loginKey = "teamnotifier_login";
 
-    this.token = localstorage.getItem(this.tokenKey);
-    this.login = localstorage.getItem(this.loginKey);
+    this.token = localStorage.getItem(tokenKey);
+    this.login = localStorage.getItem(loginKey);
+
+    Storage.prototype.store = function (login, token) {
+        localStorage.setItem(tokenKey, token);
+        localStorage.setItem(loginKey, login);
+
+        Storage.prototype.token = token;
+        Storage.prototype.login = login;
+    };
+
 }
-
-Storage.prototype.store = function(login, token) {
-    localstorage.setItem(this.tokenKey, token);
-    localstorage.setItem(this.loginKey, login);
-
-    this.token = token;
-    this.login = login;
-};

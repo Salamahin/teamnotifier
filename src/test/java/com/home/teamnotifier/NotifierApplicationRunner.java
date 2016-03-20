@@ -36,7 +36,6 @@ public class NotifierApplicationRunner {
         eu.newAppServer("wfe");
 
         wfa.newSharedResource("soapb");
-
         sst.newSharedResource("abr_tivu");
         sst.newSharedResource("aei_sks");
         sst.newSharedResource("aei_default");

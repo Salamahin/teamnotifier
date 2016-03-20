@@ -1,37 +1,50 @@
 function Notifier() {
-    this.connectionSuccessHandler = function() {};
-    this.connectionCloseHandler = function() {};
-    this.errorHandler = function() {};
-    this.eventHandler = function() {};
+    const that = this;
+    
     this.token = "";
+
+    Notifier.prototype.requestPermissions = function () {
+        function newMessage(permission) {
+            return permission == "granted";
+        }
+
+        Notification.requestPermission(newMessage);
+    };
+
+    Notifier.prototype.connect = function () {
+        var websocket = new WebSocket("ws://" + location.host + "/state/?token=" + Notifier.prototype.token);
+
+        websocket.onopen = function () {
+            that.connectionSuccessHandler();
+        };
+
+        websocket.onclose = function () {
+            that.connectionCloseHandler();
+        };
+
+        websocket.onmessage = function (evt) {
+            var event = JSON.parse(evt.data);
+            that.eventHandler(event);
+        };
+
+        websocket.onerror = function () {
+            that.errorHandler();
+        };
+    };
 }
 
-Notifier.prototype.requestPermissions = function() {
-    function newMessage(permission) {
-        return permission == "granted";
-    }
-    Notification.requestPermission(newMessage);
+Notifier.prototype.connectionSuccessHandler = function () {
+    throw new Error("not bound");
 };
 
-Notifier.prototype.connect = function() {
-    var websocket = new WebSocket("ws://" + location.host + "/state/?token=" + token);
-
-    websocket.onopen = function () {
-        connectionSuccessHandler();
-    };
-
-    websocket.onclose = function () {
-        connectionCloseHandler();
-    };
-
-    websocket.onmessage = function (evt) {
-        var event = JSON.parse(evt.data);
-        eventHandler(info);
-    };
-
-    websocket.onerror = function () {
-        errorHandler();
-    };
+Notifier.prototype.connectionCloseHandler = function () {
+    throw new Error("not bound");
 };
 
+Notifier.prototype.errorHandler = function () {
+    throw new Error("not bound");
+};
 
+Notifier.prototype.eventHandler = function () {
+    throw new Error("not bound");
+};

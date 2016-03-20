@@ -162,11 +162,11 @@ function connectStatusSocket() {
 function showNotification(info) {
     var header = info.actor;
     if(!header)
-        header = "system"
+        header = "system";
     var body = buildNotificationBody(info);
     new Notification(header, {
         tag: header,
-        body: body,
+        body: body
     });
 }
 

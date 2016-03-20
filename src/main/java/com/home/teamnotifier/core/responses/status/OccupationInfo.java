@@ -20,7 +20,7 @@ public class OccupationInfo {
     @JsonCreator
     @SuppressWarnings("unused")
     public OccupationInfo(
-            @JsonProperty("userName") final String userName,
+            @JsonProperty("login") final String userName,
             @JsonProperty("occupationTime") final String occupationTime
     ) {
         this.userName = userName;

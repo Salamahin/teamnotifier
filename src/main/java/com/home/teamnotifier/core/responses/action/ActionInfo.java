@@ -24,7 +24,7 @@ public class ActionInfo implements Serializable {
 
     @JsonCreator
     private ActionInfo(
-            @JsonProperty("userName") final String userName,
+            @JsonProperty("login") final String userName,
             @JsonProperty("timestamp") final String timestamp,
             @JsonProperty("description") final String description
     ) {
