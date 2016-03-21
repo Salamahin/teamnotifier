@@ -22,6 +22,18 @@ function Workbench() {
         throw new Error("Failed to get status");
     }
 
+	function historyPrehandler(xhttp) {
+		if(xhttp.readyState != 4)
+			return;
+
+		if(xhttp.status == 200) {
+			that.historyHandler(JSON.parse(xhttp.responseText).actions);
+			return;
+		}
+
+		throw new Error("Failed to get history");
+	}
+
     Workbench.prototype.newResourceAction = function (resource, description) {
         var xhttp = new XMLHttpRequest();
         xhttp.open("POST", "/teamnotifier/1.0/environment/application/action/" + resource.id, true);
@@ -94,7 +106,7 @@ function Workbench() {
         xhttp.setRequestHeader("ActionsTo", btoa(toStr));
         xhttp.setRequestHeader("Authorization", "Bearer " + that.token);
         xhttp.onreadystatechange = function () {
-            prehandler(xhttp, that.historyHandler);
+            historyPrehandler(xhttp);
         };
         xhttp.send();
     };
@@ -109,7 +121,7 @@ function Workbench() {
         xhttp.setRequestHeader("ActionsTo", btoa(toStr));
         xhttp.setRequestHeader("Authorization", "Bearer " + that.token);
         xhttp.onreadystatechange = function () {
-            prehandler(xhttp, that.historyHandler);
+            historyPrehandler(xhttp);
         };
         xhttp.send();
     };
@@ -129,7 +141,7 @@ Workbench.prototype.interactionHandler = function (xhttp) {
     throw new Error("not bound");
 };
 
-Workbench.prototype.historyHandler = function (xhttp) {
+Workbench.prototype.historyHandler = function (actions) {
     throw new Error("not bound");
 };
 

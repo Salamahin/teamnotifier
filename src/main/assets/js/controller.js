@@ -89,9 +89,12 @@ function bind() {
     VIEW.unsubscribeHandler = WORKBENCH.unsubscribe;
     VIEW.reserveHandler = WORKBENCH.reserve;
     VIEW.freeHandler = WORKBENCH.free;
+	VIEW.serverActionsHistoryHandler = WORKBENCH.getServerActions;
+	VIEW.resourceActionsHistoryHandler = WORKBENCH.getResourceActions;
     
     WORKBENCH.statusHandler = VIEW.showStatus;
     WORKBENCH.interactionHandler = onInteractionComplete;
+	WORKBENCH.historyHandler = VIEW.showHistory;
 
     init();
 }

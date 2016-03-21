@@ -15,15 +15,46 @@ function View() {
         jumpToAnchor("environment");
     };
 
-    this.jumpToHistory = function () {
-        jumpToAnchor("history");
+	function subDays(date, days) {
+		var result = new Date(date);
+		result.setDate(result.getDate() - days);
+		return result;
+	}
+
+	function sendHistoryRequest(isResource, target, from, to) {
+		if(isResource) 
+			that.resourceActionsHistoryHandler(target, from, to);
+		else
+			that.serverActionsHistoryHandler(target, from, to);
+	}
+
+	function jumpToHistory (isResource, target) {
+		var btnToday = document.getElementById("btn_hist_today");
+		btnToday.onclick = function () {
+			var now = new Date();
+			sendHistoryRequest(isResource, target, subDays(now, 1), now);
+		};
+
+		document.getElementById("btn_hist_week").onclick = function () {
+			var now = new Date();
+			sendHistoryRequest(isResource, target, subDays(now, 7), now);
+		};
+
+		document.getElementById("btn_hist_month").onclick = function () {
+			var now = new Date();
+			sendHistoryRequest(isResource, target, subDays(now, 30), now);
+		};
+
+		btnToday.click();
+		jumpToAnchor("history");
     };
 
-    this.jumpToServerActions = function () {
+
+	function jumpToServerActions () {
         jumpToAnchor("server_actions");
     };
 
-    this.jumpToResourceActions = function () {
+	function jumpToResourceActions () {
         jumpToAnchor("resource_actions");
     };
 
@@ -33,7 +64,7 @@ function View() {
 
     function jumpToEnvironmentOnFocusLost(modal) {
         modal.addEventListener('click', function () {
-            View.prototype.jumpToEnvironment();
+            that.jumpToEnvironment();
         }, false);
 
         modal.children[0].addEventListener('click', function (e) {
@@ -44,7 +75,7 @@ function View() {
     function jumpToEnvironmentOnEsc() {
         document.addEventListener('keyup', function (e) {
             if (e.keyCode == 27) {
-                View.prototype.jumpToEnvironment();
+                that.jumpToEnvironment();
             }
         });
     }
@@ -158,7 +189,7 @@ function View() {
         var btnHistory = newButton("", function () {
             var hist = document.getElementById("ul_hist");
             removeAllChildren(hist);
-            showHistoryModal(isResource, target.id, target.name);
+            jumpToHistory(isResource, target);
         });
         btnHistory.className = "round-button history-button tooltip";
         btnHistory.setAttribute("tip-text", "show history");
@@ -314,6 +345,21 @@ function View() {
         showNavigation();
         showCurrentServerInfo();
     };
+
+	View.prototype.showHistory = function(actions) {
+		var hist = document.getElementById("ul_hist");
+		actions.forEach(function (action) {
+			hist.appendChild(decorateWith(document.createElement("li"), actionInfoToLabel(action)));
+		});
+	}
+}
+
+View.prototype.resourceActionsHistoryHandler = function(resource, from, to) {
+	throw new Error("not bound");
+}
+
+View.prototype.serverActionsHistoryHandler = function(server, from, to) {
+	throw new Error("not bound");
 }
 
 View.prototype.subscribeHandler = function (server) {
