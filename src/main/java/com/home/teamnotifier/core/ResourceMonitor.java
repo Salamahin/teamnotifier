@@ -39,8 +39,12 @@ public class ResourceMonitor {
     }
 
     public void reserve(final String userName, final int applicationId) {
-        final BroadcastInformation information = subscriptionGateway.reserve(userName, applicationId);
-        fireNotification(information);
+        try {
+            final BroadcastInformation information = subscriptionGateway.reserve(userName, applicationId);
+            fireNotification(information);
+        } catch (Exception exc) {
+            LOGGER.error("Reserve failed", exc);
+        }
     }
 
     private void fireNotification(final BroadcastInformation<?> information) {
@@ -49,18 +53,30 @@ public class ResourceMonitor {
     }
 
     public void subscribe(final String userName, final int serverId) {
-        final BroadcastInformation information = subscriptionGateway.subscribe(userName, serverId);
-        fireNotification(information);
+        try {
+            final BroadcastInformation information = subscriptionGateway.subscribe(userName, serverId);
+            fireNotification(information);
+        } catch (Exception exc) {
+            LOGGER.error("Subscribtion failed", exc);
+        }
     }
 
     public void unsubscribe(final String userName, final int serverId) {
-        final BroadcastInformation information = subscriptionGateway.unsubscribe(userName, serverId);
-        fireNotification(information);
+        try {
+            final BroadcastInformation information = subscriptionGateway.unsubscribe(userName, serverId);
+            fireNotification(information);
+        } catch (Exception exc) {
+            LOGGER.error("Unsubscribtion failed", exc);
+        }
     }
 
     public void free(final String userName, final int applicationId) {
-        final BroadcastInformation information = subscriptionGateway.free(userName, applicationId);
-        fireNotification(information);
+        try {
+            final BroadcastInformation information = subscriptionGateway.free(userName, applicationId);
+            fireNotification(information);
+        } catch (Exception exc) {
+            LOGGER.error("Free failed", exc);
+        }
     }
 
     public EnvironmentsInfo status() {

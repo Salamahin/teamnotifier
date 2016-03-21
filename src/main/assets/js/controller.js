@@ -43,6 +43,7 @@ function onNotifierConnected() {
 function onInteractionComplete(xhttp) {
     if(xhttp.status != 204)
         throw new Error("Interaction failed: " + xhttp);
+    WORKBENCH.status();
 }
 
 function onNotifierError(error) {

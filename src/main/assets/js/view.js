@@ -146,7 +146,8 @@ function View() {
         removeAllChildren(subscriptionContainer);
         const subscribed = isSubscribedOnServer(selectedServer);
         var cbSubscribe = newLabeledCheckbox("subscribe", subscribed, function () {
-            subscribed ? that.unsubscribeHandler(selectedServer) : that.subscribeHandler(selectedServer);
+            isSubscribedOnServer()? that.unsubscribeHandler(selectedServer) : that.subscribeHandler(selectedServer);
+
         });
         subscriptionContainer.appendChild(cbSubscribe);
     }
@@ -269,20 +270,38 @@ function View() {
         });
     }
 
-    function selectFirstIfServerIsNotDefined() {
-        if(selectedServer != undefined)
-            return;
 
-        selectedServer = Object.create(currentEnvironments[0].servers[0]);
-        selectedServer.resources.sort(sortFactory('name'));
+	function chooseAServer() {
+		selectedServer = Object.create(currentEnvironments[0].servers[0]);
+		selectedServer.resources.sort(sortFactory('name'));
 
-        that.serverSelectionHandler(selectedServer);
+		that.serverSelectionHandler(selectedServer);
+	}
+
+	function updateCurrentServerFromEnvironments() {
+		for(var i = 0; i<currentEnvironments.length; i++) {
+			for(var j = 0; j< currentEnvironments[i].servers.length; j++) {
+				var updatedServer = currentEnvironments[i].servers[j];
+				if(updatedServer.id == selectedServer.id) {
+					selectedServer = Object.create(updatedServer);
+					return;
+				}
+			}
+		}
+		throw new Error("current server is not found in status");
+	}
+
+    function updateCurrentServer() {
+        if(selectedServer == undefined) 
+			chooseAServer();
+		 else 
+			updateCurrentServerFromEnvironments();
     }
 
     View.prototype.showStatus = function (environments) {
         currentEnvironments = Object.create(environments);
 
-        selectFirstIfServerIsNotDefined();
+        updateCurrentServer();
 
         showNavigation();
         showCurrentServerInfo();
