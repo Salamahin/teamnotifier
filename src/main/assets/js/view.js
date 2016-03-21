@@ -381,8 +381,13 @@ function View() {
         showCurrentServerInfo();
     };
 
+    function actionInfoToLabel(info) {
+        return newLabel(info.userName + "\t" + new Date(info.timestamp).toLocaleString() + "\t" + info.description)
+    }
+
 	View.prototype.showHistory = function(actions) {
 		var hist = document.getElementById("ul_hist");
+		removeAllChildren(hist);
 		actions.forEach(function (action) {
 			hist.appendChild(decorateWith(document.createElement("li"), actionInfoToLabel(action)));
 		});
