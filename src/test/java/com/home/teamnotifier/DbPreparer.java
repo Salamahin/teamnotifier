@@ -35,21 +35,21 @@ public final class DbPreparer {
             final String appName
     ) {
         final EnvironmentEntity entity = new EnvironmentEntity(envName);
-        final AppServerEntity appServerEntity = entity.newAppServer(serverName);
-        appServerEntity.newSharedResource(appName);
+        final ServerEntity serverEntity = entity.newServer(serverName);
+        serverEntity.newResource(appName);
 
         return TRANSACTION_HELPER.transaction(em -> em.merge(entity));
     }
 
     public int anyServerId(final EnvironmentEntity notEmptyEntity) {
-        return notEmptyEntity.getImmutableSetOfAppServers().stream()
-                .map(AppServerEntity::getId)
+        return notEmptyEntity.getImmutableSetOfServers().stream()
+                .map(ServerEntity::getId)
                 .findFirst()
                 .get();
     }
 
     public int anyResourceId(final EnvironmentEntity notEmptyEntity, final int serverId) {
-        return notEmptyEntity.getImmutableSetOfAppServers().stream()
+        return notEmptyEntity.getImmutableSetOfServers().stream()
                 .filter(s -> Objects.equals(s.getId(), serverId))
                 .flatMap(e -> e.getImmutableSetOfResources().stream())
                 .map(ResourceEntity::getId)
@@ -58,7 +58,7 @@ public final class DbPreparer {
     }
 
     public int anyResourceId(final EnvironmentEntity notEmptyEntity) {
-        return notEmptyEntity.getImmutableSetOfAppServers().stream()
+        return notEmptyEntity.getImmutableSetOfServers().stream()
                 .flatMap(e -> e.getImmutableSetOfResources().stream())
                 .map(ResourceEntity::getId)
                 .findFirst()

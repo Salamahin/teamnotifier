@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import com.home.teamnotifier.db.AppServerEntity;
+import com.home.teamnotifier.db.ServerEntity;
 
 import java.time.Instant;
 import java.util.Objects;
@@ -30,17 +30,17 @@ public class ServerState extends Notification {
         this.online = online;
     }
 
-    private ServerState(final AppServerEntity server, final boolean isOnline) {
+    private ServerState(final ServerEntity server, final boolean isOnline) {
         super(Instant.now().toString(), server.getId());
         online = isOnline;
     }
 
-    public static ServerState online(final AppServerEntity appServerEntity) {
-        return new ServerState(appServerEntity, true);
+    public static ServerState online(final ServerEntity serverEntity) {
+        return new ServerState(serverEntity, true);
     }
 
-    public static ServerState offline(final AppServerEntity appServerEntity) {
-        return new ServerState(appServerEntity, false);
+    public static ServerState offline(final ServerEntity serverEntity) {
+        return new ServerState(serverEntity, false);
     }
 
     @Override

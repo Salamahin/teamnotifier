@@ -1,7 +1,7 @@
 package com.home.teamnotifier.core.responses.notification;
 
 import com.fasterxml.jackson.annotation.*;
-import com.home.teamnotifier.db.AppServerEntity;
+import com.home.teamnotifier.db.ServerEntity;
 import com.home.teamnotifier.db.UserEntity;
 
 import java.time.Instant;
@@ -26,15 +26,15 @@ public class Subscription extends UserStateChange {
         super(actor, targetId, timestamp, state);
     }
 
-    private Subscription(final UserEntity actor, final AppServerEntity target, final boolean state) {
+    private Subscription(final UserEntity actor, final ServerEntity target, final boolean state) {
         super(actor.getName(), target.getId(), Instant.now().toString(), state);
     }
 
-    public static Subscription subscribe(final UserEntity actor, final AppServerEntity server) {
+    public static Subscription subscribe(final UserEntity actor, final ServerEntity server) {
         return new Subscription(actor, server, true);
     }
 
-    public static Subscription unsubscribe(final UserEntity actor, final AppServerEntity server) {
+    public static Subscription unsubscribe(final UserEntity actor, final ServerEntity server) {
         return new Subscription(actor, server, false);
     }
 }

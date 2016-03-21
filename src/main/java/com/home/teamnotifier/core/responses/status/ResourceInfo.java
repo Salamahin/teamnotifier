@@ -11,8 +11,8 @@ import java.util.Objects;
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE,
         creatorVisibility = JsonAutoDetect.Visibility.NONE)
-@JsonTypeName("SharedResource")
-public class SharedResourceInfo {
+@JsonTypeName("ResourceInfo")
+public class ResourceInfo {
 
     private final int id;
 
@@ -21,7 +21,7 @@ public class SharedResourceInfo {
     private final OccupationInfo occupationInfo;
 
     @JsonCreator
-    public SharedResourceInfo(
+    public ResourceInfo(
             @JsonProperty("id") final int id, @JsonProperty("name") final String name,
             @JsonProperty("occupationInfo") final OccupationInfo occupationInfo
     ) {
@@ -55,7 +55,7 @@ public class SharedResourceInfo {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final SharedResourceInfo that = (SharedResourceInfo) o;
+        final ResourceInfo that = (ResourceInfo) o;
         return Objects.equals(name, that.name) &&
                 Objects.equals(id, that.id) &&
                 Objects.equals(occupationInfo, that.occupationInfo);

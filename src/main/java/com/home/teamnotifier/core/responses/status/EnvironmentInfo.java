@@ -18,18 +18,18 @@ public class EnvironmentInfo {
 
     private final String name;
 
-    private final List<AppServerInfo> servers;
+    private final List<ServerInfo> servers;
 
     @JsonCreator
     public EnvironmentInfo(
             @JsonProperty("name") final String name,
-            @JsonProperty("servers") final List<AppServerInfo> servers
+            @JsonProperty("servers") final List<ServerInfo> servers
     ) {
         this.name = name;
         this.servers = ImmutableList.copyOf(servers);
     }
 
-    public List<AppServerInfo> getServers() {
+    public List<ServerInfo> getServers() {
         return servers;
     }
 

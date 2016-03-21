@@ -10,11 +10,11 @@ import static com.home.teamnotifier.core.responses.SerializationTestHelper.testS
 
 public class ActionsHistoryTest {
 
-    private ResourceActionsHistory createActionsOnSharedResourceInfo() {
+    private ResourceActionsHistory createResourceActionsInfo() {
         return new ResourceActionsHistory(Lists.newArrayList(createFineActionInfo()));
     }
 
-    private ServerActionsHistory createActionsOnAppServerInfo() {
+    private ServerActionsHistory createActionsOnServerInfo() {
         return new ServerActionsHistory(Lists.newArrayList(createFineActionInfo()));
     }
 
@@ -24,37 +24,37 @@ public class ActionsHistoryTest {
 
 
     @Test
-    public void actionsOnSharedResourceSerializesToJSON() throws Exception {
+    public void testResourceActionsSerializesToJSON() throws Exception {
        testSerializesToJson(
                ResourceActionsHistory.class,
-               createActionsOnSharedResourceInfo(),
+               createResourceActionsInfo(),
                "fixtures/resourceActionsHistory.json"
        );
     }
 
     @Test
-    public void actionsOnServerSerializesToJSON() throws Exception {
+    public void testServerActionsSerializesToJSON() throws Exception {
         testSerializesToJson(
                 ServerActionsHistory.class,
-                createActionsOnAppServerInfo(),
+                createActionsOnServerInfo(),
                 "fixtures/serverActionsHistory.json"
         );
     }
 
     @Test
-    public void actionsOnSharedResourceDeserializesFromJSON() throws Exception {
+    public void testResourceActionsDeserializesFromJSON() throws Exception {
         testDeserializeFromJson(
                 ResourceActionsHistory.class,
-                createActionsOnSharedResourceInfo(),
+                createResourceActionsInfo(),
                 "fixtures/resourceActionsHistory.json"
         );
     }
 
     @Test
-    public void actionsOnServerDeserializesFromJSON() throws Exception {
+    public void testServerActionsDeserializesFromJSON() throws Exception {
         testDeserializeFromJson(
                 ServerActionsHistory.class,
-                createActionsOnAppServerInfo(),
+                createActionsOnServerInfo(),
                 "fixtures/serverActionsHistory.json"
         );
     }

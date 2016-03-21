@@ -33,7 +33,7 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
         try {
             return transactionHelper.transaction(em -> {
                 final UserEntity u = getUserEntity(userName, em);
-                final AppServerEntity s = getAppServerEntity(serverId, em);
+                final ServerEntity s = getServerEntity(serverId, em);
 
                 em.persist(new SubscriptionEntity(s, u));
 
@@ -63,8 +63,8 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
             Throwables.propagate(exc);
     }
 
-    private AppServerEntity getAppServerEntity(final int serverId, final EntityManager em) {
-        final AppServerEntity serverEntity = em.find(AppServerEntity.class, serverId);
+    private ServerEntity getServerEntity(final int serverId, final EntityManager em) {
+        final ServerEntity serverEntity = em.find(ServerEntity.class, serverId);
         if (serverEntity == null)
             throw new NoSuchServer(String.format("No server with id %d", serverId));
         return serverEntity;
@@ -75,7 +75,7 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
     public BroadcastInformation<Subscription> unsubscribe(final String userName, final int serverId) {
         return transactionHelper.transaction(em -> {
             final UserEntity userEntity = getUserEntity(userName, em);
-            final AppServerEntity serverEntity = getAppServerEntity(serverId, em);
+            final ServerEntity serverEntity = getServerEntity(serverId, em);
 
             final CriteriaBuilder cb = em.getCriteriaBuilder();
             final CriteriaDelete<SubscriptionEntity> delete = cb
@@ -83,7 +83,7 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
             final Root<SubscriptionEntity> _subscription = delete.from(SubscriptionEntity.class);
             final Predicate userAndServerEqualToProvided =
                     cb.and(cb.equal(_subscription.get("subscriber"), userEntity),
-                            cb.equal(_subscription.get("appServer"), serverEntity));
+                            cb.equal(_subscription.get("server"), serverEntity));
 
             final int rowsAffected = em.createQuery(delete.where(userAndServerEqualToProvided)).executeUpdate();
 
@@ -101,13 +101,13 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
     public BroadcastInformation<Reservation> reserve(final String userName, final int applicationId) throws AlreadyReserved {
         return transactionHelper.transaction(em -> {
             final UserEntity u = getUserEntity(userName, em);
-            final ResourceEntity r = getSharedResourceEntity(applicationId, em);
+            final ResourceEntity r = getResourceEntity(applicationId, em);
 
             tryReserve(u, r, em);
 
             return new BroadcastInformation<>(
                     Reservation.reserve(u, r),
-                    getSubscribersButUser(u.getName(), r.getAppServer())
+                    getSubscribersButUser(u.getName(), r.getServer())
             );
         });
     }
@@ -129,7 +129,7 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
         em.merge(resource);
     }
 
-    private ResourceEntity getSharedResourceEntity(final int applicationId, final EntityManager em) {
+    private ResourceEntity getResourceEntity(final int applicationId, final EntityManager em) {
         final ResourceEntity entity = em.find(ResourceEntity.class, applicationId);
         if (entity == null)
             throw new NoSuchResource(String.format("No resource with id %d", applicationId));
@@ -140,13 +140,13 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
     public BroadcastInformation<Reservation> free(final String userName, final int applicationId) throws NotReserved {
         return transactionHelper.transaction(em -> {
             final UserEntity u = getUserEntity(userName, em);
-            final ResourceEntity s = getSharedResourceEntity(applicationId, em);
+            final ResourceEntity s = getResourceEntity(applicationId, em);
 
             tryFree(u, s, em);
 
             return new BroadcastInformation<>(
                     Reservation.free(u, s),
-                    getSubscribersButUser(u.getName(), s.getAppServer())
+                    getSubscribersButUser(u.getName(), s.getServer())
             );
 
         });

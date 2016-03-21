@@ -1,6 +1,5 @@
 package com.home.teamnotifier.db;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import javax.persistence.*;
@@ -19,40 +18,40 @@ public final class EnvironmentEntity implements Serializable {
     private final String name;
 
     @OneToMany(mappedBy = "environment", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private final Set<AppServerEntity> appServers;
+    private final Set<ServerEntity> servers;
 
     //for hibernate
     @SuppressWarnings("unused")
     private EnvironmentEntity() {
         id = null;
         name = null;
-        appServers = new HashSet<>();
+        servers = new HashSet<>();
     }
 
     public EnvironmentEntity(final String name) {
         id = null;
         this.name = name;
-        appServers = new HashSet<>();
+        servers = new HashSet<>();
     }
 
-    public AppServerEntity newAppServer(final String name) {
-        final AppServerEntity appServerEntity = new AppServerEntity(this, name);
-        appServers.add(appServerEntity);
-        return appServerEntity;
+    public ServerEntity newServer(final String name) {
+        final ServerEntity serverEntity = new ServerEntity(this, name);
+        servers.add(serverEntity);
+        return serverEntity;
     }
 
-    public AppServerEntity newAppServer(final String name, final String checkUrl) {
-        final AppServerEntity appServerEntity = new AppServerEntity(this, name, checkUrl);
-        appServers.add(appServerEntity);
-        return appServerEntity;
+    public ServerEntity newServer(final String name, final String checkUrl) {
+        final ServerEntity serverEntity = new ServerEntity(this, name, checkUrl);
+        servers.add(serverEntity);
+        return serverEntity;
     }
 
     public String getName() {
         return name;
     }
 
-    public Set<AppServerEntity> getImmutableSetOfAppServers() {
-        return ImmutableSet.copyOf(appServers);
+    public Set<ServerEntity> getImmutableSetOfServers() {
+        return ImmutableSet.copyOf(servers);
     }
 
     @Override
@@ -62,11 +61,11 @@ public final class EnvironmentEntity implements Serializable {
         EnvironmentEntity that = (EnvironmentEntity) o;
         return Objects.equals(id, that.id) &&
                 Objects.equals(name, that.name) &&
-                Objects.equals(appServers, that.appServers);
+                Objects.equals(servers, that.servers);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, appServers);
+        return Objects.hash(id, name, servers);
     }
 }

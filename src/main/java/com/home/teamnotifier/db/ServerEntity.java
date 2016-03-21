@@ -9,8 +9,8 @@ import java.util.*;
 import static java.util.stream.Collectors.toSet;
 
 @Entity
-@Table(schema = "teamnotifier", name = "AppServer")
-public class AppServerEntity implements Serializable {
+@Table(schema = "teamnotifier", name = "Server")
+public class ServerEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private final Integer id;
@@ -25,13 +25,13 @@ public class AppServerEntity implements Serializable {
     @Column
     private final String statusUrl;
 
-    @OneToMany(mappedBy = "appServer", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "server", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private final Set<ResourceEntity> resources;
 
     /**
      * FIXME
      * Strange hibernate behaviour:
-     * when AppServereGateway is asked for servers, they have dublicated entities in subscribers
+     * when ServereGateway is asked for servers, they have dublicated entities in subscribers
      * The fast fix is to change the collection type to set;
      * seems a bug in hibernate
      * http://stackoverflow.com/questions/7903800/hibernate-inserts-duplicates-into-a-onetomany-collection
@@ -39,12 +39,11 @@ public class AppServerEntity implements Serializable {
      * =========================================
      * NEED TO BE FIXED DUE TO PERFORMANCE NEEDS
      */
-    @OneToMany(mappedBy = "appServer", fetch = FetchType.EAGER, cascade = CascadeType.ALL,
-            orphanRemoval = true)
+    @OneToMany(mappedBy = "server", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private final Set<SubscriptionEntity> subscriptions;
 
     //for hibernate
-    private AppServerEntity() {
+    private ServerEntity() {
         id = null;
         name = null;
         environment = null;
@@ -53,11 +52,11 @@ public class AppServerEntity implements Serializable {
         subscriptions = new HashSet<>();
     }
 
-    AppServerEntity(final EnvironmentEntity environment, final String name) {
+    ServerEntity(final EnvironmentEntity environment, final String name) {
         this(environment, name, null);
     }
 
-    AppServerEntity(final EnvironmentEntity environment, final String name, final String checkUrl) {
+    ServerEntity(final EnvironmentEntity environment, final String name, final String checkUrl) {
         this.id = null;
         this.statusUrl = checkUrl;
         this.environment = environment;
@@ -66,7 +65,7 @@ public class AppServerEntity implements Serializable {
         subscriptions = new HashSet<>();
     }
 
-    public void newSharedResource(final String name) {
+    public void newResource(final String name) {
         final ResourceEntity entity = new ResourceEntity(this, name);
         resources.add(entity);
     }
@@ -102,7 +101,7 @@ public class AppServerEntity implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        AppServerEntity that = (AppServerEntity) o;
+        ServerEntity that = (ServerEntity) o;
         return Objects.equals(id, that.id) &&
                 Objects.equals(name, that.name) &&
                 Objects.equals(statusUrl, that.statusUrl) &&

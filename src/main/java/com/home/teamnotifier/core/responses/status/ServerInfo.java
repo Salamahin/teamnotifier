@@ -13,24 +13,24 @@ import java.util.Set;
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE,
         creatorVisibility = JsonAutoDetect.Visibility.NONE)
-@JsonTypeName("AppServer")
-public class AppServerInfo {
+@JsonTypeName("ServerInfo")
+public class ServerInfo {
 
     private final String name;
 
     private final int id;
 
-    private final Set<SharedResourceInfo> resources;
+    private final Set<ResourceInfo> resources;
 
     private final Set<String> subscribers;
 
     private final Boolean isOnline;
 
     @JsonCreator
-    public AppServerInfo(
+    public ServerInfo(
             @JsonProperty("id") final int id,
             @JsonProperty("name") final String name,
-            @JsonProperty("resources") final Set<SharedResourceInfo> resources,
+            @JsonProperty("resources") final Set<ResourceInfo> resources,
             @JsonProperty("subscribers") final Set<String> subscribers,
             @JsonProperty("isOnline") final Boolean isOnline
     ) {
@@ -45,7 +45,7 @@ public class AppServerInfo {
         return id;
     }
 
-    public Set<SharedResourceInfo> getResources() {
+    public Set<ResourceInfo> getResources() {
         return resources;
     }
 
@@ -70,7 +70,7 @@ public class AppServerInfo {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final AppServerInfo that = (AppServerInfo) o;
+        final ServerInfo that = (ServerInfo) o;
         return Objects.equals(name, that.name) &&
                 Objects.equals(resources, that.resources) &&
                 Objects.equals(id, that.id) &&

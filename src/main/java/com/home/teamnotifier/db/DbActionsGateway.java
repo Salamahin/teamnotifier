@@ -42,7 +42,7 @@ public class DbActionsGateway implements ActionsGateway {
     }
 
     @Override
-    public BroadcastInformation<ResourceAction> newActionOnSharedResource(
+    public BroadcastInformation<ResourceAction> newResourceAction(
             final String userName,
             final int resourceId,
             final String description
@@ -56,13 +56,13 @@ public class DbActionsGateway implements ActionsGateway {
     }
 
     @Override
-    public BroadcastInformation<ServerAction> newActionOnAppSever(
+    public BroadcastInformation<ServerAction> newServerAction(
             final String userName,
             final int serverId,
             final String description
     ) throws NoSuchServer, EmptyDescription, NoSuchUser {
         try {
-            return tryPersistNewActionOnAppServer(userName, serverId, description);
+            return tryPersistNewServerAction(userName, serverId, description);
         } catch (Exception exc) {
             rethrowIfContainsConstraintViolation(exc);
             return null;
@@ -70,7 +70,7 @@ public class DbActionsGateway implements ActionsGateway {
     }
 
     @Override
-    public BroadcastInformation<ResourceAction> newActionOnSharedResource(
+    public BroadcastInformation<ResourceAction> newResourceAction(
             final String userName,
             final ResourceDescription resourceDescription,
             final String description
@@ -99,17 +99,17 @@ public class DbActionsGateway implements ActionsGateway {
         throw Throwables.propagate(exc);
     }
 
-    private BroadcastInformation<ServerAction> tryPersistNewActionOnAppServer(
+    private BroadcastInformation<ServerAction> tryPersistNewServerAction(
             final String userName,
-            final int appServerId,
+            final int serverId,
             final String description
     ) {
         return transactionHelper.transaction(em -> {
-            final AppServerEntity appServer = getAppServerEntity(appServerId, em);
+            final ServerEntity server = getServerEntity(serverId, em);
             final UserEntity userEntity = getUserEntity(userName, em);
 
-            final ServerAction action = newActionOnAppServer(userEntity, appServer, description, em);
-            return new BroadcastInformation<>(action, getSubscribersButUser(userName, appServer));
+            final ServerAction action = newServerAction(userEntity, server, description, em);
+            return new BroadcastInformation<>(action, getSubscribersButUser(userName, server));
         });
     }
 
@@ -119,10 +119,10 @@ public class DbActionsGateway implements ActionsGateway {
             final String description
     ) {
         return transactionHelper.transaction(em -> {
-            final ResourceEntity resourceEntity = getSharedResourceEntity(resourceId, em);
+            final ResourceEntity resourceEntity = getResourceEntity(resourceId, em);
             final UserEntity userEntity = getUserEntity(userName, em);
 
-            final ResourceAction resourceAction = newActionOnSharedResource(
+            final ResourceAction resourceAction = newResourceAction(
                     userEntity,
                     resourceEntity,
                     description,
@@ -131,7 +131,7 @@ public class DbActionsGateway implements ActionsGateway {
 
             return new BroadcastInformation<>(
                     resourceAction,
-                    getSubscribersButUser(userName, resourceEntity.getAppServer())
+                    getSubscribersButUser(userName, resourceEntity.getServer())
             );
         });
     }
@@ -144,37 +144,37 @@ public class DbActionsGateway implements ActionsGateway {
             final String description
     ) {
         return transactionHelper.transaction(em -> {
-            final ResourceEntity resourceEntity = getSharedResourceEntity(envName, serverName, resourceName, em);
+            final ResourceEntity resourceEntity = getResourceEntity(envName, serverName, resourceName, em);
             final UserEntity userEntity = getUserEntity(userName, em);
 
-            final ResourceAction action = newActionOnSharedResource(userEntity, resourceEntity, description, em);
-            return new BroadcastInformation<>(action, getSubscribersButUser(userName, resourceEntity.getAppServer()));
+            final ResourceAction action = newResourceAction(userEntity, resourceEntity, description, em);
+            return new BroadcastInformation<>(action, getSubscribersButUser(userName, resourceEntity.getServer()));
         });
     }
 
-    private ServerAction newActionOnAppServer(
+    private ServerAction newServerAction(
             final UserEntity userEntity,
-            final AppServerEntity appServer,
+            final ServerEntity server,
             final String description,
             final EntityManager em
     ) {
-        final ActionOnAppServerEntity action = new ActionOnAppServerEntity(
+        final ServerActionEntity action = new ServerActionEntity(
                 userEntity,
-                appServer,
+                server,
                 description
         );
         em.persist(action);
 
-        return new ServerAction(userEntity, appServer, description);
+        return new ServerAction(userEntity, server, description);
     }
 
-    private ResourceAction newActionOnSharedResource(
+    private ResourceAction newResourceAction(
             final UserEntity userEntity,
             final ResourceEntity resourceEntity,
             final String description,
             final EntityManager em
     ) {
-        final ActionOnSharedResourceEntity action = new ActionOnSharedResourceEntity(
+        final ResourceActionEntity action = new ResourceActionEntity(
                 userEntity,
                 resourceEntity,
                 description
@@ -184,15 +184,15 @@ public class DbActionsGateway implements ActionsGateway {
         return new ResourceAction(userEntity, resourceEntity, description);
     }
 
-    private AppServerEntity getAppServerEntity(final int appServerId, final EntityManager em) {
-        final AppServerEntity entity = em.find(AppServerEntity.class, appServerId);
+    private ServerEntity getServerEntity(final int serverId, final EntityManager em) {
+        final ServerEntity entity = em.find(ServerEntity.class, serverId);
         if (entity == null)
-            throw new NoSuchServer(String.format("No server with id %d", appServerId));
+            throw new NoSuchServer(String.format("No server with id %d", serverId));
 
         return entity;
     }
 
-    private ResourceEntity getSharedResourceEntity(final int resourceId, final EntityManager em) {
+    private ResourceEntity getResourceEntity(final int resourceId, final EntityManager em) {
         final ResourceEntity entity = em.find(ResourceEntity.class, resourceId);
         if (entity == null)
             throw new NoSuchResource(String.format("No resource with id %d", resourceId));
@@ -200,7 +200,7 @@ public class DbActionsGateway implements ActionsGateway {
         return entity;
     }
 
-    private ResourceEntity getSharedResourceEntity(
+    private ResourceEntity getResourceEntity(
             final String envName,
             final String serverName,
             final String resourceName,
@@ -210,11 +210,11 @@ public class DbActionsGateway implements ActionsGateway {
         final CriteriaBuilder cb = em.getCriteriaBuilder();
 
         CriteriaQuery<ResourceEntity> cqRes = cb.createQuery(ResourceEntity.class);
-        Subquery<AppServerEntity> srvByName = cqRes.subquery(AppServerEntity.class);
+        Subquery<ServerEntity> srvByName = cqRes.subquery(ServerEntity.class);
         Subquery<EnvironmentEntity> envByName = srvByName.subquery(EnvironmentEntity.class);
 
         final Root<ResourceEntity> rootRes = cqRes.from(ResourceEntity.class);
-        final Root<AppServerEntity> rootSrv = srvByName.from(AppServerEntity.class);
+        final Root<ServerEntity> rootSrv = srvByName.from(ServerEntity.class);
         final Root<EnvironmentEntity> rootEnv = envByName.from(EnvironmentEntity.class);
 
         envByName = envByName.select(rootEnv).where(cb.equal(rootEnv.get("name"), envName));
@@ -226,7 +226,7 @@ public class DbActionsGateway implements ActionsGateway {
 
         cqRes.select(rootRes).where(cb.and(
                 cb.equal(rootRes.get("name"), resourceName),
-                cb.equal(rootRes.get("appServer"), srvByName)
+                cb.equal(rootRes.get("server"), srvByName)
         ));
 
         return em
@@ -236,23 +236,23 @@ public class DbActionsGateway implements ActionsGateway {
 
     @Override
     public ResourceActionsHistory getActionsOnResource(final int resourceId, final Range<Instant> range) {
-        final List<ActionOnSharedResourceEntity> actions = transactionHelper.transaction(em -> {
-            final ResourceEntity resource = getSharedResourceEntity(resourceId, em);
+        final List<ResourceActionEntity> actions = transactionHelper.transaction(em -> {
+            final ResourceEntity resource = getResourceEntity(resourceId, em);
             final CriteriaBuilder cb = em.getCriteriaBuilder();
-            final CriteriaQuery<ActionOnSharedResourceEntity> cq = cb.createQuery(ActionOnSharedResourceEntity.class);
-            final Root<ActionOnSharedResourceEntity> rootEntry = cq.from(ActionOnSharedResourceEntity.class);
+            final CriteriaQuery<ResourceActionEntity> cq = cb.createQuery(ResourceActionEntity.class);
+            final Root<ResourceActionEntity> rootEntry = cq.from(ResourceActionEntity.class);
 
             final Path<Instant> time = rootEntry.get("actionTime");
 
             final Predicate actionTimeInRange = getPredicateForRange(range, cb, rootEntry);
             final Predicate isEqualToProvidedResource = cb.equal(rootEntry.get("resource"), resource);
 
-            final CriteriaQuery<ActionOnSharedResourceEntity> allInRange = cq
+            final CriteriaQuery<ResourceActionEntity> allInRange = cq
                     .select(rootEntry)
                     .where(cb.and(actionTimeInRange, isEqualToProvidedResource))
                     .orderBy(cb.desc(time));
 
-            final TypedQuery<ActionOnSharedResourceEntity> allQuery = em.createQuery(allInRange);
+            final TypedQuery<ResourceActionEntity> allQuery = em.createQuery(allInRange);
 
             return allQuery.getResultList();
         });
@@ -262,23 +262,23 @@ public class DbActionsGateway implements ActionsGateway {
 
     @Override
     public ServerActionsHistory getActionsOnServer(int serverId, Range<Instant> range) throws NoSuchResource {
-        final List<ActionOnAppServerEntity> actions = transactionHelper.transaction(em -> {
-            final AppServerEntity resource = getAppServerEntity(serverId, em);
+        final List<ServerActionEntity> actions = transactionHelper.transaction(em -> {
+            final ServerEntity resource = getServerEntity(serverId, em);
             final CriteriaBuilder cb = em.getCriteriaBuilder();
-            final CriteriaQuery<ActionOnAppServerEntity> cq = cb.createQuery(ActionOnAppServerEntity.class);
-            final Root<ActionOnAppServerEntity> rootEntry = cq.from(ActionOnAppServerEntity.class);
+            final CriteriaQuery<ServerActionEntity> cq = cb.createQuery(ServerActionEntity.class);
+            final Root<ServerActionEntity> rootEntry = cq.from(ServerActionEntity.class);
 
             final Path<Instant> time = rootEntry.get("actionTime");
 
             final Predicate actionTimeInRange = getPredicateForRange(range, cb, rootEntry);
-            final Predicate isEqualToProvidedResource = cb.equal(rootEntry.get("appServer"), resource);
+            final Predicate isEqualToProvidedResource = cb.equal(rootEntry.get("server"), resource);
 
-            final CriteriaQuery<ActionOnAppServerEntity> allInRange = cq
+            final CriteriaQuery<ServerActionEntity> allInRange = cq
                     .select(rootEntry)
                     .where(cb.and(actionTimeInRange, isEqualToProvidedResource))
                     .orderBy(cb.desc(time));
 
-            final TypedQuery<ActionOnAppServerEntity> allQuery = em.createQuery(allInRange);
+            final TypedQuery<ServerActionEntity> allQuery = em.createQuery(allInRange);
 
             return allQuery.getResultList();
         });

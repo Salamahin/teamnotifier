@@ -5,8 +5,8 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-@Table(schema = "teamnotifier", name = "ActionOnSharedResource")
-final class ActionOnSharedResourceEntity extends ActionEntity implements Serializable {
+@Table(schema = "teamnotifier", name = "ResourceActions")
+final class ResourceActionEntity extends ActionEntity implements Serializable {
 
     @ManyToOne(optional = false, cascade = CascadeType.ALL)
     @SuppressWarnings("unused")
@@ -14,13 +14,13 @@ final class ActionOnSharedResourceEntity extends ActionEntity implements Seriali
 
     //for hibernate
     @SuppressWarnings("unused")
-    private ActionOnSharedResourceEntity() {
+    private ResourceActionEntity() {
         resource = null;
     }
 
-    public ActionOnSharedResourceEntity(final UserEntity actor,
-                                        final ResourceEntity resourceEntity,
-                                        final String details
+    public ResourceActionEntity(final UserEntity actor,
+                                final ResourceEntity resourceEntity,
+                                final String details
     ) {
         super(actor, details);
         this.resource = resourceEntity;
@@ -31,7 +31,7 @@ final class ActionOnSharedResourceEntity extends ActionEntity implements Seriali
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        ActionOnSharedResourceEntity that = (ActionOnSharedResourceEntity) o;
+        ResourceActionEntity that = (ResourceActionEntity) o;
         return Objects.equals(resource, that.resource);
     }
 

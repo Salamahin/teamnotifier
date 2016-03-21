@@ -36,7 +36,7 @@ public class DbServerActionsGatewayTest {
         tester = new ActionsTester<ServerActionsHistory, ServerAction>(helper) {
             @Override
             BroadcastInformation<ServerAction> newAction(String userName, int id, String description) {
-                return gateway.newActionOnAppSever(userName, id, description);
+                return gateway.newServerAction(userName, id, description);
             }
 
             @Override

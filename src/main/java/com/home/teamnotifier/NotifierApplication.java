@@ -8,7 +8,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Injector;
 import com.home.teamnotifier.authentication.*;
-import com.home.teamnotifier.health.AppServerStates;
+import com.home.teamnotifier.health.ServerStates;
 import com.home.teamnotifier.health.DbConnection;
 import com.home.teamnotifier.health.Sessions;
 import com.home.teamnotifier.repo.PolymorphicAuthDynamicFeature;
@@ -62,7 +62,7 @@ public class NotifierApplication extends Application<NotifierConfiguration> {
 
         environment.healthChecks().register("DbConnection", injector.getInstance(DbConnection.class));
         environment.healthChecks().register("Sessions", injector.getInstance(Sessions.class));
-        environment.healthChecks().register("ServerStatuses", injector.getInstance(AppServerStates.class));
+        environment.healthChecks().register("ServerStatuses", injector.getInstance(ServerStates.class));
     }
 
     private void resisterAuthenticators(final Environment environment) {

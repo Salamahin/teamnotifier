@@ -10,7 +10,6 @@ import com.home.teamnotifier.gateways.ResourceDescription;
 import com.home.teamnotifier.gateways.exceptions.EmptyDescription;
 import com.home.teamnotifier.gateways.exceptions.NoSuchResource;
 import com.home.teamnotifier.gateways.exceptions.NoSuchUser;
-import org.assertj.core.api.Assertions;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -40,7 +39,7 @@ public class DbResourceActionsGatewayTest {
         tester = new ActionsTester<ResourceActionsHistory, ResourceAction>(helper) {
             @Override
             BroadcastInformation<ResourceAction> newAction(String userName, int id, String description) {
-                return gateway.newActionOnSharedResource(userName, id, description);
+                return gateway.newResourceAction(userName, id, description);
             }
 
             @Override
@@ -85,7 +84,7 @@ public class DbResourceActionsGatewayTest {
                 .withServerName(srvName)
                 .build();
 
-        assertThat(gateway.newActionOnSharedResource(userName, resourceDescription, "test")).isNotNull();
+        assertThat(gateway.newResourceAction(userName, resourceDescription, "test")).isNotNull();
     }
 
     @Test(expected = NoSuchResource.class)

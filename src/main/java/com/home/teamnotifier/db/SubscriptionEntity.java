@@ -9,7 +9,7 @@ import java.time.Instant;
         schema = "teamnotifier",
         name = "Subscription",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"appServerId", "subscriberId"}, name = "uk_serverId_subscriberId")
+                @UniqueConstraint(columnNames = {"serverId", "subscriberId"}, name = "uk_serverId_subscriberId")
         }
 )
 final class SubscriptionEntity implements Serializable {
@@ -19,9 +19,9 @@ final class SubscriptionEntity implements Serializable {
     private final Integer id;
 
     @ManyToOne(optional = false, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "appServerId")
+    @JoinColumn(name = "serverId")
     @SuppressWarnings("unused")
-    private final AppServerEntity appServer;
+    private final ServerEntity server;
 
     @ManyToOne(optional = false, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "subscriberId")
@@ -34,14 +34,14 @@ final class SubscriptionEntity implements Serializable {
     @SuppressWarnings("unused")
     private SubscriptionEntity() {
         id = null;
-        appServer = null;
+        server = null;
         subscriber = null;
         timestamp = null;
     }
 
-    SubscriptionEntity(final AppServerEntity server, final UserEntity user) {
+    SubscriptionEntity(final ServerEntity server, final UserEntity user) {
         id = null;
-        this.appServer = server;
+        this.server = server;
         this.subscriber = user;
         this.timestamp = Instant.now();
     }

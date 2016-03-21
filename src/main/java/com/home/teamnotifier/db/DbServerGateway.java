@@ -20,12 +20,12 @@ public class DbServerGateway implements ServerGateway {
     }
 
     @Override
-    public Set<AppServerEntity> getImmutableSetOfObservableServers() {
-        final List<AppServerEntity> servers = transactionHelper.transaction(em -> {
+    public Set<ServerEntity> getImmutableSetOfObservableServers() {
+        final List<ServerEntity> servers = transactionHelper.transaction(em -> {
             final CriteriaBuilder cb = em.getCriteriaBuilder();
-            final CriteriaQuery<AppServerEntity> cq = cb.createQuery(AppServerEntity.class);
+            final CriteriaQuery<ServerEntity> cq = cb.createQuery(ServerEntity.class);
 
-            final Root<AppServerEntity> rootEntry = cq.from(AppServerEntity.class);
+            final Root<ServerEntity> rootEntry = cq.from(ServerEntity.class);
             final Predicate withNotEmptyCheckUrl = cb.isNotNull(rootEntry.get("statusUrl"));
 
             return em.createQuery(cq.where(withNotEmptyCheckUrl)).getResultList();

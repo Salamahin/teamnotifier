@@ -9,24 +9,24 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-@Table(schema = "teamnotifier", name = "ActionOnAppServer")
-public class ActionOnAppServerEntity extends ActionEntity implements Serializable {
+@Table(schema = "teamnotifier", name = "ServerActions")
+public class ServerActionEntity extends ActionEntity implements Serializable {
     @ManyToOne(optional = false, cascade = CascadeType.ALL)
     @SuppressWarnings("unused")
-    private final AppServerEntity appServer;
+    private final ServerEntity server;
 
     //for hibernate
     @SuppressWarnings("unused")
-    private ActionOnAppServerEntity() {
-        appServer = null;
+    private ServerActionEntity() {
+        server = null;
     }
 
-    public ActionOnAppServerEntity(final UserEntity actor,
-                                   final AppServerEntity sharedResourceEntity,
-                                   final String details
+    public ServerActionEntity(final UserEntity actor,
+                              final ServerEntity server,
+                              final String details
     ) {
         super(actor, details);
-        this.appServer = sharedResourceEntity;
+        this.server = server;
     }
 
     @Override
@@ -34,12 +34,12 @@ public class ActionOnAppServerEntity extends ActionEntity implements Serializabl
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        ActionOnAppServerEntity that = (ActionOnAppServerEntity) o;
-        return Objects.equals(appServer, that.appServer);
+        ServerActionEntity that = (ServerActionEntity) o;
+        return Objects.equals(server, that.server);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), appServer);
+        return Objects.hash(super.hashCode(), server);
     }
 }

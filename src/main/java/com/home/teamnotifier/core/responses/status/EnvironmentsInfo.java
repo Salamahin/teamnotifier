@@ -13,7 +13,7 @@ import java.util.Objects;
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE,
         creatorVisibility = JsonAutoDetect.Visibility.NONE)
-@JsonTypeName("Environments")
+@JsonTypeName("EnvironmentsInfo")
 public class EnvironmentsInfo {
     private final List<EnvironmentInfo> environments;
 

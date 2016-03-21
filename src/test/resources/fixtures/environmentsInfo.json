@@ -1,18 +1,18 @@
 {
-  "type": "Environments",
+  "type": "EnvironmentsInfo",
   "environments": [
     {
       "type": "EnvironmentInfo",
       "name": "environment",
       "servers": [
         {
-          "type": "AppServer",
+          "type": "ServerInfo",
           "id": 1,
           "name": "server",
           "isOnline": true,
           "resources": [
             {
-              "type": "SharedResource",
+              "type": "ResourceInfo",
               "id": 1,
               "name": "resource",
               "occupationInfo": {

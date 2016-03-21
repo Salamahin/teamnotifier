@@ -2,13 +2,9 @@ package com.home.teamnotifier;
 
 import com.google.common.io.Resources;
 import com.google.inject.Injector;
-import com.home.teamnotifier.db.AppServerEntity;
+import com.home.teamnotifier.db.ServerEntity;
 import com.home.teamnotifier.db.EnvironmentEntity;
 import com.home.teamnotifier.db.TransactionHelper;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URL;
 
 public class NotifierApplicationRunner {
 
@@ -31,22 +27,22 @@ public class NotifierApplicationRunner {
 
     private static EnvironmentEntity getEuEnv(final String name) {
         final EnvironmentEntity eu = new EnvironmentEntity(name);
-        final AppServerEntity sst = eu.newAppServer("sst", "http://google.com");
-        final AppServerEntity wfa = eu.newAppServer("wfa");
-        eu.newAppServer("wfe");
+        final ServerEntity sst = eu.newServer("sst", "http://google.com");
+        final ServerEntity wfa = eu.newServer("wfa");
+        eu.newServer("wfe");
 
-        wfa.newSharedResource("soapb");
-        sst.newSharedResource("abr_tivu");
-        sst.newSharedResource("aei_sks");
-        sst.newSharedResource("aei_default");
-        sst.newSharedResource("archiv_process");
-        sst.newSharedResource("flexprod");
-        sst.newSharedResource("kez_dwhacl");
-        sst.newSharedResource("mat_psl");
-        sst.newSharedResource("nsu_bse2e");
-        sst.newSharedResource("para_process");
-        sst.newSharedResource("pzt_ffm");
-        sst.newSharedResource("prd_ffm");
+        wfa.newResource("soapb");
+        sst.newResource("abr_tivu");
+        sst.newResource("aei_sks");
+        sst.newResource("aei_default");
+        sst.newResource("archiv_process");
+        sst.newResource("flexprod");
+        sst.newResource("kez_dwhacl");
+        sst.newResource("mat_psl");
+        sst.newResource("nsu_bse2e");
+        sst.newResource("para_process");
+        sst.newResource("pzt_ffm");
+        sst.newResource("prd_ffm");
 
         return eu;
     }

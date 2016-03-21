@@ -4,11 +4,11 @@ import com.codahale.metrics.health.HealthCheck;
 import com.google.inject.Inject;
 import com.home.teamnotifier.core.ServerAvailabilityChecker;
 
-public class AppServerStates extends HealthCheck {
+public class ServerStates extends HealthCheck {
     private final ServerAvailabilityChecker checker;
 
     @Inject
-    public AppServerStates(final ServerAvailabilityChecker checker) {
+    public ServerStates(final ServerAvailabilityChecker checker) {
         this.checker = checker;
     }
 

@@ -2,7 +2,7 @@ package com.home.teamnotifier.core;
 
 import com.google.common.collect.ImmutableSet;
 import com.home.teamnotifier.core.responses.notification.Notification;
-import com.home.teamnotifier.db.AppServerEntity;
+import com.home.teamnotifier.db.ServerEntity;
 import com.home.teamnotifier.gateways.ServerGateway;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
@@ -74,7 +74,7 @@ public class ServerAvailabilityCheckerTest {
 
     private static class DummyServerGateway implements ServerGateway {
         @Override
-        public Set<AppServerEntity> getImmutableSetOfObservableServers() {
+        public Set<ServerEntity> getImmutableSetOfObservableServers() {
             return ImmutableSet.of();
         }
     }

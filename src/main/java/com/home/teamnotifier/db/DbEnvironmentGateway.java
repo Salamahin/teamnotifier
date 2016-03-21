@@ -32,7 +32,7 @@ public class DbEnvironmentGateway implements EnvironmentGateway {
 
     @Override
     public EnvironmentsInfo status() {
-        final ImmutableMap<AppServerEntity, Boolean> availabilityMap = serverAvailabilityChecker.getAvailability();
+        final ImmutableMap<ServerEntity, Boolean> availabilityMap = serverAvailabilityChecker.getAvailability();
         return new EnvironmentsInfo(
                 loadListFromDb().stream()
                         .map(e -> toEnvironment(e, availabilityMap))
@@ -53,21 +53,21 @@ public class DbEnvironmentGateway implements EnvironmentGateway {
         });
     }
 
-    private EnvironmentInfo toEnvironment(final EnvironmentEntity entity, final ImmutableMap<AppServerEntity, Boolean> availabilityMap) {
+    private EnvironmentInfo toEnvironment(final EnvironmentEntity entity, final ImmutableMap<ServerEntity, Boolean> availabilityMap) {
         return new EnvironmentInfo(
                 entity.getName(),
-                entity.getImmutableSetOfAppServers().stream()
-                        .map(e -> toAppSever(e, availabilityMap))
+                entity.getImmutableSetOfServers().stream()
+                        .map(e -> toSever(e, availabilityMap))
                         .collect(toList())
         );
     }
 
-    private AppServerInfo toAppSever(final AppServerEntity entity, final ImmutableMap<AppServerEntity, Boolean> availabilityMap) {
-        final Set<SharedResourceInfo> resources = entity.getImmutableSetOfResources().stream()
+    private ServerInfo toSever(final ServerEntity entity, final ImmutableMap<ServerEntity, Boolean> availabilityMap) {
+        final Set<ResourceInfo> resources = entity.getImmutableSetOfResources().stream()
                 .map(this::toResource)
                 .collect(toSet());
 
-        return new AppServerInfo(
+        return new ServerInfo(
                 entity.getId(),
                 entity.getName(),
                 resources,
@@ -76,7 +76,7 @@ public class DbEnvironmentGateway implements EnvironmentGateway {
         );
     }
 
-    private SharedResourceInfo toResource(final ResourceEntity resourceEntity) {
+    private ResourceInfo toResource(final ResourceEntity resourceEntity) {
         final OccupationInfo occupationInfo = resourceEntity.getReservationData()
                 .map(od -> new OccupationInfo(
                                 od.getOccupier().getName(),
@@ -85,7 +85,7 @@ public class DbEnvironmentGateway implements EnvironmentGateway {
                 )
                 .orElse(null);
 
-        return new SharedResourceInfo(
+        return new ResourceInfo(
                 resourceEntity.getId(),
                 resourceEntity.getName(),
                 occupationInfo

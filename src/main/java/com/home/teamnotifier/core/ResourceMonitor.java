@@ -92,12 +92,12 @@ public class ResourceMonitor {
     }
 
     public void newServerAction(final String userName, final int serverId, final String desc) {
-        final BroadcastInformation information = actionsGateway.newActionOnAppSever(userName, serverId, desc);
+        final BroadcastInformation information = actionsGateway.newServerAction(userName, serverId, desc);
         fireNotification(information);
     }
 
     public void newResourceAction(final String userName, final int applicationId, final String desc) {
-        final BroadcastInformation information = actionsGateway.newActionOnSharedResource(userName, applicationId, desc);
+        final BroadcastInformation information = actionsGateway.newResourceAction(userName, applicationId, desc);
         fireNotification(information);
     }
 
@@ -106,7 +106,7 @@ public class ResourceMonitor {
             final ResourceDescription resourceDescription,
             final String desc
     ) {
-        final BroadcastInformation information = actionsGateway.newActionOnSharedResource(userName, resourceDescription, desc);
+        final BroadcastInformation information = actionsGateway.newResourceAction(userName, resourceDescription, desc);
         fireNotification(information);
     }
 }

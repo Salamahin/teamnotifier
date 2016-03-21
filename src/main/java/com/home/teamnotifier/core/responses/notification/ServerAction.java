@@ -1,7 +1,7 @@
 package com.home.teamnotifier.core.responses.notification;
 
 import com.fasterxml.jackson.annotation.*;
-import com.home.teamnotifier.db.AppServerEntity;
+import com.home.teamnotifier.db.ServerEntity;
 import com.home.teamnotifier.db.UserEntity;
 
 import java.time.Instant;
@@ -25,7 +25,7 @@ public class ServerAction extends DescribedUserNotification {
         super(actor, targetId, description, timestamp);
     }
 
-    public ServerAction(final UserEntity actor, final AppServerEntity target, final String description) {
+    public ServerAction(final UserEntity actor, final ServerEntity target, final String description) {
         this(
                 actor.getName(),
                 target.getId(),

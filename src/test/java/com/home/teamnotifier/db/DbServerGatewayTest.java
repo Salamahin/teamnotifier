@@ -36,14 +36,14 @@ public class DbServerGatewayTest {
     public void testGetServersWithNotNullUrls() throws Exception {
 
         final EnvironmentEntity env = getNotPersistedEnvironmentEntity();
-        env.newAppServer("srv1");
-        env.newAppServer("srv2", "http://localhost");
-        env.newAppServer("srv3", "http://localhost:8080");
+        env.newServer("srv1");
+        env.newServer("srv2", "http://localhost");
+        env.newServer("srv3", "http://localhost:8080");
 
         store(env);
 
         final List<String> servers = gateway.getImmutableSetOfObservableServers().stream()
-                .map(AppServerEntity::getName)
+                .map(ServerEntity::getName)
                 .collect(toList());
 
         assertThat(servers).contains("srv2", "srv3").doesNotContain("srv1");

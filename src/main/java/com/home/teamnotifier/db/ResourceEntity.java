@@ -9,7 +9,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Entity
-@Table(schema = "teamnotifier", name = "SharedResource")
+@Table(schema = "teamnotifier", name = "Resource")
 public class ResourceEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -19,7 +19,7 @@ public class ResourceEntity implements Serializable {
     private final String name;
 
     @ManyToOne(optional = false)
-    private final AppServerEntity appServer;
+    private final ServerEntity server;
 
     @ManyToOne(optional = true)
     private UserEntity occupier;
@@ -31,13 +31,13 @@ public class ResourceEntity implements Serializable {
     private ResourceEntity() {
         id = null;
         name = null;
-        appServer = null;
+        server = null;
     }
 
-    ResourceEntity(final AppServerEntity appServer, final String name) {
+    ResourceEntity(final ServerEntity server, final String name) {
         id = null;
         this.name = name;
-        this.appServer = appServer;
+        this.server = server;
     }
 
     public void reserve(final UserEntity userEntity) {
@@ -60,8 +60,8 @@ public class ResourceEntity implements Serializable {
         return name;
     }
 
-    public AppServerEntity getAppServer() {
-        return appServer;
+    public ServerEntity getServer() {
+        return server;
     }
 
     public Optional<ReservationData> getReservationData() {

@@ -1,6 +1,6 @@
 package com.home.teamnotifier.core.responses.notification;
 
-import com.home.teamnotifier.db.AppServerEntity;
+import com.home.teamnotifier.db.ServerEntity;
 import com.home.teamnotifier.db.UserEntity;
 import org.junit.Test;
 
@@ -14,7 +14,7 @@ import static org.mockito.Mockito.mock;
 public class SubscriptionTest {
 
     private Subscription getFineSubscribtion() throws NoSuchFieldException, IllegalAccessException {
-        final AppServerEntity server = mock(AppServerEntity.class);
+        final ServerEntity server = mock(ServerEntity.class);
         doReturn(1).when(server).getId();
 
         final UserEntity userEntity = mock(UserEntity.class);

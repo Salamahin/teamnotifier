@@ -3,7 +3,7 @@ package com.home.teamnotifier.core;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import com.home.teamnotifier.core.responses.notification.ServerState;
-import com.home.teamnotifier.db.AppServerEntity;
+import com.home.teamnotifier.db.ServerEntity;
 import com.home.teamnotifier.gateways.ServerGateway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +25,7 @@ public class ServerAvailabilityChecker {
     private final ServerGateway gateway;
     private final NotificationManager notificationManager;
 
-    private final Map<AppServerEntity, Boolean> statuses;
+    private final Map<ServerEntity, Boolean> statuses;
     private ScheduledFuture<?> routine;
 
     @Inject
@@ -52,7 +52,7 @@ public class ServerAvailabilityChecker {
         }
     }
 
-    private void checkStatusAndNotifyAboutChange(final AppServerEntity serverEntity) {
+    private void checkStatusAndNotifyAboutChange(final ServerEntity serverEntity) {
         final boolean newStatus = isOnline(serverEntity.getStatusURL());
         synchronized (statuses) {
             final Boolean oldStatus = statuses.get(serverEntity);
@@ -72,7 +72,7 @@ public class ServerAvailabilityChecker {
         }
     }
 
-    private void updateStatusAndNotifyAboutChange(final AppServerEntity serverEntity, final boolean newStatus) {
+    private void updateStatusAndNotifyAboutChange(final ServerEntity serverEntity, final boolean newStatus) {
         LOGGER.info("Server [{} {}] status change: is available [{}]",
                 serverEntity.getEnvironment().getName(),
                 serverEntity.getName(),
@@ -85,14 +85,14 @@ public class ServerAvailabilityChecker {
         );
     }
 
-    private ServerState buildMessage(final boolean isOnline, final AppServerEntity server) {
+    private ServerState buildMessage(final boolean isOnline, final ServerEntity server) {
         if(isOnline)
             return ServerState.online(server);
         else
             return ServerState.offline(server);
     }
 
-    private Runnable routine(final Collection<AppServerEntity> servers) {
+    private Runnable routine(final Collection<ServerEntity> servers) {
         return () -> {
             final List<CompletableFuture<Void>> futures = servers.stream()
                     .map(s -> CompletableFuture.runAsync(() -> checkStatusAndNotifyAboutChange(s), executor))
@@ -102,7 +102,7 @@ public class ServerAvailabilityChecker {
         };
     }
 
-    public ImmutableMap<AppServerEntity, Boolean> getAvailability() {
+    public ImmutableMap<ServerEntity, Boolean> getAvailability() {
         synchronized (statuses) {
             return ImmutableMap.copyOf(statuses);
         }

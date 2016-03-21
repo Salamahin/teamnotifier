@@ -14,19 +14,19 @@ import com.home.teamnotifier.gateways.exceptions.NoSuchUser;
 import java.time.Instant;
 
 public interface ActionsGateway {
-    BroadcastInformation<ResourceAction> newActionOnSharedResource(
+    BroadcastInformation<ResourceAction> newResourceAction(
             final String userName,
             final int resourceId,
             final String description
     ) throws NoSuchResource, EmptyDescription, NoSuchUser;
 
-    BroadcastInformation<ResourceAction> newActionOnSharedResource(
+    BroadcastInformation<ResourceAction> newResourceAction(
             final String userName,
             final ResourceDescription resourceDescription,
             final String description
     ) throws NoSuchResource, EmptyDescription, NoSuchUser;
 
-    BroadcastInformation<ServerAction> newActionOnAppSever(
+    BroadcastInformation<ServerAction> newServerAction(
             final String userName,
             final int serverId,
             final String description
