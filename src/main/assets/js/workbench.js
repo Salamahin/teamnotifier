@@ -76,7 +76,7 @@ function Workbench() {
 
     Workbench.prototype.free = function (resource) {
         var xhttp = new XMLHttpRequest();
-        xhttp.open("DELETE", "/teamnotifier/1.0/environment/server/subscribe/" + resource.id, true);
+        xhttp.open("DELETE", "/teamnotifier/1.0/environment/application/reserve/" + resource.id, true);
         xhttp.setRequestHeader("Authorization", "Bearer " + that.token);
         xhttp.onreadystatechange = function () {
             prehandler(xhttp, that.interactionHandler);

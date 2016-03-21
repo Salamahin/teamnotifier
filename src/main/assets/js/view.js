@@ -146,7 +146,9 @@ function View() {
         removeAllChildren(subscriptionContainer);
         const subscribed = isSubscribedOnServer(selectedServer);
         var cbSubscribe = newLabeledCheckbox("subscribe", subscribed, function () {
-            isSubscribedOnServer()? that.unsubscribeHandler(selectedServer) : that.subscribeHandler(selectedServer);
+            subscribed 
+				? that.unsubscribeHandler(selectedServer)  
+				: that.subscribeHandler(selectedServer);
 
         });
         subscriptionContainer.appendChild(cbSubscribe);
@@ -273,7 +275,6 @@ function View() {
 
 	function chooseAServer() {
 		selectedServer = Object.create(currentEnvironments[0].servers[0]);
-		selectedServer.resources.sort(sortFactory('name'));
 
 		that.serverSelectionHandler(selectedServer);
 	}
@@ -298,10 +299,17 @@ function View() {
 			updateCurrentServerFromEnvironments();
     }
 
+	function sortResourcesByName() {
+		for(var i = 0; i<currentEnvironments.length; i++) 
+			for(var j = 0;j<currentEnvironments[i].servers.length; j++) 
+				currentEnvironments[i].servers[j].resources.sort(sortFactory('name'));
+		
+	}
+
     View.prototype.showStatus = function (environments) {
         currentEnvironments = Object.create(environments);
-
         updateCurrentServer();
+		sortResourcesByName();
 
         showNavigation();
         showCurrentServerInfo();
