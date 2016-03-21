@@ -1,0 +1,22 @@
+
+html, body { 
+	height: 100%; 
+	width: 100%; 
+	margin: 0; 
+	padding: 0; 
+}
+#side_menu { 
+	background: #dedede; 
+	width: 200px; 
+	height: 100%; 
+	margin: 0; 
+	padding: 20px; 
+	position: fixed; 
+	overflow: auto; 
+}
+.env_holder > label { color: red; }
+.env_holder > ul { 
+	margin-top: 0; 
+	margin-bottom: 20px; 
+	list-style-type: none; 
+}

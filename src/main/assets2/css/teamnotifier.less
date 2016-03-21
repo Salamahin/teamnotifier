@@ -1,0 +1,32 @@
+@sidemenu_color : #dedede;
+@sidemenu_environment_text_font : red;
+
+html, body {
+	height: 100%;
+	width: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+#side_menu {
+	background: @sidemenu_color;
+	width: 200px;
+	height: 100%;
+	margin: 0;
+	padding: 20px;
+	position: fixed;
+	overflow: auto;
+}
+
+.env_holder > label {
+	color: @sidemenu_environment_text_font;
+}
+
+.env_holder > ul {
+	margin-top: 0;
+	margin-bottom: 20px;
+	list-style-type: none;
+}
+
+.env_holder > ul > li {
+}
