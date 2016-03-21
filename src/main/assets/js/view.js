@@ -49,12 +49,46 @@ function View() {
 		jumpToAnchor("history");
     };
 
+	function showServerActionModal(caption) {
+		document.getElementById("btn_other").onclick = function () {
+			var action = document.getElementById("ibox_other").value;
+			sendResourceActionRequest(resourceId, SELECTED_SRV_ID);
+			jumpToAnchor("environment");
+		};
+
+
+		var header = document.getElementById("action_header");
+		removeAllChildren(header);
+		header.appendChild(document.createTextNode(caption));
+
+		jumpToAnchor("server_actions");
+	}
 
 	function jumpToServerActions () {
         jumpToAnchor("server_actions");
     };
 
-	function jumpToResourceActions () {
+	function jumpToResourceActions (resource) {
+		document.getElementById("btn_deploy").onclick = function () {
+			that.resourceActionHandler(resource, "deploy");
+			that.jumpToEnvironment();
+		};
+
+		document.getElementById("btn_polite").onclick = function () {
+			that.resourceActionHandler(resource, "polite");
+			that.jumpToEnvironment();
+		};
+
+		document.getElementById("btn_resource_other_action").onclick = function () {
+			var action = document.getElementById("ibox_resource_other_action").value;
+			that.resourceActionHandler(resource, action);
+			that.jumpToEnvironment();
+		};
+
+		var header = document.getElementById("action_header");
+		removeAllChildren(header);
+		header.appendChild(document.createTextNode(resource.name));
+
         jumpToAnchor("resource_actions");
     };
 
@@ -198,7 +232,8 @@ function View() {
 
     function getActionButton(isResource, target) {
         var btnAction = newButton("", function () {
-            showActionModal(isResource, target.id, target.name)
+			if(isResource)
+				jumpToResourceActions(target)
         });
         btnAction.className = "round-button action-button tooltip";
         btnAction.setAttribute("tip-text", "new action");
@@ -251,7 +286,7 @@ function View() {
         var occupationInfo = resource.occupationInfo;
 
         var btnHistory = getHistoryButton(true, resource);
-        var btnAction = getActionButton(resource);
+        var btnAction = getActionButton(true, resource);
         var action;
 
         if (!occupationInfo) {
@@ -354,13 +389,21 @@ function View() {
 	}
 }
 
+View.prototype.resourceActionHandler = function(resource, action) {
+	throw new Error("not bound");
+};
+
+View.prototype.serverActionHandler = function(server, action) {
+	throw new Error("not bound");
+};
+
 View.prototype.resourceActionsHistoryHandler = function(resource, from, to) {
 	throw new Error("not bound");
-}
+};
 
 View.prototype.serverActionsHistoryHandler = function(server, from, to) {
 	throw new Error("not bound");
-}
+};
 
 View.prototype.subscribeHandler = function (server) {
     throw new Error("not bound");

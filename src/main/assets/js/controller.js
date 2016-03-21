@@ -91,6 +91,7 @@ function bind() {
     VIEW.freeHandler = WORKBENCH.free;
 	VIEW.serverActionsHistoryHandler = WORKBENCH.getServerActions;
 	VIEW.resourceActionsHistoryHandler = WORKBENCH.getResourceActions;
+	VIEW.resourceActionHandler = WORKBENCH.newResourceAction;
     
     WORKBENCH.statusHandler = VIEW.showStatus;
     WORKBENCH.interactionHandler = onInteractionComplete;
