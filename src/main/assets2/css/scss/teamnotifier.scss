@@ -1,10 +1,3 @@
-@sidemenu_color : #dedede;
-@sidemenu_environment_text_font : red;
-
-@avatar_size : 150px;
-@avatar_background: #eee;
-@avatar_border_width: 10px;
-@avatar_border_color: #ccc;
 
 html, body {
 	height: 100%;
@@ -13,9 +6,13 @@ html, body {
 	padding: 0;
 }
 
+$SIDEPANEL_WIDTH : 150px;
+
 #side_menu {
-	background: @sidemenu_color;
-	width: @avatar_size; 
+	$background_color : #dedede;
+
+	background: $background_color;
+	width: $SIDEPANEL_WIDTH; 
 	height: 100%;
 	margin: 0;
 	padding: 20px;
@@ -24,35 +21,40 @@ html, body {
 }
 
 #avatar { 
-	background: @avatar_background;
-	border-radius: @avatar_size / 2;
-	width: @avatar_size;
-	height: @avatar_size;
-	margin-bottom: 50px;
-}
+	$background_color: #eee;
+	$border_width: 10px;
+	$border_color: #ccc;
 
-#avatar > div {
-	width: @avatar_size - @avatar_border_width - 5px;
-	height: @avatar_size - @avatar_border_width - 5px;
-	border-style: solid;
-	box-shadow: 0 0 8px rgba(0, 0, 0, .8);
-	border-radius: @avatar_size / 2;
-	border-width: @avatar_border_width;
-	border-color: @avatar_border_color;
-	background-position: center center;
-	background-repeat: no-repeat;
-	background-size: @avatar_size @avatar_size;
+	background: $background_color;
+	border-radius: $SIDEPANEL_WIDTH / 2;
+	width: $SIDEPANEL_WIDTH;
+	height: $SIDEPANEL_WIDTH;
+	margin-bottom: 50px;
+
+	div {
+		width: $SIDEPANEL_WIDTH - $border_width - 5px;
+		height: $SIDEPANEL_WIDTH - $border_width - 5px;
+		border-style: solid;
+		box-shadow: 0 0 8px rgba(0, 0, 0, .8);
+		border-radius: $SIDEPANEL_WIDTH / 2;
+		border-width: $border_width;
+		border-color: $border_color;
+		background-position: center center;
+		background-repeat: no-repeat;
+		background-size: $SIDEPANEL_WIDTH $SIDEPANEL_WIDTH;
+	}
 }
 
 .env_holder > label {
-	color: @sidemenu_environment_text_font;
-}
+	$env_name_font_color : red;
 
-.env_holder > ul {
-	margin-top: 0;
-	margin-bottom: 20px;
-	list-style-type: none;
-}
+	label {
+		color: $env_name_font_color;
+	}
 
-.env_holder > ul > li {
+	ul {
+		margin-top: 0;
+		margin-bottom: 20px;
+		list-style-type: none;
+	}
 }
