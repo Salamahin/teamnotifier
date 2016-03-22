@@ -7,6 +7,8 @@ lib/
 
 .gitignore
 .log*
+src/main/assets2/css/*.css
+src/main/assets2/css/*.css.map
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
