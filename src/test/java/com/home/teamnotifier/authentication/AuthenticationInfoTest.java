@@ -13,20 +13,20 @@ public class AuthenticationInfoTest {
             .enable(SerializationFeature.INDENT_OUTPUT);
 
     @Test
-    public void serializesToJSON()
-            throws Exception {
+    public void serializesToJSON() throws Exception {
         final AuthenticationInfo info = new AuthenticationInfo("tokenstr");
         final String expected = MAPPER.writeValueAsString(
-                MAPPER.readValue(fixture("fixtures/authenticationInfo.json"), AuthenticationInfo.class));
+                MAPPER.readValue(fixture("fixtures/authenticationInfo.json"), AuthenticationInfo.class)
+        );
         assertThat(MAPPER.writeValueAsString(info)).isEqualTo(expected);
     }
 
     @Test
-    public void deserializesFromJSON()
-            throws Exception {
+    public void deserializesFromJSON() throws Exception {
         final AuthenticationInfo info = new AuthenticationInfo("tokenstr");
-        assertThat(
-                MAPPER.readValue(fixture("fixtures/authenticationInfo.json"), AuthenticationInfo.class))
-                .isEqualTo(info);
+        assertThat(MAPPER.readValue(
+                fixture("fixtures/authenticationInfo.json"),
+                AuthenticationInfo.class)
+        ).isEqualTo(info);
     }
 }

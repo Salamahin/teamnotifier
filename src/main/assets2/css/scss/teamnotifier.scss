@@ -6,74 +6,140 @@ html, body {
 	padding : 0;
 }
 
-$SIDEPANEL_WIDTH : 150px;
+@mixin rightArrow($color) {
+	$border_width: 10px;
+
+	content           : "";
+	position          : absolute;
+	right             : $border_width;
+	z-index           : 9;
+	border            : solid $border_width transparent;
+	border-left-color : $color;
+}
+
 
 #side_menu {
-	background    : #3A3A3C;
+	$sidepanel_width             : 190px;
+	$sidepangel_background_color : #3A3A3C;
+
+	background : $sidepangel_background_color;
 	height     : 100%;
 	margin     : 0;
 	position   : fixed;
 	overflow   : auto;
-}
 
-#avatar { 
-	$border_width     : 10px;
+	#avatar { 
+		$margin       : 20px;
+		$avatar_size  : $sidepanel_width - 2*$margin;
 
-	margin        : 20px;
-	background    : #EEBA4C;
-	border-radius : $SIDEPANEL_WIDTH / 2;
-	width         : $SIDEPANEL_WIDTH;
-	height        : $SIDEPANEL_WIDTH;
-	margin-bottom : 50px;
+		margin        : $margin;
+		background    : #EEBA4C;
+		border-radius : $avatar_size / 2;
+		width         : $avatar_size;
+		height        : $avatar_size;
 
-	div {
-		width               : $SIDEPANEL_WIDTH;
-		height              : $SIDEPANEL_WIDTH;
-		box-shadow          : 0 0 8px rgba(0, 0, 0, .8);
-		border-radius       : $SIDEPANEL_WIDTH / 2;
-		border-color        : #ccc;
-		background-position : center center;
-		background-repeat   : no-repeat;
-		background-size     : $SIDEPANEL_WIDTH $SIDEPANEL_WIDTH;
-	}
-}
-
-#environments {
-
-	.env_holder {
-		label {
-			font-weight    : bold;
-			display        : block;
-			text-transform : uppercase;
-			width          : 100%;
-			color          : #CCC;
-			margin         : 0px 20px;
+		div {
+			width               : $avatar_size;
+			height              : $avatar_size;
+			box-shadow          : 0 0 8px rgba(0, 0, 0, .8);
+			border-radius       : $avatar_size / 2;
+			border-color        : #ccc;
+			background-position : center center;
+			background-repeat   : no-repeat;
+			background-size     : $sidepanel_width $sidepanel_width;
 		}
+	}
 
-		ul {
-			margin          : 0 0 20px 0;
-			list-style-type : none;
-			width           : 100%;
-			height          : 100%;
-			padding         : 0;
+	#name_holder {
+		margin: 10px auto 30px auto;
+		label {
+			text-align  : center;
+			display     : block;
+			font-weight : bold;
+			font-size   : 16pt;
+		    color       : #FFF;
+		}
+	}
 
-			li {
-				padding        : 10px 20px;
+	#environments {
+		.env_holder {
+
+			.env_name_holder {
+				font-weight    : bold;
 				display        : block;
 				text-transform : uppercase;
-				text-align     : center;
-				font-weight    : bold;
-				cursor         : pointer;
+				width          : 100%;
+				color          : #AAA;
+				margin         : 0 0 10px 20px;
+			}
 
-				&:hover {
-					background : #A9DDD9;
+			ul {
+				margin          : 0 0 30px 0;
+				list-style-type : none;
+				width           : 100%;
+				height          : 100%;
+				padding         : 0;
+
+				li {
+					$font_color : #A9DDD9;
+
+					color          : $font_color;
+					padding        : 10px 20px;
+					text-transform : uppercase;
+					text-align     : center;
+					cursor         : pointer;
+
+					&:hover {
+						font-weight : bold;
+						background  : $font_color;
+						color       : $sidepangel_background_color;
+					}
+
+					&.current_server {
+						color       : $sidepangel_background_color;
+						background  : #23B5AF;
+						font-weight : bold;
+
+						&:before {
+							@include rightArrow($sidepangel_background_color);
+						}
+
+						&:hover {
+							cursor      : default;
+							color       : $sidepangel_background_color;
+							background  : #23B5AF;
+						}
+					}
+
+					div {
+						display: inline-block;
+
+						.status_holder {
+							$online       : $sidepangel_background_color;						
+							$offline      : #E3493B;
+							$size         : 10px;
+
+							position      : absolute;
+							left          : 30px;
+							margin-top: 2*$size;
+							border-radius : $size / 2;
+							width         : $size;
+							height        : $size;
+							margin        : auto;
+
+							&.online {
+								background: $online;
+							}
+
+							&.offline {
+								background: $offline;
+							}
+						}
+					}
 				}
 			}
-
-			.current_server {
-				background : #E3493B;
-			}
 		}
-		
 	}
 }
+
+
