@@ -52,10 +52,10 @@ html, body {
 
 	#name_holder {
 		margin: 10px auto 30px auto;
+
 		label {
 			text-align  : center;
 			display     : block;
-			font-weight : bold;
 			font-size   : 16pt;
 		    color       : #FFF;
 		}
@@ -63,9 +63,9 @@ html, body {
 
 	#environments {
 		.env_holder {
+			font-weight    : bold;
 
 			.env_name_holder {
-				font-weight    : bold;
 				display        : block;
 				text-transform : uppercase;
 				width          : 100%;
@@ -90,7 +90,6 @@ html, body {
 					cursor         : pointer;
 
 					&:hover {
-						font-weight : bold;
 						background  : $font_color;
 						color       : $sidepangel_background_color;
 					}
@@ -98,7 +97,6 @@ html, body {
 					&.current_server {
 						color       : $sidepangel_background_color;
 						background  : #23B5AF;
-						font-weight : bold;
 
 						&:before {
 							@include rightArrow($sidepangel_background_color);
@@ -112,7 +110,8 @@ html, body {
 					}
 
 					div {
-						display: inline-block;
+						display  : inline-block;
+						position : relative;
 
 						.status_holder {
 							$online       : $sidepangel_background_color;						
@@ -120,15 +119,14 @@ html, body {
 							$size         : 10px;
 
 							position      : absolute;
-							left          : 30px;
-							margin-top: 2*$size;
+							right         : $sidepanel_width / 2 - 2 * $size;
+							top           : 50%;
+							margin-top    : -$size / 2;
 							border-radius : $size / 2;
 							width         : $size;
 							height        : $size;
-							margin        : auto;
 
 							&.online {
-								background: $online;
 							}
 
 							&.offline {
