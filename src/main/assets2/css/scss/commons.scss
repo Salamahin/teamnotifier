@@ -1,0 +1,41 @@
+$panel_color: #FEF6EB;
+$panel_gap: 100px;
+
+
+@mixin rightArrow($color) {
+	$border_width: 10px;
+
+	content: "";
+	position: absolute;
+	right: $border_width;
+	z-index: 9;
+	border: solid $border_width transparent;
+	border-left-color: $color;
+}
+
+@mixin avatar($size) {
+	$border_width: 2px;
+	$background_color: #525564;
+	$avatar_size: $size;
+
+	background: $background_color;
+	border-radius: $avatar_size / 2;
+	width: $avatar_size - $border_width;
+	height: $avatar_size - $border_width;
+	border-style: solid;
+	border-color: $background_color;
+	border-width: $border_width;
+
+	div {
+		width: $avatar_size - $border_width;
+		height: $avatar_size - $border_width;
+		border-radius: $avatar_size / 2;
+		background-position: center center;
+		background-repeat: no-repeat;
+		background-size: $size $size;
+	}
+}
+
+@mixin panel_shadow() {
+	box-shadow: 5px 0 5px -5px #333;
+}
