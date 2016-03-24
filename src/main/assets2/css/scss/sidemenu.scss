@@ -26,12 +26,13 @@ $sidepanel_width: 190px;
 			font-size: 16px;
 			color: #525564;
 			font-weight: bold;
+			@include text_shadow();
 		}
 	}
 
 	#environments {
 		.env_holder {
-			$env_name_font_color: #96C0CE;
+			$env_name_font_color: #666666;
 
 			font-weight: bold;
 
@@ -40,6 +41,7 @@ $sidepanel_width: 190px;
 				text-transform: uppercase;
 				color: $env_name_font_color;
 				margin: 0 0 10px 20px;
+				@include text_shadow();
 			}
 
 			ul {
@@ -65,7 +67,7 @@ $sidepanel_width: 190px;
 
 					&.current_server {
 						color: $panel_color;
-						background: #74828F;
+						background: #617c61;
 						cursor: default;
 
 						&:before {

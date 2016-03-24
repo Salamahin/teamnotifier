@@ -10,11 +10,21 @@ $server_info_panel_width: 350px;
 	background-color: $panel_color;
 
 	.action_button{
+		background: #ECECEC;
+		padding: 10px 20px;
 		display: block;
-		text-align: center;
-		margin: 0 auto;
-		height: 30px;
-		width: 150px;
+		font-weight: bold;
+		color:#7f7f7f;
+		text-decoration: none;
+		text-shadow:0px 1px 0px #fff;
+		border:1px solid #a7a7a7;
+		width: 145px;
+		margin:0px auto;
+		transition:box-shadow 0.5s;
+	}
+	a.button i{
+		float: right;
+		margin-top: 2px;
 	}
 
 	.subscribers_holder {
