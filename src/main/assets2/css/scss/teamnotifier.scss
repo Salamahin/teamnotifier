@@ -1,8 +1,7 @@
 @import 'commons.scss';
 @import 'sidemenu.scss';
+@import 'serverInfo.scss';
 
-
-$server_info_panel_width: 350px;
 
 html, body {
 	height: 100%;
@@ -16,37 +15,4 @@ html, body {
 	margin: 0 auto;
 	width: 800px;
 	height: 100%;
-}
-
-#server_info {
-	@include panel_shadow();
-
-	height: 100%;
-	width: $server_info_panel_width;
-	background-color: $panel_color;
-
-	.action_button_holder {
-		a {
-
-		}
-	}
-
-	.subscribers_holder {
-		display: inline-flex;
-
-		.subscriber_avatar {
-			$margin: 5px;
-			$avatar_size: 60px;
-			@include avatar($avatar_size);
-			margin: $margin;
-		}
-	}
-}
-
-#resource_info {
-	@include panel_shadow();
-	
-	height: 100%;
-	width: $server_info_panel_width;
-	background-color: $panel_color;
 }
