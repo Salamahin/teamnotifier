@@ -1,4 +1,4 @@
-$panel_color: #aaa;
+$panel_color: #fff;
 $panel_gap: 0px;
 
 
@@ -43,3 +43,28 @@ $panel_gap: 0px;
 @mixin text_shadow() {
 	text-shadow:0px 1px 0px #fff;
 }
+
+@mixin action_button() {
+	$foreground: #7F7F7F;
+	$background: #F1A94E;
+
+	background: $foreground;
+	color: $background;
+	text-align: center;
+	
+	padding: 10px 20px;
+	display: block;
+	font-weight: bold;
+	text-decoration: none;
+	width: 145px;
+	margin:0px auto;
+	box-shadow: 0px 2px 2px -0px rgba(0, 0, 0, .8);
+
+	&.pressed {
+		background: $background;
+		color: $foreground;
+		box-shadow:none;
+	}
+
+}
+
