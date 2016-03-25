@@ -1,0 +1,11 @@
+@import 'commons.scss';
+
+#avatar {
+	@include avatar(200px);	
+}
+
+.action_button_holder {
+	#subscribtion_button {
+		@include action_button();
+	}
+}
