@@ -8,6 +8,7 @@ $server_info_panel_width: 350px;
 	height: 100%;
 	width: $server_info_panel_width;
 	background-color: $panel_color;
+	padding-top: 10px;
 
 	.action_button {
 		@include action_button();
@@ -19,9 +20,16 @@ $server_info_panel_width: 350px;
 
 		.subscriber_avatar {
 			$margin: 5px;
-			$avatar_size: 60px;
+			$avatar_size: 45px;
 			@include avatar($avatar_size);
 			margin: $margin;
+		}
+	}
+	
+	.server_action_holder {
+		margin-top: 10px;
+		#server_action {
+			@include server_action();
 		}
 	}
 }
