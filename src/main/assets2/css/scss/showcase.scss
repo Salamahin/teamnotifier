@@ -9,3 +9,9 @@
 		@include action_button();
 	}
 }
+
+.server_action_holder {
+	#server_action {
+		@include server_action();
+	}
+}
