@@ -1,7 +1,22 @@
 @import 'commons.scss';
 
-#avatar {
-	@include avatar(200px);	
+$sidemenu_width: 150px;
+
+#sidemenu {
+	position: fixed;
+	float: left;
+	width: $sidemenu_width;
+	height: 100%;
+	background: #ccc;
+}
+
+.avatar_holder {
+	margin: 10px auto;
+	@include avatar($sidemenu_width - 20px);	
+	
+	.name_holder {
+		text-align: center;
+	}
 }
 
 .action_button_holder {
