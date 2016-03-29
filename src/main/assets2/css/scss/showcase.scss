@@ -1,32 +1,134 @@
-@import 'commons.scss';
+$SOFT_RED: #e4644b;
+$WHITE_SMOKE: #F6F6F6;
+$WHITE_SHADOWED: #9F9F9F;
+$METAL_DARK: #474141;
 
-$sidemenu_width: 150px;
-
-#sidemenu {
-	position: fixed;
-	float: left;
-	width: $sidemenu_width;
-	height: 100%;
-	background: #ccc;
+@mixin corner_rounded() {
+	border-radius: 5px;
 }
 
-.avatar_holder {
-	margin: 10px auto;
-	@include avatar($sidemenu_width - 20px);	
-	
-	.name_holder {
-		text-align: center;
+body {
+	font-family: 'Open Sans', Arial, Helvetica, Sans-serif, Verdana, Tahoma;
+}
+
+#environment_list {
+	//REMOVE ME LATER
+	width: 250px;
+	//END
+
+	$server_name_font_size: 18px;
+	$elem_padding: 10px;
+
+	@include corner_rounded;
+	background: $SOFT_RED;
+	position: absolute;
+
+	li {
+		cursor: pointer;
+	}
+
+	ul {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+
+	a {
+		padding-top: $elem_padding;
+		padding-bottom: $elem_padding;
+		text-decoration: none;
+		display: block;
+		font-weight: bold;
+	}
+
+	$basic_offset: 50px;
+
+	.servers_list>li {
+
+		&>div {
+			border-bottom: 1px solid rgba(0, 0, 0, .2);
+
+			&>div {
+				$image_size: 12px;
+
+				position: relative;
+				margin-left: $basic_offset - 3 * $image_size;
+				background: url('../img/srv.png') $image_size $image_size no-repeat;
+				background-position: left;
+
+				a {
+					color: $WHITE_SMOKE;
+					font-size: $server_name_font_size;
+					text-transform: uppercase;
+					padding-left: 2.5 * $image_size;
+					text-shadow: 0px 2px 3px rgba(0,0,0,0.2);
+				}
+
+				&.online {
+					&:after {
+						$diameter: 12px;
+
+						content: "";
+						border-radius: 50%;
+						border: solid $diameter/2 $METAL_DARK;
+						size: 0 0;
+						display: block;
+						position: absolute; 
+						right: 2*$diameter;
+						top: (2 * $elem_padding + $server_name_font_size) / 2 - ($diameter / 2);
+					}
+				}
+
+				&.opened {
+
+					&:before {
+						$arrow_height: 12px;
+						$offset: $elem_padding + $server_name_font_size + $arrow_height;
+
+						content: "";
+						display: block;
+						width: 0; 
+						height: 0; 
+						border: $arrow_height solid transparent;
+						border-top: $arrow_height solid $SOFT_RED; 
+						position: absolute;
+						top: $offset;
+						left: $offset / 2;
+					}
+				}
+			}
+		}
+
+		&:last-of-type div {
+			border-bottom: none;
+		}
+	}
+
+	.resources_list {
+		background: $METAL_DARK;
+
+		li div {
+			position: relative;
+
+			div {
+
+				a {
+					color: $WHITE_SHADOWED;
+					font-size: 14px;
+					padding-left: $basic_offset / 2;
+					text-transform: none;
+				}
+
+				&.selected_resource:before {
+					content: "";
+					display: block;
+					width: 7px; 
+					height: 100%;
+					background: $SOFT_RED;
+					position: absolute;
+				}
+			}
+		}
 	}
 }
 
-.action_button_holder {
-	#subscribtion_button {
-		@include action_button();
-	}
-}
-
-.server_action_holder {
-	#server_action {
-		@include server_action();
-	}
-}
