@@ -7,14 +7,24 @@ $METAL_DARK: #474141;
 	border-radius: 5px;
 }
 
+@mixin bottom_arrow($arrow_height, $top) {
+	content: "";
+	display: block;
+	width: 0; 
+	height: 0; 
+	border: $arrow_height solid transparent;
+	border-top: $arrow_height solid $SOFT_RED; 
+	position: absolute;
+	left: 20px;
+	top: $top;
+}
+
 body {
 	font-family: 'Open Sans', Arial, Helvetica, Sans-serif, Verdana, Tahoma;
 }
 
 #environment_list {
-	//REMOVE ME LATER
 	width: 250px;
-	//END
 
 	$server_name_font_size: 18px;
 	$elem_padding: 10px;
@@ -79,23 +89,6 @@ body {
 					}
 				}
 
-				&.opened {
-
-					&:before {
-						$arrow_height: 12px;
-						$offset: $elem_padding + $server_name_font_size + $arrow_height;
-
-						content: "";
-						display: block;
-						width: 0; 
-						height: 0; 
-						border: $arrow_height solid transparent;
-						border-top: $arrow_height solid $SOFT_RED; 
-						position: absolute;
-						top: $offset;
-						left: $offset / 2;
-					}
-				}
 			}
 		}
 
@@ -105,7 +98,21 @@ body {
 	}
 
 	.resources_list {
+		$arrow_size: 12px;
+
+
 		background: $METAL_DARK;
+		max-height: 0;
+		overflow: hidden;
+		position: relative;
+
+		&.opened {
+			max-height: 500px;
+
+			&:before{
+				@include bottom_arrow($arrow_size, 0);
+			}
+		}
 
 		li div {
 			position: relative;
