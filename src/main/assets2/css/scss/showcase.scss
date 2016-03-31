@@ -132,14 +132,12 @@ body {
 				}
 
 				&.selected_resource:before {
-					$height_perc: 90%;
 					content: "";
 					display: block;
 					width: 7px; 
-					height: $height_perc;
+					height: 100%;
 					background: $SOFT_RED;
 					position: absolute;
-					top: (100% - $height_perc) / 2;
 				}
 			}
 		}
