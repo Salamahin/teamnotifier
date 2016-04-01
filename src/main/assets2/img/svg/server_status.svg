@@ -15,7 +15,7 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="drawing.svg">
+   sodipodi:docname="server_status.svg">
   <defs
      id="defs4" />
   <sodipodi:namedview
@@ -26,7 +26,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.35"
-     inkscape:cx="-195.40794"
+     inkscape:cx="303.04837"
      inkscape:cy="446.71947"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -41,7 +41,7 @@
      inkscape:window-height="724"
      inkscape:window-x="0"
      inkscape:window-y="20"
-     inkscape:window-maximized="0" />
+     inkscape:window-maximized="1" />
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -50,7 +50,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -60,7 +60,10 @@
      id="layer1">
     <g
        id="g4255"
-       transform="translate(811.42857,588.57143)">
+       transform="translate(811.42857,588.57143)"
+       inkscape:export-filename="C:\Users\dgoloshc\idea_workspace\teamnotifier\src\main\assets2\img\offline.png"
+       inkscape:export-xdpi="7.2247705"
+       inkscape:export-ydpi="7.2247705">
       <rect
          inkscape:export-ydpi="5.7798171"
          inkscape:export-xdpi="5.7798171"
@@ -80,7 +83,10 @@
     </g>
     <g
        id="g4259"
-       transform="translate(454.28571,625.71429)">
+       transform="translate(454.28571,625.71429)"
+       inkscape:export-filename="C:\Users\dgoloshc\idea_workspace\teamnotifier\src\main\assets2\img\online.png"
+       inkscape:export-xdpi="7.2247715"
+       inkscape:export-ydpi="7.2247715">
       <rect
          y="-537.64148"
          x="-340"

@@ -50,7 +50,7 @@ body {
 		font-weight: bold;
 	}
 
-	$basic_offset: 50px;
+	$basic_offset: 35px;
 
 	.servers_list>li {
 
@@ -58,19 +58,25 @@ body {
 			border-bottom: 1px solid rgba(0, 0, 0, .2);
 
 			&>div {
-				$image_size: 12px;
-
+				margin-left: 10px;
 				position: relative;
-				margin-left: $basic_offset - 3 * $image_size;
-				background: url('../img/offline.png') $image_size $image_size no-repeat;
-				background-position: left;
 
 				a {
+					margin-left: $basic_offset;
 					color: $WHITE_SMOKE;
 					font-size: $server_name_font_size;
 					text-transform: uppercase;
-					padding-left: 2.5 * $image_size;
 					text-shadow: 0px 2px 3px rgba(0,0,0,0.2);
+				}
+
+				&.offline {
+					background: url('../img/offline.png') no-repeat;
+					background-position: left;
+				}
+
+				&.online {
+					background: url('../img/online.png') no-repeat;
+					background-position: left;
 				}
 
 				&.subscribed {
