@@ -2,7 +2,9 @@
 
 $SOFT_RED: #e4644b;
 $WHITE_SMOKE: #F6F6F6;
+$WHITE_SMOKE_HOVER: #FFFFFF;
 $WHITE_SHADOWED: #9F9F9F;
+$WHITE_SHADOWED_HOVER: #CFCFCF;
 $METAL_DARK: #474141;
 
 @mixin bottom_arrow($arrow_height, $top) {
@@ -69,6 +71,11 @@ body {
 					font-size: $server_name_font_size;
 					text-transform: uppercase;
 					text-shadow: 0px 2px 3px rgba(0,0,0,0.2);
+
+					&:hover {
+						color: $WHITE_SMOKE_HOVER;
+						text-shadow: 0px 2px 3px rgba(0,0,0,0.4);
+					}
 				}
 
 				&.offline {
@@ -140,6 +147,10 @@ body {
 					padding-left: $basic_offset / 2;
 					text-transform: none;
 					width: 100%;
+
+					&:hover {
+						color: $WHITE_SHADOWED_HOVER;
+					}
 				}
 
 
@@ -157,7 +168,7 @@ body {
 				margin: auto 10px;
 
 				&.avatar {
-					@include avatar(30px);
+					@include avatar(30px, $WHITE_SMOKE);
 				}
 			}
 		}

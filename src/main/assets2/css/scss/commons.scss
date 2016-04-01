@@ -13,9 +13,8 @@ $panel_gap: 0px;
 	border-left-color: $color;
 }
 
-@mixin avatar($size) {
+@mixin avatar($size, $background_color) {
 	$border_width: 2px;
-	$background_color: #525564;
 	$avatar_size: $size;
 
 	background: $background_color;
