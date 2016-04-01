@@ -1,81 +1,173 @@
-function openResources(resourcesNode) {
-	if(resourcesNode.classList.contains("opened"))
-		return;
-	
-	resourcesNode.classList.add("opened");
-	
-	var resourceSelectionbuttons = getAllResourceSelectionButtons();
-	for(var i = 0; i<resourceSelectionbuttons.length; i++)
-		deselectResource(getResourceNode(resourceSelectionbuttons[i]));
-}
+function SidepanelViewController() {
+	const that = this;
 
-function closeResources(resourcesNode) {
-	resourcesNode.classList.remove("opened");
-}
+	var cachedEnvironments;
+	var user;
 
-function selectResource(resourceNode) {
-	if(resourceNode.classList.contains("selected_resource"))
-		return;
+	function isUserSubscribedOnServer(server) {
+		return server.subscribers != undefined && server.subscribers.contains(user);
+	}
 
-	resourceNode.classList.add("selected_resource");	
-}
 
-function deselectResource(resourceNode) {
-	resourceNode.classList.remove("selected_resource");
-}
+	function openResources(resourcesNode, serverId) {
+		if(resourcesNode.classList.contains("opened"))
+			return;
+		
+		resourcesNode.classList.add("opened");
+		
+		var resourceSelectionbuttons = getAllResourceSelectionButtons();
+		for(var i = 0; i<resourceSelectionbuttons.length; i++)
+			deselectResource(getResourceNode(resourceSelectionbuttons[i]));
 
-function getResourcesList(button) {
-	return button.parentNode.parentNode.childNodes[3];
-}
+		serverSelectionHandler(serverId);
+	}
 
-function getResourceNode(button) {
-	return button.parentNode;
-}
+	function closeResources(resourcesNode) {
+		resourcesNode.classList.remove("opened");
+	}
 
-function getAllServerSelectionButtons() {
-	return document.querySelectorAll(".server_selection_button");
-}
+	function selectResource(resourceNode, resourceId) {
+		if(resourceNode.classList.contains("selected_resource"))
+			return;
 
-function installServerSelectionHandlers() {
-	var buttons = getAllServerSelectionButtons();
+		resourceNode.classList.add("selected_resource");	
+		resourceSelectionHandler(resourceId);
+	}
 
-	for(var i = 0; i<buttons.length; i++) {
-		const b=buttons[i];
-		b.onclick = function() {
-			for(var j = 0; j<buttons.length; j++) {
-                var resourcesNode = getResourcesList(buttons[j]);
-				if(b == buttons[j])
-					openResources(resourcesNode);
-				else
-					closeResources(resourcesNode);
+	function deselectResource(resourceNode) {
+		resourceNode.classList.remove("selected_resource");
+	}
+
+	function getResourcesList(button) {
+		return button.parentNode.parentNode.childNodes[3];
+	}
+
+	function getResourceNode(button) {
+		return button.parentNode;
+	}
+
+	function getAllServerSelectionButtons() {
+		return document.querySelectorAll(".server_selection_button");
+	}
+
+	//function installServerSelectionHandlers() {
+	//	var buttons = getAllServerSelectionButtons();
+
+	//	for(var i = 0; i<buttons.length; i++) {
+	//		const b=buttons[i];
+	//		b.onclick = function() {
+	//			for(var j = 0; j<buttons.length; j++) {
+	//				var resourcesNode = getResourcesList(buttons[j]);
+	//				if(b == buttons[j])
+	//					openResources(resourcesNode);
+	//				else
+	//					closeResources(resourcesNode);
+	//			}
+	//		}
+	//	}
+	//}
+
+	function getAllResourceSelectionButtons() {
+		return document.querySelectorAll(".resource_selection_button");
+	}
+
+	function installResourceSelectionHandlers() {
+		var buttons = getAllResourceSelectionButtons();
+
+		for(var i = 0; i<buttons.length; i++) {
+			const b=buttons[i];
+			b.onclick = function() {
+				for(var j = 0; j<buttons.length; j++) {
+					var resourceNode = getResourceNode(buttons[j]);
+					if(b == buttons[j])
+						selectResource(resourceNode);
+					else
+						deselectResource(resourceNode);
+				}
 			}
+	
+	}
+
+	function rebuildEnvironmentView(environments) {
+		for(var i = 0; i<environments.length; i++)
+			rebuildEnvironmentView(environments[i]);
+
+		that.environments = environments;
+	}
+
+	function rebuildEnvironmentView(environment) {
+		var servers = environments.servers;
+		for(var i = 0; i < servers.length; i++)
+			rebuildServerAndEnvironment(environment, servers[i]);
+		
+	}
+
+	function buildEnverironmentServerListItemName(environment, server) {
+		return environment.name + " " + server.name;
+	}
+
+	function findPresentListElemForEnvironmentAndServer(environment, server) {
+		var elems = document.querySelectorAll("#environments_list ul li");
+		for(var i = 0; i<elems.length; i++) {
+			var button = elems[i].querySelector("div div:nth-child(1)");
+			if(button.nodeValue == buildEnverironmentServerListItemName(environment, server))
+				return button;
 		}
+		return undefined;
+	}
+
+	function createNewListElemForEnvironmentAndServer(environemnt, server) {
+		var selectionButton = document.createElement("a");
+		selectionButton.href = "#";
+		selectionButton.classList.add("server_selection_button");
+
+		var innerDiv = document.createElement("div");
+		if(isUserSubscribedOnServer(server))
+			innerDiv.classList.add("subscribed");
+		innerDiv.childNodes.add(selectionButton);
+		innerDiv.childNodes.add(createNewResourcesList(server.resources));
+
+		var outerDiv = document.createElement("div");
+		outerDiv.childNodes.add(innerDiv);
+
+		return outerDiv;
+	}
+
+	function createNewResourcesList(resources) {
+		var list = document.createElement("ul");
+		for(var i = 0; i<resources.length; i++)
+			list.childNodes.add(createNewResource(resources[i]));
+		return list;
+	}
+
+	function getAvatarUrl(user) {
+		return "https://robohash.org/teamnotifier_" _ user;
+	}
+
+	function createNewResource(resource) {
+		//TODO	
+	}
+
+	SidepanelViewController.prototype.init = function () {
+		installServerSelectionHandlers();
+		installResourceSelectionHandlers();
+	}
+
+	SidepanelViewController.prototype.setUser = function(user) {
+		this.user = user;
 	}
 }
 
-function getAllResourceSelectionButtons() {
-	return document.querySelectorAll(".resource_selection_button");
+SidepanelViewController.prototype.serverSelectionHandler(serverId) {
+	throw new Error("not binded");
 }
 
-function installResourceSelectionHandlers() {
-	var buttons = getAllResourceSelectionButtons();
-
-	for(var i = 0; i<buttons.length; i++) {
-		const b=buttons[i];
-		b.onclick = function() {
-			for(var j = 0; j<buttons.length; j++) {
-                var resourceNode = getResourceNode(buttons[j]);
-				if(b == buttons[j])
-					selectResource(resourceNode);
-				else
-					deselectResource(resourceNode);
-			}
-		}
-	}
+SidepanelViewController.prototype.resourceSelectionHandler(resourceId) {
+	throw new Error("not binded");
 }
 
 
 window.onload = function() {
-	installServerSelectionHandlers();
-	installResourceSelectionHandlers();
+	var sidepanel = new SidepanelViewController();
+	sidepanel.init();
 }
