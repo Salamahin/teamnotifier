@@ -5,7 +5,7 @@ function SidepanelViewController() {
 	var user;
 
 	function isUserSubscribedOnServer(server) {
-		return server.subscribers != undefined && server.subscribers.contains(user);
+		return server.subscribers != undefined && server.subscribers.includes(user);
 	}
 
 
@@ -15,10 +15,7 @@ function SidepanelViewController() {
 		
 		resourcesNode.classList.add("opened");
 		
-		var resourceSelectionbuttons = getAllResourceSelectionButtons();
-		for(var i = 0; i<resourceSelectionbuttons.length; i++)
-			deselectResource(getResourceNode(resourceSelectionbuttons[i]));
-
+		deselectOtherResources();
 		serverSelectionHandler(serverId);
 	}
 
@@ -31,11 +28,15 @@ function SidepanelViewController() {
 			return;
 
 		resourceNode.classList.add("selected_resource");	
+		deselectOtherResources(resourceNode);
 		resourceSelectionHandler(resourceId);
 	}
 
-	function deselectResource(resourceNode) {
-		resourceNode.classList.remove("selected_resource");
+	function deselectOtherResources(resourceNode) {
+		var resources = getAllResourceSelectionButtons();
+		for(var i = 0; i<resources.length; i++)
+			if(resources[i] != resourceNode)
+				resources[i].classList.remove("selected_resource");
 	}
 
 	function getResourcesList(button) {
@@ -50,45 +51,11 @@ function SidepanelViewController() {
 		return document.querySelectorAll(".server_selection_button");
 	}
 
-	//function installServerSelectionHandlers() {
-	//	var buttons = getAllServerSelectionButtons();
-
-	//	for(var i = 0; i<buttons.length; i++) {
-	//		const b=buttons[i];
-	//		b.onclick = function() {
-	//			for(var j = 0; j<buttons.length; j++) {
-	//				var resourcesNode = getResourcesList(buttons[j]);
-	//				if(b == buttons[j])
-	//					openResources(resourcesNode);
-	//				else
-	//					closeResources(resourcesNode);
-	//			}
-	//		}
-	//	}
-	//}
-
 	function getAllResourceSelectionButtons() {
 		return document.querySelectorAll(".resource_selection_button");
 	}
 
-	function installResourceSelectionHandlers() {
-		var buttons = getAllResourceSelectionButtons();
-
-		for(var i = 0; i<buttons.length; i++) {
-			const b=buttons[i];
-			b.onclick = function() {
-				for(var j = 0; j<buttons.length; j++) {
-					var resourceNode = getResourceNode(buttons[j]);
-					if(b == buttons[j])
-						selectResource(resourceNode);
-					else
-						deselectResource(resourceNode);
-				}
-			}
-	
-	}
-
-	function rebuildEnvironmentView(environments) {
+	function rebuildEnvironmentsView(environments) {
 		for(var i = 0; i<environments.length; i++)
 			rebuildEnvironmentView(environments[i]);
 
@@ -96,10 +63,20 @@ function SidepanelViewController() {
 	}
 
 	function rebuildEnvironmentView(environment) {
-		var servers = environments.servers;
+		var servers = environment.servers;
 		for(var i = 0; i < servers.length; i++)
 			rebuildServerAndEnvironment(environment, servers[i]);
-		
+	}
+
+	function rebuildServerAndEnvironment(environment, server) {
+		var node = findPresentListElemForEnvironmentAndServer(environment, server);
+		if(node) {
+			//TODO
+		} else {
+			node = createNewListElemForEnvironmentAndServer(environment, server);
+			var serverList = document.querySelectorAll("#environment_list .servers_list:nth-child(1)")[0];
+			serverList.appendChild(node);
+		}
 	}
 
 	function buildEnverironmentServerListItemName(environment, server) {
@@ -110,13 +87,13 @@ function SidepanelViewController() {
 		var elems = document.querySelectorAll("#environments_list ul li");
 		for(var i = 0; i<elems.length; i++) {
 			var button = elems[i].querySelector("div div:nth-child(1)");
-			if(button.nodeValue == buildEnverironmentServerListItemName(environment, server))
+			if(button.innerHTML== buildEnverironmentServerListItemName(environment, server))
 				return button;
 		}
 		return undefined;
 	}
 
-	function createNewListElemForEnvironmentAndServer(environemnt, server) {
+	function createNewListElemForEnvironmentAndServer(environment, server) {
 		const serverId = server.id;
 
 		var resourcesList = createNewResourcesList(server.resources);
@@ -124,7 +101,7 @@ function SidepanelViewController() {
 		var selectionButton = document.createElement("a");
 		selectionButton.href = "#";
 		selectionButton.classList.add("server_selection_button");
-		selectionButton.textValue = buildEnverironmentServerListItemName(environment, server);
+		selectionButton.innerHTML= buildEnverironmentServerListItemName(environment, server);
 		selectionButton.onclick = function() {
 			openResources(resourcesList, serverId);
 		};
@@ -132,27 +109,29 @@ function SidepanelViewController() {
 		var innerDiv = document.createElement("div");
 		if(isUserSubscribedOnServer(server))
 			innerDiv.classList.add("subscribed");
-		innerDiv.childNodes.add(selectionButton);
-		innerDiv.childNodes.add(resourcesList);
+		innerDiv.appendChild(selectionButton);
 
 		var outerDiv = document.createElement("div");
-		outerDiv.childNodes.add(innerDiv);
+		outerDiv.appendChild(innerDiv);
+		outerDiv.appendChild(resourcesList);
 
-		return outerDiv;
+		var listElem = document.createElement("li");
+		listElem.appendChild(outerDiv);
+
+		return listElem;
 	}
 
-	function createNewResourcesList(resources) {
-		var list = document.createElement("ul");
-		list.classList.add("resource_list");
+	function createNewResourcesList(resources) { var list = document.createElement("ul");
+		list.classList.add("resources_list");
 
 		for(var i = 0; i<resources.length; i++)
-			list.childNodes.add(createNewResource(resources[i]));
+			list.appendChild(createNewResource(resources[i]));
 
 		return list;
 	}
 
 	function getAvatarUrl(user) {
-		return "https://robohash.org/teamnotifier_" _ user;
+		return "https://robohash.org/teamnotifier_" + user;
 	}
 
 	function createNewResource(resource) {
@@ -160,55 +139,60 @@ function SidepanelViewController() {
 
 		var resourceSelectionButton = document.createElement("a");
 		resourceSelectionButton.href = "#";
-		resourceSelectionButton.textValue = resource.name;
-		resourceSelectionButton.classList.add("resource_selection_button"):
+		resourceSelectionButton.innerHTML= resource.name;
+		resourceSelectionButton.classList.add("resource_selection_button");
 		resourceSelectionButton.onclick = function() {
 			selectResource(resourceSelectionButton, resourceId);
 		};
 		
 		var innerDiv = document.createElement("div");
-		innerDiv.childElements.add(resourceSelectionButton);
+		innerDiv.appendChild(resourceSelectionButton);
 
 		var outerDiv = document.createElement("div");
-		outerDiv.childElements.add(innerDiv);
-		//TODO add avatar if reserved
+		outerDiv.appendChild(innerDiv);
+		if(resource.occupationInfo) {
+			var avatar = createNewAvatar(resource.occupationInfo.userName);
+			outerDiv.appendChild(avatar);
+		}
 
 		var listItem = document.createElement("li");
-		listItem.childElements.add(outerDiv);
+		listItem.appendChild(outerDiv);
 
 		return listItem;
 	}
 
 	function createNewAvatar(user) {
 		var innerDiv = document.createElement("div");
-		div.style.background-imange = getAvatarUrl(user);
+		innerDiv.style.backgroundImange = getAvatarUrl(user);
 		
 		var outerDiv = document.createElement("div");
-		outerDiv.childNodes.add(innerDiv);
+		outerDiv.appendChild(innerDiv);
 
 		return outerDiv;
-	}
-
-	SidepanelViewController.prototype.init = function () {
-		installServerSelectionHandlers();
-		installResourceSelectionHandlers();
 	}
 
 	SidepanelViewController.prototype.setUser = function(user) {
 		this.user = user;
 	}
+
+	SidepanelViewController.prototype.setEnvironments = function(env) {
+		rebuildEnvironmentsView(env);
+	}
 }
 
-SidepanelViewController.prototype.serverSelectionHandler(serverId) {
+SidepanelViewController.prototype.serverSelectionHandler = function(serverId) {
 	throw new Error("not binded");
 }
 
-SidepanelViewController.prototype.resourceSelectionHandler(resourceId) {
+SidepanelViewController.prototype.resourceSelectionHandler = function(resourceId) {
 	throw new Error("not binded");
 }
 
+const jsonStr = '{"type":"EnvironmentsInfo","environments":[{"type":"EnvironmentInfo","name":"environment","servers":[{"type":"ServerInfo","id":1,"name":"server","isOnline":true,"resources":[{"type":"ResourceInfo","id":1,"name":"resource","occupationInfo":{"type":"OccupationInfo","userName":"user","occupationTime":"2015-11-05T23:44:40.220Z"}}],"subscribers":["user"]}]}]}';
 
 window.onload = function() {
 	var sidepanel = new SidepanelViewController();
-	sidepanel.init();
+
+	var env = JSON.parse(jsonStr); 
+	sidepanel.setEnvironments(env.environments);
 }
