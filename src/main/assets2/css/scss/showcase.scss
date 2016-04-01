@@ -1,3 +1,5 @@
+@import 'commons.scss';
+
 $SOFT_RED: #e4644b;
 $WHITE_SMOKE: #F6F6F6;
 $WHITE_SHADOWED: #9F9F9F;
@@ -127,15 +129,19 @@ body {
 
 		li div {
 			position: relative;
+			display: inline-flex;
+			width: 100%;
 
-			div {
+			& div:nth-child(1) {
 
 				a {
 					color: $WHITE_SHADOWED;
 					font-size: 14px;
 					padding-left: $basic_offset / 2;
 					text-transform: none;
+					width: 100%;
 				}
+
 
 				&.selected_resource:before {
 					content: "";
@@ -144,6 +150,14 @@ body {
 					height: 100%;
 					background: $SOFT_RED;
 					position: absolute;
+				}
+			}
+
+			& div:nth-child(2) {
+				margin: auto 10px;
+
+				&.avatar {
+					@include avatar(30px);
 				}
 			}
 		}
