@@ -117,15 +117,23 @@ function SidepanelViewController() {
 	}
 
 	function createNewListElemForEnvironmentAndServer(environemnt, server) {
+		const serverId = server.id;
+
+		var resourcesList = createNewResourcesList(server.resources);
+
 		var selectionButton = document.createElement("a");
 		selectionButton.href = "#";
 		selectionButton.classList.add("server_selection_button");
+		selectionButton.textValue = buildEnverironmentServerListItemName(environment, server);
+		selectionButton.onclick = function() {
+			openResources(resourcesList, serverId);
+		};
 
 		var innerDiv = document.createElement("div");
 		if(isUserSubscribedOnServer(server))
 			innerDiv.classList.add("subscribed");
 		innerDiv.childNodes.add(selectionButton);
-		innerDiv.childNodes.add(createNewResourcesList(server.resources));
+		innerDiv.childNodes.add(resourcesList);
 
 		var outerDiv = document.createElement("div");
 		outerDiv.childNodes.add(innerDiv);
@@ -135,8 +143,11 @@ function SidepanelViewController() {
 
 	function createNewResourcesList(resources) {
 		var list = document.createElement("ul");
+		list.classList.add("resource_list");
+
 		for(var i = 0; i<resources.length; i++)
 			list.childNodes.add(createNewResource(resources[i]));
+
 		return list;
 	}
 
@@ -145,7 +156,37 @@ function SidepanelViewController() {
 	}
 
 	function createNewResource(resource) {
-		//TODO	
+		const resourceId = resource.id;
+
+		var resourceSelectionButton = document.createElement("a");
+		resourceSelectionButton.href = "#";
+		resourceSelectionButton.textValue = resource.name;
+		resourceSelectionButton.classList.add("resource_selection_button"):
+		resourceSelectionButton.onclick = function() {
+			selectResource(resourceSelectionButton, resourceId);
+		};
+		
+		var innerDiv = document.createElement("div");
+		innerDiv.childElements.add(resourceSelectionButton);
+
+		var outerDiv = document.createElement("div");
+		outerDiv.childElements.add(innerDiv);
+		//TODO add avatar if reserved
+
+		var listItem = document.createElement("li");
+		listItem.childElements.add(outerDiv);
+
+		return listItem;
+	}
+
+	function createNewAvatar(user) {
+		var innerDiv = document.createElement("div");
+		div.style.background-imange = getAvatarUrl(user);
+		
+		var outerDiv = document.createElement("div");
+		outerDiv.childNodes.add(innerDiv);
+
+		return outerDiv;
 	}
 
 	SidepanelViewController.prototype.init = function () {
