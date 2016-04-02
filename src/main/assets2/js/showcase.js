@@ -16,7 +16,7 @@ function SidepanelViewController() {
 		resourcesNode.classList.add("opened");
 		
 		deselectOtherResources();
-		serverSelectionHandler(serverId);
+		that.serverSelectionHandler(serverId);
 	}
 
 	function closeResources(resourcesNode) {
@@ -29,7 +29,7 @@ function SidepanelViewController() {
 
 		resourceNode.classList.add("selected_resource");	
 		deselectOtherResources(resourceNode);
-		resourceSelectionHandler(resourceId);
+		that.resourceSelectionHandler(resourceId);
 	}
 
 	function deselectOtherResources(resourceNode) {
@@ -163,9 +163,10 @@ function SidepanelViewController() {
 
 	function createNewAvatar(user) {
 		var innerDiv = document.createElement("div");
-		innerDiv.style.backgroundImange = getAvatarUrl(user);
+		innerDiv.style.backgroundImage = "url('" + getAvatarUrl(user) + "')";
 		
 		var outerDiv = document.createElement("div");
+		outerDiv.classList.add("avatar");
 		outerDiv.appendChild(innerDiv);
 
 		return outerDiv;
@@ -181,11 +182,11 @@ function SidepanelViewController() {
 }
 
 SidepanelViewController.prototype.serverSelectionHandler = function(serverId) {
-	throw new Error("not binded");
+	//throw new Error("not binded");
 }
 
 SidepanelViewController.prototype.resourceSelectionHandler = function(resourceId) {
-	throw new Error("not binded");
+	//throw new Error("not binded");
 }
 
 const jsonStr = '{"type":"EnvironmentsInfo","environments":[{"type":"EnvironmentInfo","name":"environment","servers":[{"type":"ServerInfo","id":1,"name":"server","isOnline":true,"resources":[{"type":"ResourceInfo","id":1,"name":"resource","occupationInfo":{"type":"OccupationInfo","userName":"user","occupationTime":"2015-11-05T23:44:40.220Z"}}],"subscribers":["user"]}]}]}';
