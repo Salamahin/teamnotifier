@@ -10,9 +10,18 @@
     <properties>
         <dropwizard.version>0.9.2</dropwizard.version>
         <hibernate.version>5.1.0.Final</hibernate.version>
+
         <dist.dir>${basedir}/dist</dist.dir>
-        <assets.src>${basedir}/src/main/assets</assets.src>
         <assets.dist>${dist.dir}/assets</assets.dist>
+
+        <assets.html.src>${basedir}/src/main/web</assets.html.src>
+        <assets.html.dist>${assets.dist}</assets.html.dist>
+        <assets.img.src>${basedir}/src/main/web/img</assets.img.src>
+        <assets.img.dist>${assets.dist}/img</assets.img.dist>
+        <assets.scss.src>${basedir}/src/main/web/scss</assets.scss.src>
+        <assets.css.dist>${assets.dist}/css</assets.css.dist>
+        <assets.js.src>${basedir}/src/main/web/js</assets.js.src>
+        <assets.js.dist>${assets.dist}/js</assets.js.dist>
     </properties>
 
     <dependencies>
@@ -173,27 +182,48 @@
                 </executions>
             </plugin>
             <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>2.7</version>
+                <groupId>org.jasig.maven</groupId>
+                <artifactId>sass-maven-plugin</artifactId>
+                <version>1.1.1</version>
                 <executions>
                     <execution>
-                        <id>copy-resources</id>
-                        <phase>package</phase>
+                        <phase>prepare-package</phase>
                         <goals>
-                            <goal>copy-resources</goal>
+                            <goal>update-stylesheets</goal>
                         </goals>
-                        <configuration>
-                            <outputDirectory>${assets.dist}</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${assets.src}</directory>
-                                    <filtering>true</filtering>
-                                </resource>
-                            </resources>
-                        </configuration>
                     </execution>
                 </executions>
+                <configuration>
+                    <resources>
+                        <resource>
+                            <source> <directory>${assets.scss.src}</directory> </source>
+                            <destination>${assets.css.dist}</destination>
+                        </resource>
+                    </resources>
+                </configuration>
             </plugin>
+            <!--<plugin>-->
+                <!--<artifactId>maven-resources-plugin</artifactId>-->
+                <!--<version>2.7</version>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<id>copy-resources</id>-->
+                        <!--<phase>package</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>copy-resources</goal>-->
+                        <!--</goals>-->
+                        <!--<configuration>-->
+                            <!--<outputDirectory>${assets.dist}</outputDirectory>-->
+                            <!--<resources>-->
+                                <!--<resource>-->
+                                    <!--<directory>${assets.src}</directory>-->
+                                    <!--<filtering>true</filtering>-->
+                                <!--</resource>-->
+                            <!--</resources>-->
+                        <!--</configuration>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
