@@ -1,9 +1,13 @@
 .idea/
 target/
+dist/
 
-.gitignore
+*.iml
+*.mv.db
 *.log
+*.jar
+
 src/main/assets2/css/*.css
 src/main/assets2/css/*.css.map
 
-*.jar
+.gitignore
