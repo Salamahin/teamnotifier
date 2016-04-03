@@ -130,6 +130,7 @@
     </dependencies>
 
 
+
     <build>
         <plugins>
             <plugin>
@@ -182,25 +183,21 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.jasig.maven</groupId>
+                <groupId>nl.geodienstencentrum.maven</groupId>
                 <artifactId>sass-maven-plugin</artifactId>
-                <version>1.1.1</version>
                 <executions>
                     <execution>
-                        <phase>prepare-package</phase>
+                        <id>generate-css</id>
+                        <phase>generate-resources</phase>
                         <goals>
                             <goal>update-stylesheets</goal>
                         </goals>
+                        <configuration>
+                            <sassSourceDirectory>${assets.scss.src}</sassSourceDirectory>
+                            <destination>${assets.css.dist}</destination>
+                        </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <resources>
-                        <resource>
-                            <source> <directory>${assets.scss.src}</directory> </source>
-                            <destination>${assets.css.dist}</destination>
-                        </resource>
-                    </resources>
-                </configuration>
             </plugin>
             <!--<plugin>-->
                 <!--<artifactId>maven-resources-plugin</artifactId>-->
