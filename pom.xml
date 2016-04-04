@@ -18,7 +18,8 @@
         <assets.html.dist>${assets.dist}</assets.html.dist>
         <assets.img.src>${basedir}/src/main/web/img</assets.img.src>
         <assets.img.dist>${assets.dist}/img</assets.img.dist>
-        <assets.scss.src>${basedir}/src/main/web/scss</assets.scss.src>
+        <assets.scss.src>${basedir}/src/main/web/css/scss</assets.scss.src>
+        <assets.scss.dist>${basedir}/src/main/web/css</assets.scss.dist>
         <assets.css.dist>${assets.dist}/css</assets.css.dist>
         <assets.js.src>${basedir}/src/main/web/js</assets.js.src>
         <assets.js.dist>${assets.dist}/js</assets.js.dist>
@@ -185,6 +186,7 @@
             <plugin>
                 <groupId>nl.geodienstencentrum.maven</groupId>
                 <artifactId>sass-maven-plugin</artifactId>
+                <version>2.14</version>
                 <executions>
                     <execution>
                         <id>generate-css</id>
@@ -193,34 +195,76 @@
                             <goal>update-stylesheets</goal>
                         </goals>
                         <configuration>
-                            <sassSourceDirectory>${assets.scss.src}</sassSourceDirectory>
+                            <sassSourceDirectory>src/main/web/css/scss</sassSourceDirectory>
                             <destination>${assets.css.dist}</destination>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-            <!--<plugin>-->
-                <!--<artifactId>maven-resources-plugin</artifactId>-->
-                <!--<version>2.7</version>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<id>copy-resources</id>-->
-                        <!--<phase>package</phase>-->
-                        <!--<goals>-->
-                            <!--<goal>copy-resources</goal>-->
-                        <!--</goals>-->
-                        <!--<configuration>-->
-                            <!--<outputDirectory>${assets.dist}</outputDirectory>-->
-                            <!--<resources>-->
-                                <!--<resource>-->
-                                    <!--<directory>${assets.src}</directory>-->
-                                    <!--<filtering>true</filtering>-->
-                                <!--</resource>-->
-                            <!--</resources>-->
-                        <!--</configuration>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-            <!--</plugin>-->
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.7</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>copy-js</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${assets.js.dist}</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${assets.js.src}</directory>
+                                    <includes>
+                                        <include>**/*.js</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-html</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${assets.html.dist}</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${assets.html.src}</directory>
+                                    <includes>
+                                        <include>**/*.htm</include>
+                                        <include>**/*.html</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-img</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${assets.img.dist}</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${assets.img.src}</directory>
+                                    <includes>
+                                        <include>**/*.png</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -230,6 +274,7 @@
                     <target>1.8</target>
                     <testSource>1.8</testSource>
                     <testTarget>1.8</testTarget>
+                    <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
             <plugin>

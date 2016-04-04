@@ -15,20 +15,21 @@ var NOTIFIER;
 var AUTHENTICATOR;
 var STORAGE;
 var VIEW;
+var SIDEPANEL_VIEW;
 
 var ENVIRONMENTS;
 var CURRENT_SERVER;
 
 function onAuthenticationSuccess(login, token) {
     STORAGE.store(login, token);
-    VIEW.jumpToEnvironment();
+    VIEW.mainMode();
 
     VIEW.login = login;
     NOTIFIER.token = token;
     WORKBENCH.token = token;
 
     NOTIFIER.connect();
-    VIEW.jumpToEnvironment();
+    VIEW.mainMode();
 }
 
 function onServerChange(server) {
@@ -52,7 +53,7 @@ function onNotifierError(error) {
 
 function onNotifierDisconnect() {
     console.log("notifier disconnected");
-    VIEW.jumpToAuthentication();
+    VIEW.authenticationMode();
 }
 
 function onNotifierEvent(event) {
@@ -60,11 +61,10 @@ function onNotifierEvent(event) {
 }
 
 function init() {
-    VIEW.init();
     NOTIFIER.requestPermissions();
 
     if(!STORAGE.token || !STORAGE.login)
-        VIEW.jumpToAuthentication();
+        VIEW.authenticationMode();
     else
         onAuthenticationSuccess(STORAGE.login, STORAGE.token);
 }
@@ -92,6 +92,8 @@ function bind() {
 	VIEW.serverActionsHistoryHandler = WORKBENCH.getServerActions;
 	VIEW.resourceActionsHistoryHandler = WORKBENCH.getResourceActions;
 	VIEW.resourceActionHandler = WORKBENCH.newResourceAction;
+
+    VIEW.setSidepanelView(SIDEPANEL_VIEW);
     
     WORKBENCH.statusHandler = VIEW.showStatus;
     WORKBENCH.interactionHandler = onInteractionComplete;
@@ -118,5 +120,9 @@ include("js/storage.js", function () {
 });
 include("js/view.js", function () {
     VIEW = new View();
+    bind();
+});
+include("js/sidepanelView.js", function () {
+    SIDEPANEL_VIEW = new SidepanelView();
     bind();
 });

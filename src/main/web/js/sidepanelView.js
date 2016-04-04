@@ -1,4 +1,4 @@
-function SidepanelViewController() {
+function SidepanelView() {
 	const that = this;
 
 	var cachedEnvironments;
@@ -8,8 +8,7 @@ function SidepanelViewController() {
 		return server.subscribers != undefined && server.subscribers.includes(user);
 	}
 
-
-	function openResources(resourcesNode, serverId) {
+	function openResources(resourcesNode, server) {
 		if(resourcesNode.classList.contains("opened"))
 			return;
 		
@@ -23,13 +22,13 @@ function SidepanelViewController() {
 		resourcesNode.classList.remove("opened");
 	}
 
-	function selectResource(resourceNode, resourceId) {
+	function selectResource(resourceNode, resource) {
 		if(resourceNode.classList.contains("selected_resource"))
 			return;
 
 		resourceNode.classList.add("selected_resource");	
 		deselectOtherResources(resourceNode);
-		that.resourceSelectionHandler(resourceId);
+		that.resourceSelectionHandler(resource);
 	}
 
 	function deselectOtherResources(resourceNode) {
@@ -94,8 +93,6 @@ function SidepanelViewController() {
 	}
 
 	function createNewListElemForEnvironmentAndServer(environment, server) {
-		const serverId = server.id;
-
 		var resourcesList = createNewResourcesList(server.resources);
 
 		var selectionButton = document.createElement("a");
@@ -103,7 +100,7 @@ function SidepanelViewController() {
 		selectionButton.classList.add("server_selection_button");
 		selectionButton.innerHTML= buildEnverironmentServerListItemName(environment, server);
 		selectionButton.onclick = function() {
-			openResources(resourcesList, serverId);
+			openResources(resourcesList, server);
 		};
 
 		var innerDiv = document.createElement("div");
@@ -135,14 +132,12 @@ function SidepanelViewController() {
 	}
 
 	function createNewResource(resource) {
-		const resourceId = resource.id;
-
 		var resourceSelectionButton = document.createElement("a");
 		resourceSelectionButton.href = "#";
 		resourceSelectionButton.innerHTML= resource.name;
 		resourceSelectionButton.classList.add("resource_selection_button");
 		resourceSelectionButton.onclick = function() {
-			selectResource(resourceSelectionButton, resourceId);
+			selectResource(resourceSelectionButton, resource);
 		};
 		
 		var innerDiv = document.createElement("div");
@@ -172,28 +167,19 @@ function SidepanelViewController() {
 		return outerDiv;
 	}
 
-	SidepanelViewController.prototype.setUser = function(user) {
+	SidepanelView.prototype.setUser = function(user) {
 		this.user = user;
 	}
 
-	SidepanelViewController.prototype.setEnvironments = function(env) {
+	SidepanelView.prototype.setEnvironments = function(env) {
 		rebuildEnvironmentsView(env);
 	}
 }
 
-SidepanelViewController.prototype.serverSelectionHandler = function(serverId) {
-	//throw new Error("not binded");
+SidepanelView.prototype.serverSelectionHandler = function(server) {
+	throw new Error("not binded");
 }
 
-SidepanelViewController.prototype.resourceSelectionHandler = function(resourceId) {
-	//throw new Error("not binded");
-}
-
-const jsonStr = '{"type":"EnvironmentsInfo","environments":[{"type":"EnvironmentInfo","name":"environment","servers":[{"type":"ServerInfo","id":1,"name":"server","isOnline":true,"resources":[{"type":"ResourceInfo","id":1,"name":"resource","occupationInfo":{"type":"OccupationInfo","userName":"user","occupationTime":"2015-11-05T23:44:40.220Z"}}],"subscribers":["user"]}]}]}';
-
-window.onload = function() {
-	var sidepanel = new SidepanelViewController();
-
-	var env = JSON.parse(jsonStr); 
-	sidepanel.setEnvironments(env.environments);
+SidepanelView.prototype.resourceSelectionHandler = function(resource) {
+	throw new Error("not binded");
 }
