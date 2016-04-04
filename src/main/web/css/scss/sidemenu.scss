@@ -1,11 +1,6 @@
 @import 'commons.scss';
 
-$SOFT_RED: #e4644b;
-$WHITE_SMOKE: #F6F6F6;
-$WHITE_SMOKE_HOVER: #FFFFFF;
-$WHITE_SHADOWED: #9F9F9F;
-$WHITE_SHADOWED_HOVER: #CFCFCF;
-$METAL_DARK: #474141;
+
 
 @mixin bottom_arrow($arrow_height, $top) {
 	content: "";
@@ -27,7 +22,7 @@ body {
 	font-family: 'Open Sans', Arial, Helvetica, Sans-serif, Verdana, Tahoma;
 }
 
-#environment_list {
+#sidemenu {
 	width: 250px;
 
 	$server_name_font_size: 18px;

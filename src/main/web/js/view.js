@@ -1,7 +1,7 @@
 function View() {
     const that = this;
 
-    var sidepanelView = undefined;
+    var sideMenuView = undefined;
 
     var selectedServer = undefined;
     var selectedResource = undefined;
@@ -12,11 +12,11 @@ function View() {
         Console.error("not implemented");
     };
 
-    View.prototype.authenticationMode() {
+    View.prototype.authenticationMode = function() {
         console.error("not implemented");
     };
 
-    View.prototype.mainMode() {
+    View.prototype.mainMode = function() {
         console.error("not implemented");
     };
 
@@ -28,14 +28,14 @@ function View() {
 		console.error("not implemented");
 	};
 
-	View.prototype.setSidepanelView(view) {
-        sidepanelView = view;
+	View.prototype.setSideMenuView = function(view) {
+        sideMenuView = view;
 
-        sidepanelView.serverSelectionHandler = function(server) {
+        sideMenuView.serverSelectionHandler = function(server) {
             selectedServer = server;
         }
 
-        sidepanelView.resourceSelectionHandler = function(resource) {
+        sideMenuView.resourceSelectionHandler = function(resource) {
             selectedResource = resource;
         }
     };

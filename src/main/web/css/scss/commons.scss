@@ -1,6 +1,11 @@
-$panel_color: #e1e1e1;
-$panel_gap: 0px;
+$SOFT_RED: #e4644b;
+$WHITE_SMOKE: #F6F6F6;
+$WHITE_SMOKE_HOVER: #FFFFFF;
+$WHITE_SHADOWED: #9F9F9F;
+$WHITE_SHADOWED_HOVER: #CFCFCF;
+$METAL_DARK: #474141;
 
+$APP_WIDTH: 1360px;
 
 @mixin rightArrow($color) {
 	$border_width: 10px;

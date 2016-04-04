@@ -1,7 +1,4 @@
 @import 'commons.scss';
-@import 'sidemenu.scss';
-@import 'serverInfo.scss';
-
 
 html, body {
 	height: 100%;
@@ -11,7 +8,8 @@ html, body {
 }
 
 #content {
-	margin: 0 auto;
-	width: 800px;
-	height: 100%;
+    display: inline-block;
+    width: $APP_WIDTH;
+    height: 100%;
+    margin: 20px auto 0px auto;
 }

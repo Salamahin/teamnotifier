@@ -1,4 +1,4 @@
-function SidepanelView() {
+function SideMenulView() {
 	const that = this;
 
 	var cachedEnvironments;
@@ -73,7 +73,7 @@ function SidepanelView() {
 			//TODO
 		} else {
 			node = createNewListElemForEnvironmentAndServer(environment, server);
-			var serverList = document.querySelectorAll("#environment_list .servers_list:nth-child(1)")[0];
+			var serverList = document.querySelectorAll("#sidemenu .servers_list:nth-child(1)")[0];
 			serverList.appendChild(node);
 		}
 	}
@@ -167,19 +167,19 @@ function SidepanelView() {
 		return outerDiv;
 	}
 
-	SidepanelView.prototype.setUser = function(user) {
+	SideMenulView.prototype.setUser = function(user) {
 		this.user = user;
 	}
 
-	SidepanelView.prototype.setEnvironments = function(env) {
+	SideMenulView.prototype.setEnvironments = function(env) {
 		rebuildEnvironmentsView(env);
 	}
 }
 
-SidepanelView.prototype.serverSelectionHandler = function(server) {
+SideMenulView.prototype.serverSelectionHandler = function(server) {
 	throw new Error("not binded");
 }
 
-SidepanelView.prototype.resourceSelectionHandler = function(resource) {
+SideMenulView.prototype.resourceSelectionHandler = function(resource) {
 	throw new Error("not binded");
 }
