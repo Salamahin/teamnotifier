@@ -1,0 +1,46 @@
+@import 'commons.scss';
+
+
+#registration {
+	$cell_height: 50px;
+	$form_width: 400px;
+
+	margin: auto;
+	width: $form_width;
+
+	input {
+		width: 80%;
+		height: $cell_height / 3 * 2;
+		display: block;
+		margin: auto; 
+	}
+
+	a {
+		text-decoration: none;
+		display: block;
+	}
+
+	.login_header {
+		color: $METAL_DARK;
+		font-size: 30px;
+		height: $cell_height;
+		margin-left: 30px;
+	}
+
+	.inputfield_holder {
+		height: $cell_height;
+		width: $form_width;
+		margin: auto 10px;
+		display: table-cell;
+		vertical-align: middle;
+
+		#login_username_field {
+			@include input('../img/user.png');
+		}
+
+		#login_password_field {
+			@include input('../img/password.png');
+		}
+	}
+}
+
