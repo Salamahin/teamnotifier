@@ -8,7 +8,8 @@ html, body {
 }
 
 #content {
-    width: $APP_WIDTH;
-    height: 100%;
-    margin: 20px auto 0px auto;
+	display: table;
+	position: absolute;
+	height: 100%;
+	width: 100%;
 }

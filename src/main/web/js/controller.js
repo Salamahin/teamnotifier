@@ -16,6 +16,7 @@ var AUTHENTICATOR;
 var STORAGE;
 var VIEW;
 var SIDEMENU_VIEW;
+var USER_SERVICE_VIEW;
 
 var ENVIRONMENTS;
 var CURRENT_SERVER;
@@ -70,7 +71,7 @@ function init() {
 }
 
 function bind() {
-    if(!WORKBENCH || !NOTIFIER || !AUTHENTICATOR || !STORAGE || !VIEW || !SIDEMENU_VIEW)
+    if(!WORKBENCH || !NOTIFIER || !AUTHENTICATOR || !STORAGE || !VIEW || !SIDEMENU_VIEW || !USER_SERVICE_VIEW)
         return;
 
     NOTIFIER.connectionSuccessHandler = onNotifierConnected;
@@ -94,6 +95,7 @@ function bind() {
 	VIEW.resourceActionHandler = WORKBENCH.newResourceAction;
 
     VIEW.setSideMenuView(SIDEMENU_VIEW);
+	VIEW.setUserServiceView(USER_SERVICE_VIEW);
     
     WORKBENCH.statusHandler = VIEW.showStatus;
     WORKBENCH.interactionHandler = onInteractionComplete;
@@ -122,7 +124,11 @@ include("js/view.js", function () {
     VIEW = new View();
     bind();
 });
-include("js/sideMenuView.js", function () {
+include("js/sidemenuView.js", function () {
     SIDEMENU_VIEW = new SideMenulView();
     bind();
+});
+include("js/userServiceView.js", function() {
+	USER_SERVICE_VIEW = new UserServiceView();
+	bind();
 });

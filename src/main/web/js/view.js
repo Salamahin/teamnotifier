@@ -2,18 +2,24 @@ function View() {
     const that = this;
 
     var sideMenuView = undefined;
+	var userServiceView = undefined;
 
     var selectedServer = undefined;
     var selectedResource = undefined;
 
     var currentEnvironments = undefined;
 
+	function jumpTo(anchor){
+		window.location.href = "#"+anchor;
+	
+	}
+
     View.prototype.showAuthenticationError = function () {
-        Console.error("not implemented");
+		userServiceView.showAuthenticationError();
     };
 
     View.prototype.authenticationMode = function() {
-        console.error("not implemented");
+        jumpTo("authentication");
     };
 
     View.prototype.mainMode = function() {
@@ -27,6 +33,18 @@ function View() {
 	View.prototype.showHistory = function(actions) {
 		console.error("not implemented");
 	};
+
+	View.prototype.setUserServiceView= function(view) {
+		userServiceView = view;
+
+		userServiceView.authenticationHandler = function(username, password) {
+			that.authenticationAttemptHandler(username, password);
+		};
+
+		userServiceView.registartionHandler = function(username, password) {
+			that.registrationHandler(username, password);
+		};
+	}
 
 	View.prototype.setSideMenuView = function(view) {
         sideMenuView = view;

@@ -1,4 +1,5 @@
 .idea/
+**/.sass-cache
 target/
 dist/
 
@@ -7,7 +8,7 @@ dist/
 *.log
 *.jar
 
-src/main/assets2/css/*.css
-src/main/assets2/css/*.css.map
+src/main/web/css/*.css
+src/main/web/css/*.css.map
 
 .gitignore

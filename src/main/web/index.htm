@@ -6,19 +6,45 @@
     <link rel="stylesheet" href="css/main.css"/>
     <link rel="stylesheet" href="css/header.css"/>
     <link rel="stylesheet" href="css/sidemenu.css"/>
+	<link rel="stylesheet" href="css/authentication.css"/>
 </head>
 <body>
 
 
 <script type="text/javascript" src="js/controller.js"></script>
 
-<div id="header">
+<div id="content">
+	<div id="header">
+	</div>
+
+	<a href="#authentication"></a>
+	<div id="authentication">
+		<div id="user_service_view">
+			<div id="user_service_header">Greetings, comrade</div>
+			<div>
+				<div id="username_field_holder" class="inputfield_holder" class="pressed">
+					<input id="username_field" placeholder="user name"></input>
+				</div>
+			</div>
+			<div>
+				<div id="password_field_holder" class="inputfield_holder">
+					<input id="password_field" type="password" placeholder = "password"></input>
+				</div>
+			</div>
+			<div>
+				<a href="#" id="login_button">Login</a>
+				<a href="#" id="registration_button">create a new account</a>
+			</div>
+		</div>
+	</div>
+
+	<a href="environment"></a>
+	<div id="environment">
+		<div id="sidemenu">
+		</div>
+	</div>
 </div>
 
-<div id="content">
-    <div id="sidemenu">
-    </div>
-</div>
 
 </body>
 </html>

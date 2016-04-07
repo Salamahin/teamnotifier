@@ -1,9 +1,9 @@
 @import 'commons.scss';
 
 
-#user_service_view_holder {
-	display: flex;
-	align-items: center;
+#authentication {
+	display: table-cell;
+    vertical-align: middle;
 }
 
 #user_service_view {
@@ -28,6 +28,7 @@
 			width: 100px;
 			padding: 10px 0;
 			margin-bottom: 10px;
+			margin-top: 10px;
 			border: 1px solid $SOFT_RED;
 
 			&:active {
@@ -68,7 +69,7 @@
 
 		input {
 			width: 80%;
-			height: $cell_height / 3;
+			height: $cell_height / 2;
 			display: block;
 			margin: auto; 
 			padding-left: 30px;
@@ -79,7 +80,7 @@
 
 
 		@mixin input($image) {
-			background: url($image) no-repeat scroll 7px 7px;
+			background: url($image) no-repeat scroll $cell_height/4 -$cell_height/8;
 			background-color: #FFF;
 			border: 1px solid $WHITE_SHADOWED_HOVER; 
 		}
@@ -91,6 +92,5 @@
 		#password_field {
 			@include input('../img/password.png');
 		}
-
 	}
 }
