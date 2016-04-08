@@ -23,23 +23,45 @@
 
 		&#login_button {
 			font-weight: bold;
-			background: $SOFT_RED;
-			color: $WHITE_SMOKE;
 			width: 100px;
 			padding: 10px 0;
 			margin-bottom: 10px;
 			margin-top: 10px;
 			border: 1px solid $SOFT_RED;
 
-			&:active {
-				background: $WHITE_SMOKE_HOVER;
-				color: $SOFT_RED;
+			background-color: transparent;
+			color: $SOFT_RED;
+
+			&:hover,
+			&:focus {
+				outline: none;
+				background-color: $SOFT_RED;
+				border: 1px solid $SOFT_RED;
+				color: $WHITE_SMOKE;
 			}
+
+			&:active {
+				border: 1px solid $SOFT_RED_HOVER;
+				background: $SOFT_RED_HOVER;
+				color: $WHITE_SMOKE;
+			}
+
 		}
 
 		&#registration_button {
-			font-size: 12px;
+			font-size: 10px;
 			margin-bottom: 20px;
+			color: $WHITE_SHADOWED;
+
+			&:active {
+				color: $SOFT_RED_HOVER;
+			}
+
+			&:hover,
+			&:focus {
+				outline: none;
+				color: $SOFT_RED
+			}
 		}
 	}
 
