@@ -27,7 +27,7 @@ logging:
 
 assets:
   overrides:
-    /: src/main/assets/
+    /: dist/assets/
 
 executors:
   poolSize: 20

@@ -41,7 +41,7 @@ function View() {
 			that.authenticationAttemptHandler(username, password);
 		};
 
-		userServiceView.registartionHandler = function(username, password) {
+		userServiceView.registrationHandler = function(username, password) {
 			that.registrationHandler(username, password);
 		};
 	}

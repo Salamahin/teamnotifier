@@ -49,7 +49,7 @@ function onInteractionComplete(xhttp) {
 }
 
 function onNotifierError(error) {
-    console.error("notifier error: " + error)
+    console.log("notifier error: " + error)
 }
 
 function onNotifierDisconnect() {

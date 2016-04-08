@@ -1,6 +1,30 @@
 @import 'commons.scss';
 
 
+@keyframes shake {
+	0% {
+		left:-10px;
+	}
+	16% {
+		left:9px;
+	}
+	33% {
+		left:-6px;
+	}
+	50% {
+		left:5px;
+	}
+	66% {
+		left:-2px;
+	}
+	83% {
+		left:1px;
+	}
+	100% {
+		left: 0px;
+	}
+}
+
 #authentication {
 	display: table-cell;
     vertical-align: middle;
@@ -11,9 +35,15 @@
 	$form_width: 400px;
 
 	margin: auto;
+	position: relative;
 	width: $form_width;
 	box-shadow: 0 10px 6px -6px #777;
 	border: 1px solid $WHITE_SHADOWED_HOVER;
+
+	
+	&.invalid {
+		animation: shake .6s linear;
+	}
 
 	a {
 		text-decoration: none;
@@ -114,6 +144,10 @@
 
 		#password_field {
 			@include input('../img/password.png');
+
+			&.invalid {
+				border: solid 2px $SOFT_RED_HOVER;
+			}
 		}
 	}
 }

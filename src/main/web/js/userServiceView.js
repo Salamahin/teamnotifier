@@ -3,12 +3,15 @@ function UserServiceView() {
 
 	const usernameField = document.getElementById("username_field");
 	const passwordField = document.getElementById("password_field");
+	const form = document.getElementById("user_service_view");
 
 	function resetPasswordText() {
 		passwordField.value = "";
 	}
 
 	function doAuthenticate() {
+		form.classList.remove("invalid");
+
 		var username = usernameField.value;
 		var password = passwordField.value;
 
@@ -45,6 +48,8 @@ function UserServiceView() {
 	);
 
 	passwordField.onkeypress = function(e) {
+		passwordField.classList.remove("invalid");
+
 		if(e.which == 13) 
 			doAuthenticate();
 	};
@@ -53,7 +58,8 @@ function UserServiceView() {
 	document.getElementById("registration_button").onclick = doRegister;
 
 	UserServiceView.prototype.showAuthenticationError = function() {
-		console.error("not implemented");
+		form.classList.add("invalid");
+		passwordField.classList.add("invalid");
 	};
 }
 
