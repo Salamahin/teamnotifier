@@ -47,7 +47,11 @@ public class UserRestService {
     public void newUser(@HeaderParam(HttpHeaders.AUTHORIZATION) final String encodedCredentials) {
         final BasicCredentials credentials = extract(encodedCredentials);
         LOGGER.info("New user {} register request", credentials.getUsername());
-        userGateway.newUser(credentials.getUsername(), credentials.getPassword());
+        try {
+            userGateway.newUser(credentials.getUsername(), credentials.getPassword());
+        } catch (Exception exc) {
+            LOGGER.error(String.format("Failed to create a new user %s", credentials.getUsername()), exc);
+        }
     }
 
     @GET
