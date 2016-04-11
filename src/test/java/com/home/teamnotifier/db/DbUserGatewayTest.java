@@ -3,6 +3,7 @@ package com.home.teamnotifier.db;
 import com.home.teamnotifier.DbPreparer;
 import com.home.teamnotifier.gateways.exceptions.InvalidCredentials;
 import com.home.teamnotifier.gateways.exceptions.NoSuchUser;
+import com.home.teamnotifier.gateways.exceptions.SuchUserAlreadyPresent;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -48,6 +49,15 @@ public class DbUserGatewayTest {
         final String userName = "";
         final String password = "";
         userGateway.newUser(userName, password);
+    }
+
+    @Test(expected = SuchUserAlreadyPresent.class)
+    public void testSameNameFails() throws Exception {
+
+        final String userName = getRandomString();
+
+        userGateway.newUser(userName, getRandomString());
+        userGateway.newUser(userName, getRandomString());
     }
 
     @Before

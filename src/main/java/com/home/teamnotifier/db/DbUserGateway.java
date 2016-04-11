@@ -1,10 +1,12 @@
 package com.home.teamnotifier.db;
 
 import com.google.common.base.Throwables;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import com.home.teamnotifier.gateways.UserGateway;
 import com.home.teamnotifier.gateways.exceptions.InvalidCredentials;
 import com.home.teamnotifier.gateways.exceptions.NoSuchUser;
-import com.home.teamnotifier.gateways.UserGateway;
+import com.home.teamnotifier.gateways.exceptions.SuchUserAlreadyPresent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +15,7 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import javax.validation.ConstraintViolationException;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -33,7 +35,7 @@ public class DbUserGateway implements UserGateway {
     @Override
     public UserEntity get(final int id) {
         try {
-            final UserEntity entity = transactionHelper.transaction(em -> {
+            return transactionHelper.transaction(em -> {
                 final CriteriaBuilder cb = em.getCriteriaBuilder();
                 final CriteriaQuery<UserEntity> query = cb.createQuery(UserEntity.class);
                 final Root<UserEntity> root = query.from(UserEntity.class);
@@ -46,7 +48,6 @@ public class DbUserGateway implements UserGateway {
 
                 return typedQuery.getSingleResult();
             });
-            return entity;
         } catch (NoResultException exc) {
             throw new NoSuchUser(String.format("No user with id %d", id), exc);
         }
@@ -54,7 +55,7 @@ public class DbUserGateway implements UserGateway {
 
     @Override
     public UserEntity get(final String userName) {
-       return getEntityByName(userName);
+        return getEntityByName(userName);
     }
 
     @Override
@@ -71,15 +72,39 @@ public class DbUserGateway implements UserGateway {
         }
     }
 
-    private void rethrowConstraintViolation(Exception exc) {
-        final Optional<Throwable> firstConstraintViolation = Throwables.getCausalChain(exc).stream()
-                .filter((ConstraintViolationException.class)::isInstance)
-                .findFirst();
+    @SafeVarargs
+    private final Optional<Throwable> unwrapException(
+            final Exception e,
+            final Class<? extends Throwable> exc,
+            final Class<? extends Throwable>... moreExceptions
+    ) {
+        final List<Class<? extends Throwable>> expectedTypes = Lists.asList(exc, moreExceptions);
 
-        if (firstConstraintViolation.isPresent())
-            throw new InvalidCredentials(firstConstraintViolation.get());
-        else
-            throw Throwables.propagate(exc);
+        return Throwables.getCausalChain(e).stream()
+                .filter(t -> expectedTypes.contains(t.getClass()))
+                .findFirst();
+    }
+
+    private void rethrowConstraintViolation(Exception exc) {
+        final Optional<Throwable> firstConstraintViolation = unwrapException(
+                exc,
+                org.hibernate.exception.ConstraintViolationException.class,
+                javax.validation.ConstraintViolationException.class
+        );
+
+        if(firstConstraintViolation.isPresent()) {
+            try {
+                throw firstConstraintViolation.get();
+            } catch (org.hibernate.exception.ConstraintViolationException e) {
+                throw new SuchUserAlreadyPresent(e);
+            } catch (javax.validation.ConstraintViolationException e) {
+                throw new InvalidCredentials(e);
+            } catch (Throwable e) {
+                throw Throwables.propagate(e);
+            }
+        }
+
+        throw Throwables.propagate(exc);
     }
 
     private UserEntity getEntityByName(String name) {

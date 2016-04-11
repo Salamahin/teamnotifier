@@ -1,8 +1,9 @@
 function SideMenulView() {
 	const that = this;
 
+	this.user = undefined;
+
 	var cachedEnvironments;
-	var user;
 
 	function isUserSubscribedOnServer(server) {
 		return server.subscribers != undefined && server.subscribers.includes(user);
@@ -165,10 +166,6 @@ function SideMenulView() {
 		outerDiv.appendChild(innerDiv);
 
 		return outerDiv;
-	}
-
-	SideMenulView.prototype.setUser = function(user) {
-		this.user = user;
 	}
 
 	SideMenulView.prototype.setEnvironments = function(env) {

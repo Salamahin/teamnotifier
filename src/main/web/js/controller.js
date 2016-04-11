@@ -21,11 +21,16 @@ var USER_SERVICE_VIEW;
 var ENVIRONMENTS;
 var CURRENT_SERVER;
 
+function onStatus(environments) {
+	SIDEMENU_VIEW.setEnvironments(environments);
+}
+
 function onAuthenticationSuccess(login, token) {
     STORAGE.store(login, token);
     VIEW.mainMode();
 
-    VIEW.login = login;
+	SIDEMENU_VIEW.user = login;
+
     NOTIFIER.token = token;
     WORKBENCH.token = token;
 
@@ -97,7 +102,7 @@ function bind() {
     VIEW.setSideMenuView(SIDEMENU_VIEW);
 	VIEW.setUserServiceView(USER_SERVICE_VIEW);
     
-    WORKBENCH.statusHandler = VIEW.showStatus;
+    WORKBENCH.statusHandler = onStatus;
     WORKBENCH.interactionHandler = onInteractionComplete;
 	WORKBENCH.historyHandler = VIEW.showHistory;
 

@@ -1,5 +1,4 @@
 function Workbench() {
-    const that = this;
     this.token = undefined;
 
 
@@ -15,7 +14,7 @@ function Workbench() {
             return;
         
         if(xhttp.status == 200) {
-            that.statusHandler(JSON.parse(xhttp.responseText).environments);
+            that.__proto__.statusHandler(JSON.parse(xhttp.responseText).environments);
             return;
         }
         
@@ -135,6 +134,8 @@ function Workbench() {
         };
         xhttp.send();
     };
+
+    const that = this;
 }
 
 Workbench.prototype.interactionHandler = function (xhttp) {

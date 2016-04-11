@@ -23,7 +23,7 @@ function View() {
     };
 
     View.prototype.mainMode = function() {
-        console.error("not implemented");
+		jumpTo("environment");
     };
 
     View.prototype.updateStatus = function (environments) {
