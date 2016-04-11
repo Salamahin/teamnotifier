@@ -23,7 +23,7 @@ function View() {
     };
 
     View.prototype.mainMode = function() {
-		jumpTo("environment");
+		jumpTo("workbench");
     };
 
     View.prototype.updateStatus = function (environments) {

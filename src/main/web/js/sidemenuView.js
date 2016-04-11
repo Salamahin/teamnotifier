@@ -6,7 +6,7 @@ function SideMenulView() {
 	var cachedEnvironments;
 
 	function isUserSubscribedOnServer(server) {
-		return server.subscribers != undefined && server.subscribers.includes(user);
+		return server.subscribers != undefined && server.subscribers.includes(that.user);
 	}
 
 	function openResources(resourcesNode, server) {
@@ -16,7 +16,7 @@ function SideMenulView() {
 		resourcesNode.classList.add("opened");
 		
 		deselectOtherResources();
-		that.serverSelectionHandler(serverId);
+		that.serverSelectionHandler(server);
 	}
 
 	function closeResources(resourcesNode) {

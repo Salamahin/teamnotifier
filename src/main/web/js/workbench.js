@@ -14,7 +14,7 @@ function Workbench() {
             return;
         
         if(xhttp.status == 200) {
-            that.__proto__.statusHandler(JSON.parse(xhttp.responseText).environments);
+            that.statusHandler(JSON.parse(xhttp.responseText).environments);
             return;
         }
         

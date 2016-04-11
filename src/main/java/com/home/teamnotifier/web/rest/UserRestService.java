@@ -8,6 +8,8 @@ import com.home.teamnotifier.authentication.TokenAuthenticated;
 import com.home.teamnotifier.authentication.TokenCreator;
 import com.home.teamnotifier.core.responses.authentication.UserInfo;
 import com.home.teamnotifier.gateways.UserGateway;
+import com.home.teamnotifier.gateways.exceptions.InvalidCredentials;
+import com.home.teamnotifier.gateways.exceptions.SuchUserAlreadyPresent;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.auth.basic.BasicCredentials;
 import org.slf4j.Logger;
@@ -15,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import static com.home.teamnotifier.utils.BasicAuthenticationCredentialExtractor.extract;
 
@@ -51,8 +54,17 @@ public class UserRestService {
             userGateway.newUser(credentials.getUsername(), credentials.getPassword());
         } catch (Exception exc) {
             LOGGER.error(String.format("Failed to create a new user %s", credentials.getUsername()), exc);
+
+            try {
+                throw exc;
+            } catch (SuchUserAlreadyPresent e) {
+                throw new WebApplicationException(Response.Status.CONFLICT);
+            } catch (InvalidCredentials e) {
+                throw new WebApplicationException(Response.Status.BAD_REQUEST);
+            }
         }
     }
+
 
     @GET
     @Path("/whoami")
