@@ -3,41 +3,51 @@
 
 @keyframes shake {
 	0% {
-		left:-10px;
+		transform: translate(-47%, -50%);
 	}
 	16% {
-		left:9px;
+		transform: translate(-53%, -50%);
 	}
 	33% {
-		left:-6px;
+		transform: translate(-47%, -50%);
 	}
 	50% {
-		left:5px;
+		transform: translate(-53%, -50%);
 	}
 	66% {
-		left:-2px;
+		transform: translate(-47%, -50%);
 	}
 	83% {
-		left:1px;
+		transform: translate(-53%, -50%);
 	}
 	100% {
-		left: 0px;
+		transform: translate(-50%, -50%);
 	}
 }
 
 #authentication {
-	display: table-cell;
-    vertical-align: middle;
-	z-index: 999;
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background: white;
+	z-index: 99999;
+	opacity: 0;
+	pointer-events: none;
+}
+
+#authentication:target {
+	opacity: 1;
+	pointer-events: auto;
 }
 
 #user_service_view {
 	$cell_height: 75px;
 	$form_width: 400px;
 
-	margin: auto;
-	position: relative;
-	width: $form_width;
+	@include vertical_align();
+
 	box-shadow: 0 10px 6px -6px #777;
 	border: 1px solid $WHITE_SHADOWED_HOVER;
 
@@ -51,6 +61,7 @@
 		display: block;
 		margin: 0 auto;
 		text-align: center;
+		cursor: pointer;
 
 		&#login_button {
 			font-weight: bold;

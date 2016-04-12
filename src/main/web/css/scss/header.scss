@@ -1,9 +1,9 @@
 @import 'commons.scss';
 
 #header {
-    width: $APP_WIDTH;
+    width: 100%;
     height: 50px;
     background: $METAL_DARK;
-    margin:0px auto;
+    margin:0px auto 20px auto;
 }
 
