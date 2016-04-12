@@ -124,7 +124,7 @@ function SideMenulView() {
 
 		var resources = server.resources;
 		for(var i = 0; i<resources.length; i++)
-			list.appendChild(createNewResourceNode(environmen, server, resources[i]));
+			list.appendChild(createNewResourceNode(environment, server, resources[i]));
 
 		return list;
 	}
