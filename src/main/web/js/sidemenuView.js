@@ -12,27 +12,22 @@ function SideMenulView() {
 	/*
 		Note, that "opened" class affects not the server_selection_button itself but .resources_list
 	*/
-	function selectServer(serverResourcesNode, server) {
+	function showServerSelection(serverResourcesNode) {
 		if(!serverResourcesNode.classList.contains("opened"))
 			serverResourcesNode.classList.add("opened");
 		
 		removeClassFromOthers(getAllResourcesLists(), serverResourcesNode, "opened");
 		removeClassFromOthers(getAllResourceSelectionButtonHolders(), undefined, "selected_resource");
-
-		that.serverSelectionHandler(server);
 	}
 
 	/*
 		Note, that selected_resource class affects not the resource_selection_button itself, but the parent div-node
 	*/
-	function selectResource(resourceNodeHolder, resource) {
-		if(resourceNodeHolder.classList.contains("selected_resource"))
-			return;
-
-		resourceNodeHolder.classList.add("selected_resource");	
+	function showResourceSelection(resourceNodeHolder) {
+		if(!resourceNodeHolder.classList.contains("selected_resource"))
+			resourceNodeHolder.classList.add("selected_resource");	
 
 		removeClassFromOthers(getAllResourceSelectionButtonHolders(), resourceNodeHolder, "selected_resource");
-		that.resourceSelectionHandler(resource);
 	}
 
 	function removeClassFromOthers(allNodes, node, aClass) {
@@ -57,7 +52,7 @@ function SideMenulView() {
 		return holders;
 	}
 
-	function rebuildEnvironmentsView(environments) {
+	function rebuildView(environments) {
 		for(var i = 0; i<environments.length; i++)
 			rebuildEnvironmentView(environments[i]);
 
@@ -67,45 +62,46 @@ function SideMenulView() {
 	function rebuildEnvironmentView(environment) {
 		var servers = environment.servers;
 		for(var i = 0; i < servers.length; i++)
-			rebuildServerAndEnvironment(environment, servers[i]);
+			rebuildServerAndEnvironmentNode(environment, servers[i]);
 	}
 
-	function rebuildServerAndEnvironment(environment, server) {
-		var node = findPresentListElemForEnvironmentAndServer(environment, server);
+	function rebuildServerAndEnvironmentNode(environment, server) {
+		var node = findPresentListNodeForEnvironmentAndServer(environment, server);
 		if(node) {
 			//TODO
 		} else {
-			node = createNewListElemForEnvironmentAndServer(environment, server);
+			node = createNewListNodeForEnvironmentAndServer(environment, server);
 			var serverList = document.querySelectorAll("#sidemenu .servers_list:nth-child(1)")[0];
 			serverList.appendChild(node);
 		}
 	}
 
-	function buildEnverironmentServerListItemName(environment, server) {
+	function buildEnverironmentServerListNodeName(environment, server) {
 		return environment.name + " " + server.name;
 	}
 
-	function findPresentListElemForEnvironmentAndServer(environment, server) {
+	function findPresentListNodeForEnvironmentAndServer(environment, server) {
 		var elems = document.querySelectorAll("#environments_list ul li");
 
 		for(var i = 0; i<elems.length; i++) {
 			var button = elems[i].querySelector("div div:nth-child(1)");
-			if(button.innerHTML== buildEnverironmentServerListItemName(environment, server))
+			if(button.innerHTML== buildEnverironmentServerListNodeName(environment, server))
 				return button;
 		}
 
 		return undefined;
 	}
 
-	function createNewListElemForEnvironmentAndServer(environment, server) {
-		var resourcesList = createNewResourcesList(server.resources);
+	function createNewListNodeForEnvironmentAndServer(environment, server) {
+		var resourcesList = createNewResourceNodesList(environment, server);
 
 		var selectionButton = document.createElement("a");
 		selectionButton.href = "#";
 		selectionButton.classList.add("server_selection_button");
-		selectionButton.innerHTML= buildEnverironmentServerListItemName(environment, server);
+		selectionButton.innerHTML= buildEnverironmentServerListNodeName(environment, server);
 		selectionButton.onclick = function() {
-			selectServer(resourcesList, server);
+			showServerSelection(resourcesList);
+			that.serverSelectionHandler(environment, server);
 		};
 
 		var innerDiv = document.createElement("div");
@@ -123,11 +119,12 @@ function SideMenulView() {
 		return listElem;
 	}
 
-	function createNewResourcesList(resources) { var list = document.createElement("ul");
+	function createNewResourceNodesList(environment, server) { var list = document.createElement("ul");
 		list.classList.add("resources_list");
 
+		var resources = server.resources;
 		for(var i = 0; i<resources.length; i++)
-			list.appendChild(createNewResource(resources[i]));
+			list.appendChild(createNewResourceNode(environmen, server, resources[i]));
 
 		return list;
 	}
@@ -136,7 +133,7 @@ function SideMenulView() {
 		return "https://robohash.org/teamnotifier_" + user;
 	}
 
-	function createNewResource(resource) {
+	function createNewResourceNode(environment, server, resource) {
 		var innerDiv = document.createElement("div");
 		var resourceSelectionButton = document.createElement("a");
 
@@ -146,7 +143,8 @@ function SideMenulView() {
 		resourceSelectionButton.innerHTML= resource.name;
 		resourceSelectionButton.classList.add("resource_selection_button");
 		resourceSelectionButton.onclick = function() {
-			selectResource(innerDiv, resource);
+			showResourceSelection(innerDiv);
+			that.resourceSelectionHandler(environment, server, resource);
 		};
 		
 		var outerDiv = document.createElement("div");
@@ -174,14 +172,14 @@ function SideMenulView() {
 	}
 
 	SideMenulView.prototype.setEnvironments = function(env) {
-		rebuildEnvironmentsView(env);
+		rebuildView(env);
 	}
 }
 
-SideMenulView.prototype.serverSelectionHandler = function(server) {
+SideMenulView.prototype.serverSelectionHandler = function(environment, server) {
 	throw new Error("not binded");
 }
 
-SideMenulView.prototype.resourceSelectionHandler = function(resource) {
+SideMenulView.prototype.resourceSelectionHandler = function(environment, server, resource) {
 	throw new Error("not binded");
 }
