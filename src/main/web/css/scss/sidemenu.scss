@@ -1,7 +1,5 @@
 @import 'commons.scss';
 
-
-
 @mixin bottom_arrow($arrow_height, $top) {
 	content: "";
 	display: block;
@@ -18,18 +16,14 @@
 	transition: all 0.5s cubic-bezier(0.68, 0, 0.27, 0.95);
 }
 
-body {
-	font-family: 'Open Sans', Arial, Helvetica, Sans-serif, Verdana, Tahoma;
-}
-
 #sidemenu {
-	width: 250px;
-
+	display: inline-block;
+	width: $SIDEMENU_WIDTH;
+	vertical-align: top;
 	$server_name_font_size: 18px;
 	$elem_padding: 10px;
 
 	background: $SOFT_RED;
-	position: absolute;
 
 	li {
 		cursor: pointer;
@@ -96,7 +90,6 @@ body {
 						top: (2 * $elem_padding + $server_name_font_size) / 2 - ($diameter / 2);
 					}
 				}
-
 			}
 		}
 

@@ -6,7 +6,10 @@ $WHITE_SHADOWED: #9F9F9F;
 $WHITE_SHADOWED_HOVER: #CFCFCF;
 $METAL_DARK: #474141;
 
+$HEADER_HEIGHT: 50px;
+$HEADER_BOTTOM_MARGIN: 20px;
 
+$SIDEMENU_WIDTH: 250px;
 
 @mixin avatar($size, $background_color) {
 	$border_width: 2px;
