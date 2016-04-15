@@ -6,7 +6,7 @@ function SideMenulView() {
 	var cachedEnvironments;
 
 	function isUserSubscribedOnServer(server) {
-		return server.subscribers != undefined && server.subscribers.includes(that.user);
+		return server.subscribers != undefined && server.subscribers.length != 0 && server.subscribers.includes(that.user);
 	}
 
 	/*
