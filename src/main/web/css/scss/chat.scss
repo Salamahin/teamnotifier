@@ -1,6 +1,52 @@
 @import 'commons.scss';
 
 .user_info_holder {
-	&.avatar {
+	$min_height: 60px;
+
+	vertical-align: middle;
+
+	.avatar {
+
+		display: inline-block;
+		@include avatar($min_height, $WHITE_SHADOWED);
+	}
+
+	.message_details {
+		margin-left: 20px;
+		display: inline-block;
+		width: 250px;
+		min-height: $min_height;
+		position: absolute;
+
+		background: $METAL_DARK;
+
+		&:after{
+			$arrow_height: 10px;
+
+			content: "";
+			display: block;
+			width: 0; 
+			height: 0; 
+			border: $arrow_height solid transparent;
+			border-right: $arrow_height solid $METAL_DARK; 
+			position: absolute;
+			left: -2*$arrow_height;
+			top: ($min_height - $arrow_height) / 2;
+		}
+
+		.summary {
+			margin: 5px auto 5px 10px;
+			font-weight: bold;
+			font-size: 12px;
+			color: $WHITE_SHADOWED;
+		}
+
+		.details {
+			margin: auto 10px 5px 20px;
+			height: 100%;
+			font-size: 20px;
+			color: $WHITE_SMOKE;
+		}
 	}
 }
+
