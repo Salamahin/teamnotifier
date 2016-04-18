@@ -1,48 +1,64 @@
 @import 'commons.scss';
 
-.user_info_holder {
-	$min_height: 60px;
 
-	vertical-align: middle;
+$MIN_HEIGHT: 60px;
+
+@mixin arrow($left) {
+	$arrow_height: 10px;
+
+	content: "";
+	display: block;
+	width: 0; 
+	height: 0; 
+	border: $arrow_height solid transparent;
+	position: absolute;
+	top: $MIN_HEIGHT / 2 - $arrow_height + $AVATAR_BORDER_WIDTH / 2;
+
+	@if $left == "true" {
+		border-left: $arrow_height solid $METAL_DARK; 
+		right: -2*$arrow_height;
+	} @else {
+		border-right: $arrow_height solid $METAL_DARK; 
+		left: -2*$arrow_height;
+	}
+}
+
+.action_info_holder {
+	margin-bottom: 40px;
 
 	.avatar {
-
 		display: inline-block;
-		@include avatar($min_height, $WHITE_SHADOWED);
+		vertical-align: top;
+		@include avatar($MIN_HEIGHT, $WHITE_SHADOWED);
+	}
+
+	.right:after {
+		@include arrow("false");
+	}
+
+	.left:after {
+		@include arrow("true");
 	}
 
 	.message_details {
 		margin-left: 20px;
+		margin-right: 20px;
 		display: inline-block;
+		vertical-align: top;
 		width: 250px;
-		min-height: $min_height;
+		min-height: $MIN_HEIGHT;
 		position: absolute;
-
 		background: $METAL_DARK;
 
-		&:after{
-			$arrow_height: 10px;
-
-			content: "";
-			display: block;
-			width: 0; 
-			height: 0; 
-			border: $arrow_height solid transparent;
-			border-right: $arrow_height solid $METAL_DARK; 
-			position: absolute;
-			left: -2*$arrow_height;
-			top: ($min_height - $arrow_height) / 2;
-		}
-
 		.summary {
-			margin: 5px auto 5px 10px;
+			margin: 5px 10px;
 			font-weight: bold;
 			font-size: 12px;
 			color: $WHITE_SHADOWED;
 		}
 
 		.details {
-			margin: auto 10px 5px 20px;
+			margin: 5px 20px;
 			height: 100%;
 			font-size: 20px;
 			color: $WHITE_SMOKE;

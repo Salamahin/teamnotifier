@@ -11,9 +11,11 @@ $HEADER_BOTTOM_MARGIN: 20px;
 
 $SIDEMENU_WIDTH: 250px;
 
+$AVATAR_BORDER_WIDTH: 2px;
+
 @mixin avatar($size, $background_color) {
-	$border_width: 2px;
-	$avatar_size: $size;
+	$border_width: $AVATAR_BORDER_WIDTH;
+	$avatar_size: $size - $AVATAR_BORDER_WIDTH ;
 
 	background: $background_color;
 	border-radius: $avatar_size / 2;
