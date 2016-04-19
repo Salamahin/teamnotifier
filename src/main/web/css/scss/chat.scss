@@ -24,7 +24,7 @@ $MIN_HEIGHT: 60px;
 }
 
 .action_info_holder {
-	margin-bottom: 40px;
+	margin-bottom: 10px;
 
 	.avatar {
 		display: inline-block;
@@ -47,13 +47,13 @@ $MIN_HEIGHT: 60px;
 		vertical-align: top;
 		width: 250px;
 		min-height: $MIN_HEIGHT;
-		position: absolute;
+		position: relative;
 		background: $METAL_DARK;
 
 		.summary {
 			margin: 5px 10px;
 			font-weight: bold;
-			font-size: 12px;
+			font-size: 14px;
 			color: $WHITE_SHADOWED;
 		}
 
