@@ -27,26 +27,6 @@ function UserServiceView() {
 		resetPasswordText();
 	}
 
-	function toggleParentPressedClassOnFocus(input, holder) {
-		input.onfocus = function() {
-			holder.classList.add("pressed");
-		}
-
-		input.onblur = function() {
-			holder.classList.remove("pressed");
-		}
-	}
-
-	toggleParentPressedClassOnFocus(
-		usernameField,
-		document.getElementById("username_field_holder")
-	);
-
-	toggleParentPressedClassOnFocus(
-		passwordField,
-		document.getElementById("password_field_holder")
-	);
-
 	passwordField.onkeypress = function(e) {
 		passwordField.classList.remove("invalid");
 

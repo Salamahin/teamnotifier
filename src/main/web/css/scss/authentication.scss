@@ -45,12 +45,13 @@
 #user_service_view {
 	$cell_height: 75px;
 	$form_width: 400px;
+	
 
 	@include vertical_align();
 
 	box-shadow: 0 10px 6px -6px #777;
 	border: 1px solid $WHITE_SHADOWED_HOVER;
-
+	width: $form_width;
 	
 	&.invalid {
 		animation: shake .6s linear;
@@ -68,7 +69,7 @@
 			width: 100px;
 			padding: 10px 0;
 			margin-bottom: 10px;
-			margin-top: 10px;
+			margin-top: 30px;
 			border: 1px solid $SOFT_RED;
 
 			background-color: transparent;
@@ -111,55 +112,25 @@
 		color: $SOFT_RED;
 		font-weight: bold;
 		font-size: 26px;
-		height: $cell_height;
-		margin-left: 30px;
-		display: flex;
-		align-items: center;
+		margin: 25px auto;
+		text-align: center;
 	}
 
-	.inputfield_holder {
-		height: $cell_height;
-		width: $form_width;
-		margin: auto 10px;
-		display: table-cell;
-		vertical-align: middle;
-		border-left: 7px solid transparent;
-
-		&.pressed {
-			border-left: 7px solid $SOFT_RED;
-			box-shadow: inset 0 3px 3px -3px #696868, inset 0 -3px 3px -3px #696868;
-			background: $WHITE_SMOKE;
+	input {
+		width: 80%;
+		height: $cell_height / 2;
+		display: block;
+		margin: auto; 
 			
-		}
+		margin-bottom: 10px;
+		border: none;
+		border-bottom-style: solid;
+		border-bottom-width: 1px;
+		border-bottom-color: $WHITE_SHADOWED_HOVER;
 
-		input {
-			width: 80%;
-			height: $cell_height / 2;
-			display: block;
-			margin: auto; 
-			padding-left: 30px;
-			&:focus {
-				outline: none;
-			}
-		}
-
-
-		@mixin input($image) {
-			background: url($image) no-repeat scroll $cell_height/4 -$cell_height/8;
-			background-color: #FFF;
-			border: 1px solid $WHITE_SHADOWED_HOVER; 
-		}
-
-		#username_field{
-			@include input('../img/user.png');
-		}
-
-		#password_field {
-			@include input('../img/password.png');
-
-			&.invalid {
-				border: solid 2px $SOFT_RED_HOVER;
-			}
+		&:focus {
+			outline: none;
+			border-bottom-color: $SOFT_RED;
 		}
 	}
 }
