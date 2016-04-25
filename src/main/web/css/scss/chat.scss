@@ -1,7 +1,11 @@
 @import 'commons.scss';
 
-
 $MIN_HEIGHT: 60px;
+$CHAT_WIDTH: 400px;
+$SCROLLBAR_SPACE: 50px;
+$INPUT_MESSAGE_HEIGHT: 50px;
+$INPUT_MESSAGE_MARGIN: 20px;
+
 
 @mixin arrow($left) {
 	$arrow_height: 10px;
@@ -23,46 +27,82 @@ $MIN_HEIGHT: 60px;
 	}
 }
 
-.action_info_holder {
-	margin-bottom: 10px;
+#chat {
+	width: $CHAT_WIDTH;
+	height: 100%;
+}
 
-	.avatar {
-		display: inline-block;
-		vertical-align: top;
-		@include avatar($MIN_HEIGHT, $WHITE_SHADOWED);
+
+#messages_holder {
+	overflow-y: scroll;
+	height: calc(100% - #{$INPUT_MESSAGE_HEIGHT + $INPUT_MESSAGE_MARGIN});
+
+    #load_more_button {
+		width: $CHAT_WIDTH - $SCROLLBAR_SPACE;
+		margin: 10px;
+		display: block;
+		text-align: center;
+		@include text_button();
 	}
 
-	.right:after {
-		@include arrow("false");
-	}
+	.action_info_holder {
+		$side_margin: 20px;
+		$avatar_width: $MIN_HEIGHT;
+		margin-bottom: 10px;
 
-	.left:after {
-		@include arrow("true");
-	}
+		$info_width: $CHAT_WIDTH - 2*$side_margin - $avatar_width - $SCROLLBAR_SPACE;
 
-	.message_details {
-		margin-left: 20px;
-		margin-right: 20px;
-		display: inline-block;
-		vertical-align: top;
-		width: 250px;
-		min-height: $MIN_HEIGHT;
-		position: relative;
-		background: $METAL_DARK;
-
-		.summary {
-			margin: 5px 10px;
-			font-weight: bold;
-			font-size: 14px;
-			color: $WHITE_SHADOWED;
+		.avatar {
+			display: inline-block;
+			vertical-align: top;
+			@include avatar($avatar_width, $WHITE_SHADOWED);
 		}
 
-		.details {
-			margin: 5px 20px;
-			height: 100%;
-			font-size: 20px;
-			color: $WHITE_SMOKE;
+		.right:after {
+			@include arrow("false");
+		}
+
+		.left:after {
+			@include arrow("true");
+		}
+
+		.message_details {
+			margin-left: $side_margin;
+			margin-right: $side_margin;
+			display: inline-block;
+			vertical-align: top;
+			width: $info_width;
+			min-height: $MIN_HEIGHT;
+			position: relative;
+			background: $METAL_DARK;
+
+			.summary {
+				margin: 5px 10px;
+				font-weight: bold;
+				font-size: 14px;
+				color: $WHITE_SHADOWED;
+			}
+
+			.details {
+				margin: 5px 20px;
+				height: 100%;
+				font-size: 20px;
+				color: $WHITE_SMOKE;
+			}
 		}
 	}
+}
+
+
+#action_input {
+	width: $CHAT_WIDTH;
+	height: $INPUT_MESSAGE_HEIGHT;
+	margin-top: $INPUT_MESSAGE_MARGIN;
+	word-break: break-word;
+	resize: none;
+//	display: block;
+//	position: absolute;
+//	bottom: 10px;
+	@include input();
 }
 

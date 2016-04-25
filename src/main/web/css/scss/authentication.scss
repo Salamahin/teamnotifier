@@ -94,17 +94,7 @@
 		&#registration_button {
 			font-size: 10px;
 			margin-bottom: 20px;
-			color: $WHITE_SHADOWED;
-
-			&:active {
-				color: $SOFT_RED_HOVER;
-			}
-
-			&:hover,
-			&:focus {
-				outline: none;
-				color: $SOFT_RED
-			}
+			@include text_button();
 		}
 	}
 
@@ -123,14 +113,6 @@
 		margin: auto; 
 			
 		margin-bottom: 10px;
-		border: none;
-		border-bottom-style: solid;
-		border-bottom-width: 1px;
-		border-bottom-color: $WHITE_SHADOWED_HOVER;
-
-		&:focus {
-			outline: none;
-			border-bottom-color: $SOFT_RED;
-		}
+		@include input();
 	}
 }
