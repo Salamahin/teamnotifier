@@ -2,7 +2,7 @@
 
 $MIN_HEIGHT: 60px;
 $CHAT_WIDTH: 400px;
-$SCROLLBAR_SPACE: 15px;
+$SCROLLBAR_SPACE: 35px;
 $INPUT_MESSAGE_HEIGHT: 50px;
 $INPUT_MESSAGE_MARGIN: 20px;
 
@@ -103,14 +103,14 @@ $INPUT_MESSAGE_MARGIN: 20px;
 			.summary {
 				margin: 5px 10px;
 				font-weight: bold;
-				font-size: 14px;
+				font-size: 12px;
 				color: $WHITE_SHADOWED;
 			}
 
 			.details {
 				margin: 5px 20px;
 				height: 100%;
-				font-size: 20px;
+				font-size: 16px;
 				color: $WHITE_SMOKE;
 			}
 		}
