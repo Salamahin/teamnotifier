@@ -55,19 +55,44 @@ $AVATAR_BORDER_WIDTH: 2px;
 	transform: translate(-50%, -50%);
 }
 
-@mixin text_button() {
-		text-decoration: none;
-		color: $WHITE_SHADOWED;
+@mixin href_button() {
+	text-decoration: none;
+	color: $WHITE_SHADOWED;
+	cursor: pointer;
 
-		&:active {
-			color: $SOFT_RED_HOVER;
-		}
+	&:active {
+		color: $SOFT_RED_HOVER;
+	}
 
-		&:hover,
-		&:focus {
-			outline: none;
-			color: $SOFT_RED
-		}
+	&:hover,
+	&:focus {
+		outline: none;
+		color: $SOFT_RED
+	}
+}
+
+@mixin button() {
+	cursor: pointer;
+	border: 1px solid $SOFT_RED;
+	font-weight: bold;
+	background-color: transparent;
+	color: $SOFT_RED;
+	text-decoration: none;
+	text-align: center;
+
+	&:hover,
+	&:focus {
+		outline: none;
+		background-color: $SOFT_RED;
+		border: 1px solid $SOFT_RED;
+		color: $WHITE_SMOKE;
+	}
+
+	&:active {
+		border: 1px solid $SOFT_RED_HOVER;
+		background: $SOFT_RED_HOVER;
+		color: $WHITE_SMOKE;
+	}
 }
 
 

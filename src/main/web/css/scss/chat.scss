@@ -4,7 +4,8 @@ $MIN_HEIGHT: 60px;
 $CHAT_WIDTH: 400px;
 $SCROLLBAR_SPACE: 35px;
 $INPUT_MESSAGE_HEIGHT: 50px;
-$INPUT_MESSAGE_MARGIN: 20px;
+$ACTION_BUTTON_HEIGHT: 30px;
+$INPUT_MESSAGE_MARGIN: 10px;
 
 @mixin arrow($left) {
 	$arrow_height: 10px;
@@ -58,7 +59,7 @@ $INPUT_MESSAGE_MARGIN: 20px;
 
 #messages_holder {
 	margin-bottom: 2*$INPUT_MESSAGE_HEIGHT;
-	height: calc(100% - #{2*$INPUT_MESSAGE_MARGIN + $INPUT_MESSAGE_HEIGHT});
+	height: calc(100% - #{2*$INPUT_MESSAGE_MARGIN + $INPUT_MESSAGE_HEIGHT + $ACTION_BUTTON_HEIGHT});
 	overflow-y: auto;
 
     #load_more_button {
@@ -66,13 +67,13 @@ $INPUT_MESSAGE_MARGIN: 20px;
 		margin: 10px;
 		display: block;
 		text-align: center;
-		@include text_button();
+		@include href_button();
 	}
 
 	.action_info_holder {
 		$side_margin: 20px;
 		$avatar_width: $MIN_HEIGHT;
-		margin-bottom: 10px;
+		margin-bottom: 15px;
 
 		$info_width: $CHAT_WIDTH - 2*$side_margin - $avatar_width - $SCROLLBAR_SPACE;
 
@@ -117,16 +118,33 @@ $INPUT_MESSAGE_MARGIN: 20px;
 	}
 }
 
-
-#action_input {
-	width: $CHAT_WIDTH;
-	height: $INPUT_MESSAGE_HEIGHT;
-	margin-top: $INPUT_MESSAGE_MARGIN;
-	word-break: break-word;
-	resize: none;
+#chat_footer {
 	display: block;
 	position: fixed;
 	bottom: 10px;
-	@include input();
+	
+	#make_action_button_holder {
+		$button_width: 100px;
+		
+		padding-left: $CHAT_WIDTH - $button_width;
+	
+		#make_action_button {
+			width: $button_width;
+			height: $ACTION_BUTTON_HEIGHT;
+			display: table-cell;
+			vertical-align: middle;
+			@include button();
+		}
+	}
+
+    #action_input {
+		width: $CHAT_WIDTH;
+		height: $INPUT_MESSAGE_HEIGHT;
+		margin-top: $INPUT_MESSAGE_MARGIN;
+		word-break: break-word;
+		resize: none;
+		@include input();
+	}
 }
+
 
