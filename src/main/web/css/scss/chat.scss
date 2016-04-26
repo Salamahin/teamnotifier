@@ -6,7 +6,6 @@ $SCROLLBAR_SPACE: 50px;
 $INPUT_MESSAGE_HEIGHT: 50px;
 $INPUT_MESSAGE_MARGIN: 20px;
 
-
 @mixin arrow($left) {
 	$arrow_height: 10px;
 
@@ -28,14 +27,16 @@ $INPUT_MESSAGE_MARGIN: 20px;
 }
 
 #chat {
+	position: absolute;
 	width: $CHAT_WIDTH;
-	height: 100%;
+	height: calc(100% - #{$INPUT_MESSAGE_MARGIN});
 }
 
 
 #messages_holder {
-	overflow-y: scroll;
-	height: calc(100% - #{$INPUT_MESSAGE_HEIGHT + $INPUT_MESSAGE_MARGIN});
+	margin-bottom: 2*$INPUT_MESSAGE_HEIGHT;
+	height: calc(100% - #{2*$INPUT_MESSAGE_MARGIN + $INPUT_MESSAGE_HEIGHT});
+	overflow-y: auto;
 
     #load_more_button {
 		width: $CHAT_WIDTH - $SCROLLBAR_SPACE;
@@ -100,9 +101,9 @@ $INPUT_MESSAGE_MARGIN: 20px;
 	margin-top: $INPUT_MESSAGE_MARGIN;
 	word-break: break-word;
 	resize: none;
-//	display: block;
-//	position: absolute;
-//	bottom: 10px;
+	display: block;
+	position: fixed;
+	bottom: 10px;
 	@include input();
 }
 
