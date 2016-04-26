@@ -2,7 +2,7 @@
 
 $MIN_HEIGHT: 60px;
 $CHAT_WIDTH: 400px;
-$SCROLLBAR_SPACE: 50px;
+$SCROLLBAR_SPACE: 15px;
 $INPUT_MESSAGE_HEIGHT: 50px;
 $INPUT_MESSAGE_MARGIN: 20px;
 
@@ -32,6 +32,29 @@ $INPUT_MESSAGE_MARGIN: 20px;
 	height: calc(100% - #{$INPUT_MESSAGE_MARGIN});
 }
 
+::-webkit-scrollbar {
+  width: 2px;
+  height: 2px;
+}
+::-webkit-scrollbar-button {
+  width: 0px;
+  height: 0px;
+}
+::-webkit-scrollbar-thumb {
+  background: $SOFT_RED;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: $SOFT_RED;
+}
+::-webkit-scrollbar-thumb:active {
+  background: $SOFT_RED;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
 
 #messages_holder {
 	margin-bottom: 2*$INPUT_MESSAGE_HEIGHT;
