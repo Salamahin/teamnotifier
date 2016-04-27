@@ -3,15 +3,13 @@ function View() {
 
     var sideMenuView = undefined;
 	var userServiceView = undefined;
-
-    var selectedServer = undefined;
-    var selectedResource = undefined;
+	var chatView = undefined;
+	var avatarCreator = undefined;
 
     var currentEnvironments = undefined;
 
 	function jumpTo(anchor){
 		window.location.href = "#"+anchor;
-	
 	}
 
     View.prototype.showAuthenticationError = function () {
@@ -34,7 +32,7 @@ function View() {
 		console.error("not implemented");
 	};
 
-	View.prototype.setUserServiceView= function(view) {
+	View.prototype.setUserServiceView = function(view) {
 		userServiceView = view;
 
 		userServiceView.authenticationHandler = function(username, password) {
@@ -46,17 +44,40 @@ function View() {
 		};
 	}
 
+	function bindAvatarCreator() {
+		if(!avatarCreator)
+			return;
+
+		if(sideMenuView)
+			sideMenuView.avatarCreator = avatarCreator;
+
+		if(chatView)
+			chatView.avatarCreator = avatarCreator;
+	}
+
+	View.prototype.setAvatarCreator = function(creator) {
+		avatarCreator = creator;
+		bindAvatarCreator();
+	}
+
 	View.prototype.setSideMenuView = function(view) {
         sideMenuView = view;
 
+		bindAvatarCreator();
+
         sideMenuView.serverSelectionHandler = function(server) {
-            selectedServer = server;
+			chatView.select(server);
         }
 
         sideMenuView.resourceSelectionHandler = function(resource) {
-            selectedResource = resource;
+			chatView.select(resource);
         }
     };
+
+	View.prototype.setChatView = function(view) {
+		chatView = view;
+		bindAvatarCreator();
+	}
 }
 
 View.prototype.resourceActionHandler = function(resource, action) {

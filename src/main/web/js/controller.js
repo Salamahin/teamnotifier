@@ -18,6 +18,7 @@ var VIEW;
 var SIDEMENU_VIEW;
 var USER_SERVICE_VIEW;
 var AVATAR_NODE_CREATOR;
+var CHAT_VIEW;
 
 var ENVIRONMENTS;
 var CURRENT_SERVER;
@@ -77,10 +78,16 @@ function init() {
 }
 
 function bind() {
-    if(!WORKBENCH || !NOTIFIER || !AUTHENTICATOR || !STORAGE || !VIEW || !SIDEMENU_VIEW || !USER_SERVICE_VIEW || !AVATAR_NODE_CREATOR)
+    if(!WORKBENCH ||
+		!NOTIFIER || 
+		!AUTHENTICATOR || 
+		!STORAGE || 
+		!VIEW || 
+		!SIDEMENU_VIEW || 
+		!USER_SERVICE_VIEW || 
+		!AVATAR_NODE_CREATOR || 
+		!CHAT_VIEW)
         return;
-
-	SIDEMENU_VIEW.avatarCreator = AVATAR_NODE_CREATOR;
 
     NOTIFIER.connectionSuccessHandler = onNotifierConnected;
     NOTIFIER.connectionCloseHandler = onNotifierDisconnect;
@@ -104,6 +111,8 @@ function bind() {
 
     VIEW.setSideMenuView(SIDEMENU_VIEW);
 	VIEW.setUserServiceView(USER_SERVICE_VIEW);
+	VIEW.setChatView(CHAT_VIEW);
+	VIER.setAvatarCreator(AVATAR_NODE_CREATOR);
     
     WORKBENCH.statusHandler = onStatus;
     WORKBENCH.interactionHandler = onInteractionComplete;
@@ -133,7 +142,7 @@ include("js/view.js", function () {
     bind();
 });
 include("js/sidemenuView.js", function () {
-    SIDEMENU_VIEW = new SideMenulView();
+    SIDEMENU_VIEW = new SideMenuView();
     bind();
 });
 include("js/userServiceView.js", function() {
@@ -142,5 +151,9 @@ include("js/userServiceView.js", function() {
 });
 include("js/avatarNodeCreator.js", function() {
 	AVATAR_NODE_CREATOR = new AvatarNodeCreator();
+	bind();
+});
+include("js/chatView.js", function() {
+	CHAT_VIEW = new ChatView();
 	bind();
 });

@@ -1,4 +1,4 @@
-function SideMenulView() {
+function SideMenuView() {
 	const that = this;
 
 	this.user = undefined;
@@ -157,15 +157,15 @@ function SideMenulView() {
 		return listItem;
 	}
 
-	SideMenulView.prototype.setEnvironments = function(env) {
+	SideMenuView.prototype.setEnvironments = function(env) {
 		rebuildView(env);
 	}
 }
 
-SideMenulView.prototype.serverSelectionHandler = function(environment, server) {
+SideMenuView.prototype.serverSelectionHandler = function(environment, server) {
 	throw new Error("not binded");
 }
 
-SideMenulView.prototype.resourceSelectionHandler = function(environment, server, resource) {
+SideMenuView.prototype.resourceSelectionHandler = function(environment, server, resource) {
 	throw new Error("not binded");
 }
