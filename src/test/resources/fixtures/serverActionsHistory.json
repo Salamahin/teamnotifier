@@ -1,9 +1,10 @@
 {
   "type": "ServerActionsHistory",
+  "targetId": 1,
   "actions": [
     {
       "type": "ActionInfo",
-      "userName": "user",
+      "actor": "user",
       "timestamp": "2015-11-05T23:44:40.220Z",
       "description": "description"
     }

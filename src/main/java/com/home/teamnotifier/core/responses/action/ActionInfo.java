@@ -16,7 +16,7 @@ import java.util.Objects;
         creatorVisibility = JsonAutoDetect.Visibility.ANY)
 @JsonTypeName("ActionInfo")
 public class ActionInfo implements Serializable {
-    private final String userName;
+    private final String actor;
 
     private final String timestamp;
 
@@ -24,11 +24,11 @@ public class ActionInfo implements Serializable {
 
     @JsonCreator
     private ActionInfo(
-            @JsonProperty("login") final String userName,
+            @JsonProperty("actor") final String userName,
             @JsonProperty("timestamp") final String timestamp,
             @JsonProperty("description") final String description
     ) {
-        this.userName = userName;
+        this.actor = userName;
         this.timestamp = timestamp;
         this.description = description;
     }
@@ -52,7 +52,7 @@ public class ActionInfo implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(userName, timestamp, description);
+        return Objects.hash(actor, timestamp, description);
     }
 
     @Override
@@ -64,7 +64,7 @@ public class ActionInfo implements Serializable {
             return false;
         }
         final ActionInfo that = (ActionInfo) o;
-        return Objects.equals(userName, that.userName) &&
+        return Objects.equals(actor, that.actor) &&
                 Objects.equals(timestamp, that.timestamp) &&
                 Objects.equals(description, that.description);
     }

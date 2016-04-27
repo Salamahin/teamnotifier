@@ -127,7 +127,8 @@ $INPUT_MESSAGE_MARGIN: 10px;
 		$button_width: 100px;
 		
 		padding-left: $CHAT_WIDTH - $button_width;
-	
+		margin-top: $INPUT_MESSAGE_MARGIN;
+
 		#make_action_button {
 			width: $button_width;
 			height: $ACTION_BUTTON_HEIGHT;

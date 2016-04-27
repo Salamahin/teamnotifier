@@ -1,21 +1,38 @@
 package com.home.teamnotifier.core.responses.action;
 
 import com.google.common.collect.Lists;
+import com.home.teamnotifier.db.ResourceEntity;
+import com.home.teamnotifier.db.ServerEntity;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.time.Instant;
 
 import static com.home.teamnotifier.core.responses.SerializationTestHelper.testDeserializeFromJson;
 import static com.home.teamnotifier.core.responses.SerializationTestHelper.testSerializesToJson;
+import static org.mockito.Mockito.*;
 
 public class ActionsHistoryTest {
+    private static ServerEntity serverEntity;
+    private static ResourceEntity resourceEntity;
+
+    @BeforeClass
+    public static void setUp() throws Exception {
+        serverEntity = mock(ServerEntity.class);
+        doReturn(1).when(serverEntity).getId();
+
+        resourceEntity = mock(ResourceEntity.class);
+        doReturn(1).when(resourceEntity).getId();
+    }
 
     private ResourceActionsHistory createResourceActionsInfo() {
-        return new ResourceActionsHistory(Lists.newArrayList(createFineActionInfo()));
+        return new ResourceActionsHistory(resourceEntity, Lists.newArrayList(createFineActionInfo()));
     }
 
     private ServerActionsHistory createActionsOnServerInfo() {
-        return new ServerActionsHistory(Lists.newArrayList(createFineActionInfo()));
+        return new ServerActionsHistory(serverEntity, Lists.newArrayList(createFineActionInfo()));
     }
 
     private ActionInfo createFineActionInfo() {

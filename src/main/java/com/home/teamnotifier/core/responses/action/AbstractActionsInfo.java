@@ -7,9 +7,11 @@ import java.util.Objects;
 
 public abstract class AbstractActionsInfo {
     private final List<ActionInfo> actions;
+    private final int targetId;
 
-    public AbstractActionsInfo(final List<ActionInfo> actions) {
+    public AbstractActionsInfo(final int targetId, final List<ActionInfo> actions) {
         this.actions = ImmutableList.copyOf(actions);
+        this.targetId = targetId;
     }
 
     public final List<ActionInfo> getActions() {
@@ -21,11 +23,11 @@ public abstract class AbstractActionsInfo {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AbstractActionsInfo that = (AbstractActionsInfo) o;
-        return Objects.equals(actions, that.actions);
+        return Objects.equals(actions, that.actions) && Objects.equals(targetId, that.targetId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(actions);
+        return Objects.hash(targetId, actions);
     }
 }

@@ -236,7 +236,7 @@ public class DbActionsGateway implements ActionsGateway {
 
     @Override
     public ResourceActionsHistory getActionsOnResource(final int resourceId, final Range<Instant> range) {
-        final List<ResourceActionEntity> actions = transactionHelper.transaction(em -> {
+        return transactionHelper.transaction(em -> {
             final ResourceEntity resource = getResourceEntity(resourceId, em);
             final CriteriaBuilder cb = em.getCriteriaBuilder();
             final CriteriaQuery<ResourceActionEntity> cq = cb.createQuery(ResourceActionEntity.class);
@@ -254,16 +254,14 @@ public class DbActionsGateway implements ActionsGateway {
 
             final TypedQuery<ResourceActionEntity> allQuery = em.createQuery(allInRange);
 
-            return allQuery.getResultList();
+            return new ResourceActionsHistory(resource, toActionInfos(allQuery.getResultList()));
         });
-
-        return new ResourceActionsHistory(toActionInfos(actions));
     }
 
     @Override
     public ServerActionsHistory getActionsOnServer(int serverId, Range<Instant> range) throws NoSuchResource {
-        final List<ServerActionEntity> actions = transactionHelper.transaction(em -> {
-            final ServerEntity resource = getServerEntity(serverId, em);
+        return transactionHelper.transaction(em -> {
+            final ServerEntity server = getServerEntity(serverId, em);
             final CriteriaBuilder cb = em.getCriteriaBuilder();
             final CriteriaQuery<ServerActionEntity> cq = cb.createQuery(ServerActionEntity.class);
             final Root<ServerActionEntity> rootEntry = cq.from(ServerActionEntity.class);
@@ -271,7 +269,7 @@ public class DbActionsGateway implements ActionsGateway {
             final Path<Instant> time = rootEntry.get("actionTime");
 
             final Predicate actionTimeInRange = getPredicateForRange(range, cb, rootEntry);
-            final Predicate isEqualToProvidedResource = cb.equal(rootEntry.get("server"), resource);
+            final Predicate isEqualToProvidedResource = cb.equal(rootEntry.get("server"), server);
 
             final CriteriaQuery<ServerActionEntity> allInRange = cq
                     .select(rootEntry)
@@ -280,10 +278,8 @@ public class DbActionsGateway implements ActionsGateway {
 
             final TypedQuery<ServerActionEntity> allQuery = em.createQuery(allInRange);
 
-            return allQuery.getResultList();
+            return new ServerActionsHistory(server, toActionInfos(allQuery.getResultList()));
         });
-
-        return new ServerActionsHistory(toActionInfos(actions));
     }
 
     private <T extends ActionEntity> List<ActionInfo> toActionInfos(List<T> actions) {
