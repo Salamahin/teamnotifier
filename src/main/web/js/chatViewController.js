@@ -108,9 +108,11 @@ function ChatViewController() {
 		return holder;
 	}
 
-	function removeChildren(parentNode) {
-		while(parentNode.firstChild) 
-			parentNode.removeChild(firstChild);
+	function removeMessagesChildren(parentNode) {
+		var messages = document.getElemensByClassName("action_info_holder");
+
+		while(messages[0].length) 
+			messages[0].parentNode.removeChild(messages[0]);
 	}
 
 	function rebuildChatForTarget(target) {
@@ -118,7 +120,7 @@ function ChatViewController() {
 			return;
 
 		var messages_holder = document.getElementById("messages_holder");
-		removeChildren(messagesHolder);
+		removeMessagesChildren(messagesHolder);
 
 		if(target.type == "ServerInfo") {
 			for(var node: serversActions[target.id])
@@ -203,8 +205,17 @@ function ChatViewController() {
 		buffer[target.id] = fromDate;
 		getHistory(target, fromDate, toDate);
 	}
+
+	document.getElementById("make_action_button").onclick = function() {
+		var details = document.getElementById("action_input").value;
+		action(that.selectedTarget, details);
+	}
 }
 
 ChatViewController.prototype.getHistory(target, fromDate, toDate) {
+	throw new Error("not binded");
+}
+
+ChatViewController.prototype.action(target, details) {
 	throw new Error("not binded");
 }

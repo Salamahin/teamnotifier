@@ -80,7 +80,7 @@ function bind() {
     if(!WORKBENCH || !NOTIFIER || !AUTHENTICATOR || !STORAGE || !VIEW || !SIDEMENU_VIEW || !USER_SERVICE_VIEW || !AVATAR_NODE_CREATOR)
         return;
 
-	SIDEMENU.avatarCreator = AVATAR_NODE_CREATOR;
+	SIDEMENU_VIEW.avatarCreator = AVATAR_NODE_CREATOR;
 
     NOTIFIER.connectionSuccessHandler = onNotifierConnected;
     NOTIFIER.connectionCloseHandler = onNotifierDisconnect;
@@ -140,7 +140,7 @@ include("js/userServiceView.js", function() {
 	USER_SERVICE_VIEW = new UserServiceView();
 	bind();
 });
-include("js/avatarNodeCreator", function() {
+include("js/avatarNodeCreator.js", function() {
 	AVATAR_NODE_CREATOR = new AvatarNodeCreator();
 	bind();
 });

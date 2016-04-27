@@ -6,6 +6,10 @@ $SCROLLBAR_SPACE: 35px;
 $INPUT_MESSAGE_HEIGHT: 50px;
 $ACTION_BUTTON_HEIGHT: 30px;
 $INPUT_MESSAGE_MARGIN: 10px;
+$MARGIN_LEFT: 20px;
+$BORDER_THICK: 1px;
+$PADDING: 10px;
+$CHAT_WIDTH: $WORKBENCH_WIDTH - $SIDEMENU_WIDTH - $MARGIN_LEFT - 2*$PADDING - 2 * $BORDER_THICK;
 
 @mixin arrow($left) {
 	$arrow_height: 10px;
@@ -28,7 +32,11 @@ $INPUT_MESSAGE_MARGIN: 10px;
 }
 
 #chat {
-	position: absolute;
+	border: solid $BORDER_THICK $WHITE_SHADOWED;
+	padding: $PADDING;
+
+	margin-left: $MARGIN_LEFT;
+	display: inline-block;
 	width: $CHAT_WIDTH;
 	height: calc(100% - #{$INPUT_MESSAGE_MARGIN});
 }
@@ -121,7 +129,7 @@ $INPUT_MESSAGE_MARGIN: 10px;
 #chat_footer {
 	display: block;
 	position: fixed;
-	bottom: 10px;
+	bottom: 10px + $PADDING;
 	
 	#make_action_button_holder {
 		$button_width: 100px;

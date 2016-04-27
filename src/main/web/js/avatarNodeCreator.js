@@ -14,7 +14,7 @@ function AvatarNodeCreator() {
 		return outerDiv;
 	}
 
-	AvatarNodeCreator.prototype.getAvatarNode(user) {
+	AvatarNodeCreator.prototype.getAvatarNode = function(user) {
 		return createNewAvatar(user);
 	}
 }
