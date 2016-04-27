@@ -6,7 +6,8 @@ import org.junit.Test;
 
 import static com.home.teamnotifier.core.responses.SerializationTestHelper.testDeserializeFromJson;
 import static com.home.teamnotifier.core.responses.SerializationTestHelper.testSerializesToJson;
-import static com.home.teamnotifier.core.responses.notification.ReflectionTools.*;
+import static com.home.teamnotifier.core.responses.notification.ReflectionTools.getField;
+import static com.home.teamnotifier.core.responses.notification.ReflectionTools.setValueInFinalField;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 

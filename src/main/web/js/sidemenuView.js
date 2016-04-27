@@ -2,6 +2,7 @@ function SideMenulView() {
 	const that = this;
 
 	this.user = undefined;
+	this.avatarCreator = undefined;
 
 	var cachedEnvironments;
 
@@ -129,10 +130,6 @@ function SideMenulView() {
 		return list;
 	}
 
-	function getAvatarUrl(user) {
-		return "https://robohash.org/teamnotifier_" + user;
-	}
-
 	function createNewResourceNode(environment, server, resource) {
 		var innerDiv = document.createElement("div");
 		var resourceSelectionButton = document.createElement("a");
@@ -150,7 +147,7 @@ function SideMenulView() {
 		var outerDiv = document.createElement("div");
 		outerDiv.appendChild(innerDiv);
 		if(resource.occupationInfo) {
-			var avatar = createNewAvatar(resource.occupationInfo.userName);
+			var avatar = that.avatarCreator.getAvatarNode(resource.occupationInfo.userName);
 			outerDiv.appendChild(avatar);
 		}
 
@@ -158,17 +155,6 @@ function SideMenulView() {
 		listItem.appendChild(outerDiv);
 
 		return listItem;
-	}
-
-	function createNewAvatar(user) {
-		var innerDiv = document.createElement("div");
-		innerDiv.style.backgroundImage = "url('" + getAvatarUrl(user) + "')";
-		
-		var outerDiv = document.createElement("div");
-		outerDiv.classList.add("avatar");
-		outerDiv.appendChild(innerDiv);
-
-		return outerDiv;
 	}
 
 	SideMenulView.prototype.setEnvironments = function(env) {
