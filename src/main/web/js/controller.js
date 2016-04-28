@@ -108,11 +108,12 @@ function bind() {
 	VIEW.serverActionsHistoryHandler = WORKBENCH.getServerActions;
 	VIEW.resourceActionsHistoryHandler = WORKBENCH.getResourceActions;
 	VIEW.resourceActionHandler = WORKBENCH.newResourceAction;
+	VIEW.serverActionHandler = WORKBENCH.newServerAction;
 
     VIEW.setSideMenuView(SIDEMENU_VIEW);
 	VIEW.setUserServiceView(USER_SERVICE_VIEW);
 	VIEW.setChatView(CHAT_VIEW);
-	VIER.setAvatarCreator(AVATAR_NODE_CREATOR);
+	VIEW.setAvatarCreator(AVATAR_NODE_CREATOR);
     
     WORKBENCH.statusHandler = onStatus;
     WORKBENCH.interactionHandler = onInteractionComplete;

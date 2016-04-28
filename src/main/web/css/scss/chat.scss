@@ -76,6 +76,7 @@ $CHAT_WIDTH: $WORKBENCH_WIDTH - $SIDEMENU_WIDTH - $MARGIN_LEFT - 2*$PADDING - 2 
 		display: block;
 		text-align: center;
 		@include href_button();
+		@include disable();
 	}
 
 	.action_info_holder {
@@ -143,6 +144,7 @@ $CHAT_WIDTH: $WORKBENCH_WIDTH - $SIDEMENU_WIDTH - $MARGIN_LEFT - 2*$PADDING - 2 
 			display: table-cell;
 			vertical-align: middle;
 			@include button();
+			@include disable();
 		}
 	}
 

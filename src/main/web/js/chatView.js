@@ -11,6 +11,24 @@ function ChatView() {
 
 	var selectedTarget;
 
+	function disable(node) {
+		node.classList.add("disabled");
+	}
+
+	function enable(node) {
+		node.classList.remove("disabled");
+	}
+
+	function isDisabled(node) {
+		return node.classList.contains("disabled");
+	}
+
+	var makeActionButton = document.getElementById("make_action_button");
+	var loadMoreButton = document.getElementById("load_more_button");
+
+	disable(makeActionButton);
+	disable(loadMoreButton);
+
 	function lastMomentOfDate(date) {
 		var d = new Date(date.getTime());
 
@@ -25,7 +43,7 @@ function ChatView() {
 	function firstMomentOfDate(date) {
 		var d = new Date(date.getTime());
 
-		d.setHoulds(0);
+		d.setHours(0);
 		d.setMinutes(0);
 		d.setSeconds(0);
 		d.setMilliseconds(0);
@@ -122,12 +140,12 @@ function ChatView() {
 		var messages_holder = document.getElementById("messages_holder");
 		removeMessagesChildren(messagesHolder);
 
-		if(target.type == "ServerInfo") {
-			for(var node: serversActions[target.id])
-				messagesHolder.appendChild(node);
+		if(target.type == "ServerInfo") 
+			for(var i = 0; i < serversActions[target.id].length; i++)
+				messagesHolder.appendChild(serversActions[target.id][i]);
 		else if(target.type == "ResourceInfo")
-			for(var node: resourcesActions[target.id])
-				messagesHolder.appendChild(node);
+			for(var i = 0; i < resourcesActions[target.id].length; i++)
+				messagesHolder.appendChild(resourcesActions[target.id][i]);
 	}
 
 	function sortByDate(actions) {
@@ -149,8 +167,8 @@ function ChatView() {
 		if(notification.type != expectedType)
 			return;
 
-		for(var action: notification.actions) {
-			var node = newActionNode(action);
+		for(var i = 0; i< notification.actions.length; i++) {
+			var node = newActionNode(notification.actions[i]);
 			buffer[notification.targetId].push(node);
 		}
 
@@ -164,6 +182,20 @@ function ChatView() {
 		pushToBufferSeveralNodes(notification, "ResourceActionsHistory", resourcesActions);
 	}
 
+	function callHistoryHandler(target, from, to) {
+		if(target.type == "ResourceInfo")
+			that.resourceActionsHistoryHandler(target, from, to);
+		else if(target.type == "ServerInfo") 
+			that.serverActionsHistoryHandler(target, from, to);
+	}
+
+	function callActionHandler(from, to) {
+		if(selectedTarget.type == "ResourceInfo")
+			that.newResourceActionHandler(selectedTarget, from, to);
+		else if(selectedTarget.type == "ServerInfo") 
+			that.newServerActionHandler(selectedTarget, from, to);
+	}
+
     function getHistoryIfNoData(target, expectedType, buffer) {
 		if(target.type != expectedType)
 			return;
@@ -172,15 +204,18 @@ function ChatView() {
 		var firstMoment = firstMomentOfDate(lastMoment);
 
 		buffer[target.id] = firstMoment;
-		getHistory(target, firstMoment, lastMoment);
+		callHistoryHandler(target, firstMoment, lastMoment);
 	}
 
 	ChatView.prototype.select = function(target) {
-		rebuildChatForTarget(target);
 		selectedTarget = target;
+		rebuildChatForTarget(target);
 
 		getHistoryIfNoData(target, "ServerInfo", serversActionsDates);
 		getHistoryIfNoData(target, "ResourceInfo", resourcesActionsDates);
+
+		enable(loadMoreButton);
+		enable(makeActionButton);
 	}
 
 	ChatView.prototype.showChatMessage= function(action) {
@@ -188,7 +223,11 @@ function ChatView() {
 		rebuildChatForTarget(selectedTarget);
 	}
 
-	document.getElementById("load_more_button").onclick = function() {
+	loadMoreButton.onclick = function(e) {
+		if(isDisabled(loadMoreButton)) {
+			return;
+		}
+
 		var target = that.selectedTarget;
 		var buffer;
 
@@ -203,19 +242,32 @@ function ChatView() {
 		var toDate = lastMomentOfDate(fromDate);
 		
 		buffer[target.id] = fromDate;
-		getHistory(target, fromDate, toDate);
+		callHistoryHandler(target, fromDate, toDate);
 	}
 
-	document.getElementById("make_action_button").onclick = function() {
+
+	makeActionButton.onclick = function() {
+		if(isDisabled(loadMoreButton)) {
+			return;
+		}
+
 		var details = document.getElementById("action_input").value;
-		action(that.selectedTarget, details);
+		callActionHandler(details);
 	}
 }
 
-ChatView.prototype.getHistory(target, fromDate, toDate) {
+ChatView.prototype.serverActionsHistoryHandler = function(server, fromDate, toDate) {
 	throw new Error("not binded");
 }
 
-ChatView.prototype.action(target, details) {
+ChatView.prototype.resourceActionsHistoryHandler = function(resource, fromDate, toDate) {
+	throw new Error("not binded");
+}
+
+ChatView.prototype.newResourceActionHandler = function(resource, details) {
+	throw new Error("not binded");
+}
+
+ChatView.prototype.newServerActionHandler = function(server, details) {
 	throw new Error("not binded");
 }

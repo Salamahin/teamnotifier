@@ -29,7 +29,7 @@ function View() {
     };
 
 	View.prototype.showHistory = function(actions) {
-		console.error("not implemented");
+		chatView.showChatMessage(actions);
 	};
 
 	View.prototype.setUserServiceView = function(view) {
@@ -65,11 +65,11 @@ function View() {
 
 		bindAvatarCreator();
 
-        sideMenuView.serverSelectionHandler = function(server) {
+        sideMenuView.serverSelectionHandler = function(environment, server) {
 			chatView.select(server);
         }
 
-        sideMenuView.resourceSelectionHandler = function(resource) {
+        sideMenuView.resourceSelectionHandler = function(environment, server, resource) {
 			chatView.select(resource);
         }
     };
@@ -77,6 +77,10 @@ function View() {
 	View.prototype.setChatView = function(view) {
 		chatView = view;
 		bindAvatarCreator();
+		chatView.serverActionsHistoryHandler = that.serverActionsHistoryHandler;
+		chatView.resourceActionsHistoryHandler = that.resourceActionsHistoryHandler;
+		chatView.newResourceActionHandler = that.resourceActionHandler;
+		chatView.newServerActionHandler = that.serverActionHandler;
 	}
 }
 

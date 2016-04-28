@@ -96,4 +96,13 @@ $AVATAR_BORDER_WIDTH: 2px;
 	}
 }
 
+@mixin disable() {
+	&.disabled {
+		cursor: default;
+		color: $WHITE_SHADOWED;
+		background: transparent;
+		border-color: $WHITE_SHADOWED;
+	}
+}
+
 
