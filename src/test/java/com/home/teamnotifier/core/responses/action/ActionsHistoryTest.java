@@ -1,6 +1,7 @@
 package com.home.teamnotifier.core.responses.action;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Range;
 import com.home.teamnotifier.db.ResourceEntity;
 import com.home.teamnotifier.db.ServerEntity;
 import org.junit.Before;
@@ -28,11 +29,21 @@ public class ActionsHistoryTest {
     }
 
     private ResourceActionsHistory createResourceActionsInfo() {
-        return new ResourceActionsHistory(resourceEntity, Lists.newArrayList(createFineActionInfo()));
+        final Range<Instant> timeRange = Range.closed(
+                Instant.parse("2015-11-05T23:44:40.220Z"),
+                Instant.parse("2015-11-05T23:45:40.220Z")
+        );
+
+        return new ResourceActionsHistory(resourceEntity, timeRange, Lists.newArrayList(createFineActionInfo()));
     }
 
     private ServerActionsHistory createActionsOnServerInfo() {
-        return new ServerActionsHistory(serverEntity, Lists.newArrayList(createFineActionInfo()));
+        final Range<Instant> timeRange = Range.closed(
+                Instant.parse("2015-11-05T23:44:40.220Z"),
+                Instant.parse("2015-11-05T23:45:40.220Z")
+        );
+
+        return new ServerActionsHistory(serverEntity, timeRange, Lists.newArrayList(createFineActionInfo()));
     }
 
     private ActionInfo createFineActionInfo() {

@@ -1,9 +1,11 @@
 package com.home.teamnotifier.core.responses.action;
 
 import com.fasterxml.jackson.annotation.*;
+import com.google.common.collect.Range;
 import com.home.teamnotifier.db.ResourceEntity;
 import com.home.teamnotifier.db.ServerEntity;
 
+import java.time.Instant;
 import java.util.List;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
@@ -15,15 +17,25 @@ import java.util.List;
         creatorVisibility = JsonAutoDetect.Visibility.ANY)
 @JsonTypeName("ServerActionsHistory")
 public class ServerActionsHistory extends AbstractActionsInfo {
-    public ServerActionsHistory(final ServerEntity serverEntity, final List<ActionInfo> actions) {
-        this(serverEntity.getId(), actions);
+    public ServerActionsHistory(
+            final ServerEntity resourceEntity,
+            final Range<Instant> timeRange,
+            final List<ActionInfo> actions
+    ) {
+        this(
+                resourceEntity.getId(),
+                timeRange.lowerEndpoint().toString(),
+                timeRange.upperEndpoint().toString(),
+                actions
+        );
     }
-
     @JsonCreator
     private ServerActionsHistory(
             @JsonProperty("targetId") final int targetId,
+            @JsonProperty("from") final String fromTimestamp,
+            @JsonProperty("to") final String toTimestamp,
             @JsonProperty("actions") final List<ActionInfo> actions
     ) {
-        super(targetId, actions);
+        super(targetId, fromTimestamp, toTimestamp, actions);
     }
 }

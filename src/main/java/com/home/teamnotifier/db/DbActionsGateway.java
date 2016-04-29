@@ -254,7 +254,7 @@ public class DbActionsGateway implements ActionsGateway {
 
             final TypedQuery<ResourceActionEntity> allQuery = em.createQuery(allInRange);
 
-            return new ResourceActionsHistory(resource, toActionInfos(allQuery.getResultList()));
+            return new ResourceActionsHistory(resource, range, toActionInfos(allQuery.getResultList()));
         });
     }
 
@@ -278,7 +278,7 @@ public class DbActionsGateway implements ActionsGateway {
 
             final TypedQuery<ServerActionEntity> allQuery = em.createQuery(allInRange);
 
-            return new ServerActionsHistory(server, toActionInfos(allQuery.getResultList()));
+            return new ServerActionsHistory(server, range, toActionInfos(allQuery.getResultList()));
         });
     }
 

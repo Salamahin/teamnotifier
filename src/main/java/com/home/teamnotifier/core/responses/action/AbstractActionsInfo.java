@@ -1,17 +1,28 @@
 package com.home.teamnotifier.core.responses.action;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Range;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class AbstractActionsInfo {
+abstract class AbstractActionsInfo {
     private final List<ActionInfo> actions;
     private final int targetId;
+    private final String from;
+    private final String to;
 
-    public AbstractActionsInfo(final int targetId, final List<ActionInfo> actions) {
+    AbstractActionsInfo(
+            final int targetId,
+            final String fromTimestamp,
+            final String toTimestamp,
+            final List<ActionInfo> actions
+    ) {
         this.actions = ImmutableList.copyOf(actions);
         this.targetId = targetId;
+        this.from = fromTimestamp;
+        this.to = toTimestamp;
     }
 
     public final List<ActionInfo> getActions() {
@@ -23,11 +34,14 @@ public abstract class AbstractActionsInfo {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AbstractActionsInfo that = (AbstractActionsInfo) o;
-        return Objects.equals(actions, that.actions) && Objects.equals(targetId, that.targetId);
+        return targetId == that.targetId &&
+                Objects.equals(actions, that.actions) &&
+                Objects.equals(from, that.from) &&
+                Objects.equals(to, that.to);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(targetId, actions);
+        return Objects.hash(actions, targetId, from, to);
     }
 }

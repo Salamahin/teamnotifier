@@ -1,13 +1,48 @@
 function Workbench() {
     this.token = undefined;
+	const that = this;
 
-
-    function prehandler(xhttp, handler) {
+    function subscribePrehandler(xhttp, server) {
         if (xhttp.readyState != 4)
             return;
 
-        handler(xhttp);
+        that.subscribtionHandler(server);
     }
+
+	function unsubscribePrehandler(xhttp, server) {
+        if (xhttp.readyState != 4)
+            return;
+
+        that.unsubscribeHandler(server);
+    }
+
+    function reservePrehandler(xhttp, resource) {
+		if (xhttp.readyState != 4)
+            return;
+
+		that.reserveHandler(resource);
+    }
+
+	function freePrehandler(xhttp, resource) {
+		if (xhttp.readyState != 4)
+            return;
+
+		that.freeHandler(resource);
+    }
+
+    function serverActionPrehandler(xhttp, server, action) {
+    	if (xhttp.readyState != 4)
+            return;
+
+         that.serverActionHandler(server, action);
+    } 
+
+	function resourceActionPrehandler(xhttp, resource, action) {
+    	if (xhttp.readyState != 4)
+            return;
+
+         that.resourceActionHandler(resource, action);
+    } 
     
     function environmentPrehandler(xhttp) {
         if(xhttp.readyState != 4)
@@ -39,7 +74,7 @@ function Workbench() {
         xhttp.setRequestHeader("ActionDetails", description);
         xhttp.setRequestHeader("Authorization", "Bearer " + that.token);
         xhttp.onreadystatechange = function () {
-            prehandler(xhttp, that.interactionHandler);
+            resourceActionPrehandler(xhttp, resource, description);
         };
         xhttp.send();
     };
@@ -50,7 +85,7 @@ function Workbench() {
         xhttp.setRequestHeader("ActionDetails", description);
         xhttp.setRequestHeader("Authorization", "Bearer " + that.token);
         xhttp.onreadystatechange = function () {
-            prehandler(xhttp, that.interactionHandler);
+            serverActionPrehandler(xhttp, server, description);
         };
         xhttp.send();
     };
@@ -60,7 +95,7 @@ function Workbench() {
         xhttp.open("POST", "/teamnotifier/1.0/environment/server/subscribe/" + server.id, true);
         xhttp.setRequestHeader("Authorization", "Bearer " + that.token);
         xhttp.onreadystatechange = function () {
-            prehandler(xhttp, that.interactionHandler);
+            subscribePrehandler(xhttp, server);
         };
         xhttp.send();
     };
@@ -70,7 +105,7 @@ function Workbench() {
         xhttp.open("DELETE", "/teamnotifier/1.0/environment/server/subscribe/" + server.id, true);
         xhttp.setRequestHeader("Authorization", "Bearer " + that.token);
         xhttp.onreadystatechange = function () {
-            prehandler(xhttp, that.interactionHandler);
+            unsubscribePrehandler(xhttp, server);
         };
         xhttp.send();
     };
@@ -80,7 +115,7 @@ function Workbench() {
         xhttp.open("POST", "/teamnotifier/1.0/environment/application/reserve/" + resource.id, true);
         xhttp.setRequestHeader("Authorization", "Bearer " + that.token);
         xhttp.onreadystatechange = function () {
-            prehandler(xhttp, that.interactionHandler);
+            reservePrehandler(xhttp, resource);
         };
         xhttp.send();
     };
@@ -90,7 +125,7 @@ function Workbench() {
         xhttp.open("DELETE", "/teamnotifier/1.0/environment/application/reserve/" + resource.id, true);
         xhttp.setRequestHeader("Authorization", "Bearer " + that.token);
         xhttp.onreadystatechange = function () {
-            prehandler(xhttp, that.interactionHandler);
+            freePrehandler(xhttp, resource);
         };
         xhttp.send();
     };
@@ -134,11 +169,29 @@ function Workbench() {
         };
         xhttp.send();
     };
-
-    const that = this;
 }
 
-Workbench.prototype.interactionHandler = function (xhttp) {
+Workbench.prototype.serverActionHandler = function(server, description) {
+	throw new Error("not bound");	
+};
+
+Workbench.prototype.resourceActionHandler = function(resource, description) {
+	throw new Error("not bound");	
+};
+
+Workbench.prototype.reserveHandler = function (target) {
+    throw new Error("not bound");
+};
+
+Workbench.prototype.freeHandler = function (target) {
+    throw new Error("not bound");
+};
+
+Workbench.prototype.subscribeHandler = function (target) {
+    throw new Error("not bound");
+};
+
+Workbench.prototype.unsubscribeHandler = function (target) {
     throw new Error("not bound");
 };
 
