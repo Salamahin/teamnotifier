@@ -7,7 +7,7 @@ function ChatView() {
 	const resourcesActionsDates = [];
 
 	this.avatarCreator = undefined;
-	this.currentUser = undefined;
+	this.user = undefined;
 
 	var selectedTarget;
 
@@ -86,21 +86,18 @@ function ChatView() {
 		return details;
 	}
 
-	function actionIsMadeByCurrentUser(action) {
-		return action.actor == currentUser;
+	function actionIsMadeByCurrentUser(actor) {
+		return actor == that.user;
 	}
 
-	function getDetailsNode(action, left) {
+	function getActionNode(action, mine) {
 		var innerHolder = document.createElement("div");
 		innerHolder.classList.add("message_details");
-		innerHolder.classList.add(left? "left" : "right");
+		innerHolder.classList.add(mine? "right" : "left");
 		innerHolder.appendChild(getSummaryNode(action));
 		innerHolder.appendChild(getDetailsNode(action));
 
-		var outerHolder = document.createElement("div");
-		outerHolder.appendChild(innerHolder);
-
-		return outerHolder;
+		return innerHolder;
 	}
 
 	function newActionNode(action) {		
@@ -112,40 +109,43 @@ function ChatView() {
 		var avatar = that.avatarCreator.getAvatarNode(actor);
 
 		if(actionIsMadeByCurrentUser(actor)) {
-			var detailsNode = getDetailsNode(action, true);
+			var actionNode = getActionNode(action, true);
 			
-			holder.appendChild(detailsNode);
 			holder.appendChild(avatar);
+			holder.appendChild(actionNode);
+
 		} else {
-			var detailsNode = getDetailsNode(action, false);
+			var actionNode = getActionNode(action, false);
 			
+			holder.appendChild(actionNode);
 			holder.appendChild(avatar);
-			holder.appendChild(detailsNode);
 		}
 
 		return holder;
 	}
 
 	function removeMessagesChildren(parentNode) {
-		var messages = document.getElemensByClassName("action_info_holder");
+		var messages = parentNode.querySelectorAll(".action_info_holder");
 
-		while(messages[0].length) 
-			messages[0].parentNode.removeChild(messages[0]);
+		for(var i = 0; i<messages.length; i++)
+			parentNode.removeChild(messages[i]);
 	}
 
 	function rebuildChatForTarget(target) {
-		if(target.id == selectedTarget.id)
+		if(target.id != selectedTarget.id)
 			return;
 
-		var messages_holder = document.getElementById("messages_holder");
+		var messagesHolder = document.getElementById("messages_holder");
 		removeMessagesChildren(messagesHolder);
 
-		if(target.type == "ServerInfo") 
+		if(target.type == "ServerInfo" && serversActions[target.id]) 
 			for(var i = 0; i < serversActions[target.id].length; i++)
 				messagesHolder.appendChild(serversActions[target.id][i]);
-		else if(target.type == "ResourceInfo")
+		else if(target.type == "ResourceInfo" && resourcesActions[target.id])
 			for(var i = 0; i < resourcesActions[target.id].length; i++)
 				messagesHolder.appendChild(resourcesActions[target.id][i]);
+
+		messagesHolder.scrollTop = messagesHolder.scrollHeight;
 	}
 
 	function sortByDate(actions) {
@@ -166,6 +166,12 @@ function ChatView() {
 	function pushToBufferSeveralNodes(notification, expectedType, buffer) {
 		if(notification.type != expectedType)
 			return;
+
+		if(!buffer[notification.targetId])
+			buffer[notification.targetId] = [];
+	
+		if(notification.actions.length == 0)
+			return;		
 
 		for(var i = 0; i< notification.actions.length; i++) {
 			var node = newActionNode(notification.actions[i]);
@@ -200,27 +206,46 @@ function ChatView() {
 		if(target.type != expectedType)
 			return;
 
+		if(buffer[target.id])
+			return;
+
 		var lastMoment = lastMomentOfDate(new Date());
 		var firstMoment = firstMomentOfDate(lastMoment);
 
-		buffer[target.id] = firstMoment;
 		callHistoryHandler(target, firstMoment, lastMoment);
 	}
 
 	ChatView.prototype.select = function(target) {
 		selectedTarget = target;
-		rebuildChatForTarget(target);
 
 		getHistoryIfNoData(target, "ServerInfo", serversActionsDates);
 		getHistoryIfNoData(target, "ResourceInfo", resourcesActionsDates);
+
+		rebuildChatForTarget(target);
 
 		enable(loadMoreButton);
 		enable(makeActionButton);
 	}
 
-	ChatView.prototype.showChatMessage= function(action) {
-		notificationToNode(action);
+	ChatView.prototype.showNotification = function(notification) {
+		notificationToNode(notification);
 		rebuildChatForTarget(selectedTarget);
+	}
+
+	ChatView.prototype.showServerAction = function(server, description) {
+		throw new Error("not implemented");
+	}
+
+	ChatView.prototype.showResourceAction = function(resource, description) {
+		throw new Error("not implemented");
+	}
+
+	ChatView.prototype.showServerActionsHistory = function(server, actions) {
+		that.showNotification(actions);
+	}
+
+	ChatView.prototype.showResourceActionsHistory = function(resource, actions) {
+		that.showNotification(actions);
 	}
 
 	loadMoreButton.onclick = function(e) {

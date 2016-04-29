@@ -12,6 +12,11 @@ function View() {
 		window.location.href = "#"+anchor;
 	}
 
+	View.prototype.setCurrentUser = function(username) {
+		sideMenuView.user = username;
+		chatView.currentUser = username;
+	}
+
     View.prototype.showAuthenticationError = function () {
 		userServiceView.showAuthenticationError();
     };
@@ -25,12 +30,24 @@ function View() {
     };
 
     View.prototype.updateStatus = function (environments) {
-        console.error("not implemented");
+        sideMenuView.setEnvironments(environments);
     };
 
-	View.prototype.showHistory = function(actions) {
-		chatView.showChatMessage(actions);
+	View.prototype.showServerActionsHistory = function(server, actions) {
+		chatView.showServerActionsHistory(server, actions);
 	};
+
+	View.prototype.showResourceActionsHistory = function(resource, actions) {
+		chatView.showResourceActionsHistory(resource, actions);
+	};
+
+	View.prototype.showServerActionConfirmation = function(server, description) {
+		chatView.showServerAction(server, description);
+	}
+
+	View.prototype.showResourceActionConfirmation = function(resource, description) {
+		chatView.showResourceAction(resource, description);
+	}
 
 	View.prototype.setUserServiceView = function(view) {
 		userServiceView = view;

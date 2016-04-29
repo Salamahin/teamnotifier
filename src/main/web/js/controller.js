@@ -23,20 +23,15 @@ var CHAT_VIEW;
 var ENVIRONMENTS;
 var CURRENT_SERVER;
 
-function onStatus(environments) {
-	SIDEMENU_VIEW.setEnvironments(environments);
-}
-
 function onAuthenticationSuccess(login, token) {
     STORAGE.store(login, token);
-    VIEW.mainMode();
-
-	SIDEMENU_VIEW.user = login;
 
     NOTIFIER.token = token;
     WORKBENCH.token = token;
 
     NOTIFIER.connect();
+    
+    VIEW.setCurrentUser(login);
     VIEW.mainMode();
 }
 
@@ -108,10 +103,17 @@ function bind() {
 	VIEW.setUserServiceView(USER_SERVICE_VIEW);
 	VIEW.setChatView(CHAT_VIEW);
 	VIEW.setAvatarCreator(AVATAR_NODE_CREATOR);
-    
-    WORKBENCH.statusHandler = onStatus;
-    WORKBENCH.interactionHandler = onInteractionComplete;
-	WORKBENCH.historyHandler = VIEW.showHistory;
+
+
+// 	WORKBENCH.reserveRequestSuccessHandlerHandler =
+// 	WORKBENCH.freeRequestSuccessHandler =
+// 	WORKBENCH.subscribeRequestSuccessHandler =
+// 	WORKBENCH.unsubscribeRequestSuccessHandler =
+	WORKBENCH.serverActionRequestSuccessHandler = VIEW.showServerActionConfirmation;
+	WORKBENCH.resourceActionRequestSuccessHandler = VIEW.showResourceActionConfirmation
+	WORKBENCH.serverActionsHistoryRequestSuccessHandler = VIEW.showServerActionsHistory;
+	WORKBENCH.resourceActionsHistoryRequestSuccessHandler = VIEW.showResourceActionsHistory;
+	WORKBENCH.statusRequestSuccessHandler = VIEW.updateStatus;
 
     init();
 }

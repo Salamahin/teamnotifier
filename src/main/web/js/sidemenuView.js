@@ -69,7 +69,7 @@ function SideMenuView() {
 	function rebuildServerAndEnvironmentNode(environment, server) {
 		var node = findPresentListNodeForEnvironmentAndServer(environment, server);
 		if(node) {
-			//TODO
+			throw new Error("not implemented");
 		} else {
 			node = createNewListNodeForEnvironmentAndServer(environment, server);
 			var serverList = document.querySelectorAll("#sidemenu .servers_list:nth-child(1)")[0];

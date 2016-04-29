@@ -6,42 +6,42 @@ function Workbench() {
         if (xhttp.readyState != 4)
             return;
 
-        that.subscribtionHandler(server);
+        that.subscribeRequestSuccessHandler(server);
     }
 
 	function unsubscribePrehandler(xhttp, server) {
         if (xhttp.readyState != 4)
             return;
 
-        that.unsubscribeHandler(server);
+        that.unsubscribeRequestSuccessHandler(server);
     }
 
     function reservePrehandler(xhttp, resource) {
 		if (xhttp.readyState != 4)
             return;
 
-		that.reserveHandler(resource);
+		that.reserveRequestSuccessHandler(resource);
     }
 
 	function freePrehandler(xhttp, resource) {
 		if (xhttp.readyState != 4)
             return;
 
-		that.freeHandler(resource);
+		that.freeRequestSuccessHandler(resource);
     }
 
     function serverActionPrehandler(xhttp, server, action) {
     	if (xhttp.readyState != 4)
             return;
 
-         that.serverActionHandler(server, action);
+         that.serverActionRequestSuccessHandler(server, action);
     } 
 
 	function resourceActionPrehandler(xhttp, resource, action) {
     	if (xhttp.readyState != 4)
             return;
 
-         that.resourceActionHandler(resource, action);
+         that.resourceActionRequestSuccessHandler(resource, action);
     } 
     
     function environmentPrehandler(xhttp) {
@@ -49,23 +49,35 @@ function Workbench() {
             return;
         
         if(xhttp.status == 200) {
-            that.statusHandler(JSON.parse(xhttp.responseText).environments);
+            that.statusRequestSuccessHandler(JSON.parse(xhttp.responseText).environments);
             return;
         }
         
         throw new Error("Failed to get status");
     }
 
-	function historyPrehandler(xhttp) {
+	function serverActionsHistoryPrehandler(xhttp, server) {
 		if(xhttp.readyState != 4)
 			return;
 
 		if(xhttp.status == 200) {
-			that.historyHandler(JSON.parse(xhttp.responseText).actions);
+			that.serverActionsHistoryRequestSuccessHandler(server, JSON.parse(xhttp.responseText));
 			return;
 		}
 
-		throw new Error("Failed to get history");
+		throw new Error("Failed to get server history");
+	}
+
+	function resourceActionsHistoryPrehandler(xhttp, resource) {
+		if(xhttp.readyState != 4)
+			return;
+
+		if(xhttp.status == 200) {
+			that.resourceActionsHistoryRequestSuccessHandler(resource, JSON.parse(xhttp.responseText));
+			return;
+		}
+
+		throw new Error("Failed to get resource history");
 	}
 
     Workbench.prototype.newResourceAction = function (resource, description) {
@@ -140,7 +152,7 @@ function Workbench() {
         xhttp.setRequestHeader("ActionsTo", btoa(toStr));
         xhttp.setRequestHeader("Authorization", "Bearer " + that.token);
         xhttp.onreadystatechange = function () {
-            historyPrehandler(xhttp);
+            resourceActionsHistoryPrehandler(xhttp, resource);
         };
         xhttp.send();
     };
@@ -155,7 +167,7 @@ function Workbench() {
         xhttp.setRequestHeader("ActionsTo", btoa(toStr));
         xhttp.setRequestHeader("Authorization", "Bearer " + that.token);
         xhttp.onreadystatechange = function () {
-            historyPrehandler(xhttp);
+            serverActionsHistoryPrehandler(xhttp, server);
         };
         xhttp.send();
     };
@@ -171,34 +183,38 @@ function Workbench() {
     };
 }
 
-Workbench.prototype.serverActionHandler = function(server, description) {
+Workbench.prototype.serverActionRequestSuccessHandler = function(server, description) {
 	throw new Error("not bound");	
 };
 
-Workbench.prototype.resourceActionHandler = function(resource, description) {
+Workbench.prototype.resourceActionRequestSuccessHandler = function(resource, description) {
 	throw new Error("not bound");	
 };
 
-Workbench.prototype.reserveHandler = function (target) {
+Workbench.prototype.reserveRequestSuccessHandlerHandler = function (target) {
     throw new Error("not bound");
 };
 
-Workbench.prototype.freeHandler = function (target) {
+Workbench.prototype.freeRequestSuccessHandler = function (target) {
     throw new Error("not bound");
 };
 
-Workbench.prototype.subscribeHandler = function (target) {
+Workbench.prototype.subscribeRequestSuccessHandler = function (target) {
     throw new Error("not bound");
 };
 
-Workbench.prototype.unsubscribeHandler = function (target) {
+Workbench.prototype.unsubscribeRequestSuccessHandler = function (target) {
     throw new Error("not bound");
 };
 
-Workbench.prototype.historyHandler = function (actions) {
+Workbench.prototype.serverActionsHistoryRequestSuccessHandler = function (server, actions) {
     throw new Error("not bound");
 };
 
-Workbench.prototype.statusHandler = function (environments) {
+Workbench.prototype.resourceActionsHistoryRequestSuccessHandler = function (resource, actions) {
+    throw new Error("not bound");
+};
+
+Workbench.prototype.statusRequestSuccessHandler = function (environments) {
     throw new Error("not bound");
 };
