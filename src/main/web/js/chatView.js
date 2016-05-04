@@ -12,7 +12,8 @@ function ChatView() {
 	var selectedTarget;
 
 	function disable(node) {
-		node.classList.add("disabled");
+		if(!node.classList.contains("disabled"))
+			node.classList.add("disabled");
 	}
 
 	function enable(node) {
@@ -213,6 +214,8 @@ function ChatView() {
 		var firstMoment = firstMomentOfDate(lastMoment);
 
 		callHistoryHandler(target, firstMoment, lastMoment);
+
+		buffer[target.id] = firstMoment;
 	}
 
 	ChatView.prototype.select = function(target) {
@@ -223,8 +226,7 @@ function ChatView() {
 
 		rebuildChatForTarget(target);
 
-		enable(loadMoreButton);
-		enable(makeActionButton);
+		tryEnableMakeActionButton();
 	}
 
 	ChatView.prototype.showNotification = function(notification) {
@@ -271,13 +273,27 @@ function ChatView() {
 	}
 
 
+	var inputBox = document.getElementById("action_input");
+
 	makeActionButton.onclick = function() {
-		if(isDisabled(loadMoreButton)) {
+		if(isDisabled(makeActionButton)) {
 			return;
 		}
 
-		var details = document.getElementById("action_input").value;
+		var details = inputBox.value;
 		callActionHandler(details);
+	}
+
+	function tryEnableMakeActionButton() {
+		var text = inputBox.value;
+		if(text && selectedTarget)
+			enable(makeActionButton);
+		else
+			disable(makeActionButton);
+	}
+
+	inputBox.onkeyup = function() {
+		tryEnableMakeActionButton();
 	}
 }
 

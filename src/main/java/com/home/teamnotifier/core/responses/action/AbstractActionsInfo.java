@@ -7,7 +7,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 
-abstract class AbstractActionsInfo {
+public abstract class AbstractActionsInfo {
     private final List<ActionInfo> actions;
     private final int targetId;
     private final String from;
