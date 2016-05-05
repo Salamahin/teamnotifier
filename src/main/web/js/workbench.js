@@ -83,7 +83,7 @@ function Workbench() {
     Workbench.prototype.newResourceAction = function (resource, description) {
         var xhttp = new XMLHttpRequest();
         xhttp.open("POST", "/teamnotifier/1.0/environment/application/action/" + resource.id, true);
-        xhttp.setRequestHeader("ActionDetails", description);
+        xhttp.setRequestHeader("ActionDetails", window.btoa(description));
         xhttp.setRequestHeader("Authorization", "Bearer " + that.token);
         xhttp.onreadystatechange = function () {
             resourceActionPrehandler(xhttp, resource, description);
@@ -94,7 +94,7 @@ function Workbench() {
     Workbench.prototype.newServerAction = function (server, description) {
         var xhttp = new XMLHttpRequest();
         xhttp.open("POST", "/teamnotifier/1.0/environment/server/action/" + server.id, true);
-        xhttp.setRequestHeader("ActionDetails", description);
+        xhttp.setRequestHeader("ActionDetails", window.btoa(description));
         xhttp.setRequestHeader("Authorization", "Bearer " + that.token);
         xhttp.onreadystatechange = function () {
             serverActionPrehandler(xhttp, server, description);
