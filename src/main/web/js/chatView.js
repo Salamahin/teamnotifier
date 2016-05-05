@@ -227,6 +227,7 @@ function ChatView() {
 		rebuildChatForTarget(target);
 
 		tryEnableMakeActionButton();
+		enable(loadMoreButton);
 	}
 
 	ChatView.prototype.showNotification = function(notification) {
@@ -234,12 +235,28 @@ function ChatView() {
 		rebuildChatForTarget(selectedTarget);
 	}
 
+	function buildConfirmationNotification(target, description) {
+		var confirmation = new Object();
+
+		if(target.type == "ServerInfo")
+			confirmation.type = "ServerActionNotification";
+		else if(target.type == "ResourceInfo")
+			confirmation.type = "ResourceActionNotification";
+
+		confirmation.actor = that.currentUser;
+		confirmation.targetId = target.id;
+		confirmation.timestamp = (new Date()).toISOString();
+		confirmation.description = description;
+
+		return confirmation;
+	}
+
 	ChatView.prototype.showServerAction = function(server, description) {
-		throw new Error("not implemented");
+		that.showNotification(buildConfirmationNotification(server, description));
 	}
 
 	ChatView.prototype.showResourceAction = function(resource, description) {
-		throw new Error("not implemented");
+		that.showNotification(buildConfirmationNotification(resource, description));
 	}
 
 	ChatView.prototype.showServerActionsHistory = function(server, actions) {
@@ -251,25 +268,23 @@ function ChatView() {
 	}
 
 	loadMoreButton.onclick = function(e) {
-		if(isDisabled(loadMoreButton)) {
+		if(isDisabled(loadMoreButton))
 			return;
-		}
-
-		var target = that.selectedTarget;
+	
 		var buffer;
 
-		if(target.type == "ServerInfo")
+		if(selectedTarget.type == "ServerInfo")
 			buffer = serversActionsDates;
 		else
 			buffer = resourcesActionsDates;
 		
-		var prevDate = buffer[target.id];
+		var prevDate = buffer[selectedTarget.id];
 
 		var fromDate = firstMomentOfDayBefore(prevDate);
 		var toDate = lastMomentOfDate(fromDate);
 		
-		buffer[target.id] = fromDate;
-		callHistoryHandler(target, fromDate, toDate);
+		buffer[selectedTarget.id] = fromDate;
+		callHistoryHandler(selectedTarget, fromDate, toDate);
 	}
 
 
@@ -282,6 +297,7 @@ function ChatView() {
 
 		var details = inputBox.value;
 		callActionHandler(details);
+		inputBox.value = "";
 	}
 
 	function tryEnableMakeActionButton() {
