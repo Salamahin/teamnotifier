@@ -10,6 +10,8 @@ function include(src, callback)
     head.appendChild(script);
 }
 
+var CONTENT;
+var LOADING_SPINNER;
 var WORKBENCH;
 var NOTIFIER;
 var AUTHENTICATOR;
@@ -50,7 +52,7 @@ function onNotifierError(error) {
 
 function onNotifierDisconnect() {
     console.log("notifier disconnected");
-    VIEW.authenticationMode();
+//     VIEW.authenticationMode();
 }
 
 function onNotifierEvent(event) {
@@ -64,6 +66,8 @@ function init() {
         VIEW.authenticationMode();
     else
         onAuthenticationSuccess(STORAGE.login, STORAGE.token);
+	
+	mainMode();
 }
 
 function bind() {
@@ -118,39 +122,66 @@ function bind() {
     init();
 }
 
-include("js/workbench.js", function () {
-    WORKBENCH = new Workbench();
-    bind();
-});
-include("js/notifier.js", function () {
-    NOTIFIER = new Notifier();
-    bind();
-});
-include("js/authenticator.js", function () {
-    AUTHENTICATOR = new Authenticator();
-    bind();
-});
-include("js/storage.js", function () {
-    STORAGE = new Storage();
-    bind();
-});
-include("js/view.js", function () {
-    VIEW = new View();
-    bind();
-});
-include("js/sidemenuView.js", function () {
-    SIDEMENU_VIEW = new SideMenuView();
-    bind();
-});
-include("js/userServiceView.js", function() {
-	USER_SERVICE_VIEW = new UserServiceView();
-	bind();
-});
-include("js/avatarNodeCreator.js", function() {
-	AVATAR_NODE_CREATOR = new AvatarNodeCreator();
-	bind();
-});
-include("js/chatView.js", function() {
-	CHAT_VIEW = new ChatView();
-	bind();
-});
+
+function hide(node) {
+	node.style.visibility = "hidden";
+}
+
+function show(node) {
+	node.style.visibility = "visible";
+}
+
+function loadingMode() {
+	hide(CONTENT);
+	show(LOADING_SPINNER);
+}
+
+function mainMode() {
+	hide(LOADING_SPINNER);
+	show(CONTENT);
+}
+
+window.onload = function() {
+	CONTENT = document.getElementById("content");
+	LOADING_SPINNER = document.getElementById("loading_spinner");
+
+	loadingMode();
+
+	include("js/workbench.js", function () {
+		WORKBENCH = new Workbench();
+		bind();
+	});
+	include("js/notifier.js", function () {
+		NOTIFIER = new Notifier();
+		bind();
+	});
+	include("js/authenticator.js", function () {
+		AUTHENTICATOR = new Authenticator();
+		bind();
+	});
+	include("js/storage.js", function () {
+		STORAGE = new Storage();
+		bind();
+	});
+	include("js/view.js", function () {
+		VIEW = new View();
+		bind();
+	});
+	include("js/sidemenuView.js", function () {
+		SIDEMENU_VIEW = new SideMenuView();
+		bind();
+	});
+	include("js/userServiceView.js", function() {
+		USER_SERVICE_VIEW = new UserServiceView();
+		bind();
+	});
+	include("js/avatarNodeCreator.js", function() {
+		AVATAR_NODE_CREATOR = new AvatarNodeCreator();
+		bind();
+	});
+	include("js/chatView.js", function() {
+		CHAT_VIEW = new ChatView();
+		bind();
+	});
+};
+

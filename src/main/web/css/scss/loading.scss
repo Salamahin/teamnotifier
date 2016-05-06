@@ -1,0 +1,25 @@
+@import 'commons.scss';
+
+@keyframes spinner {
+    to {transform: rotate(360deg);}
+}
+ 
+#loading_spinner {
+	$size: 200px;
+
+	margin: 0 auto;
+	position: absolute;
+	top: calc(50% - #{$size / 2});
+	left: calc(50% - #{$size / 2});
+
+	width: $size;
+	height: $size;
+
+	border: 2px solid transparent;
+	border-left-color: $SOFT_RED;
+	border-right-color: $SOFT_RED;
+	border-radius: 50%;
+
+	animation: spinner 1s ease infinite;
+}
+
