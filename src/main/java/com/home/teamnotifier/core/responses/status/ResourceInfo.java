@@ -30,18 +30,6 @@ public class ResourceInfo {
         this.occupationInfo = occupationInfo;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public OccupationInfo getOccupationInfo() {
-        return occupationInfo;
-    }
-
-    public String getName() {
-        return name;
-    }
-
     @Override
     public int hashCode() {
         return Objects.hash(name, occupationInfo, id);

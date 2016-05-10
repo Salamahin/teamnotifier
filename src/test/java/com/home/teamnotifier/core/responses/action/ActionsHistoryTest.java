@@ -4,10 +4,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Range;
 import com.home.teamnotifier.db.ResourceEntity;
 import com.home.teamnotifier.db.ServerEntity;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import java.time.Instant;
 

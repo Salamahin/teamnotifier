@@ -12,7 +12,7 @@ import java.util.function.Function;
 public final class TransactionHelper {
     private static final Logger LOGGER = LoggerFactory.getLogger(TransactionHelper.class);
 
-    private EntityManagerFactory factory = Persistence.createEntityManagerFactory("teamnotifier");
+    private final EntityManagerFactory factory = Persistence.createEntityManagerFactory("teamnotifier");
 
     public <U> U transaction(Function<EntityManager, U> function) {
         U result = null;

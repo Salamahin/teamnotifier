@@ -25,7 +25,7 @@ public class ServerAvailabilityCheckerTest {
     private static ServerAvailabilityChecker checker;
     private static Server server;
 
-    static class HelloHandler extends AbstractHandler {
+    private static class HelloHandler extends AbstractHandler {
         @Override
         public void handle(
                 final String target,

@@ -22,10 +22,6 @@ public class EnvironmentsInfo {
         this.environments = ImmutableList.copyOf(environments);
     }
 
-    public List<EnvironmentInfo> getEnvironments() {
-        return environments;
-    }
-
     @Override
     public int hashCode() {
         return Objects.hash(environments);

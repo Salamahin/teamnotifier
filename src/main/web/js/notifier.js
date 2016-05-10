@@ -12,7 +12,7 @@ function Notifier() {
     };
 
     Notifier.prototype.connect = function () {
-        var websocket = new WebSocket("ws://" + location.host + "/state/?token=" + that.token);
+        var websocket = ebsocket = new WebSocket("ws://" + location.host + "/state/?token=" + that.token);
 
         websocket.onopen = function () {
             that.connectionSuccessHandler();
@@ -28,7 +28,7 @@ function Notifier() {
         };
 
         websocket.onerror = function (error) {
-            that.errorHandler();
+            that.errorHandler(error);
         };
     };
 }

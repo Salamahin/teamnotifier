@@ -20,10 +20,6 @@ public class AuthenticationInfo {
         this.token = token;
     }
 
-    public String getToken() {
-        return token;
-    }
-
     @Override
     public int hashCode() {
         return Objects.hash(token);

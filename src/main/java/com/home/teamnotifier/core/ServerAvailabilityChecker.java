@@ -131,7 +131,7 @@ public class ServerAvailabilityChecker {
         );
     }
 
-    public void stop() throws Exception {
+    public void stop() {
         if (routine == null)
             return;
 

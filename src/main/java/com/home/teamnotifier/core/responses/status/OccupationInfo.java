@@ -35,10 +35,6 @@ public class OccupationInfo {
         this.occupationTime = occupationTime.toString();
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
     @Override
     public int hashCode() {
         return Objects.hash(userName, occupationTime);

@@ -1,13 +1,11 @@
 package com.home.teamnotifier.core.responses.action;
 
 import com.fasterxml.jackson.annotation.*;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Range;
 import com.home.teamnotifier.db.ResourceEntity;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Objects;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonAutoDetect(

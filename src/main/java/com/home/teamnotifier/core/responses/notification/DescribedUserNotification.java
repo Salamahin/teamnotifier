@@ -5,7 +5,7 @@ import java.util.Objects;
 public abstract class DescribedUserNotification extends UserNotification {
     private final String description;
 
-    protected DescribedUserNotification(
+    DescribedUserNotification(
             final String actor,
             final int targetId,
             final String description,

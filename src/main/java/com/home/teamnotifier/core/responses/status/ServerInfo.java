@@ -41,22 +41,6 @@ public class ServerInfo {
         this.subscribers = ImmutableSet.copyOf(subscribers);
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public Set<ResourceInfo> getResources() {
-        return resources;
-    }
-
-    public Set<String> getSubscribers() {
-        return subscribers;
-    }
-
-    public String getName() {
-        return name;
-    }
-
     @Override
     public int hashCode() {
         return Objects.hash(name, resources, subscribers, id, isOnline);

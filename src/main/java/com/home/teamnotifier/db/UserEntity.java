@@ -8,7 +8,6 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 @Entity
 @Table(schema = "teamnotifier", name = "User")
@@ -49,10 +48,6 @@ public class UserEntity implements Serializable {
         this.passHash = passHash;
         this.salt = salt;
         roles = Sets.newHashSet(RoleEntity.USER);
-    }
-
-    public Set<RoleEntity> getRolesImmutable() {
-        return ImmutableSet.copyOf(roles);
     }
 
     public Integer getId() {

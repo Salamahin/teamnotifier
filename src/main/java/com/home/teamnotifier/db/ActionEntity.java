@@ -24,22 +24,18 @@ abstract class ActionEntity {
     @Size(min = 1)
     private final String details;
 
-    public ActionEntity() {
+    ActionEntity() {
         id = null;
         actionTime = null;
         details = null;
         actor = null;
     }
 
-    protected ActionEntity(final UserEntity actor, final String details) {
+    ActionEntity(final UserEntity actor, final String details) {
         this.id = null;
         this.actor = actor;
         this.details = details;
         this.actionTime = Instant.now();
-    }
-
-    public final Integer getId() {
-        return id;
     }
 
     public final UserEntity getActor() {

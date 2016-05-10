@@ -19,11 +19,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 abstract class ActionsTester<T extends AbstractActionsInfo, K extends DescribedUserNotification> {
     private final DbPreparer helper;
 
-    private Instant firstEver;
-    private Instant lastEver;
-    private Instant middle;
-    private List<ActionData> actionsBeforeMiddle;
-    private List<ActionData> actionAfterMiddle;
+    private final Instant firstEver;
+    private final Instant lastEver;
+    private final Instant middle;
+    private final List<ActionData> actionsBeforeMiddle;
+    private final List<ActionData> actionAfterMiddle;
     private final int id;
     private final UserEntity persistedUser;
 
@@ -98,7 +98,7 @@ abstract class ActionsTester<T extends AbstractActionsInfo, K extends DescribedU
         );
     }
 
-    public void testDoesntHaveBeforeMiddle() throws Exception {
+    public void testDoesntHaveBeforeMiddle() {
         final T actions = actionsInRange(id, Range.closed(firstEver, middle));
         final List<ActionData> loadedData = toActionDataList(actions);
 
@@ -107,7 +107,7 @@ abstract class ActionsTester<T extends AbstractActionsInfo, K extends DescribedU
     }
 
 
-    public void testDoesntHaveAfter() throws Exception {
+    public void testDoesntHaveAfter() {
         final T actions =actionsInRange(id, Range.closed(middle, lastEver));
         final List<ActionData> loadedData = toActionDataList(actions);
 
@@ -116,7 +116,7 @@ abstract class ActionsTester<T extends AbstractActionsInfo, K extends DescribedU
     }
 
 
-    public void testReturnsSubscribersNamesAfterAction(final EnvironmentEntity environment) throws Exception {
+    public void testReturnsSubscribersNamesAfterAction(final EnvironmentEntity environment) {
         final String userName1 = persistedUser.getName();
         final String userName2 = helper.createPersistedUser(getRandomString(), getRandomString()).getName();
 

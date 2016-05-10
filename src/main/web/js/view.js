@@ -2,7 +2,7 @@ function View() {
     const that = this;
 
     var sideMenuView = undefined;
-	var userServiceView = undefined;
+	var authenticationView = undefined;
 	var chatView = undefined;
 	var avatarCreator = undefined;
 
@@ -18,7 +18,7 @@ function View() {
 	}
 
     View.prototype.showAuthenticationError = function () {
-		userServiceView.showAuthenticationError();
+		authenticationView.showAuthenticationError();
     };
 
     View.prototype.authenticationMode = function() {
@@ -49,14 +49,14 @@ function View() {
 		chatView.showResourceAction(resource, description);
 	}
 
-	View.prototype.setUserServiceView = function(view) {
-		userServiceView = view;
+	View.prototype.setAuthenticationView = function(view) {
+		authenticationView = view;
 
-		userServiceView.authenticationHandler = function(username, password) {
+		authenticationView.authenticationHandler = function(username, password) {
 			that.authenticationAttemptHandler(username, password);
 		};
 
-		userServiceView.registrationHandler = function(username, password) {
+		authenticationView.registrationHandler = function(username, password) {
 			that.registrationHandler(username, password);
 		};
 	}

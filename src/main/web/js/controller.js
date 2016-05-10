@@ -18,7 +18,7 @@ var AUTHENTICATOR;
 var STORAGE;
 var VIEW;
 var SIDEMENU_VIEW;
-var USER_SERVICE_VIEW;
+var AUTHENTICATION_VIEW;
 var AVATAR_NODE_CREATOR;
 var CHAT_VIEW;
 
@@ -35,6 +35,8 @@ function onAuthenticationSuccess(login, token) {
     
     VIEW.setCurrentUser(login);
     VIEW.mainMode();
+
+    loadingComplete();
 }
 
 function onServerChange(server) {
@@ -47,7 +49,7 @@ function onNotifierConnected() {
 }
 
 function onNotifierError(error) {
-    console.log("notifier error: " + error)
+    console.log("notifier error: " + error.message);
 }
 
 function onNotifierDisconnect() {
@@ -59,15 +61,35 @@ function onNotifierEvent(event) {
     console.log("notifier event");
 }
 
+function tryAuthenticate(login, token) {
+
+}
+
+function authenticationSuccess() {
+	mainMode();
+}
+
+function authenticationError() {
+	VIEW.authenticationMode();
+}
+
+function showError() {
+	console.log("not implemented");
+}
+
+function handleWhoAmI(login) {
+	onAuthenticationSuccess
+}
+
 function init() {
     NOTIFIER.requestPermissions();
 
-    if(!STORAGE.token || !STORAGE.login)
+    if(!STORAGE.token) {
         VIEW.authenticationMode();
-    else
-        onAuthenticationSuccess(STORAGE.login, STORAGE.token);
-	
-	mainMode();
+        loadingComplete();
+    } else {
+		WORKBENCH.whoAmI(STORAGE.token);
+    }
 }
 
 function bind() {
@@ -77,7 +99,7 @@ function bind() {
 		!STORAGE || 
 		!VIEW || 
 		!SIDEMENU_VIEW || 
-		!USER_SERVICE_VIEW || 
+		!AUTHENTICATION_VIEW || 
 		!AVATAR_NODE_CREATOR || 
 		!CHAT_VIEW)
         return;
@@ -104,7 +126,7 @@ function bind() {
 	VIEW.serverActionHandler = WORKBENCH.newServerAction;
 
     VIEW.setSideMenuView(SIDEMENU_VIEW);
-	VIEW.setUserServiceView(USER_SERVICE_VIEW);
+	VIEW.setAuthenticationView(AUTHENTICATION_VIEW);
 	VIEW.setChatView(CHAT_VIEW);
 	VIEW.setAvatarCreator(AVATAR_NODE_CREATOR);
 
@@ -118,6 +140,8 @@ function bind() {
 	WORKBENCH.serverActionsHistoryRequestSuccessHandler = VIEW.showServerActionsHistory;
 	WORKBENCH.resourceActionsHistoryRequestSuccessHandler = VIEW.showResourceActionsHistory;
 	WORKBENCH.statusRequestSuccessHandler = VIEW.updateStatus;
+	WORKBENCH.whoAmIErrorHandler = showError;
+	WORKBENCH.whoAmISuccessHandler = 
 
     init();
 }
@@ -131,12 +155,12 @@ function show(node) {
 	node.style.visibility = "visible";
 }
 
-function loadingMode() {
+function loadingStart() {
 	hide(CONTENT);
 	show(LOADING_SPINNER);
 }
 
-function mainMode() {
+function loadingComplete() {
 	hide(LOADING_SPINNER);
 	show(CONTENT);
 }
@@ -145,7 +169,7 @@ window.onload = function() {
 	CONTENT = document.getElementById("content");
 	LOADING_SPINNER = document.getElementById("loading_spinner");
 
-	loadingMode();
+	loadingStart();
 
 	include("js/workbench.js", function () {
 		WORKBENCH = new Workbench();
@@ -171,8 +195,8 @@ window.onload = function() {
 		SIDEMENU_VIEW = new SideMenuView();
 		bind();
 	});
-	include("js/userServiceView.js", function() {
-		USER_SERVICE_VIEW = new UserServiceView();
+	include("js/authenticationView.js", function() {
+		AUTHENTICATION_VIEW = new AuthenticationView();
 		bind();
 	});
 	include("js/avatarNodeCreator.js", function() {

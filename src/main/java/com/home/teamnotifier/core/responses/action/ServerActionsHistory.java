@@ -2,7 +2,6 @@ package com.home.teamnotifier.core.responses.action;
 
 import com.fasterxml.jackson.annotation.*;
 import com.google.common.collect.Range;
-import com.home.teamnotifier.db.ResourceEntity;
 import com.home.teamnotifier.db.ServerEntity;
 
 import java.time.Instant;

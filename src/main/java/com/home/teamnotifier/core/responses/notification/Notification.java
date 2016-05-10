@@ -6,17 +6,9 @@ public abstract class Notification {
     private final String timestamp;
     private final int targetId;
 
-    protected Notification(final String timestamp, final int targetId) {
+    Notification(final String timestamp, final int targetId) {
         this.timestamp = timestamp;
         this.targetId = targetId;
-    }
-
-    public final String getTimestamp() {
-        return timestamp;
-    }
-
-    public final int getTargetId() {
-        return targetId;
     }
 
     @Override

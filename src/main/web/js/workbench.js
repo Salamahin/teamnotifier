@@ -80,6 +80,18 @@ function Workbench() {
 		throw new Error("Failed to get resource history");
 	}
 
+	function whoAmIPrehandler(xhttp) {
+		if(xhttp.readyState != 4)
+			return;
+
+		if(xhttp.status == 200) {
+			that.whoAmISuccessHandler(JSON.parse(xhttp.responseText).name);
+			return;
+		}
+
+		that.whoAmIErrorHandler();
+	}
+
     Workbench.prototype.newResourceAction = function (resource, description) {
         var xhttp = new XMLHttpRequest();
         xhttp.open("POST", "/teamnotifier/1.0/environment/application/action/" + resource.id, true);
@@ -181,7 +193,25 @@ function Workbench() {
         };
         xhttp.send();
     };
+
+    Workbench.prototype.whoAmI = function(token) {
+		var xhttp = new XMLHttpRequest();
+        xhttp.open("GET", "/teamnotifier/1.0/users/whoami", true);
+        xhttp.setRequestHeader("Authorization", "Bearer " + token);
+        xhttp.onreadystatechange = function () {
+            whoAmIPrehandler(xhttp);
+        };
+        xhttp.send();
+    };
 }
+
+Workbench.prototype.whoAmISuccessHandler = function(login) {
+	throw new Error("not bound");
+};
+
+Workbench.prototype.whoAmIErrorHandler = function() {
+	throw new Error("not bound");
+};
 
 Workbench.prototype.serverActionRequestSuccessHandler = function(server, description) {
 	throw new Error("not bound");	

@@ -3,7 +3,6 @@
 target/
 dist/
 
-*.iml
 *.mv.db
 *.log
 *.jar

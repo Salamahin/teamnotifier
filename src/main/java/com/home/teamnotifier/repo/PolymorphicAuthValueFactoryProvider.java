@@ -29,7 +29,7 @@ public class PolymorphicAuthValueFactoryProvider<T extends Principal> extends Ab
     /**
      * Set of provided {@link Principal} subclasses.
      */
-    protected final Set<Class<? extends T>> principalClassSet;
+    private final Set<Class<? extends T>> principalClassSet;
 
 
     /**

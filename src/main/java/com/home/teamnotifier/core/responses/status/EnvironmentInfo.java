@@ -29,10 +29,6 @@ public class EnvironmentInfo {
         this.servers = ImmutableList.copyOf(servers);
     }
 
-    public List<ServerInfo> getServers() {
-        return servers;
-    }
-
     @Override
     public int hashCode() {
         return Objects.hash(name, servers);

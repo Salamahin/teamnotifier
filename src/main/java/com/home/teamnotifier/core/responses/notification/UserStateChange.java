@@ -5,7 +5,7 @@ import java.util.Objects;
 abstract class UserStateChange extends UserNotification {
     private final boolean state;
 
-    protected UserStateChange(
+    UserStateChange(
             final String actor,
             final int targetId,
             final String timestamp,

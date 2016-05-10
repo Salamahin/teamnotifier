@@ -5,17 +5,13 @@ import java.util.Objects;
 abstract class UserNotification extends Notification {
     private final String actor;
 
-    protected UserNotification(
+    UserNotification(
             final String actor,
             final int targetId,
             final String timestamp
     ) {
         super(timestamp, targetId);
         this.actor = actor;
-    }
-
-    public final String getActor() {
-        return actor;
     }
 
     @Override

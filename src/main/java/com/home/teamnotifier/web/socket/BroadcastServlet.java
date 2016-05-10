@@ -1,7 +1,6 @@
 package com.home.teamnotifier.web.socket;
 
 import com.google.common.base.Optional;
-import com.home.teamnotifier.authentication.AnyAuthenticated;
 import com.home.teamnotifier.authentication.TokenAuthenticated;
 import com.home.teamnotifier.authentication.WebsocketAuthenticator;
 import io.dropwizard.auth.AuthenticationException;

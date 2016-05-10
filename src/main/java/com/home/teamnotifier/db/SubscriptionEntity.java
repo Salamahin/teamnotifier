@@ -50,7 +50,4 @@ final class SubscriptionEntity implements Serializable {
         return subscriber;
     }
 
-    public Instant getTimestamp() {
-        return timestamp;
-    }
 }

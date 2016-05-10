@@ -5,7 +5,7 @@ import com.home.teamnotifier.core.ServerAvailabilityChecker;
 import io.dropwizard.lifecycle.Managed;
 
 public class ServerStatusCheckerManager implements Managed {
-    public final ServerAvailabilityChecker checker;
+    private final ServerAvailabilityChecker checker;
 
     @Inject
     public ServerStatusCheckerManager(ServerAvailabilityChecker checker) {
