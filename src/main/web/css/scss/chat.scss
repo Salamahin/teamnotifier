@@ -1,15 +1,11 @@
 @import 'commons.scss';
 
 $MIN_HEIGHT: 60px;
-$CHAT_WIDTH: 400px;
 $SCROLLBAR_SPACE: 35px;
 $INPUT_MESSAGE_HEIGHT: 50px;
 $ACTION_BUTTON_HEIGHT: 30px;
 $INPUT_MESSAGE_MARGIN: 10px;
-$MARGIN_LEFT: 20px;
 $BORDER_THICK: 1px;
-$PADDING: 10px;
-$CHAT_WIDTH: $WORKBENCH_WIDTH - $SIDEMENU_WIDTH - $MARGIN_LEFT - 2*$PADDING - 2 * $BORDER_THICK;
 
 @mixin arrow($left) {
 	$arrow_height: 10px;
@@ -33,12 +29,7 @@ $CHAT_WIDTH: $WORKBENCH_WIDTH - $SIDEMENU_WIDTH - $MARGIN_LEFT - 2*$PADDING - 2 
 
 #chat {
 	border: solid $BORDER_THICK $WHITE_SHADOWED;
-	padding: $PADDING;
-
-	margin-left: $MARGIN_LEFT;
-	display: inline-block;
-	width: $CHAT_WIDTH;
-	height: calc(100% - #{$INPUT_MESSAGE_MARGIN});
+	height: 100%;
 }
 
 ::-webkit-scrollbar {
@@ -66,13 +57,16 @@ $CHAT_WIDTH: $WORKBENCH_WIDTH - $SIDEMENU_WIDTH - $MARGIN_LEFT - 2*$PADDING - 2 
 }
 
 #messages_holder {
-	margin-bottom: 2*$INPUT_MESSAGE_HEIGHT;
-	height: calc(100% - #{2*$INPUT_MESSAGE_MARGIN + $INPUT_MESSAGE_HEIGHT + $ACTION_BUTTON_HEIGHT});
+	margin-bottom: $WORKBENCH_ELEMENTS_SPACE;
+	height: calc(100% - #{4*$INPUT_MESSAGE_MARGIN + $INPUT_MESSAGE_HEIGHT + $ACTION_BUTTON_HEIGHT - 2*$BUTTON_BORDER_WIDTH - 2*$BORDER_THICK + $WORKBENCH_ELEMENTS_SPACE});
 	overflow-y: auto;
 
     #load_more_button {
-		width: $CHAT_WIDTH - $SCROLLBAR_SPACE;
-		margin: 10px;
+		$margin: 12px;
+
+		width: 100%;
+		margin-top: $margin;
+		margin-bottom: $margin;
 		display: block;
 		text-align: center;
 		@include href_button();
@@ -83,8 +77,6 @@ $CHAT_WIDTH: $WORKBENCH_WIDTH - $SIDEMENU_WIDTH - $MARGIN_LEFT - 2*$PADDING - 2 
 		$side_margin: 20px;
 		$avatar_width: $MIN_HEIGHT;
 		margin-bottom: 15px;
-
-		$info_width: $CHAT_WIDTH - 2*$side_margin - $avatar_width - $SCROLLBAR_SPACE;
 
 		.avatar {
 			display: inline-block;
@@ -105,7 +97,7 @@ $CHAT_WIDTH: $WORKBENCH_WIDTH - $SIDEMENU_WIDTH - $MARGIN_LEFT - 2*$PADDING - 2 
 			margin-right: $side_margin;
 			display: inline-block;
 			vertical-align: top;
-			width: $info_width;
+			width: calc(100% - #{2*$side_margin + $avatar_width + $SCROLLBAR_SPACE});
 			min-height: $MIN_HEIGHT;
 			position: relative;
 			background: $METAL_DARK;
@@ -128,15 +120,11 @@ $CHAT_WIDTH: $WORKBENCH_WIDTH - $SIDEMENU_WIDTH - $MARGIN_LEFT - 2*$PADDING - 2 
 }
 
 #chat_footer {
-	display: block;
-	position: fixed;
-	bottom: 10px + $PADDING;
-	
 	#make_action_button_holder {
 		$button_width: 100px;
-		
-		padding-left: $CHAT_WIDTH - $button_width;
-		margin-top: $INPUT_MESSAGE_MARGIN;
+
+		float: right;
+		margin-right: $INPUT_MESSAGE_MARGIN;
 
 		#make_action_button {
 			width: $button_width;
@@ -149,12 +137,14 @@ $CHAT_WIDTH: $WORKBENCH_WIDTH - $SIDEMENU_WIDTH - $MARGIN_LEFT - 2*$PADDING - 2 
 	}
 
     #action_input {
-		width: $CHAT_WIDTH;
+		$underline_width: 1px;
+
+		width: calc(100% - #{2*$BORDER_THICK - 2*$underline_width + 2*$INPUT_MESSAGE_MARGIN});
 		height: $INPUT_MESSAGE_HEIGHT;
-		margin-top: $INPUT_MESSAGE_MARGIN;
+		margin: $INPUT_MESSAGE_MARGIN;
 		word-break: break-word;
 		resize: none;
-		@include input();
+		@include input($underline_width);
 	}
 }
 

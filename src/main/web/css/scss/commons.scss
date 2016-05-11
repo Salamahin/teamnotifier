@@ -7,12 +7,13 @@ $WHITE_SHADOWED_HOVER: #CFCFCF;
 $METAL_DARK: #474141;
 
 $HEADER_HEIGHT: 50px;
-$HEADER_BOTTOM_MARGIN: 20px;
-
 $SIDEMENU_WIDTH: 250px;
 $WORKBENCH_WIDTH: 800px;
 
+$WORKBENCH_ELEMENTS_SPACE: 20px;
+
 $AVATAR_BORDER_WIDTH: 2px;
+$BUTTON_BORDER_WIDTH: 1px;
 
 @mixin avatar($size, $background_color) {
 	$border_width: $AVATAR_BORDER_WIDTH;
@@ -36,11 +37,12 @@ $AVATAR_BORDER_WIDTH: 2px;
 	}
 }
 
-@mixin input() {
+@mixin input($underline_width) {
 	border: none;
 	border-bottom-style: solid;
-	border-bottom-width: 1px;
+	border-bottom-width: $underline_width;
 	border-bottom-color: $WHITE_SHADOWED_HOVER;
+	padding: 0;
 
 	&:focus {
 		outline: none;
@@ -85,12 +87,12 @@ $AVATAR_BORDER_WIDTH: 2px;
 	&:focus {
 		outline: none;
 		background-color: $SOFT_RED;
-		border: 1px solid $SOFT_RED;
+		border: $BUTTON_BORDER_WIDTH solid $SOFT_RED;
 		color: $WHITE_SMOKE;
 	}
 
 	&:active {
-		border: 1px solid $SOFT_RED_HOVER;
+		border: $BUTTON_BORDER_WIDTH solid $SOFT_RED_HOVER;
 		background: $SOFT_RED_HOVER;
 		color: $WHITE_SMOKE;
 	}

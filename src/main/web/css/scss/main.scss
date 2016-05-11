@@ -20,8 +20,8 @@ html, body {
 }
 
 #environment {
-	$margin_bottom: $HEADER_BOTTOM_MARGIN;
+	$margin_bottom: $WORKBENCH_ELEMENTS_SPACE;
 
 	width: 100%;
-	height: calc(100% - #{$HEADER_HEIGHT + $HEADER_BOTTOM_MARGIN + $margin_bottom});
+	height: calc(100% - #{$HEADER_HEIGHT + $WORKBENCH_ELEMENTS_SPACE+ $margin_bottom});
 }

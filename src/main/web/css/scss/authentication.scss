@@ -94,6 +94,6 @@
 		margin: auto; 
 			
 		margin-bottom: 10px;
-		@include input();
+		@include input(1px);
 	}
 }

@@ -1,0 +1,11 @@
+@import 'commons.scss';
+
+$MARGIN_LEFT: 20px;
+$WIDTH: $WORKBENCH_WIDTH - $SIDEMENU_WIDTH - $MARGIN_LEFT;
+
+#target_info_holder {
+	display: inline-block;
+	width: $WIDTH;
+	height: 100%;
+	margin-left: $MARGIN_LEFT;
+}
