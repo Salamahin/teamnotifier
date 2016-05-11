@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset xmlns="teamnotifier">
+    <user id="1" name="user1" salt="salt1" passHash="passHash1"/>
+
+    <userInRole userId="1"/>
+
+    <environment id="1" name="eu1"/>
+
+    <server id="11" name="sst" environmentId="1"/>
+    <resource id="111" serverId="11" name="app1" occupierId="1" occupationStartTime="2015-11-05T23:44:40.220Z"/>
+    <resource id="112" serverId="11" name="app2"/>
+    <resource id="113" serverId="11" name="app3"/>
+
+    <server id="12" name="wfa" environmentId="1"/>
+    <resource id="121" serverId="12" name="app1" occupierId="2" occupationStartTime="2015-11-05T23:44:40.220Z"/>
+
+    <server id="13" name="wfe" environmentId="1"/>
+    <resource id="122" serverId="13" name="app2"/>
+
+    <environment id="2" name="eu2"/>
+    <server id="21" name="sst" environmentId="2"/>
+    <resource id="211" serverId="21" name="app1"/>
+
+    <serverAction id="1" serverId="21" actorId="1" details="serverAction1" timestamp="2015-11-05T23:43:40.220Z"/>
+    <serverAction id="2" serverId="21" actorId="1" details="serverAction2" timestamp="2015-11-05T23:44:40.220Z"/>
+    <serverAction id="3" serverId="21" actorId="1" details="serverAction3" timestamp="2015-10-05T23:43:40.220Z"/>
+    <serverAction id="4" serverId="21" actorId="1" details="serverAction4" timestamp="2015-10-05T23:44:40.220Z"/>
+    <serverAction id="5" serverId="21" actorId="1" details="serverAction5" timestamp="2015-09-05T23:43:40.220Z"/>
+    <serverAction id="6" serverId="21" actorId="1" details="serverAction6" timestamp="2015-09-05T23:44:40.220Z"/>
+    <serverAction id="7" serverId="21" actorId="1" details="serverAction7" timestamp="2015-08-05T23:43:40.220Z"/>
+    <serverAction id="8" serverId="21" actorId="1" details="serverAction8" timestamp="2015-08-05T23:44:40.220Z"/>
+
+    <resourceAction id="1" resourceId="211" actorId="1" details="resourceAction1" timestamp="2015-11-05T23:43:40.220Z"/>
+    <resourceAction id="2" resourceId="211" actorId="1" details="resourceAction1" timestamp="2015-11-05T23:44:40.220Z"/>
+    <resourceAction id="3" resourceId="211" actorId="1" details="resourceAction1" timestamp="2015-10-05T23:43:40.220Z"/>
+    <resourceAction id="4" resourceId="211" actorId="1" details="resourceAction1" timestamp="2015-10-05T23:44:40.220Z"/>
+    <resourceAction id="5" resourceId="211" actorId="1" details="resourceAction1" timestamp="2015-09-05T23:43:40.220Z"/>
+    <resourceAction id="6" resourceId="211" actorId="1" details="resourceAction1" timestamp="2015-09-05T23:44:40.220Z"/>
+    <resourceAction id="7" resourceId="211" actorId="1" details="resourceAction1" timestamp="2015-08-05T23:43:40.220Z"/>
+    <resourceAction id="8" resourceId="211" actorId="1" details="resourceAction1" timestamp="2015-08-05T23:44:40.220Z"/>
+</dataset>

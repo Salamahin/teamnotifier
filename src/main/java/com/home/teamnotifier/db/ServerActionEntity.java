@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-@Table(schema = "teamnotifier", name = "ServerActions")
+@Table(schema = "teamnotifier", name = "ServerAction")
 public class ServerActionEntity extends ActionEntity implements Serializable {
     @ManyToOne(optional = false, cascade = CascadeType.ALL)
     @SuppressWarnings("unused")

@@ -5,7 +5,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-@Table(schema = "teamnotifier", name = "ResourceActions")
+@Table(schema = "teamnotifier", name = "ResourceAction")
 final class ResourceActionEntity extends ActionEntity implements Serializable {
 
     @ManyToOne(optional = false, cascade = CascadeType.ALL)
