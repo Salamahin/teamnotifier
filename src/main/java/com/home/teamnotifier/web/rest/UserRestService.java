@@ -4,9 +4,7 @@ import com.google.common.net.HttpHeaders;
 import com.google.inject.Inject;
 import com.home.teamnotifier.authentication.AuthenticationInfo;
 import com.home.teamnotifier.authentication.BasicAuthenticated;
-import com.home.teamnotifier.authentication.TokenAuthenticated;
 import com.home.teamnotifier.authentication.TokenCreator;
-import com.home.teamnotifier.core.responses.authentication.UserInfo;
 import com.home.teamnotifier.gateways.UserGateway;
 import com.home.teamnotifier.gateways.exceptions.InvalidCredentials;
 import com.home.teamnotifier.gateways.exceptions.SuchUserAlreadyPresent;
@@ -52,25 +50,19 @@ public class UserRestService {
         LOGGER.info("New user {} register request", credentials.getUsername());
         try {
             userGateway.newUser(credentials.getUsername(), credentials.getPassword());
-        } catch (Exception exc) {
+        } catch (RuntimeException exc) {
             LOGGER.error(String.format("Failed to create a new user %s", credentials.getUsername()), exc);
-
-            try {
-                throw exc;
-            } catch (SuchUserAlreadyPresent e) {
-                throw new WebApplicationException(Response.Status.CONFLICT);
-            } catch (InvalidCredentials e) {
-                throw new WebApplicationException(Response.Status.BAD_REQUEST);
-            }
+            handleUserCreationError(exc);
         }
     }
 
-
-    @GET
-    @Path("/whoami")
-    public UserInfo whoAmI(@Auth final TokenAuthenticated userPrincipal) {
-        final String name = userPrincipal.getName();
-        LOGGER.info("WhoAmI request from {}", name);
-        return new UserInfo(name);
+    private void handleUserCreationError(final RuntimeException exc) {
+        try {
+            throw exc;
+        } catch (SuchUserAlreadyPresent e) {
+            throw new WebApplicationException(Response.Status.CONFLICT);
+        } catch (InvalidCredentials e) {
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+        }
     }
 }

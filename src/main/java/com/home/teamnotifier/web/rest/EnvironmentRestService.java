@@ -33,7 +33,7 @@ public class EnvironmentRestService {
     }
 
     @POST
-    @Path("/application/reserve/{applicationId}")
+    @Path("/application/{applicationId}/reserve")
     public void reserve(
             @Auth final TokenAuthenticated userPrincipal,
             @PathParam("applicationId") final Integer applicationId
@@ -44,7 +44,7 @@ public class EnvironmentRestService {
     }
 
     @DELETE
-    @Path("/application/reserve/{applicationId}")
+    @Path("/application/{applicationId}/reserve")
     public void free(
             @Auth final TokenAuthenticated userPrincipal,
             @PathParam("applicationId") final Integer applicationId
@@ -55,7 +55,7 @@ public class EnvironmentRestService {
     }
 
     @POST
-    @Path("/server/subscribe/{serverId}")
+    @Path("/server/{serverId}/subscribe")
     public void subscribe(
             @Auth final TokenAuthenticated userPrincipal,
             @PathParam("serverId") final Integer serverId
@@ -66,7 +66,7 @@ public class EnvironmentRestService {
     }
 
     @DELETE
-    @Path("/server/subscribe/{serverId}")
+    @Path("/server/{serverId}/subscribe")
     public void unsubscribe(
             @Auth final TokenAuthenticated userPrincipal,
             @PathParam("serverId") final Integer serverId) {
@@ -76,11 +76,11 @@ public class EnvironmentRestService {
     }
 
     @POST
-    @Path("/application/action/{applicationId}")
+    @Path("/application/{applicationId}/action")
     public void newResourceAction(
             @Auth final TokenAuthenticated userPrincipal,
             @PathParam("applicationId") final Integer applicationId,
-            @HeaderParam("ActionDetails") final String details
+            @QueryParam("details") final String details
     ) {
         final String userName = userPrincipal.getName();
         LOGGER.info("User {} new action on resource id {} ({}) request", userName, applicationId, details);
@@ -88,11 +88,11 @@ public class EnvironmentRestService {
     }
 
     @POST
-    @Path("/server/action/{serverId}")
+    @Path("/server/{serverId}/action")
     public void newServerAction(
             @Auth final TokenAuthenticated userPrincipal,
             @PathParam("serverId") final Integer serverId,
-            @HeaderParam("ActionDetails") final String details
+            @QueryParam("details") final String details
     ) {
         final String userName = userPrincipal.getName();
         LOGGER.info("User {} new action on server id {} ({}) request", userName, serverId, details);
@@ -106,7 +106,7 @@ public class EnvironmentRestService {
             @QueryParam("environment") final String environmentName,
             @QueryParam("server") final String serverName,
             @QueryParam("application") final String resourceName,
-            @HeaderParam("ActionDetails") final String details
+            @QueryParam("details") final String details
     ) {
         final String userName = userPrincipal.getName();
         LOGGER.info("User {} new action on resource {} {} ({}) request", userName, serverName, resourceName, details);
@@ -127,15 +127,15 @@ public class EnvironmentRestService {
     }
 
     @GET
-    @Path("/application/action/{applicationId}")
+    @Path("/application/{applicationId}/action")
     public ResourceActionsHistory getResourceActionsHistory(
             @Auth final TokenAuthenticated userPrincipal,
             @PathParam("applicationId") final Integer applicationId,
-            @HeaderParam("ActionsFrom") final String encodedBase64From,
-            @HeaderParam("ActionsTo") final String encodedBase64To
+            @QueryParam("from") final String fromISO8601,
+            @QueryParam("to") final String toISO8601
     ) {
-        final Instant fromInstant = ZonedDateTime.parse(decodeBase64String(encodedBase64From)).toInstant();
-        final Instant toInstant = ZonedDateTime.parse(decodeBase64String(encodedBase64To)).toInstant();
+        final Instant fromInstant = ZonedDateTime.parse(fromISO8601).toInstant();
+        final Instant toInstant = ZonedDateTime.parse(toISO8601).toInstant();
 
         LOGGER.info("User {} actions on resource {} from {} to {} request",
                 userPrincipal.getName(),
@@ -148,15 +148,15 @@ public class EnvironmentRestService {
     }
 
     @GET
-    @Path("/server/action/{serverId}")
+    @Path("/server/{serverId}/action")
     public ServerActionsHistory getServerActionsHistory(
             @Auth final TokenAuthenticated userPrincipal,
             @PathParam("serverId") final Integer serverId,
-            @HeaderParam("ActionsFrom") final String encodedBase64From,
-            @HeaderParam("ActionsTo") final String encodedBase64To
+            @QueryParam("from") final String fromISO8601,
+            @QueryParam("to") final String toISO8601
     ) {
-        final Instant fromInstant = ZonedDateTime.parse(decodeBase64String(encodedBase64From)).toInstant();
-        final Instant toInstant = ZonedDateTime.parse(decodeBase64String(encodedBase64To)).toInstant();
+        final Instant fromInstant = ZonedDateTime.parse(fromISO8601).toInstant();
+        final Instant toInstant = ZonedDateTime.parse(toISO8601).toInstant();
 
         LOGGER.info("User {} actions on resource {} from {} to {} request",
                 userPrincipal.getName(),
@@ -166,11 +166,5 @@ public class EnvironmentRestService {
         );
 
         return resourceMonitor.serverActions(serverId, Range.closed(fromInstant, toInstant));
-    }
-
-    private String decodeBase64String(final String encodedString) {
-        return new String(
-                Base64.getDecoder().decode(encodedString),
-                Charset.forName("UTF-8"));
     }
 }

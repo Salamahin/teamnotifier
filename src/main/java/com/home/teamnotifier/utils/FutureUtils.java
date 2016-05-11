@@ -16,8 +16,15 @@ public final class FutureUtils {
             final T f,
             final Executor executor
     ) {
-        return CompletableFuture.allOf(f.toArray(new CompletableFuture[f.size()]))
-                .thenApplyAsync(ignored -> f.stream().map(CompletableFuture::join).collect(toList()),
-                        executor);
+        return CompletableFuture
+                .allOf(
+                        f.toArray(new CompletableFuture[f.size()])
+                )
+                .thenApplyAsync(
+                        ignored -> f.stream()
+                                .map(CompletableFuture::join)
+                                .collect(toList()),
+                        executor
+                );
     }
 }

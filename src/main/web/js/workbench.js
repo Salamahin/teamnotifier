@@ -93,9 +93,10 @@ function Workbench() {
 	}
 
     Workbench.prototype.newResourceAction = function (resource, description) {
+		var encodedDescription = encodeURIComponent(description);
+    	
         var xhttp = new XMLHttpRequest();
-        xhttp.open("POST", "/teamnotifier/1.0/environment/application/action/" + resource.id, true);
-        xhttp.setRequestHeader("ActionDetails", window.btoa(description));
+        xhttp.open("POST", "/teamnotifier/1.0/environment/application/" + + resource.id + "/action?details=" + encodedDescription , true);
         xhttp.setRequestHeader("Authorization", "Bearer " + that.token);
         xhttp.onreadystatechange = function () {
             resourceActionPrehandler(xhttp, resource, description);
@@ -104,9 +105,10 @@ function Workbench() {
     };
 
     Workbench.prototype.newServerAction = function (server, description) {
+		var encodedDescription = encodeURIComponent(description);
+
         var xhttp = new XMLHttpRequest();
-        xhttp.open("POST", "/teamnotifier/1.0/environment/server/action/" + server.id, true);
-        xhttp.setRequestHeader("ActionDetails", window.btoa(description));
+        xhttp.open("POST", "/teamnotifier/1.0/environment/server/" + server.id + "/action?details=" + encodedDescription, true);
         xhttp.setRequestHeader("Authorization", "Bearer " + that.token);
         xhttp.onreadystatechange = function () {
             serverActionPrehandler(xhttp, server, description);
@@ -116,7 +118,7 @@ function Workbench() {
 
     Workbench.prototype.subscribe = function (server) {
         var xhttp = new XMLHttpRequest();
-        xhttp.open("POST", "/teamnotifier/1.0/environment/server/subscribe/" + server.id, true);
+        xhttp.open("POST", "/teamnotifier/1.0/environment/server/" + server.id + "/subscribe", true);
         xhttp.setRequestHeader("Authorization", "Bearer " + that.token);
         xhttp.onreadystatechange = function () {
             subscribePrehandler(xhttp, server);
@@ -126,7 +128,7 @@ function Workbench() {
 
     Workbench.prototype.unsubscribe = function (server) {
         var xhttp = new XMLHttpRequest();
-        xhttp.open("DELETE", "/teamnotifier/1.0/environment/server/subscribe/" + server.id, true);
+        xhttp.open("DELETE", "/teamnotifier/1.0/environment/server/" + server.id + "/subscribe", true);
         xhttp.setRequestHeader("Authorization", "Bearer " + that.token);
         xhttp.onreadystatechange = function () {
             unsubscribePrehandler(xhttp, server);
@@ -136,7 +138,7 @@ function Workbench() {
 
     Workbench.prototype.reserve = function (resource) {
         var xhttp = new XMLHttpRequest();
-        xhttp.open("POST", "/teamnotifier/1.0/environment/application/reserve/" + resource.id, true);
+        xhttp.open("POST", "/teamnotifier/1.0/environment/application/" + resource.id + "/reserve", true);
         xhttp.setRequestHeader("Authorization", "Bearer " + that.token);
         xhttp.onreadystatechange = function () {
             reservePrehandler(xhttp, resource);
@@ -146,7 +148,7 @@ function Workbench() {
 
     Workbench.prototype.free = function (resource) {
         var xhttp = new XMLHttpRequest();
-        xhttp.open("DELETE", "/teamnotifier/1.0/environment/application/reserve/" + resource.id, true);
+        xhttp.open("DELETE", "/teamnotifier/1.0/environment/application/" + resource.id + "/reserve", true);
         xhttp.setRequestHeader("Authorization", "Bearer " + that.token);
         xhttp.onreadystatechange = function () {
             freePrehandler(xhttp, resource);
@@ -155,13 +157,11 @@ function Workbench() {
     };
 
     Workbench.prototype.getResourceActions = function (resource, from, to) {
-        var xhttp = new XMLHttpRequest();
-        xhttp.open("GET", "/teamnotifier/1.0/environment/application/action/" + resource.id, true);
-
         var fromStr = from.toISOString();
         var toStr = to.toISOString();
-        xhttp.setRequestHeader("ActionsFrom", btoa(fromStr));
-        xhttp.setRequestHeader("ActionsTo", btoa(toStr));
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("GET", "/teamnotifier/1.0/environment/application/" + resource.id + "/action?from=" + fromStr + "&to=" + toStr, true);
         xhttp.setRequestHeader("Authorization", "Bearer " + that.token);
         xhttp.onreadystatechange = function () {
             resourceActionsHistoryPrehandler(xhttp, resource);
@@ -170,13 +170,11 @@ function Workbench() {
     };
 
     Workbench.prototype.getServerActions = function (server, from, to) {
-        var xhttp = new XMLHttpRequest();
-        xhttp.open("GET", "/teamnotifier/1.0/environment/server/action/" + server.id, true);
-
         var fromStr = from.toISOString();
         var toStr = to.toISOString();
-        xhttp.setRequestHeader("ActionsFrom", btoa(fromStr));
-        xhttp.setRequestHeader("ActionsTo", btoa(toStr));
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("GET", "/teamnotifier/1.0/environment/server/" + server.id + "/action?from=" + fromStr + "&to=" + toStr, true);
         xhttp.setRequestHeader("Authorization", "Bearer " + that.token);
         xhttp.onreadystatechange = function () {
             serverActionsHistoryPrehandler(xhttp, server);
@@ -190,16 +188,6 @@ function Workbench() {
         xhttp.setRequestHeader("Authorization", "Bearer " + that.token);
         xhttp.onreadystatechange = function () {
             environmentPrehandler(xhttp);
-        };
-        xhttp.send();
-    };
-
-    Workbench.prototype.whoAmI = function(token) {
-		var xhttp = new XMLHttpRequest();
-        xhttp.open("GET", "/teamnotifier/1.0/users/whoami", true);
-        xhttp.setRequestHeader("Authorization", "Bearer " + token);
-        xhttp.onreadystatechange = function () {
-            whoAmIPrehandler(xhttp);
         };
         xhttp.send();
     };

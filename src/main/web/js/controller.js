@@ -15,7 +15,6 @@ var LOADING_SPINNER;
 var WORKBENCH;
 var NOTIFIER;
 var AUTHENTICATOR;
-var STORAGE;
 var VIEW;
 var SIDEMENU_VIEW;
 var AUTHENTICATION_VIEW;
@@ -26,8 +25,6 @@ var ENVIRONMENTS;
 var CURRENT_SERVER;
 
 function onAuthenticationSuccess(login, token) {
-    STORAGE.store(login, token);
-
     NOTIFIER.token = token;
     WORKBENCH.token = token;
 
@@ -35,8 +32,6 @@ function onAuthenticationSuccess(login, token) {
     
     VIEW.setCurrentUser(login);
     VIEW.mainMode();
-
-    loadingComplete();
 }
 
 function onServerChange(server) {
@@ -65,38 +60,26 @@ function tryAuthenticate(login, token) {
 
 }
 
-function authenticationSuccess() {
-	mainMode();
-}
-
 function authenticationError() {
 	VIEW.authenticationMode();
+	VIEW.showAuthenticationError();
 }
 
 function showError() {
 	console.log("not implemented");
 }
 
-function handleWhoAmI(login) {
-	onAuthenticationSuccess
-}
-
 function init() {
     NOTIFIER.requestPermissions();
 
-    if(!STORAGE.token) {
-        VIEW.authenticationMode();
-        loadingComplete();
-    } else {
-		WORKBENCH.whoAmI(STORAGE.token);
-    }
+	VIEW.authenticationMode();
+	loadingComplete();
 }
 
 function bind() {
     if(!WORKBENCH ||
 		!NOTIFIER || 
 		!AUTHENTICATOR || 
-		!STORAGE || 
 		!VIEW || 
 		!SIDEMENU_VIEW || 
 		!AUTHENTICATION_VIEW || 
@@ -110,8 +93,8 @@ function bind() {
     NOTIFIER.eventHandler = onNotifierEvent;
 
     AUTHENTICATOR.authenticationSuccessHandler = onAuthenticationSuccess;
-    AUTHENTICATOR.authenticationErrorHandler = VIEW.showAuthenticationError;
-    AUTHENTICATOR.registrationErrorHandler = VIEW.showAuthenticationError;
+    AUTHENTICATOR.authenticationErrorHandler = authenticationError;
+    AUTHENTICATOR.registrationErrorHandler = authenticationError;
 
     VIEW.authenticationAttemptHandler = AUTHENTICATOR.authenticate;
     VIEW.registrationHandler = AUTHENTICATOR.register;
@@ -181,10 +164,6 @@ window.onload = function() {
 	});
 	include("js/authenticator.js", function () {
 		AUTHENTICATOR = new Authenticator();
-		bind();
-	});
-	include("js/storage.js", function () {
-		STORAGE = new Storage();
 		bind();
 	});
 	include("js/view.js", function () {
