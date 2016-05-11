@@ -6,7 +6,7 @@ public abstract class AnyAuthenticated implements Principal {
     private final String name;
     private final int id;
 
-    public AnyAuthenticated(final String name, final int id) {
+    AnyAuthenticated(final String name, final int id) {
         this.name = name;
         this.id = id;
     }

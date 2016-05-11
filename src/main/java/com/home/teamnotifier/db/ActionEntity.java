@@ -18,7 +18,7 @@ abstract class ActionEntity {
     private final UserEntity actor;
 
     @Column(nullable = false)
-    private final Instant actionTime;
+    private final Instant timestamp;
 
     @Column(nullable = false)
     @Size(min = 1)
@@ -26,7 +26,7 @@ abstract class ActionEntity {
 
     ActionEntity() {
         id = null;
-        actionTime = null;
+        timestamp = null;
         details = null;
         actor = null;
     }
@@ -35,15 +35,15 @@ abstract class ActionEntity {
         this.id = null;
         this.actor = actor;
         this.details = details;
-        this.actionTime = Instant.now();
+        this.timestamp = Instant.now();
     }
 
     public final UserEntity getActor() {
         return actor;
     }
 
-    public final Instant getActionTime() {
-        return actionTime;
+    public final Instant getTimestamp() {
+        return timestamp;
     }
 
     public final String getDetails() {
@@ -57,12 +57,12 @@ abstract class ActionEntity {
         ActionEntity that = (ActionEntity) o;
         return Objects.equals(id, that.id) &&
                 Objects.equals(actor, that.actor) &&
-                Objects.equals(actionTime, that.actionTime) &&
+                Objects.equals(timestamp, that.timestamp) &&
                 Objects.equals(details, that.details);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, actor, actionTime, details);
+        return Objects.hash(id, actor, timestamp, details);
     }
 }

@@ -4,10 +4,13 @@ import com.google.common.io.Resources;
 import com.google.inject.Injector;
 import com.home.teamnotifier.db.TransactionHelper;
 import org.dbunit.DatabaseUnitException;
+import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;
+import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.dbunit.dataset.xml.FlatXmlProducer;
+import org.dbunit.ext.h2.H2DataTypeFactory;
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.internal.SessionImpl;
 import org.slf4j.Logger;
@@ -43,8 +46,13 @@ public class NotifierApplicationRunner {
 
     private static void fillDb(final InputStream input, final Connection c) {
         try {
-            final FlatXmlDataSet dataSet = new FlatXmlDataSetBuilder().build(input);
-            DatabaseOperation.CLEAN_INSERT.execute(new DatabaseConnection(c, "teamnotifier"), dataSet);
+            final DatabaseConnection connection = new DatabaseConnection(c, "teamnotifier");
+            final DatabaseConfig dbConfig = connection.getConfig();
+            dbConfig.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, new H2DataTypeFactory());
+            dbConfig.setProperty(DatabaseConfig.FEATURE_CASE_SENSITIVE_TABLE_NAMES, false);
+            final IDataSet dataSet = new FlatXmlDataSetBuilder().build(input);
+
+            DatabaseOperation.CLEAN_INSERT.execute(connection, dataSet);
         } catch (DatabaseUnitException | SQLException e) {
             LOGGER.error("Failed to fill DB", e);
         }

@@ -24,7 +24,7 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
     private final TransactionHelper transactionHelper;
 
     @Inject
-    public DbSubscriptionGateway(final TransactionHelper transactionHelper) {
+    DbSubscriptionGateway(final TransactionHelper transactionHelper) {
         this.transactionHelper = transactionHelper;
     }
 

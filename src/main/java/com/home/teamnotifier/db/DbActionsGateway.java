@@ -242,7 +242,7 @@ public class DbActionsGateway implements ActionsGateway {
             final CriteriaQuery<ResourceActionEntity> cq = cb.createQuery(ResourceActionEntity.class);
             final Root<ResourceActionEntity> rootEntry = cq.from(ResourceActionEntity.class);
 
-            final Path<Instant> time = rootEntry.get("actionTime");
+            final Path<Instant> time = rootEntry.get("timestamp");
 
             final Predicate actionTimeInRange = getPredicateForRange(range, cb, rootEntry);
             final Predicate isEqualToProvidedResource = cb.equal(rootEntry.get("resource"), resource);
@@ -266,7 +266,7 @@ public class DbActionsGateway implements ActionsGateway {
             final CriteriaQuery<ServerActionEntity> cq = cb.createQuery(ServerActionEntity.class);
             final Root<ServerActionEntity> rootEntry = cq.from(ServerActionEntity.class);
 
-            final Path<Instant> time = rootEntry.get("actionTime");
+            final Path<Instant> time = rootEntry.get("timestamp");
 
             final Predicate actionTimeInRange = getPredicateForRange(range, cb, rootEntry);
             final Predicate isEqualToProvidedResource = cb.equal(rootEntry.get("server"), server);
@@ -286,7 +286,7 @@ public class DbActionsGateway implements ActionsGateway {
         return actions.stream()
                 .map(a -> new ActionInfo(
                                 a.getActor().getName(),
-                                a.getActionTime(),
+                                a.getTimestamp(),
                                 a.getDetails()
                         )
                 )
@@ -298,7 +298,7 @@ public class DbActionsGateway implements ActionsGateway {
             final CriteriaBuilder cb,
             final Root<T> root
     ) {
-        final Path<Instant> time = root.get("actionTime");
+        final Path<Instant> time = root.get("timestamp");
         final List<Predicate> predicates = new ArrayList<>();
 
         if (range.hasLowerBound()) {
