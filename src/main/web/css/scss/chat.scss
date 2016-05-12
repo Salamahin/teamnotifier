@@ -29,7 +29,9 @@ $BORDER_THICK: 1px;
 
 #chat {
 	border: solid $BORDER_THICK $WHITE_SHADOWED;
-	height: 100%;
+	flex: 1;
+	display: flex;
+	flex-direction: column;
 }
 
 ::-webkit-scrollbar {
@@ -58,7 +60,7 @@ $BORDER_THICK: 1px;
 
 #messages_holder {
 	margin-bottom: $WORKBENCH_ELEMENTS_SPACE;
-	height: calc(100% - #{4*$INPUT_MESSAGE_MARGIN + $INPUT_MESSAGE_HEIGHT + $ACTION_BUTTON_HEIGHT - 2*$BUTTON_BORDER_WIDTH - 2*$BORDER_THICK + $WORKBENCH_ELEMENTS_SPACE});
+	flex: 1;
 	overflow-y: auto;
 
     #load_more_button {
@@ -122,6 +124,7 @@ $BORDER_THICK: 1px;
 }
 
 #chat_footer {
+	margin-bottom: $INPUT_MESSAGE_MARGIN;
 	#make_action_button_holder {
 		$button_width: 100px;
 

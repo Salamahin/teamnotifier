@@ -8,4 +8,29 @@ $WIDTH: $WORKBENCH_WIDTH - $SIDEMENU_WIDTH - $MARGIN_LEFT;
 	width: $WIDTH;
 	height: 100%;
 	margin-left: $MARGIN_LEFT;
+
+	#target_info_holder_wrapper {
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+		width: 100%;
+	}
 }
+
+
+#subscribe_button_holder {
+
+	margin-bottom: $WORKBENCH_ELEMENTS_SPACE;
+
+
+	#subscribe_button {
+		display: table-cell;
+		vertical-align: middle;
+		width: $WIDTH;
+		height: 30px;
+	
+		@include button();
+		@include disable();
+	}
+}
+
