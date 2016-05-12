@@ -17,7 +17,7 @@ public class DbSubscriptionGatewayTest {
     @Before
     public void setUp() throws Exception {
         preparer = new DbPreparer();
-        preparer.fillDb();
+        preparer.initDataBase();
 
         gateway = new DbSubscriptionGateway(preparer.getTransactionHelper());
         userGateway = new DbUserGateway(preparer.getTransactionHelper());
@@ -25,13 +25,13 @@ public class DbSubscriptionGatewayTest {
 
     @Test
     public void testReserve() throws Exception {
-        final int resourceId = preparer.anyPersistedResourceId();
+        final int resourceId = preparer.persistedResourceId();
         gateway.reserve(preparer.persistedUserName(), resourceId);
     }
 
     @Test(expected = NotSubscribed.class)
     public void testUnsubscribeFromNotSubscribed() {
-        final int serverId = preparer.anyPersistedServerId();
+        final int serverId = preparer.persistedServerId();
         final String userName = preparer.persistedUserName();
 
         gateway.unsubscribe(userName, serverId);
@@ -39,7 +39,7 @@ public class DbSubscriptionGatewayTest {
 
     @Test(expected = AlreadySubscribed.class)
     public void testDoubleSubscribeCausesException() {
-        final int serverId = preparer.anyPersistedServerId();
+        final int serverId = preparer.persistedServerId();
         final String userName = preparer.persistedUserName();
 
         gateway.subscribe(userName, serverId);
@@ -49,7 +49,7 @@ public class DbSubscriptionGatewayTest {
     @Test(expected = AlreadyReserved.class)
     public void testDoubleReserveCausesException() throws Exception {
         final String userName = preparer.persistedUserName();
-        final int resourceId = preparer.anyPersistedResourceId();
+        final int resourceId = preparer.persistedResourceId();
 
         gateway.reserve(userName, resourceId);
         gateway.reserve(userName, resourceId);
@@ -58,7 +58,7 @@ public class DbSubscriptionGatewayTest {
     @Test
     public void testFree() throws Exception {
         final String userName = preparer.persistedUserName();
-        final int resourceId = preparer.anyPersistedResourceId();
+        final int resourceId = preparer.persistedResourceId();
 
         gateway.reserve(userName, resourceId);
         gateway.free(userName, resourceId);
@@ -68,7 +68,7 @@ public class DbSubscriptionGatewayTest {
     public void testFreeNotReservedResourceCausesException()
             throws Exception {
         final String userName = preparer.persistedUserName();
-        final int resourceId = preparer.anyPersistedResourceId();
+        final int resourceId = preparer.persistedResourceId();
 
         gateway.free(userName, resourceId);
     }
@@ -78,7 +78,7 @@ public class DbSubscriptionGatewayTest {
         final String userName1 = persistNewUser();
         final String userName2 = persistNewUser();
 
-        final int serverId = preparer.anyPersistedServerId();
+        final int serverId = preparer.persistedServerId();
 
         assertThat(gateway.subscribe(userName1, serverId).getSubscribers())
                 .doesNotContain(userName1);
@@ -101,7 +101,7 @@ public class DbSubscriptionGatewayTest {
         final String userName1 = persistNewUser();
         final String userName2 = persistNewUser();
 
-        final int serverId = preparer.anyPersistedServerId();
+        final int serverId = preparer.persistedServerId();
 
         gateway.subscribe(userName1, serverId);
         gateway.subscribe(userName2, serverId);
@@ -115,8 +115,8 @@ public class DbSubscriptionGatewayTest {
     @Test
     public void testReturnsSubscribersNamesAfterReserve() throws Exception {
         final String subscriber = persistNewUser();
-        final int serverId = preparer.anyPersistedServerId();
-        final int resourceId = preparer.anyPersistedResourceId();
+        final int serverId = preparer.persistedServerId();
+        final int resourceId = preparer.persistedResourceId();
 
         gateway.subscribe(subscriber, serverId);
 
@@ -127,8 +127,8 @@ public class DbSubscriptionGatewayTest {
     @Test
     public void testReturnsSubscribersNamesAfterFree() throws Exception {
         final String subscriber = persistNewUser();
-        final int serverId = preparer.anyPersistedServerId();
-        final int resourceId = preparer.anyPersistedResourceId();
+        final int serverId = preparer.persistedServerId();
+        final int resourceId = preparer.persistedResourceId();
 
         gateway.subscribe(subscriber, serverId);
         gateway.reserve(preparer.persistedUserName(), resourceId);
@@ -147,13 +147,13 @@ public class DbSubscriptionGatewayTest {
 
     @Test(expected = NoSuchUser.class)
     public void testExceptionWhenSubscribeWithNotPresentUser() {
-        final int serverId = preparer.anyPersistedServerId();
+        final int serverId = preparer.persistedServerId();
         gateway.subscribe("invalid_login", serverId);
     }
 
     @Test(expected = NoSuchUser.class)
     public void testNoSuchUserWhenUnsubscribeWithNotPresentUser() {
-        final int serverId = preparer.anyPersistedServerId();
+        final int serverId = preparer.persistedServerId();
         gateway.unsubscribe("invalid_login", serverId);
     }
 
@@ -173,13 +173,13 @@ public class DbSubscriptionGatewayTest {
 
     @Test(expected = NoSuchUser.class)
     public void testNoSuchUserWhenReserveWithNotPresentUser() {
-        final Integer resourceId = preparer.anyPersistedResourceId();
+        final Integer resourceId = preparer.persistedResourceId();
         gateway.reserve("invalid_login", resourceId);
     }
 
     @Test(expected = NoSuchUser.class)
     public void testNoSuchUserWhenFreeWithNotPresentUser() {
-        final Integer resourceId = preparer.anyPersistedResourceId();
+        final Integer resourceId = preparer.persistedResourceId();
         gateway.free("invalid_login", resourceId);
     }
 
@@ -200,7 +200,7 @@ public class DbSubscriptionGatewayTest {
         final String userName1 = persistNewUser();
         final String userName2 = persistNewUser();
 
-        final Integer resourceId = preparer.anyPersistedResourceId();
+        final Integer resourceId = preparer.persistedResourceId();
 
         gateway.reserve(userName1, resourceId);
         gateway.free(userName2, resourceId);

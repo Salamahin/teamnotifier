@@ -15,6 +15,7 @@ public class DbUserGatewayTest {
     @Before
     public void setUp() throws Exception {
         preparer = new DbPreparer();
+        preparer.initDataBase();
         gateway = new DbUserGateway(preparer.getTransactionHelper());
     }
 

@@ -66,7 +66,10 @@ public class DbUserGateway implements UserGateway {
         final UserEntity entity = new UserEntity(userName, toHash(password, salt), salt);
 
         try {
-            transactionHelper.transaction(em -> em.merge(entity));
+            transactionHelper.transaction(em -> {
+                em.persist(entity);
+                return null;
+            });
         } catch (Exception exc) {
             rethrowConstraintViolation(exc);
         }
