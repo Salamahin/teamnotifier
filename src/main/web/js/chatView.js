@@ -5,9 +5,11 @@ function ChatView() {
 	const resourcesActions = [];
 	const serversActionsDates = [];
 	const resourcesActionsDates = [];
+	const serverActionsOnceRequested = [];
+	const resourceActionsOnceRequested=[];
 
 	this.avatarCreator = undefined;
-	this.user = undefined;
+	this.currentUser = undefined;
 
 	var selectedTarget;
 
@@ -26,6 +28,8 @@ function ChatView() {
 
 	var makeActionButton = document.getElementById("make_action_button");
 	var loadMoreButton = document.getElementById("load_more_button");
+	var messagesHolder = document.getElementById("messages_holder");
+	var inputBox = document.getElementById("action_input");
 
 	disable(makeActionButton);
 	disable(loadMoreButton);
@@ -81,14 +85,14 @@ function ChatView() {
 		label.innerHTML = action.description;
 
 		var details = document.createElement("div");
-		details .appendChild(label);
+		details.appendChild(label);
 		details.classList.add("details");
-
+		
 		return details;
 	}
 
 	function actionIsMadeByCurrentUser(actor) {
-		return actor == that.user;
+		return actor == that.currentUser;
 	}
 
 	function getActionNode(action, mine) {
@@ -106,20 +110,20 @@ function ChatView() {
 
 		var holder = document.createElement("div");	
 		holder.classList.add("action_info_holder");
+		holder.timestamp = action.timestamp;
 
 		var avatar = that.avatarCreator.getAvatarNode(actor);
 
 		if(actionIsMadeByCurrentUser(actor)) {
-			var actionNode = getActionNode(action, true);
-			
-			holder.appendChild(avatar);
-			holder.appendChild(actionNode);
-
-		} else {
 			var actionNode = getActionNode(action, false);
 			
 			holder.appendChild(actionNode);
 			holder.appendChild(avatar);
+		} else {
+			var actionNode = getActionNode(action, true);
+			
+			holder.appendChild(avatar);
+			holder.appendChild(actionNode);
 		}
 
 		return holder;
@@ -131,12 +135,21 @@ function ChatView() {
 		for(var i = 0; i<messages.length; i++)
 			parentNode.removeChild(messages[i]);
 	}
+	
+	function scrollMessagesToTop(target) {
+		if(target.id == selectedTarget.id)
+			messagesHolder.scrollTop = 0;
+	}
+
+	function scrollMessagesToBottom(target) {
+		if(target.id == selectedTarget.id)
+			messagesHolder.scrollTop = messagesHolder.scrollHeight;
+	}
 
 	function rebuildChatForTarget(target) {
 		if(target.id != selectedTarget.id)
 			return;
 
-		var messagesHolder = document.getElementById("messages_holder");
 		removeMessagesChildren(messagesHolder);
 
 		if(target.type == "ServerInfo" && serversActions[target.id]) 
@@ -145,8 +158,6 @@ function ChatView() {
 		else if(target.type == "ResourceInfo" && resourcesActions[target.id])
 			for(var i = 0; i < resourcesActions[target.id].length; i++)
 				messagesHolder.appendChild(resourcesActions[target.id][i]);
-
-		messagesHolder.scrollTop = messagesHolder.scrollHeight;
 	}
 
 	function sortByDate(actions) {
@@ -158,6 +169,9 @@ function ChatView() {
 	function pushToBufferOneNode(notification, expectedType, buffer) {
 		if(notification.type != expectedType)
 			return;
+
+		if(!buffer[notification.targetId])
+			buffer[notification.targetId] = [];
 
 		var node = newActionNode(notification);
 		buffer[notification.targetId].push(node);
@@ -228,6 +242,8 @@ function ChatView() {
 
 		tryEnableMakeActionButton();
 		enable(loadMoreButton);
+
+		scrollMessagesToBottom(target);
 	}
 
 	ChatView.prototype.showNotification = function(notification) {
@@ -253,18 +269,32 @@ function ChatView() {
 
 	ChatView.prototype.showServerAction = function(server, description) {
 		that.showNotification(buildConfirmationNotification(server, description));
+		scrollMessagesToBottom(server);
 	}
 
 	ChatView.prototype.showResourceAction = function(resource, description) {
 		that.showNotification(buildConfirmationNotification(resource, description));
+		scrollMessagesToBottom(resource);
 	}
 
 	ChatView.prototype.showServerActionsHistory = function(server, actions) {
 		that.showNotification(actions);
+		
+		if(!serverActionsOnceRequested[server.id]) {
+			scrollMessagesToBottom(server);
+			serverActionsOnceRequested[server.id] = true;
+		} else
+			scrollMessagesToTop(server);
 	}
 
 	ChatView.prototype.showResourceActionsHistory = function(resource, actions) {
 		that.showNotification(actions);
+		
+		if(!resourceActionsOnceRequested[resource.id]) {
+			scrollMessagesToBottom(resource);
+			resourceActionsOnceRequested[resource.id] = true;
+		} else
+			scrollMessagesToTop(resource);
 	}
 
 	loadMoreButton.onclick = function(e) {
@@ -286,9 +316,6 @@ function ChatView() {
 		buffer[selectedTarget.id] = fromDate;
 		callHistoryHandler(selectedTarget, fromDate, toDate);
 	}
-
-
-	var inputBox = document.getElementById("action_input");
 
 	makeActionButton.onclick = function() {
 		if(isDisabled(makeActionButton)) {

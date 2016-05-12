@@ -1,5 +1,6 @@
 package com.home.teamnotifier.db;
 
+import com.home.teamnotifier.db.tools.ConnectionHepler;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;
@@ -8,11 +9,12 @@ import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.builder.DataSetBuilder;
 import org.dbunit.ext.h2.H2DataTypeFactory;
 import org.dbunit.operation.DatabaseOperation;
-import org.hibernate.internal.SessionImpl;
 
-import javax.persistence.EntityManager;
 import java.sql.Connection;
 import java.sql.SQLException;
+
+import static com.home.teamnotifier.db.tools.ConnectionHepler.*;
+import static com.home.teamnotifier.db.tools.ConnectionHepler.extract;
 
 final class DbPreparer {
 
@@ -63,50 +65,34 @@ final class DbPreparer {
         return b.build();
     }
 
-    private Connection extractConnection(final EntityManager em) {
-        return ((SessionImpl) (em.getDelegate())).connection();
-    }
-
     void initDataBase() {
         transactionHelper.transaction(em -> {
-            final Connection c = extractConnection(em);
-            tryFillDb(c);
+            tryFillDb(extract(em));
             return null;
         });
     }
 
     void insertMoreData(final IDataSet dataSet) {
         transactionHelper.transaction(em -> {
-            final Connection c = extractConnection(em);
-            tryInsertMore(c, dataSet);
+            tryInsertMore(extract(em), dataSet);
             return null;
         });
     }
 
-    private void tryInsertMore(final Connection c, final IDataSet dataSet) {
+    private void tryInsertMore(final DatabaseConnection c, final IDataSet dataSet) {
         try {
-            DatabaseOperation.INSERT.execute(buildConnection(c), dataSet);
+            DatabaseOperation.INSERT.execute(c, dataSet);
         } catch (DatabaseUnitException | SQLException e) {
             throw new IllegalStateException(e);
         }
     }
 
-    private void tryFillDb(final Connection c) {
+    private void tryFillDb(final DatabaseConnection c) {
         try {
-            DatabaseOperation.CLEAN_INSERT.execute(buildConnection(c), buildDataset());
+            DatabaseOperation.CLEAN_INSERT.execute(c, buildDataset());
         } catch (DatabaseUnitException | SQLException e) {
             throw new IllegalStateException(e);
         }
-    }
-
-    private DatabaseConnection buildConnection(final Connection c) throws DatabaseUnitException {
-        final DatabaseConnection connection = new DatabaseConnection(c, "teamnotifier");
-
-        final DatabaseConfig dbConfig = connection.getConfig();
-        dbConfig.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, new H2DataTypeFactory());
-        dbConfig.setProperty(DatabaseConfig.FEATURE_CASE_SENSITIVE_TABLE_NAMES, false);
-
-        return connection;
     }
 
     TransactionHelper getTransactionHelper() {

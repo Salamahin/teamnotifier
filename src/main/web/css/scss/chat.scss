@@ -78,6 +78,8 @@ $BORDER_THICK: 1px;
 		$avatar_width: $MIN_HEIGHT;
 		margin-bottom: 15px;
 
+		padding-left: $side_margin;
+
 		.avatar {
 			display: inline-block;
 			vertical-align: top;

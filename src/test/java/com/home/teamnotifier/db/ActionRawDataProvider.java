@@ -10,16 +10,16 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
-final class ActionRawDataProvider {
+public final class ActionRawDataProvider {
     private final String tableName;
     private final String targetColumnIdName;
 
-    ActionRawDataProvider(String tableName, String targetColumnIdName) {
+    public ActionRawDataProvider(String tableName, String targetColumnIdName) {
         this.tableName = tableName;
         this.targetColumnIdName = targetColumnIdName;
     }
 
-    IDataSet newActionPerHour(final int userId, final int targetId, final Range<Instant> timeRange) throws DataSetException {
+    public IDataSet newActionPerHour(final int userId, final int targetId, final Range<Instant> timeRange) throws DataSetException {
         final DateTimeFormatter timestampFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault());
         final DataSetBuilder b = new DataSetBuilder(false);
 
