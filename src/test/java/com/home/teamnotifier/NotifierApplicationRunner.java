@@ -18,4 +18,4 @@ public class NotifierApplicationRunner {
         final FunctionalityTestDataFiller dataFiller = new FunctionalityTestDataFiller(gt);
         dataFiller.fillDb();
     }
-}
+};

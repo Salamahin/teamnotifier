@@ -1,5 +1,7 @@
 @import 'commons.scss';
 
+$SIDEMENU_WIDTH: 250px;
+
 @mixin bottom_arrow($arrow_height, $top) {
 	content: "";
 	display: block;

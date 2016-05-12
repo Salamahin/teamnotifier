@@ -97,7 +97,7 @@ function SideMenuView() {
 		var resourcesList = createNewResourceNodesList(environment, server);
 
 		var selectionButton = document.createElement("a");
-		selectionButton.href = "#";
+		selectionButton.href = "#workbench";
 		selectionButton.classList.add("server_selection_button");
 		selectionButton.innerHTML= buildEnverironmentServerListNodeName(environment, server);
 		selectionButton.onclick = function() {
@@ -136,7 +136,7 @@ function SideMenuView() {
 
 		innerDiv.appendChild(resourceSelectionButton);
 
-		resourceSelectionButton.href = "#";
+		resourceSelectionButton.href = "#workbench";
 		resourceSelectionButton.innerHTML= resource.name;
 		resourceSelectionButton.classList.add("resource_selection_button");
 		resourceSelectionButton.onclick = function() {

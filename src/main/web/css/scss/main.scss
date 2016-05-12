@@ -1,5 +1,7 @@
 @import 'commons.scss';
 
+$WORKBENCH_WIDTH: 800px;
+
 html, body {
 	height: 100%;
 	width: 100%;
@@ -10,18 +12,30 @@ html, body {
 
 #content {
 	height: 100%;
-	width: 100%;
+	width: $WORKBENCH_WIDTH;
+	margin: 0 auto;
 }
 
-#workbench {
-	margin: 0 auto;
-	width: $WORKBENCH_WIDTH;
+#workbench_horizontal_wrapper {
+	display: flex;
+	flex-direction: row;
+}
+
+#workbench_vertical_wrapper {
+	display: flex;
+	flex-direction: column;
 	height: 100%;
 }
 
-#environment {
-	$margin_bottom: $WORKBENCH_ELEMENTS_SPACE;
+#target_info_holder {
+	flex: 1;
+}
 
+#environment {
+	flex: 1;
+}
+
+#workbench {
 	width: 100%;
-	height: calc(100% - #{$HEADER_HEIGHT + $WORKBENCH_ELEMENTS_SPACE+ $margin_bottom});
+	height: 100%;
 }
