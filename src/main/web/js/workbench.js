@@ -6,12 +6,22 @@ function Workbench() {
         if (xhttp.readyState != 4)
             return;
 
+        if(xhttp.status != 200) {
+        	that.requestErrorHandler(xhttp.status);
+        	return;
+        }
+
         that.subscribeRequestSuccessHandler(server);
     }
 
 	function unsubscribePrehandler(xhttp, server) {
         if (xhttp.readyState != 4)
             return;
+
+        if(xhttp.status != 200) {
+        	that.requestErrorHandler(xhttp.status);
+        	return;
+        }
 
         that.unsubscribeRequestSuccessHandler(server);
     }
@@ -20,12 +30,22 @@ function Workbench() {
 		if (xhttp.readyState != 4)
             return;
 
+		if(xhttp.status != 200) {
+        	that.requestErrorHandler(xhttp.status);
+        	return;
+        }
+
 		that.reserveRequestSuccessHandler(resource);
     }
 
 	function freePrehandler(xhttp, resource) {
 		if (xhttp.readyState != 4)
             return;
+
+		if(xhttp.status != 200) {
+        	that.requestErrorHandler(xhttp.status);
+        	return;
+        }
 
 		that.freeRequestSuccessHandler(resource);
     }
@@ -34,6 +54,11 @@ function Workbench() {
     	if (xhttp.readyState != 4)
             return;
 
+		if(xhttp.status != 204) {
+        	that.requestErrorHandler(xhttp.status);
+        	return;
+        }
+
          that.serverActionRequestSuccessHandler(server, action);
     } 
 
@@ -41,56 +66,50 @@ function Workbench() {
     	if (xhttp.readyState != 4)
             return;
 
+		if(xhttp.status != 204) {
+        	that.requestErrorHandler(xhttp.status);
+        	return;
+        }
+
          that.resourceActionRequestSuccessHandler(resource, action);
     } 
     
     function environmentPrehandler(xhttp) {
         if(xhttp.readyState != 4)
             return;
-        
-        if(xhttp.status == 200) {
-            that.statusRequestSuccessHandler(JSON.parse(xhttp.responseText).environments);
-            return;
+
+		if(xhttp.status != 200) {
+        	that.requestErrorHandler(xhttp.status);
+        	return;
         }
-        
-        throw new Error("Failed to get status");
+       
+        that.statusRequestSuccessHandler(JSON.parse(xhttp.responseText).environments);
     }
 
 	function serverActionsHistoryPrehandler(xhttp, server) {
 		if(xhttp.readyState != 4)
 			return;
 
-		if(xhttp.status == 200) {
-			that.serverActionsHistoryRequestSuccessHandler(server, JSON.parse(xhttp.responseText));
-			return;
-		}
+		if(xhttp.status != 200) {
+        	that.requestErrorHandler(xhttp.status);
+        	return;
+        }
 
-		throw new Error("Failed to get server history");
+		that.serverActionsHistoryRequestSuccessHandler(server, JSON.parse(xhttp.responseText));
 	}
 
 	function resourceActionsHistoryPrehandler(xhttp, resource) {
 		if(xhttp.readyState != 4)
 			return;
 
-		if(xhttp.status == 200) {
-			that.resourceActionsHistoryRequestSuccessHandler(resource, JSON.parse(xhttp.responseText));
-			return;
-		}
+		if(xhttp.status != 200) {
+        	that.requestErrorHandler(xhttp.status);
+        	return;
+        }
 
-		throw new Error("Failed to get resource history");
+		that.resourceActionsHistoryRequestSuccessHandler(resource, JSON.parse(xhttp.responseText));
 	}
 
-	function whoAmIPrehandler(xhttp) {
-		if(xhttp.readyState != 4)
-			return;
-
-		if(xhttp.status == 200) {
-			that.whoAmISuccessHandler(JSON.parse(xhttp.responseText).name);
-			return;
-		}
-
-		that.whoAmIErrorHandler();
-	}
 
     Workbench.prototype.newResourceAction = function (resource, description) {
 		var encodedDescription = encodeURIComponent(description);
@@ -192,6 +211,10 @@ function Workbench() {
         xhttp.send();
     };
 }
+
+Workbench.prototype.requestErrorHandler = function(code) {
+	throw new Error("not bound");
+};
 
 Workbench.prototype.whoAmISuccessHandler = function(login) {
 	throw new Error("not bound");

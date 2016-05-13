@@ -24,7 +24,7 @@ public final class ActionRawDataProvider {
         final DataSetBuilder b = new DataSetBuilder(false);
 
         Instant timestamp = timeRange.lowerEndpoint();
-        int idGenerator = 0;
+        int idGenerator = 500000;
         do {
             final String timestampStr = timestampFormatter.format(timestamp);
             b

@@ -24,6 +24,10 @@ var CHAT_VIEW;
 var ENVIRONMENTS;
 var CURRENT_SERVER;
 
+function onRequestError(code) {
+	window.alert("Request failed: " + code);
+}
+
 function onAuthenticationSuccess(login, token) {
     NOTIFIER.token = token;
     WORKBENCH.token = token;
@@ -124,7 +128,7 @@ function bind() {
 	WORKBENCH.resourceActionsHistoryRequestSuccessHandler = VIEW.showResourceActionsHistory;
 	WORKBENCH.statusRequestSuccessHandler = VIEW.updateStatus;
 	WORKBENCH.whoAmIErrorHandler = showError;
-	WORKBENCH.whoAmISuccessHandler = 
+	WORKBENCH.requestErrorHandler = onRequestError;
 
     init();
 }

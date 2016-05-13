@@ -72,8 +72,11 @@ $INPUT_MESSAGE_HEIGHT: 50px;
 		$side_margin: 20px;
 		$avatar_width: $MIN_HEIGHT;
 		margin-bottom: 15px;
+		display: flex;
 
 		padding-left: $side_margin;
+		padding-right: $side_margin;
+		justify-content: space-between;
 
 		.avatar {
 			display: inline-block;
@@ -81,20 +84,26 @@ $INPUT_MESSAGE_HEIGHT: 50px;
 			@include avatar($avatar_width, $WHITE_SHADOWED);
 		}
 
-		.right:after {
-			@include arrow("false");
+		$separator_size: 20px;
+
+		.right {
+			margin-left: $separator_size;
+			&:after {
+				@include arrow("false");
+			}
 		}
 
-		.left:after {
-			@include arrow("true");
+		.left {
+			margin-right: $separator_size;
+			&:after {
+				@include arrow("true");
+			}
 		}
 
 		.message_details {
-			margin-left: $side_margin;
-			margin-right: $side_margin;
+			flex: 1;
 			display: inline-block;
 			vertical-align: top;
-			width: calc(100% - #{2*$side_margin + $avatar_width + $SCROLLBAR_SPACE});
 			min-height: $MIN_HEIGHT;
 			position: relative;
 			background: $METAL_DARK;

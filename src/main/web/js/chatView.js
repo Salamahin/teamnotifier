@@ -68,7 +68,7 @@ function ChatView() {
 		return "@" + action.actor + " on " + action.timestamp;
 	}
 
-	function getSummaryNode(action) {
+	function getActionSummaryNode(action) {
 		var label = document.createElement("label");
 		label.innerHTML = getSummaryText(action);
 
@@ -80,7 +80,7 @@ function ChatView() {
 	}
 
 
-	function getDetailsNode(action) {
+	function getActionDescriptionNode(action) {
 		var label = document.createElement("label");
 		label.innerHTML = action.description;
 
@@ -95,17 +95,17 @@ function ChatView() {
 		return actor == that.currentUser;
 	}
 
-	function getActionNode(action, mine) {
+	function getActionDetailsNode(action, mine) {
 		var innerHolder = document.createElement("div");
 		innerHolder.classList.add("message_details");
 		innerHolder.classList.add(mine? "right" : "left");
-		innerHolder.appendChild(getSummaryNode(action));
-		innerHolder.appendChild(getDetailsNode(action));
+		innerHolder.appendChild(getActionSummaryNode(action));
+		innerHolder.appendChild(getActionDescriptionNode(action));
 
 		return innerHolder;
 	}
 
-	function newActionNode(action) {		
+	function getActionInfoNode(action) {		
 		var actor = action.actor;
 
 		var holder = document.createElement("div");	
@@ -115,12 +115,12 @@ function ChatView() {
 		var avatar = that.avatarCreator.getAvatarNode(actor);
 
 		if(actionIsMadeByCurrentUser(actor)) {
-			var actionNode = getActionNode(action, false);
+			var actionNode = getActionDetailsNode(action, false);
 			
 			holder.appendChild(actionNode);
 			holder.appendChild(avatar);
 		} else {
-			var actionNode = getActionNode(action, true);
+			var actionNode = getActionDetailsNode(action, true);
 			
 			holder.appendChild(avatar);
 			holder.appendChild(actionNode);
@@ -173,7 +173,7 @@ function ChatView() {
 		if(!buffer[notification.targetId])
 			buffer[notification.targetId] = [];
 
-		var node = newActionNode(notification);
+		var node = getActionInfoNode(notification);
 		buffer[notification.targetId].push(node);
 		sortByDate(buffer[notification.targetId]);
 	}
@@ -189,7 +189,7 @@ function ChatView() {
 			return;		
 
 		for(var i = 0; i< notification.actions.length; i++) {
-			var node = newActionNode(notification.actions[i]);
+			var node = getActionInfoNode(notification.actions[i]);
 			buffer[notification.targetId].push(node);
 		}
 
