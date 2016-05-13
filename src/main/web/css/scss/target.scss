@@ -1,0 +1,27 @@
+@import 'commons.scss';
+
+$MARGIN_LEFT: 20px;
+
+#target_info {
+	display: inline-block;
+	margin-left: $MARGIN_LEFT;
+	width: 100%;
+
+	#target_info_horizontal_wrapper {
+		display: flex;
+		flex-direction: column;
+		align-items: stretch;
+		height: 100%;
+	}
+}
+
+
+#subscribtion_holder {
+	margin-bottom: $INNER_ELEMENTS_MARGIN;
+
+	#subscribe_button {
+		@include button(100%, 30px);
+		@include disable();
+	}
+}
+
