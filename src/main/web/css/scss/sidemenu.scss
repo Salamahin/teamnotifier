@@ -21,17 +21,16 @@ $SIDEMENU_WIDTH: 250px;
 #sidemenu {
 	display: inline-block;
 	width: $SIDEMENU_WIDTH;
-	vertical-align: top;
 	$server_name_font_size: 18px;
 	$elem_padding: 10px;
-
-	background: $SOFT_RED;
+	margin-right: $MAIN_ELEMENTS_MARGIN;
 
 	li {
 		cursor: pointer;
 	}
 
 	ul {
+		background: $SOFT_RED;
 		list-style: none;
 		padding: 0;
 		margin: 0;
@@ -53,11 +52,10 @@ $SIDEMENU_WIDTH: 250px;
 			border-bottom: 1px solid rgba(0, 0, 0, .2);
 
 			&>div {
-				margin-left: 10px;
 				position: relative;
 
 				a {
-					margin-left: $basic_offset;
+					padding-left: $basic_offset;
 					color: $WHITE_SMOKE;
 					font-size: $server_name_font_size;
 					text-transform: uppercase;

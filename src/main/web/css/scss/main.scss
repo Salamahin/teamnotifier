@@ -1,7 +1,5 @@
 @import 'commons.scss';
 
-$WORKBENCH_WIDTH: 800px;
-
 html, body {
 	height: 100%;
 	width: 100%;
@@ -12,30 +10,59 @@ html, body {
 
 #content {
 	height: 100%;
-	width: $WORKBENCH_WIDTH;
+	width: 800px;
 	margin: 0 auto;
 }
 
-#workbench_horizontal_wrapper {
-	display: flex;
-	flex-direction: row;
-}
-
-#workbench_vertical_wrapper {
-	display: flex;
-	flex-direction: column;
-	height: 100%;
-}
-
-#target_info_holder {
-	flex: 1;
-}
-
-#environment {
-	flex: 1;
-}
 
 #workbench {
 	width: 100%;
 	height: 100%;
+	
+	display: flex;
+	flex-direction: column;
+
+	#header {
+		margin-bottom: $MAIN_ELEMENTS_MARGIN;
+		min-height: 50px; //TODO remove
+	}
+
+	#environment {
+		flex: 1;
+		min-height: 0px;
+		
+		display: flex;
+
+		#target {
+			flex: 1;
+			min-height: 0px;
+
+			display: flex;
+			flex-direction: column;
+			
+			#subscribtion_holder {
+				margin-bottom: $INNER_ELEMENTS_MARGIN;
+			}
+
+			#users_holder {
+				margin-bottom: $INNER_ELEMENTS_MARGIN;
+			}
+
+			#chat {
+				flex: 1;
+				min-height: 0px;
+
+				display: flex;
+				flex-direction: column;
+				margin-bottom: $MAIN_ELEMENTS_MARGIN;
+
+				#messages_holder {
+					flex: 1;
+					min-height: 0px;
+
+					margin-bottom: $INNER_ELEMENTS_MARGIN;
+				}
+			}
+		}
+	}
 }

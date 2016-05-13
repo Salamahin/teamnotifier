@@ -6,9 +6,8 @@ $WHITE_SHADOWED: #9F9F9F;
 $WHITE_SHADOWED_HOVER: #CFCFCF;
 $METAL_DARK: #474141;
 
-$HEADER_HEIGHT: 50px;
-
-$WORKBENCH_ELEMENTS_SPACE: 20px;
+$MAIN_ELEMENTS_MARGIN: 20px;
+$INNER_ELEMENTS_MARGIN: 10px;
 
 $AVATAR_BORDER_WIDTH: 2px;
 $BUTTON_BORDER_WIDTH: 1px;
@@ -35,12 +34,13 @@ $BUTTON_BORDER_WIDTH: 1px;
 	}
 }
 
-@mixin input($underline_width) {
+@mixin input() {
 	border: none;
 	border-bottom-style: solid;
-	border-bottom-width: $underline_width;
+	border-bottom-width: 1px;
 	border-bottom-color: $WHITE_SHADOWED_HOVER;
 	padding: 0;
+	box-sizing: border-box;
 
 	&:focus {
 		outline: none;
@@ -72,13 +72,19 @@ $BUTTON_BORDER_WIDTH: 1px;
 	}
 }
 
-@mixin button() {
+@mixin button($width, $height) {
+	$border_width: 1px;
+
 	cursor: pointer;
-	border: 1px solid $SOFT_RED;
+	border: $border_width solid $SOFT_RED;
 	font-weight: bold;
 	background-color: transparent;
 	color: $SOFT_RED;
 	text-decoration: none;
+	width: calc(#{$width} - #{2*$border_width});
+	height: $height;
+	line-height: $height;
+	display: block;
 	text-align: center;
 
 	&:hover,

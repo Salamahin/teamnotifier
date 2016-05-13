@@ -3,9 +3,6 @@
 $MIN_HEIGHT: 60px;
 $SCROLLBAR_SPACE: 35px;
 $INPUT_MESSAGE_HEIGHT: 50px;
-$ACTION_BUTTON_HEIGHT: 30px;
-$INPUT_MESSAGE_MARGIN: 10px;
-$BORDER_THICK: 1px;
 
 @mixin arrow($left) {
 	$arrow_height: 10px;
@@ -28,10 +25,8 @@ $BORDER_THICK: 1px;
 }
 
 #chat {
-	border: solid $BORDER_THICK $WHITE_SHADOWED;
-	flex: 1;
-	display: flex;
-	flex-direction: column;
+	border: solid 1px $WHITE_SHADOWED;
+	height: 100%;
 }
 
 ::-webkit-scrollbar {
@@ -59,8 +54,6 @@ $BORDER_THICK: 1px;
 }
 
 #messages_holder {
-	margin-bottom: $WORKBENCH_ELEMENTS_SPACE;
-	flex: 1;
 	overflow-y: auto;
 
     #load_more_button {
@@ -124,33 +117,33 @@ $BORDER_THICK: 1px;
 }
 
 #chat_footer {
-	margin-bottom: $INPUT_MESSAGE_MARGIN;
+	margin-bottom: $INNER_ELEMENTS_MARGIN;
 	#make_action_button_holder {
 		$button_width: 100px;
 
 		float: right;
-		margin-right: $INPUT_MESSAGE_MARGIN;
+		margin-right: $INNER_ELEMENTS_MARGIN;
 
 		#make_action_button {
-			width: $button_width;
-			height: $ACTION_BUTTON_HEIGHT;
-			display: table-cell;
-			vertical-align: middle;
-			@include button();
+			@include button($button_width, 30px);
 			@include disable();
 		}
 	}
 
-    #action_input {
-		$underline_width: 1px;
-
-		width: calc(100% - #{2*$BORDER_THICK - 2*$underline_width + 2*$INPUT_MESSAGE_MARGIN});
+	#action_input_holder {
 		height: $INPUT_MESSAGE_HEIGHT;
-		margin: $INPUT_MESSAGE_MARGIN;
-		word-break: break-word;
-		resize: none;
-		@include input($underline_width);
+		margin: 0 $INNER_ELEMENTS_MARGIN $INNER_ELEMENTS_MARGIN $INNER_ELEMENTS_MARGIN;
+
+		#action_input {
+			word-break: break-word;
+			resize: none;
+			display: block;
+			width: 100%;
+			height: 100%;
+			@include input();
+		}
 	}
+
 }
 
 
