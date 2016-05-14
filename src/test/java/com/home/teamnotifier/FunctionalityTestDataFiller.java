@@ -16,7 +16,7 @@ import java.time.temporal.ChronoUnit;
 
 import static com.home.teamnotifier.db.tools.ConnectionHepler.extract;
 
-public class FunctionalityTestDataFiller {
+class FunctionalityTestDataFiller {
 
     private final int userId = 1220000;
     private final int resourceId = 1110000;
@@ -27,14 +27,14 @@ public class FunctionalityTestDataFiller {
     private final ActionRawDataProvider serverActionDataProvider;
     private final ActionRawDataProvider resourceActionDataProvider;
 
-    public FunctionalityTestDataFiller(TransactionHelper transactionHelper) {
+    FunctionalityTestDataFiller(TransactionHelper transactionHelper) {
         this.transactionHelper = transactionHelper;
 
         serverActionDataProvider = new ActionRawDataProvider("ServerAction", "server_id");
         resourceActionDataProvider = new ActionRawDataProvider("ResourceAction", "resource_id");
     }
 
-    public void fillDb() {
+    void fillDb() {
         initDataBase();
         addActionsToDataBase();
     }

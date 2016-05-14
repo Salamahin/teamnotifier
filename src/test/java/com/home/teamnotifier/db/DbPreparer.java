@@ -1,19 +1,14 @@
 package com.home.teamnotifier.db;
 
-import com.home.teamnotifier.db.tools.ConnectionHepler;
 import org.dbunit.DatabaseUnitException;
-import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.builder.DataSetBuilder;
-import org.dbunit.ext.h2.H2DataTypeFactory;
 import org.dbunit.operation.DatabaseOperation;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 
-import static com.home.teamnotifier.db.tools.ConnectionHepler.*;
 import static com.home.teamnotifier.db.tools.ConnectionHepler.extract;
 
 final class DbPreparer {
