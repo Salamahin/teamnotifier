@@ -3,6 +3,7 @@ function View() {
 
     var sideMenuView = undefined;
 	var authenticationView = undefined;
+	var subscribtionView = undefined;
 	var chatView = undefined;
 	var avatarCreator = undefined;
 
@@ -15,6 +16,7 @@ function View() {
 	View.prototype.setCurrentUser = function(username) {
 		sideMenuView.user = username;
 		chatView.currentUser = username;
+		subscribtionView.user = username;
 	}
 
     View.prototype.showAuthenticationError = function () {
@@ -31,6 +33,7 @@ function View() {
 
     View.prototype.updateStatus = function (environments) {
         sideMenuView.setEnvironments(environments);
+		subscribtionView.update(environments);
     };
 
 	View.prototype.showServerActionsHistory = function(server, actions) {
@@ -49,6 +52,14 @@ function View() {
 		chatView.showResourceAction(resource, description);
 	}
 
+	View.prototype.showReservationConfirmation = function(resource) {
+		subscribtionView.reservationSuccess(resource);
+	}
+
+	View.prototype.showFreeConfirmation = function(resource) {
+		subscribtionView.freeSuccess(resource);
+	}
+
 	View.prototype.setAuthenticationView = function(view) {
 		authenticationView = view;
 
@@ -61,6 +72,27 @@ function View() {
 		};
 	}
 
+	View.prototype.setSubcribtionView = function(view) {
+		subscribtionView = view;
+		bindAvatarCreator();
+
+		subscribtionView.subscribeHandler = function(server) {
+			that.subscribeHandler(server);
+		}
+
+		subscribtionView.unsubscribeHandler = function(server) {
+			that.unsubscribeHandler(server);
+		}
+
+		subscribtionView.reserveHandler = function(resource) {
+			that.reservationHandler(resource);
+		}
+
+		subscribtionView.freeHandler = function(resource) {
+			that.freeHandler(resource);
+		}
+	}
+
 	function bindAvatarCreator() {
 		if(!avatarCreator)
 			return;
@@ -70,6 +102,9 @@ function View() {
 
 		if(chatView)
 			chatView.avatarCreator = avatarCreator;
+
+		if(subscribtionView) 
+			subscribtionView.avatarCreator = avatarCreator;
 	}
 
 	View.prototype.setAvatarCreator = function(creator) {
@@ -84,10 +119,12 @@ function View() {
 
         sideMenuView.serverSelectionHandler = function(environment, server) {
 			chatView.select(server);
+			subscribtionView.select(server);
         }
 
         sideMenuView.resourceSelectionHandler = function(environment, server, resource) {
 			chatView.select(resource);
+			subscribtionView.select(resource);
         }
     };
 

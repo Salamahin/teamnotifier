@@ -6,7 +6,9 @@ function SubscribtionView() {
 
 	var selectedTarget = undefined;
 	var currentEnvironment = undefined;
-	var actionButton = document.getElementById("subscribe_button");
+
+	const actionButton = document.getElementById("subscribe_button");
+	const usersHolder = document.getElementById("users_holder");
 	
 	function disableActionButton() {
 		if(actionButton.classList.contains("disabled"))
@@ -104,13 +106,43 @@ function SubscribtionView() {
 		throw new Error("EnvironmentInfo does not contain information of the selected server");
 	}
 
+	function removeChildren(parentNode) {
+		while(parentNode.childNodes.length)
+			parentNode.removeChild(parentNode.childNodes[0]);
+	}
+
+	function showSubscribers() {
+		removeChildren(usersHolder);
+
+		for(var i = 0; i<selectedTarget.subscribers.length; i++) {
+			var avatarNode = avatarCreator.createNewAvatar(selectedTarget.subscribers[i]);
+			usersHolder.appendChild(avatarNode);
+		}
+	}
+
+	function showReserver() {
+		removeChildren(usersHolder);
+		if(!selectedTarget.occupationInfo)
+			return;
+		
+		var sinceLabel = document.createElement("label");
+		label.value = "Since " + selectedTarget.occupationInfo.occupationTime;
+		
+		var avatar = avatarCreator.createNewAvatar(selectedTarget.occupationInfo.userName);
+		
+		usersHolder.appendChild(avatar);
+		usersHolder.appendChild(sinceLabel);
+	}
+
 	SubscribtionView.prototype.select = function(target) {
 		selectedTarget = target;
 		installButtonHandler();
-		//TODO show reservation
+		showReserver();
 	}
 
 	SubscribtionView.prototype.update = function(environment) {
+		currentEnvironment = environment;
+
 		if(!selectedTarget) 
 			return;
 
@@ -120,7 +152,19 @@ function SubscribtionView() {
 			selectedTarget = extractResourceInformation(selectedTarget, environment);
 
 		installButtonHandler();
-		//TODO show subscribers
+		showSubscribers();
+	}
+
+	SubscribtionView.prototype.reservationSuccess = function(resource) {
+		var r = extractResourceInformation(resource, currentEnvironment);
+		r.occupationInfo = {};
+		r.occupationInfo.userName = that.user;
+		r.occupationInfo.occupationTime = new Date();
+	}
+
+	SubscribtionView.prototype.freeSuccess = function(resource) {
+		var r = extractResourceInformation(resource, currentEnvironment);
+		r.occupationInfo = undefined;
 	}
 
 	updateButtonState();

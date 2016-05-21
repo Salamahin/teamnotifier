@@ -20,6 +20,7 @@ var SIDEMENU_VIEW;
 var AUTHENTICATION_VIEW;
 var AVATAR_NODE_CREATOR;
 var CHAT_VIEW;
+var SUBSCRIBTION_VIEW;
 
 var ENVIRONMENTS;
 var CURRENT_SERVER;
@@ -88,7 +89,8 @@ function bind() {
 		!SIDEMENU_VIEW || 
 		!AUTHENTICATION_VIEW || 
 		!AVATAR_NODE_CREATOR || 
-		!CHAT_VIEW)
+		!CHAT_VIEW ||
+		!SUBSCRIBTION_VIEW)
         return;
 
     NOTIFIER.connectionSuccessHandler = onNotifierConnected;
@@ -111,17 +113,22 @@ function bind() {
 	VIEW.resourceActionsHistoryHandler = WORKBENCH.getResourceActions;
 	VIEW.resourceActionHandler = WORKBENCH.newResourceAction;
 	VIEW.serverActionHandler = WORKBENCH.newServerAction;
+	VIEW.subscribeHandler = WORKBENCH.subscribe;
+	VIEW.unsubscribeHandler = WORKBENCH.unsubscribe;
+	VIEW.reserveHandler = WORKBENCH.reserve;
+	VIEW.freeHandler = WORKBENCH.free;
 
     VIEW.setSideMenuView(SIDEMENU_VIEW);
 	VIEW.setAuthenticationView(AUTHENTICATION_VIEW);
 	VIEW.setChatView(CHAT_VIEW);
+	VIEW.setSubcribtionView(SUBSCRIBTION_VIEW);
 	VIEW.setAvatarCreator(AVATAR_NODE_CREATOR);
 
 
-// 	WORKBENCH.reserveRequestSuccessHandlerHandler =
-// 	WORKBENCH.freeRequestSuccessHandler =
-// 	WORKBENCH.subscribeRequestSuccessHandler =
-// 	WORKBENCH.unsubscribeRequestSuccessHandler =
+ 	WORKBENCH.reserveRequestSuccessHandlerHandler = VIEW.showReservationConfirmation;
+ 	WORKBENCH.freeRequestSuccessHandler = VIEW.showFreeConfirmation;
+// 	WORKBENCH.subscribeRequestSuccessHandler = //TODO
+// 	WORKBENCH.unsubscribeRequestSuccessHandler = //TODO
 	WORKBENCH.serverActionRequestSuccessHandler = VIEW.showServerActionConfirmation;
 	WORKBENCH.resourceActionRequestSuccessHandler = VIEW.showResourceActionConfirmation
 	WORKBENCH.serverActionsHistoryRequestSuccessHandler = VIEW.showServerActionsHistory;
@@ -188,6 +195,10 @@ window.onload = function() {
 	});
 	include("js/chatView.js", function() {
 		CHAT_VIEW = new ChatView();
+		bind();
+	});
+	include("js/subscribtionView.js", function() {
+		SUBSCRIBTION_VIEW = new SubscribtionView();
 		bind();
 	});
 };
