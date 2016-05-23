@@ -11,7 +11,6 @@ import java.util.Objects;
 abstract class ActionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @SuppressWarnings("unused")
     private final Integer id;
 
     @ManyToOne(optional = false, cascade = CascadeType.ALL)

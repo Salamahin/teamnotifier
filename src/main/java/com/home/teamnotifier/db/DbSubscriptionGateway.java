@@ -3,6 +3,8 @@ package com.home.teamnotifier.db;
 import com.google.common.base.Throwables;
 import com.google.inject.Inject;
 import com.home.teamnotifier.core.BroadcastInformation;
+import com.home.teamnotifier.core.SubscriptionActionResult;
+import com.home.teamnotifier.core.responses.action.ServerSubscribersInfo;
 import com.home.teamnotifier.core.responses.notification.Reservation;
 import com.home.teamnotifier.core.responses.notification.Subscription;
 import com.home.teamnotifier.gateways.SubscriptionGateway;
@@ -14,6 +16,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -29,16 +32,26 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
     }
 
     @Override
-    public BroadcastInformation<Subscription> subscribe(final String userName, final int serverId) {
+    public SubscriptionActionResult subscribe(final String userName, final int serverId) {
         try {
-            return transactionHelper.transaction(em -> {
+            final SubscriptionEntity subscriptionEntity = transactionHelper.transaction(em -> {
                 final UserEntity u = getUserEntity(userName, em);
                 final ServerEntity s = getServerEntity(serverId, em);
 
-                em.persist(new SubscriptionEntity(s, u));
-
-                return new BroadcastInformation<>(Subscription.subscribe(u, s), getSubscribersButUser(u.getName(), s));
+                return em.merge(new SubscriptionEntity(s, u));
             });
+
+            final UserEntity actor = subscriptionEntity.getSubscriber();
+            final ServerEntity target = subscriptionEntity.getServer();
+
+            final Subscription notification = Subscription.subscribe(actor,target);
+            final List<String> subscribersButUser = getSubscribersButUser(actor.getName(),target);
+
+            return new SubscriptionActionResult(
+                    new BroadcastInformation<>(notification, subscribersButUser),
+                    new ServerSubscribersInfo(target)
+            );
+
         } catch (Exception exc) {
             rethrowConstraintViolation(exc, userName, serverId);
             return null;

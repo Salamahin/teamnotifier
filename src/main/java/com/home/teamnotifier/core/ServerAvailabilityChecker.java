@@ -29,7 +29,7 @@ public class ServerAvailabilityChecker {
     private ScheduledFuture<?> routine;
 
     @Inject
-    public ServerAvailabilityChecker(
+    ServerAvailabilityChecker(
             final ScheduledExecutorService executor,
             final ServerGateway gateway,
             final NotificationManager notificationManager

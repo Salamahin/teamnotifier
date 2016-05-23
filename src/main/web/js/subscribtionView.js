@@ -120,6 +120,13 @@ function SubscribtionView() {
 		}
 	}
 
+	function updateSubscribtionInfo(subscribtionInfo) {
+		if(selectedTarget == "ServerInfo" && selectedTarget.id == subscribtionsInfo.serverId) {
+			selectedTarget.subscribers = subscribtionInfo.subscribers;
+			showSubscribers();
+		}
+	}
+
 	function showReserver() {
 		removeChildren(usersHolder);
 		if(!selectedTarget.occupationInfo)
@@ -154,6 +161,10 @@ function SubscribtionView() {
 
 		installButtonHandler();
 		showSubscribers();
+	}
+
+	SubscribtionView.prototype.subscribtionSuccess = function(subscribtionsInfo) {
+		updateSubscribtionInfo(subscribtionsInfo);
 	}
 
 	SubscribtionView.prototype.reservationSuccess = function(resource) {

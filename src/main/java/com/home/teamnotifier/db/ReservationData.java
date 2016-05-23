@@ -12,11 +12,11 @@ final class ReservationData {
         this.occupationTime = occupationTime;
     }
 
-    public UserEntity getOccupier() {
+    UserEntity getOccupier() {
         return occupier;
     }
 
-    public Instant getOccupationTime() {
+    Instant getOccupationTime() {
         return occupationTime;
     }
 }

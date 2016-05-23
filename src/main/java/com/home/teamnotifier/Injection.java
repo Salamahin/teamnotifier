@@ -5,7 +5,7 @@ import com.google.inject.Stage;
 import com.hubspot.dropwizard.guice.GuiceBundle;
 
 final class Injection {
-    public static final GuiceBundle<NotifierConfiguration> INJECTION_BUNDLE =
+    static final GuiceBundle<NotifierConfiguration> INJECTION_BUNDLE =
             GuiceBundle.<NotifierConfiguration>newBuilder()
                     .addModule(new NotifierModule())
                     .setConfigClass(NotifierConfiguration.class)

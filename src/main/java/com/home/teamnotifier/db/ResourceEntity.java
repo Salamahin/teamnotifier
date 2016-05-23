@@ -21,23 +21,18 @@ public class ResourceEntity implements Serializable {
     @ManyToOne(optional = false)
     private final ServerEntity server;
 
-    @ManyToOne(optional = true)
+    @ManyToOne
     private UserEntity occupier;
 
-    @Column(nullable = true)
+    @Column
     private Instant occupationStartTime;
 
     //for hibernate
+    @SuppressWarnings("unused")
     private ResourceEntity() {
         id = null;
         name = null;
         server = null;
-    }
-
-    ResourceEntity(final ServerEntity server, final String name) {
-        id = null;
-        this.name = name;
-        this.server = server;
     }
 
     public void reserve(final UserEntity userEntity) {
@@ -64,7 +59,7 @@ public class ResourceEntity implements Serializable {
         return server;
     }
 
-    public Optional<ReservationData> getReservationData() {
+    Optional<ReservationData> getReservationData() {
         if (occupier != null) {
             return Optional.of(new ReservationData(occupier, occupationStartTime));
         } else {

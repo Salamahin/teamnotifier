@@ -19,7 +19,7 @@ final class SubscriptionEntity implements Serializable {
     @SuppressWarnings("unused")
     private final Integer id;
 
-    @ManyToOne(optional = false, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(optional = false, cascade = CascadeType.ALL)
     @JoinColumn(name = "server_id")
     @SuppressWarnings("unused")
     private final ServerEntity server;
@@ -47,8 +47,12 @@ final class SubscriptionEntity implements Serializable {
         this.timestamp = Instant.now();
     }
 
-    public UserEntity getSubscriber() {
+    UserEntity getSubscriber() {
         return subscriber;
+    }
+
+    public ServerEntity getServer() {
+        return server;
     }
 
     @Override

@@ -43,6 +43,7 @@ public class ServerEntity implements Serializable {
     private final Set<SubscriptionEntity> subscriptions;
 
     //for hibernate
+    @SuppressWarnings("unused")
     private ServerEntity() {
         id = null;
         name = null;
@@ -65,11 +66,6 @@ public class ServerEntity implements Serializable {
         subscriptions = new HashSet<>();
     }
 
-    public void newResource(final String name) {
-        final ResourceEntity entity = new ResourceEntity(this, name);
-        resources.add(entity);
-    }
-
     public Integer getId() {
         return id;
     }
@@ -78,7 +74,7 @@ public class ServerEntity implements Serializable {
         return name;
     }
 
-    public Set<ResourceEntity> getImmutableSetOfResources() {
+    Set<ResourceEntity> getImmutableSetOfResources() {
         return ImmutableSet.copyOf(resources);
     }
 

@@ -43,6 +43,10 @@ public class ServerSubscribersInfo {
                 subscribers.containsAll(that.subscribers);
     }
 
+    public List<String> getSubscribers() {
+        return subscribers;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(id, subscribers);

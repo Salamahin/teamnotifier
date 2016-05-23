@@ -35,7 +35,7 @@ public class DbActionsGateway implements ActionsGateway {
     private final TransactionHelper transactionHelper;
 
     @Inject
-    public DbActionsGateway(
+    DbActionsGateway(
             final TransactionHelper transactionHelper
     ) {
         this.transactionHelper = transactionHelper;

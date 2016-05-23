@@ -18,9 +18,9 @@ final class ResourceActionEntity extends ActionEntity implements Serializable {
         resource = null;
     }
 
-    public ResourceActionEntity(final UserEntity actor,
-                                final ResourceEntity resourceEntity,
-                                final String details
+    ResourceActionEntity(final UserEntity actor,
+                         final ResourceEntity resourceEntity,
+                         final String details
     ) {
         super(actor, details);
         this.resource = resourceEntity;

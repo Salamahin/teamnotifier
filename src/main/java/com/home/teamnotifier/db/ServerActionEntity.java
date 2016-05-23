@@ -21,9 +21,9 @@ public class ServerActionEntity extends ActionEntity implements Serializable {
         server = null;
     }
 
-    public ServerActionEntity(final UserEntity actor,
-                              final ServerEntity server,
-                              final String details
+    ServerActionEntity(final UserEntity actor,
+                       final ServerEntity server,
+                       final String details
     ) {
         super(actor, details);
         this.server = server;

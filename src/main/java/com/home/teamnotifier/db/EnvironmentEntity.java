@@ -34,23 +34,11 @@ public final class EnvironmentEntity implements Serializable {
         servers = new HashSet<>();
     }
 
-    public ServerEntity newServer(final String name) {
-        final ServerEntity serverEntity = new ServerEntity(this, name);
-        servers.add(serverEntity);
-        return serverEntity;
-    }
-
-    public ServerEntity newServer(final String name, final String checkUrl) {
-        final ServerEntity serverEntity = new ServerEntity(this, name, checkUrl);
-        servers.add(serverEntity);
-        return serverEntity;
-    }
-
     public String getName() {
         return name;
     }
 
-    public Set<ServerEntity> getImmutableSetOfServers() {
+    Set<ServerEntity> getImmutableSetOfServers() {
         return ImmutableSet.copyOf(servers);
     }
 

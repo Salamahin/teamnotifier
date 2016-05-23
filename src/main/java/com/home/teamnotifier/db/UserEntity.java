@@ -23,7 +23,7 @@ public class UserEntity implements Serializable {
     @ElementCollection(targetClass = RoleEntity.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "UserInRole", schema = "teamnotifier", joinColumns = @JoinColumn(name = "userId"))
     @Column(name = "RoleId")
-    private final Set<RoleEntity> roles;
+    private final Set<RoleEntity> roles; //todo
 
     @Column(nullable = false, unique = true)
     @Size(min = 1)

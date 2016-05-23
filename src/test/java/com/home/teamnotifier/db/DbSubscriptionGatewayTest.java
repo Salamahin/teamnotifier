@@ -1,10 +1,16 @@
 package com.home.teamnotifier.db;
 
+import com.google.common.collect.Lists;
+import com.home.teamnotifier.core.BroadcastInformation;
+import com.home.teamnotifier.core.SubscriptionActionResult;
+import com.home.teamnotifier.core.responses.action.ServerSubscribersInfo;
+import com.home.teamnotifier.core.responses.notification.Subscription;
 import com.home.teamnotifier.gateways.UserGateway;
 import com.home.teamnotifier.gateways.exceptions.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -80,13 +86,39 @@ public class DbSubscriptionGatewayTest {
 
         final int serverId = preparer.persistedServerId();
 
-        assertThat(gateway.subscribe(userName1, serverId).getSubscribers())
-                .doesNotContain(userName1);
-        assertThat(gateway.subscribe(userName2, serverId).getSubscribers())
-                .doesNotContain(userName2).contains(userName1);
+        assertSubscribtionReturnContainsNecessarySubscribersNames(
+                gateway.subscribe(userName1, serverId),
+                Lists.newArrayList(userName1),
+                Lists.newArrayList(userName1)
+        );
+
+        assertSubscribtionReturnContainsNecessarySubscribersNames(
+                gateway.subscribe(userName2, serverId),
+                Lists.newArrayList(userName1, userName2),
+                Lists.newArrayList(userName1)
+        );
+
     }
 
-    private String randomString () {
+    private void assertSubscribtionReturnContainsNecessarySubscribersNames(
+            final SubscriptionActionResult actionResult,
+            final List<String> allExpectedSubscribers,
+            final List<String> subscribersExcludedInBroadcastInfo
+    ) {
+        final ServerSubscribersInfo subscribersInfo = actionResult.getSubscribersInfo();
+        assertThat(subscribersInfo.getSubscribers())
+                .containsAll(allExpectedSubscribers);
+
+        final List<String> expectedSubscribersInBroadcastInfo = Lists.newArrayList(allExpectedSubscribers);
+        expectedSubscribersInBroadcastInfo.removeAll(subscribersExcludedInBroadcastInfo);
+
+        final BroadcastInformation<Subscription> broadcastInformation = actionResult.getBroadcastInformation();
+        assertThat(broadcastInformation.getSubscribers())
+                .containsAll(expectedSubscribersInBroadcastInfo)
+                .doesNotContainAnyElementsOf(subscribersExcludedInBroadcastInfo);
+    }
+
+    private String randomString() {
         return UUID.randomUUID().toString();
     }
 

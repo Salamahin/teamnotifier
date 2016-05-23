@@ -6,12 +6,12 @@ function Workbench() {
         if (xhttp.readyState != 4)
             return;
 
-        if(xhttp.status != 204) {
+        if(xhttp.status != 200) {
         	that.requestErrorHandler(xhttp.status);
         	return;
         }
 
-        that.subscribeRequestSuccessHandler(server);
+        that.subscribeRequestSuccessHandler(JSON.parse(xhttp.responseText));
     }
 
 	function unsubscribePrehandler(xhttp, server) {
@@ -240,7 +240,7 @@ Workbench.prototype.freeRequestSuccessHandler = function (target) {
     throw new Error("not bound");
 };
 
-Workbench.prototype.subscribeRequestSuccessHandler = function (target) {
+Workbench.prototype.subscribeRequestSuccessHandler = function (subscribersInfo) {
     throw new Error("not bound");
 };
 

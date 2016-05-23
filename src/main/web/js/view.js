@@ -36,6 +36,10 @@ function View() {
 		subscribtionView.update(environments);
     };
 
+	View.prototype.showSubscribtionConfirmation = function(subscribtionInfo) {
+		subscribtionView.subscribtionSuccess(subscribtionInfo);
+	}
+
 	View.prototype.showServerActionsHistory = function(server, actions) {
 		chatView.showServerActionsHistory(server, actions);
 	};

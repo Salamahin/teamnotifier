@@ -127,7 +127,7 @@ function bind() {
 
  	WORKBENCH.reserveRequestSuccessHandlerHandler = VIEW.showReservationConfirmation;
  	WORKBENCH.freeRequestSuccessHandler = VIEW.showFreeConfirmation;
-// 	WORKBENCH.subscribeRequestSuccessHandler = //TODO
+ 	WORKBENCH.subscribeRequestSuccessHandler = VIEW.showSubscribtionConfirmation;
 // 	WORKBENCH.unsubscribeRequestSuccessHandler = //TODO
 	WORKBENCH.serverActionRequestSuccessHandler = VIEW.showServerActionConfirmation;
 	WORKBENCH.resourceActionRequestSuccessHandler = VIEW.showResourceActionConfirmation
