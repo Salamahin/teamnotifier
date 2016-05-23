@@ -2,7 +2,6 @@ package com.home.teamnotifier.db;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.Instant;
 import java.util.Objects;
 
 @Entity
@@ -16,20 +15,13 @@ import java.util.Objects;
 final class SubscriptionEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @SuppressWarnings("unused")
     private final Integer id;
 
-    @ManyToOne(optional = false, cascade = CascadeType.ALL)
-    @JoinColumn(name = "server_id")
-    @SuppressWarnings("unused")
+    @ManyToOne(optional = false)
     private final ServerEntity server;
 
-    @ManyToOne(optional = false, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "subscriber_id")
+    @ManyToOne(optional = false)
     private final UserEntity subscriber;
-
-    @Column(nullable = false)
-    private final Instant timestamp;
 
     //for hibernate
     @SuppressWarnings("unused")
@@ -37,22 +29,12 @@ final class SubscriptionEntity implements Serializable {
         id = null;
         server = null;
         subscriber = null;
-        timestamp = null;
     }
 
     SubscriptionEntity(final ServerEntity server, final UserEntity user) {
         id = null;
         this.server = server;
         this.subscriber = user;
-        this.timestamp = Instant.now();
-    }
-
-    UserEntity getSubscriber() {
-        return subscriber;
-    }
-
-    public ServerEntity getServer() {
-        return server;
     }
 
     @Override
@@ -62,12 +44,19 @@ final class SubscriptionEntity implements Serializable {
         SubscriptionEntity that = (SubscriptionEntity) o;
         return Objects.equals(id, that.id) &&
                 Objects.equals(server, that.server) &&
-                Objects.equals(subscriber, that.subscriber) &&
-                Objects.equals(timestamp, that.timestamp);
+                Objects.equals(subscriber, that.subscriber);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, server, subscriber, timestamp);
+        return Objects.hash(id, server, subscriber);
+    }
+
+    UserEntity getSubscriber() {
+        return subscriber;
+    }
+
+    public ServerEntity getServer() {
+        return server;
     }
 }

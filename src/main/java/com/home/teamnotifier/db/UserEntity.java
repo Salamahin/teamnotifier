@@ -7,6 +7,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -34,6 +35,7 @@ public class UserEntity implements Serializable {
     private final String salt;
 
     //for hibernate
+    @SuppressWarnings("unused")
     private UserEntity() {
         id = null;
         name = null;
@@ -64,5 +66,22 @@ public class UserEntity implements Serializable {
 
     public String getSalt() {
         return salt;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserEntity that = (UserEntity) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(roles, that.roles) &&
+                Objects.equals(passHash, that.passHash) &&
+                Objects.equals(salt, that.salt);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, roles, passHash, salt);
     }
 }

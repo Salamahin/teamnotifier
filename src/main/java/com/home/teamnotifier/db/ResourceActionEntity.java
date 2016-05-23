@@ -9,7 +9,6 @@ import java.util.Objects;
 final class ResourceActionEntity extends ActionEntity implements Serializable {
 
     @ManyToOne(optional = false, cascade = CascadeType.ALL)
-    @SuppressWarnings("unused")
     private final ResourceEntity resource;
 
     //for hibernate

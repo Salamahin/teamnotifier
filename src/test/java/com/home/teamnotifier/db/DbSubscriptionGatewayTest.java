@@ -95,7 +95,7 @@ public class DbSubscriptionGatewayTest {
         assertSubscribtionReturnContainsNecessarySubscribersNames(
                 gateway.subscribe(userName2, serverId),
                 Lists.newArrayList(userName1, userName2),
-                Lists.newArrayList(userName1)
+                Lists.newArrayList(userName2)
         );
 
     }

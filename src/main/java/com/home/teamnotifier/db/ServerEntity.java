@@ -74,6 +74,23 @@ public class ServerEntity implements Serializable {
         return name;
     }
 
+    void subscribe(final UserEntity userEntity) {
+        subscriptions.add(new SubscriptionEntity(this, userEntity));
+    }
+
+    boolean unsubscribe(final UserEntity userEntity) {
+        //FIXME
+        //we cant just remove subscribtion from subscribtion set due to type of the subscribtion set is PersistentSet,
+        //not the HashSet
+        //thanks, Hibernate
+
+        final Optional<SubscriptionEntity> entity = subscriptions.stream()
+                .filter(s -> Objects.equals(s.getServer(), this) && Objects.equals(s.getSubscriber(), userEntity))
+                .findFirst();
+
+        return entity.isPresent() && subscriptions.remove(entity.get());
+    }
+
     Set<ResourceEntity> getImmutableSetOfResources() {
         return ImmutableSet.copyOf(resources);
     }

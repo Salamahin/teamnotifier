@@ -34,23 +34,22 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
     @Override
     public SubscriptionActionResult subscribe(final String userName, final int serverId) {
         try {
-            final SubscriptionEntity subscriptionEntity = transactionHelper.transaction(em -> {
+            return transactionHelper.transaction(em -> {
                 final UserEntity u = getUserEntity(userName, em);
-                final ServerEntity s = getServerEntity(serverId, em);
 
-                return em.merge(new SubscriptionEntity(s, u));
+                ServerEntity s = getServerEntity(serverId, em);
+
+                s.subscribe(u);
+                s = em.merge(s);
+
+                final Subscription notification = Subscription.subscribe(u, s);
+                final List<String> subscribersButUser = getSubscribersButUser(u.getName(), s);
+
+                return new SubscriptionActionResult(
+                        new BroadcastInformation<>(notification, subscribersButUser),
+                        new ServerSubscribersInfo(s)
+                );
             });
-
-            final UserEntity actor = subscriptionEntity.getSubscriber();
-            final ServerEntity target = subscriptionEntity.getServer();
-
-            final Subscription notification = Subscription.subscribe(actor,target);
-            final List<String> subscribersButUser = getSubscribersButUser(actor.getName(),target);
-
-            return new SubscriptionActionResult(
-                    new BroadcastInformation<>(notification, subscribersButUser),
-                    new ServerSubscribersInfo(target)
-            );
 
         } catch (Exception exc) {
             rethrowConstraintViolation(exc, userName, serverId);
@@ -87,25 +86,17 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
     @Override
     public BroadcastInformation<Subscription> unsubscribe(final String userName, final int serverId) {
         return transactionHelper.transaction(em -> {
-            final UserEntity userEntity = getUserEntity(userName, em);
-            final ServerEntity serverEntity = getServerEntity(serverId, em);
+            final UserEntity u = getUserEntity(userName, em);
 
-            final CriteriaBuilder cb = em.getCriteriaBuilder();
-            final CriteriaDelete<SubscriptionEntity> delete = cb
-                    .createCriteriaDelete(SubscriptionEntity.class);
-            final Root<SubscriptionEntity> _subscription = delete.from(SubscriptionEntity.class);
-            final Predicate userAndServerEqualToProvided =
-                    cb.and(cb.equal(_subscription.get("subscriber"), userEntity),
-                            cb.equal(_subscription.get("server"), serverEntity));
+            ServerEntity s = getServerEntity(serverId, em);
 
-            final int rowsAffected = em.createQuery(delete.where(userAndServerEqualToProvided)).executeUpdate();
-
-            if (rowsAffected == 0)
+            if(!s.unsubscribe(u))
                 throw new NotSubscribed(String.format("User %s was not subscribed on server %d", userName, serverId));
+            s = em.merge(s);
 
             return new BroadcastInformation<>(
-                    Subscription.unsubscribe(userEntity, serverEntity),
-                    getSubscribersButUser(userName, serverEntity)
+                    Subscription.unsubscribe(u, s),
+                    getSubscribersButUser(userName, s)
             );
         });
     }

@@ -12,7 +12,6 @@ import java.util.Objects;
 @Table(schema = "teamnotifier", name = "ServerAction")
 public class ServerActionEntity extends ActionEntity implements Serializable {
     @ManyToOne(optional = false, cascade = CascadeType.ALL)
-    @SuppressWarnings("unused")
     private final ServerEntity server;
 
     //for hibernate

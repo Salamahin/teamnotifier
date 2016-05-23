@@ -60,11 +60,10 @@ public class ResourceEntity implements Serializable {
     }
 
     Optional<ReservationData> getReservationData() {
-        if (occupier != null) {
+        if (occupier != null)
             return Optional.of(new ReservationData(occupier, occupationStartTime));
-        } else {
+        else
             return Optional.empty();
-        }
     }
 
     @Override
