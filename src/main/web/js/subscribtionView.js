@@ -32,11 +32,11 @@ function SubscribtionView() {
 	}
 
 	function currentUserReservedResource(target) {
-		return target.type == "ResourceInfo" && target.occupationInfo && user == target.occupationInfo.userName;
+		return target.type == "ResourceInfo" && target.occupationInfo && that.user == target.occupationInfo.userName;
 	}
 
 	function currentUserSubscribedOnServer(target) {
-		return target.type == "ServerInfo" && target.subscribers && target.subscribers.contails(user);
+		return target.type == "ServerInfo" && target.subscribers && target.subscribers.includes(that.user);
 	}
 
 	function prepareToSubscribe(target) {
@@ -73,7 +73,7 @@ function SubscribtionView() {
 				? prepareToUnsubscribe(selectedTarget) 
 				: prepareToSubscribe(selectedTarget);
 		} else if(selectedTarget.type == "ResourceInfo") {
-			currentUserReservedResource
+			currentUserReservedResource(selectedTarget)
 				? prepareToFree(selectedTarget)
 				: prepareToReserve(selectedTarget);
 		}
@@ -138,6 +138,7 @@ function SubscribtionView() {
 		selectedTarget = target;
 		installButtonHandler();
 		showReserver();
+		updateButtonState();
 	}
 
 	SubscribtionView.prototype.update = function(environment) {

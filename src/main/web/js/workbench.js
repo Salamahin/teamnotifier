@@ -6,7 +6,7 @@ function Workbench() {
         if (xhttp.readyState != 4)
             return;
 
-        if(xhttp.status != 200) {
+        if(xhttp.status != 204) {
         	that.requestErrorHandler(xhttp.status);
         	return;
         }
@@ -18,7 +18,7 @@ function Workbench() {
         if (xhttp.readyState != 4)
             return;
 
-        if(xhttp.status != 200) {
+        if(xhttp.status != 204) {
         	that.requestErrorHandler(xhttp.status);
         	return;
         }
@@ -30,7 +30,7 @@ function Workbench() {
 		if (xhttp.readyState != 4)
             return;
 
-		if(xhttp.status != 200) {
+		if(xhttp.status != 204) {
         	that.requestErrorHandler(xhttp.status);
         	return;
         }
@@ -42,7 +42,7 @@ function Workbench() {
 		if (xhttp.readyState != 4)
             return;
 
-		if(xhttp.status != 200) {
+		if(xhttp.status != 204) {
         	that.requestErrorHandler(xhttp.status);
         	return;
         }
