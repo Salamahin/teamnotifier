@@ -24,8 +24,19 @@ $MARGIN_LEFT: 20px;
 }
 
 #users_holder {
+	$avatar_size: 50px;
+
+	min-height: $avatar_size;
+	align-items: center;
+
 	.avatar {
-		display: inline-block;
-		@include avatar(50px, $WHITE_SHADOWED);
+		@include avatar($avatar_size, $WHITE_SHADOWED);
+	}
+
+	label {
+		color: $WHITE_SHADOWED;
+		font-weight: bold;
+		font-size: 12px;
+		margin-left: $INNER_ELEMENTS_MARGIN;
 	}
 }

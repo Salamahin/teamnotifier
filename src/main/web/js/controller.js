@@ -125,10 +125,10 @@ function bind() {
 	VIEW.setAvatarCreator(AVATAR_NODE_CREATOR);
 
 
- 	WORKBENCH.reserveRequestSuccessHandlerHandler = VIEW.showReservationConfirmation;
+ 	WORKBENCH.reserveRequestSuccessHandler = VIEW.showReservationConfirmation;
  	WORKBENCH.freeRequestSuccessHandler = VIEW.showFreeConfirmation;
  	WORKBENCH.subscribeRequestSuccessHandler = VIEW.showSubscribtionConfirmation;
-// 	WORKBENCH.unsubscribeRequestSuccessHandler = //TODO
+ 	WORKBENCH.unsubscribeRequestSuccessHandler = VIEW.showUnsubscribtionConfirmation;
 	WORKBENCH.serverActionRequestSuccessHandler = VIEW.showServerActionConfirmation;
 	WORKBENCH.resourceActionRequestSuccessHandler = VIEW.showResourceActionConfirmation
 	WORKBENCH.serverActionsHistoryRequestSuccessHandler = VIEW.showServerActionsHistory;

@@ -40,6 +40,10 @@ function View() {
 		subscribtionView.subscribtionSuccess(subscribtionInfo);
 	}
 
+	View.prototype.showUnsubscribtionConfirmation = function(server) {
+		subscribtionView.unsubcribtionSuccess(server);
+	}
+	
 	View.prototype.showServerActionsHistory = function(server, actions) {
 		chatView.showServerActionsHistory(server, actions);
 	};
@@ -89,7 +93,7 @@ function View() {
 		}
 
 		subscribtionView.reserveHandler = function(resource) {
-			that.reservationHandler(resource);
+			that.reserveHandler(resource);
 		}
 
 		subscribtionView.freeHandler = function(resource) {

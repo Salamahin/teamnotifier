@@ -232,7 +232,7 @@ Workbench.prototype.resourceActionRequestSuccessHandler = function(resource, des
 	throw new Error("not bound");	
 };
 
-Workbench.prototype.reserveRequestSuccessHandlerHandler = function (target) {
+Workbench.prototype.reserveRequestSuccessHandler = function (target) {
     throw new Error("not bound");
 };
 

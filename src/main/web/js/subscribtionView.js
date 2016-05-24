@@ -56,7 +56,7 @@ function SubscribtionView() {
 	function prepareToReserve(target) {
 		actionButton.innerHTML = "reserve";
 		actionButton.onclick = function() {
-			that.reservationHandler(target);
+			that.reserveHandler(target);
 		}
 	}
 
@@ -97,7 +97,7 @@ function SubscribtionView() {
 	function extractServerInformation(server, actualEnvironments) {
 		for(var i = 0; i < actualEnvironments.length; i++) {
 			var env = actualEnvironments[i];
-			for(var j = 0; j<env.servers.lengh; j++) {
+			for(var j = 0; j<env.servers.length; j++) {
 				var srv = env.servers[j];
 				if(server.id == srv.id)
 					return srv;
@@ -133,9 +133,9 @@ function SubscribtionView() {
 			return;
 		
 		var sinceLabel = document.createElement("label");
-		label.value = "Since " + selectedTarget.occupationInfo.occupationTime;
+		sinceLabel.innerHTML = "since " + selectedTarget.occupationInfo.occupationTime;
 		
-		var avatar = avatarCreator.getAvatarNode(selectedTarget.occupationInfo.userName);
+		var avatar = that.avatarCreator.getAvatarNode(selectedTarget.occupationInfo.userName);
 		
 		usersHolder.appendChild(avatar);
 		usersHolder.appendChild(sinceLabel);
@@ -148,11 +148,16 @@ function SubscribtionView() {
 			showReserver();
 	}
 
-	SubscribtionView.prototype.select = function(target) {
-		selectedTarget = target;
+	function doRefresh() {
 		installButtonHandler();
 		showUsersAvatars();
 		updateButtonState();
+	}
+
+	SubscribtionView.prototype.select = function(target) {
+		selectedTarget = target;
+
+		doRefresh();
 	}
 
 	SubscribtionView.prototype.update = function(environment) {
@@ -166,25 +171,39 @@ function SubscribtionView() {
 		else if(selectedTarget == "ResourceInfo")
 			selectedTarget = extractResourceInformation(selectedTarget, environment);
 
-		installButtonHandler();
-		showUsersAvatars();
+		doRefresh();
 	}
 
 	SubscribtionView.prototype.subscribtionSuccess = function(subscribtionInfo) {
 		updateSubscribtionInfo(subscribtionInfo);
-		updateButtonState();
+		doRefresh();
+	}
+
+	SubscribtionView.prototype.unsubcribtionSuccess = function(server) {
+		currentServer = extractServerInformation(server, currentEnvironment);
+		if(currentServer.subscribers) {
+			var k = currentServer.subscribers.indexOf(that.user);
+			if(k >= 0)
+				currentServer.subscribers.splice(k, 1);
+		}
+
+		doRefresh();
 	}
 
 	SubscribtionView.prototype.reservationSuccess = function(resource) {
 		var r = extractResourceInformation(resource, currentEnvironment);
 		r.occupationInfo = {};
 		r.occupationInfo.userName = that.user;
-		r.occupationInfo.occupationTime = new Date();
+		r.occupationInfo.occupationTime = new Date().toISOString();
+
+		doRefresh();
 	}
 
 	SubscribtionView.prototype.freeSuccess = function(resource) {
 		var r = extractResourceInformation(resource, currentEnvironment);
 		r.occupationInfo = undefined;
+
+		doRefresh();
 	}
 
 	updateButtonState();
@@ -198,7 +217,7 @@ SubscribtionView.prototype.unsubscribeHandler = function(server) {
 	throw new Error("not binded");
 }
 
-SubscribtionView.prototype.reservationHandler = function(resource) {
+SubscribtionView.prototype.reserveHandler = function(resource) {
 	throw new Error("not binded");
 }
 

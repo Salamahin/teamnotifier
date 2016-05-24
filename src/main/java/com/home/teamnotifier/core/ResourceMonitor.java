@@ -60,7 +60,7 @@ public class ResourceMonitor {
             return actionResult.getSubscribersInfo();
         } catch (Exception exc) {
             LOGGER.error("Subscribtion failed", exc);
-            throw new IllegalStateException();
+            throw new IllegalStateException(); //fixme
         }
     }
 
