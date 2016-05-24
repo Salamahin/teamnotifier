@@ -6,8 +6,7 @@ function View() {
 	var subscribtionView = undefined;
 	var chatView = undefined;
 	var avatarCreator = undefined;
-
-    var currentEnvironments = undefined;
+	var environmentMonitor = undefined;
 
 	function jumpTo(anchor){
 		window.location.href = "#"+anchor;
@@ -33,7 +32,6 @@ function View() {
 
     View.prototype.updateStatus = function (environments) {
         sideMenuView.setEnvironments(environments);
-		subscribtionView.update(environments);
     };
 
 	View.prototype.showSubscribtionConfirmation = function(subscribtionInfo) {
@@ -83,6 +81,7 @@ function View() {
 	View.prototype.setSubcribtionView = function(view) {
 		subscribtionView = view;
 		bindAvatarCreator();
+		bindEnvironmentMonitor();
 
 		subscribtionView.subscribeHandler = function(server) {
 			that.subscribeHandler(server);
@@ -115,9 +114,22 @@ function View() {
 			subscribtionView.avatarCreator = avatarCreator;
 	}
 
+	function bindEnvironmentMonitor() {
+		if(!environmentMonitor)
+			return;
+
+		if(subscribtionView)
+			subscribtionView.setEnvironmentMonitor(environmentMonitor);
+	}
+
 	View.prototype.setAvatarCreator = function(creator) {
 		avatarCreator = creator;
 		bindAvatarCreator();
+	}
+
+	View.prototype.setEnvironmentMonitor = function(monitor) {
+		environmentMonitor = monitor;
+		bindEnvironmentMonitor();
 	}
 
 	View.prototype.setSideMenuView = function(view) {

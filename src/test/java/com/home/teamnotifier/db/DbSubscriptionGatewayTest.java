@@ -2,8 +2,6 @@ package com.home.teamnotifier.db;
 
 import com.google.common.collect.Lists;
 import com.home.teamnotifier.core.BroadcastInformation;
-import com.home.teamnotifier.core.SubscriptionActionResult;
-import com.home.teamnotifier.core.responses.action.ServerSubscribersInfo;
 import com.home.teamnotifier.core.responses.notification.Subscription;
 import com.home.teamnotifier.gateways.UserGateway;
 import com.home.teamnotifier.gateways.exceptions.*;
@@ -101,18 +99,13 @@ public class DbSubscriptionGatewayTest {
     }
 
     private void assertSubscribtionReturnContainsNecessarySubscribersNames(
-            final SubscriptionActionResult actionResult,
+            final BroadcastInformation<Subscription> broadcastInformation,
             final List<String> allExpectedSubscribers,
             final List<String> subscribersExcludedInBroadcastInfo
     ) {
-        final ServerSubscribersInfo subscribersInfo = actionResult.getSubscribersInfo();
-        assertThat(subscribersInfo.getSubscribers())
-                .containsAll(allExpectedSubscribers);
-
         final List<String> expectedSubscribersInBroadcastInfo = Lists.newArrayList(allExpectedSubscribers);
         expectedSubscribersInBroadcastInfo.removeAll(subscribersExcludedInBroadcastInfo);
 
-        final BroadcastInformation<Subscription> broadcastInformation = actionResult.getBroadcastInformation();
         assertThat(broadcastInformation.getSubscribers())
                 .containsAll(expectedSubscribersInBroadcastInfo)
                 .doesNotContainAnyElementsOf(subscribersExcludedInBroadcastInfo);

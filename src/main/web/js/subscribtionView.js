@@ -5,7 +5,8 @@ function SubscribtionView() {
 	this.avatarCreator = undefined;
 
 	var selectedTarget = undefined;
-	var currentEnvironment = undefined;
+	var environmentMonitor = undefined;
+
 
 	const actionButton = document.getElementById("subscribe_button");
 	const usersHolder = document.getElementById("users_holder");
@@ -79,33 +80,6 @@ function SubscribtionView() {
 		}
 	}
 
-	function extractResourceInformation(resource, actualEnvironments) {
-		for(var i = 0; i<actualEnvironments.length; i++) {
-			var env = actualEnvironments[i];
-			for(var j = 0; j < env.servers.length; j++) {
-				var srv = env.servers[j];
-				for(var k = 0; k<srv.resources.length; k++) {
-					var res = srv.resources[k];
-					if(resource.id == res.id)
-						return res;
-				}
-			}
-		}
-		throw new Error("EnvironmentInfo does not contain information about selected resource");
-	}
-
-	function extractServerInformation(server, actualEnvironments) {
-		for(var i = 0; i < actualEnvironments.length; i++) {
-			var env = actualEnvironments[i];
-			for(var j = 0; j<env.servers.length; j++) {
-				var srv = env.servers[j];
-				if(server.id == srv.id)
-					return srv;
-			}
-		}
-		throw new Error("EnvironmentInfo does not contain information of the selected server");
-	}
-
 	function removeChildren(parentNode) {
 		while(parentNode.childNodes.length)
 			parentNode.removeChild(parentNode.childNodes[0]);
@@ -117,13 +91,6 @@ function SubscribtionView() {
 		for(var i = 0; i<selectedTarget.subscribers.length; i++) {
 			var avatarNode = that.avatarCreator.getAvatarNode(selectedTarget.subscribers[i]);
 			usersHolder.appendChild(avatarNode);
-		}
-	}
-
-	function updateSubscribtionInfo(subscribtionInfo) {
-		if(selectedTarget.type == "ServerInfo" && selectedTarget.id == subscribtionInfo.serverId) {
-			selectedTarget.subscribers = subscribtionInfo.subscribers;
-			showSubscribers();
 		}
 	}
 
@@ -141,69 +108,55 @@ function SubscribtionView() {
 		usersHolder.appendChild(sinceLabel);
 	}
 
-	function showUsersAvatars() {
-		if(selectedTarget.type == "ServerInfo")
+	function showActualData() {
+		if(selectedTarget.type == "ServerInfo") {
+			selectedTarget = environmentMonitor.getServer(selectedTarget.id);
 			showSubscribers();
-		else if(selectedTarget.type == "ResourceInfo")
+		} else if(selectedTarget.type = "ResourceInfo") {
+			selectedTarget = environmentMonitor.getResource(selectedTarget.id);
 			showReserver();
+		}
+		
+		installButtonHandler();
 	}
 
-	function doRefresh() {
-		installButtonHandler();
-		showUsersAvatars();
-		updateButtonState();
-	}
 
 	SubscribtionView.prototype.select = function(target) {
 		selectedTarget = target;
-
-		doRefresh();
+		
+		showActualData();
+		updateButtonState();
 	}
 
-	SubscribtionView.prototype.update = function(environment) {
-		currentEnvironment = environment;
-
-		if(!selectedTarget) 
-			return;
-
-		if(selectedTarget.type == "ServerInfo")
-			selectedTarget = extractServerInformation(selectedTarget, environment);
-		else if(selectedTarget == "ResourceInfo")
-			selectedTarget = extractResourceInformation(selectedTarget, environment);
-
-		doRefresh();
-	}
-
-	SubscribtionView.prototype.subscribtionSuccess = function(subscribtionInfo) {
-		updateSubscribtionInfo(subscribtionInfo);
-		doRefresh();
+	SubscribtionView.prototype.subscribtionSuccess = function(server) {
+		environmentMonitor.addSubscriber(server.id, that.user);
 	}
 
 	SubscribtionView.prototype.unsubcribtionSuccess = function(server) {
-		currentServer = extractServerInformation(server, currentEnvironment);
-		if(currentServer.subscribers) {
-			var k = currentServer.subscribers.indexOf(that.user);
-			if(k >= 0)
-				currentServer.subscribers.splice(k, 1);
-		}
-
-		doRefresh();
+		environmentMonitor.removeSubscriber(server.id, that.user);
 	}
 
 	SubscribtionView.prototype.reservationSuccess = function(resource) {
-		var r = extractResourceInformation(resource, currentEnvironment);
-		r.occupationInfo = {};
-		r.occupationInfo.userName = that.user;
-		r.occupationInfo.occupationTime = new Date().toISOString();
-
-		doRefresh();
+		environmentMonitor.reserve(resource.id, that.user);
 	}
 
 	SubscribtionView.prototype.freeSuccess = function(resource) {
-		var r = extractResourceInformation(resource, currentEnvironment);
-		r.occupationInfo = undefined;
+		environmentMonitor.free(resource.id, that.user);
+	}
 
-		doRefresh();
+	SubscribtionView.prototype.setEnvironmentMonitor = function(monitor) {
+		environmentMonitor = monitor;
+		environmentMonitor.addListener(that);
+	}
+
+	SubscribtionView.prototype.onSubscribersChanged = function(server) {
+		if(selectedTarget && server.id == selectedTarget.id)
+			showActualData(selectedTarget);
+	}
+
+	SubscribtionView.prototype.onReservationChanged = function(resource) {
+		if(selectedTarget && resource.id == selectedTarget.id)
+			showActualData(selectedTarget);
 	}
 
 	updateButtonState();

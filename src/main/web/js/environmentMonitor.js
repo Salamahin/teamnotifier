@@ -3,38 +3,48 @@ function EnvironmentMonitor() {
 	const servers = [];
 	const resources = [];
 
+	var environments;
+
 	const listeners = [];
 
 
 	function fireSubscribersChanged(server) {
+		var s = clone(server);
+
 		for(var i = 0; i<listeners.length; i++) {
 			var l = listeners[i];
 			if(l.onSubscribersChanged)
-				l.onSubscribersChanged(server);
+				l.onSubscribersChanged(s);
 		}
 	}
 
 	function fireReservationChanged(resource) {
+		var r = clone(resource);
+
 		for(var i = 0; i<listeners.length; i++) {
 			var l = listeners[i];
 			if(l.onReservationChanged)
-				l.onReservationChanged(resource);
+				l.onReservationChanged(r);
 		}
 	}
 
 	function fireOnlineStatusChanged(server) {
+		var s = clone(server);
+
 		for(var i = 0; i<listeners.length; i++) {
 			var l = listeners[i];
 			if(l.onOnlineStatusChanged)
-				l.onOnlineStatusChanged(server);
+				l.onOnlineStatusChanged(s);
 		}
 	}
 
 	function fireAction(target) {
+		var t = clone(target);
+
 		for(var i = 0; i<listeners.length; i++) {
 			var l = listeners[i];
 			if(l.onAction)
-				l.onAction(target);
+				l.onAction(t);
 		}
 	}
 	
@@ -71,7 +81,7 @@ function EnvironmentMonitor() {
 			return;
 		}
 
-		if(!arraysHaveSameContent(oldServer.subscribers, newServer.subscribers)
+		if(!arraysHaveSameContent(oldServer.subscribers, newServer.subscribers))
 			fireSubscribersChanged(newServer);
 	}
 
@@ -81,12 +91,7 @@ function EnvironmentMonitor() {
 			return;
 		}
 
-		if(!oldResource.occupationInfo && newResource.occupationInfo) {
-			fireReservationChanged(newResource);
-			return;
-		}
-
-		if(oldResource.occupationInfo && !newResource.occupationInfo) {
+		if(oldResource.occupationInfo != newResource.occupationInfo) {
 			fireReservationChanged(newResource);
 			return;
 		}
@@ -123,9 +128,14 @@ function EnvironmentMonitor() {
 		return copy;
 	}
 
-	EnvironmentMonitor.prototype.rebuild = function(environments) {
-		for(var i = 0; i<environments.length; i++) {
-			var env = environments[i];
+	EnvironmentMonitor.prototype.rebuild = function(actualEnvironments) {
+		environments = [];
+		
+		for(var i = 0; i<actualEnvironments.length; i++) {
+			var env = actualEnvironments[i];
+			environments[i] = clone(env);
+		
+
 			for(var j = 0; j<env.servers.length; j++) {
 				var srv = env.servers[j];
 				updateServer(srv);
@@ -136,13 +146,18 @@ function EnvironmentMonitor() {
 		}
 	}
 
-	EnvironmentMonitor.prototype.getServer(serverId) {
+	EnvironmentMonitor.prototype.getServer = function(serverId) {
 		return clone(servers[serverId]);
 	}
 
-	EnvironmentMonitor.prototype.getResource(resourceId) {
+	EnvironmentMonitor.prototype.getResource = function(resourceId) {
 		return clone(resources[resourceId]);
 	}
+	
+	EnvironmentMonitor.prototype.getEnvironments = function() {
+		return environments;
+	}
+
 
 	EnvironmentMonitor.prototype.setServerOnline = function(serverId, isOnline) {
 		var server = servers[serverId];
@@ -153,13 +168,16 @@ function EnvironmentMonitor() {
 		var server = servers[serverId];
 		if(!server.subscribers)
 			server.subscribers = [];
-		server.subscribers.add(user);
+		server.subscribers.push(user);
 		fireSubscribersChanged(server);
 	}
 
 	EnvironmentMonitor.prototype.removeSubscriber = function(serverId, user) {
 		var server = servers[serverId];
-		servers.subscribers.remove(user);
+
+		var index = server.subscribers.indexOf(user);
+		server.subscribers.splice(index, 1);
+		
 		fireSubscribersChanged(server);
 	}
 
@@ -167,7 +185,7 @@ function EnvironmentMonitor() {
 		var resource = resources[resourceId];
 		if(!resource.occupationInfo)
 			resource.occupationInfo = {};
-		resource.occupationInfo = new Date().toISOString();
+		resource.occupationInfo.occupationTime = new Date().toISOString();
 		resource.occupationInfo.userName = user;
 
 		fireReservationChanged(resource);
@@ -175,11 +193,11 @@ function EnvironmentMonitor() {
 
 	EnvironmentMonitor.prototype.free = function(resourceId, user) {
 		var resource = resources[resourceId];
-		resource.occupationInfo = {};
+		resource.occupationInfo = undefined;
 		fireReservationChanged(resource);
 	}
 
 	EnvironmentMonitor.prototype.addListener = function(listener) {
-		listeners.add(listener);		
+		listeners.push(listener);		
 	}
 }

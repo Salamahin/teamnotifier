@@ -3,8 +3,6 @@ package com.home.teamnotifier.db;
 import com.google.common.base.Throwables;
 import com.google.inject.Inject;
 import com.home.teamnotifier.core.BroadcastInformation;
-import com.home.teamnotifier.core.SubscriptionActionResult;
-import com.home.teamnotifier.core.responses.action.ServerSubscribersInfo;
 import com.home.teamnotifier.core.responses.notification.Reservation;
 import com.home.teamnotifier.core.responses.notification.Subscription;
 import com.home.teamnotifier.gateways.SubscriptionGateway;
@@ -12,10 +10,6 @@ import com.home.teamnotifier.gateways.exceptions.*;
 import org.hibernate.exception.ConstraintViolationException;
 
 import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaDelete;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -32,7 +26,7 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
     }
 
     @Override
-    public SubscriptionActionResult subscribe(final String userName, final int serverId) {
+    public BroadcastInformation<Subscription> subscribe(final String userName, final int serverId) {
         try {
             return transactionHelper.transaction(em -> {
                 final UserEntity u = getUserEntity(userName, em);
@@ -45,10 +39,7 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
                 final Subscription notification = Subscription.subscribe(u, s);
                 final List<String> subscribersButUser = getSubscribersButUser(u.getName(), s);
 
-                return new SubscriptionActionResult(
-                        new BroadcastInformation<>(notification, subscribersButUser),
-                        new ServerSubscribersInfo(s)
-                );
+                return new BroadcastInformation<>(notification, subscribersButUser);
             });
 
         } catch (Exception exc) {

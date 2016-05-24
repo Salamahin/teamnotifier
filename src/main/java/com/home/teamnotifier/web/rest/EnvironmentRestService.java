@@ -7,7 +7,6 @@ import com.home.teamnotifier.authentication.TokenAuthenticated;
 import com.home.teamnotifier.core.ResourceMonitor;
 import com.home.teamnotifier.core.responses.action.ResourceActionsHistory;
 import com.home.teamnotifier.core.responses.action.ServerActionsHistory;
-import com.home.teamnotifier.core.responses.action.ServerSubscribersInfo;
 import com.home.teamnotifier.core.responses.status.EnvironmentsInfo;
 import com.home.teamnotifier.gateways.ResourceDescription;
 import io.dropwizard.auth.Auth;
@@ -16,10 +15,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.nio.charset.Charset;
 import java.time.Instant;
 import java.time.ZonedDateTime;
-import java.util.Base64;
 
 @Path("1.0/environment")
 @Produces(MediaType.APPLICATION_JSON)
@@ -57,13 +54,13 @@ public class EnvironmentRestService {
 
     @POST
     @Path("/server/{serverId}/subscribe")
-    public ServerSubscribersInfo subscribe(
+    public void subscribe(
             @Auth final TokenAuthenticated userPrincipal,
             @PathParam("serverId") final Integer serverId
     ) {
         final String userName = userPrincipal.getName();
         LOGGER.info("User {} subscribe on server id {} request", userName, serverId);
-        return resourceMonitor.subscribe(userName, serverId);
+        resourceMonitor.subscribe(userName, serverId);
     }
 
     @DELETE

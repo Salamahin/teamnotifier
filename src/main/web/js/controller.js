@@ -21,9 +21,7 @@ var AUTHENTICATION_VIEW;
 var AVATAR_NODE_CREATOR;
 var CHAT_VIEW;
 var SUBSCRIBTION_VIEW;
-
-var ENVIRONMENTS;
-var CURRENT_SERVER;
+var ENVIRONMENT_MONITOR;
 
 function onRequestError(code) {
 	window.alert("Request failed: " + code);
@@ -61,10 +59,6 @@ function onNotifierEvent(event) {
     console.log("notifier event");
 }
 
-function tryAuthenticate(login, token) {
-
-}
-
 function authenticationError() {
 	VIEW.authenticationMode();
 	VIEW.showAuthenticationError();
@@ -90,7 +84,8 @@ function bind() {
 		!AUTHENTICATION_VIEW || 
 		!AVATAR_NODE_CREATOR || 
 		!CHAT_VIEW ||
-		!SUBSCRIBTION_VIEW)
+		!SUBSCRIBTION_VIEW ||
+		!ENVIRONMENT_MONITOR)
         return;
 
     NOTIFIER.connectionSuccessHandler = onNotifierConnected;
@@ -123,6 +118,7 @@ function bind() {
 	VIEW.setChatView(CHAT_VIEW);
 	VIEW.setSubcribtionView(SUBSCRIBTION_VIEW);
 	VIEW.setAvatarCreator(AVATAR_NODE_CREATOR);
+	VIEW.setEnvironmentMonitor(ENVIRONMENT_MONITOR);
 
 
  	WORKBENCH.reserveRequestSuccessHandler = VIEW.showReservationConfirmation;
@@ -133,7 +129,10 @@ function bind() {
 	WORKBENCH.resourceActionRequestSuccessHandler = VIEW.showResourceActionConfirmation
 	WORKBENCH.serverActionsHistoryRequestSuccessHandler = VIEW.showServerActionsHistory;
 	WORKBENCH.resourceActionsHistoryRequestSuccessHandler = VIEW.showResourceActionsHistory;
-	WORKBENCH.statusRequestSuccessHandler = VIEW.updateStatus;
+	WORKBENCH.statusRequestSuccessHandler = function(envs) {
+		VIEW.updateStatus(envs); //TODO remove here
+		ENVIRONMENT_MONITOR.rebuild(envs);
+	}
 	WORKBENCH.whoAmIErrorHandler = showError;
 	WORKBENCH.requestErrorHandler = onRequestError;
 
@@ -199,6 +198,10 @@ window.onload = function() {
 	});
 	include("js/subscribtionView.js", function() {
 		SUBSCRIBTION_VIEW = new SubscribtionView();
+		bind();
+	});
+	include("js/environmentMonitor.js", function() {
+		ENVIRONMENT_MONITOR = new EnvironmentMonitor();
 		bind();
 	});
 };
