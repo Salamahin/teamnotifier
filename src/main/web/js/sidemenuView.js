@@ -4,10 +4,13 @@ function SideMenuView() {
 	this.user = undefined;
 	this.avatarCreator = undefined;
 
-	var cachedEnvironments;
+	var environmentsMonitor;
+
+	var serverNodes = [];
+	var resourceNodes = [];
 
 	function isUserSubscribedOnServer(server) {
-		return server.subscribers != undefined && server.subscribers.length != 0 && server.subscribers.includes(that.user);
+		return server.subscribers != undefined && server.subscribers.includes(that.user);
 	}
 
 	/*
@@ -53,48 +56,34 @@ function SideMenuView() {
 		return holders;
 	}
 
-	function rebuildView(environments) {
-		for(var i = 0; i<environments.length; i++)
-			rebuildEnvironmentView(environments[i]);
+	function buildEnvironments(environments) {
+		serverNodes = [];
+		resourceNodes = [];
 
-		that.environments = environments;
+		for(var i = 0; i<environments.length; i++)
+			buildServersForEnvironment(environments[i]);
 	}
 
-	function rebuildEnvironmentView(environment) {
+	function buildServersForEnvironment(environment) {
 		var servers = environment.servers;
 		for(var i = 0; i < servers.length; i++)
-			rebuildServerAndEnvironmentNode(environment, servers[i]);
+			appendServerNode(environment, servers[i]);
 	}
 
-	function rebuildServerAndEnvironmentNode(environment, server) {
-		var node = findPresentListNodeForEnvironmentAndServer(environment, server);
-		if(node) {
-			throw new Error("not implemented");
-		} else {
-			node = createNewListNodeForEnvironmentAndServer(environment, server);
-			var serverList = document.querySelectorAll("#sidemenu .servers_list:nth-child(1)")[0];
-			serverList.appendChild(node);
-		}
+	function appendServerNode(environment, server) {
+		var node = createNodeForServer(environment, server);
+		var serverList = document.querySelectorAll("#sidemenu .servers_list:nth-child(1)")[0];
+		serverList.appendChild(node);
+
+		serverNodes[server.id] = node;
 	}
 
 	function buildEnverironmentServerListNodeName(environment, server) {
 		return environment.name + " " + server.name;
 	}
 
-	function findPresentListNodeForEnvironmentAndServer(environment, server) {
-		var elems = document.querySelectorAll("#environments_list ul li");
-
-		for(var i = 0; i<elems.length; i++) {
-			var button = elems[i].querySelector("div div:nth-child(1)");
-			if(button.innerHTML== buildEnverironmentServerListNodeName(environment, server))
-				return button;
-		}
-
-		return undefined;
-	}
-
-	function createNewListNodeForEnvironmentAndServer(environment, server) {
-		var resourcesList = createNewResourceNodesList(environment, server);
+	function createNodeForServer(environment, server) {
+		var resourcesList = createNodesForResources(server);
 
 		var selectionButton = document.createElement("a");
 		selectionButton.href = "#workbench";
@@ -102,7 +91,7 @@ function SideMenuView() {
 		selectionButton.innerHTML= buildEnverironmentServerListNodeName(environment, server);
 		selectionButton.onclick = function() {
 			showServerSelection(resourcesList);
-			that.serverSelectionHandler(environment, server);
+			that.serverSelectionHandler(server);
 		};
 
 		var innerDiv = document.createElement("div");
@@ -120,17 +109,23 @@ function SideMenuView() {
 		return listElem;
 	}
 
-	function createNewResourceNodesList(environment, server) { var list = document.createElement("ul");
+	function createNodesForResources(server) { 
+		var list = document.createElement("ul");
 		list.classList.add("resources_list");
 
 		var resources = server.resources;
-		for(var i = 0; i<resources.length; i++)
-			list.appendChild(createNewResourceNode(environment, server, resources[i]));
+		for(var i = 0; i<resources.length; i++) {
+			var res = resources[i];
+			var node = createNewResourceNode(res);
+
+			list.appendChild(node);
+			resourceNodes[res.id] = node; 
+		}
 
 		return list;
 	}
 
-	function createNewResourceNode(environment, server, resource) {
+	function createNewResourceNode(resource) {
 		var innerDiv = document.createElement("div");
 		var resourceSelectionButton = document.createElement("a");
 
@@ -141,31 +136,53 @@ function SideMenuView() {
 		resourceSelectionButton.classList.add("resource_selection_button");
 		resourceSelectionButton.onclick = function() {
 			showResourceSelection(innerDiv);
-			that.resourceSelectionHandler(environment, server, resource);
+			that.resourceSelectionHandler(resource);
 		};
 		
 		var outerDiv = document.createElement("div");
 		outerDiv.appendChild(innerDiv);
-		if(resource.occupationInfo) {
-			var avatar = that.avatarCreator.getAvatarNode(resource.occupationInfo.userName);
-			outerDiv.appendChild(avatar);
-		}
 
 		var listItem = document.createElement("li");
 		listItem.appendChild(outerDiv);
 
 		return listItem;
 	}
+	
+	function showResourceReservation(node, resource) {
+		var avatar = node.querySelector("avatar");
+		node.removeChild(avatar);
 
-	SideMenuView.prototype.setEnvironments = function(env) {
-		rebuildView(env);
+		if(resource.occupationInfo) {
+			avatar = that.avatarCreator.getAvatarNode(resource.occupationInfo.userName);
+			node.querySelector("li > div(1)").appendChild(avatar);
+		}
+	}
+
+	function showOnlineStatus(node, server) {
+	}
+
+	SideMenuView.prototype.onReservationChanged = function(resource) {
+		//TODO
+	}
+
+	SideMenuView.prototype.onSubscribersChanged = function(server) {
+		//TODO
+	}
+
+	SideMenuView.prototype.onOnlineStatusChanged = function(server) {
+		//TODO
+	}
+
+	SideMenuView.prototype.setEnvironmentsMonitor = function(monitor) {
+		environmentsMonitor = monitor;
+		environmentsMonitor.addListener(that);
 	}
 }
 
-SideMenuView.prototype.serverSelectionHandler = function(environment, server) {
+SideMenuView.prototype.serverSelectionHandler = function(server) {
 	throw new Error("not binded");
 }
 
-SideMenuView.prototype.resourceSelectionHandler = function(environment, server, resource) {
+SideMenuView.prototype.resourceSelectionHandler = function(resource) {
 	throw new Error("not binded");
 }
