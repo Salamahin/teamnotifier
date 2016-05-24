@@ -46,6 +46,7 @@ html, body {
 
 			#users_holder {
 				margin-bottom: $INNER_ELEMENTS_MARGIN;
+				display: flex;
 			}
 
 			#chat {

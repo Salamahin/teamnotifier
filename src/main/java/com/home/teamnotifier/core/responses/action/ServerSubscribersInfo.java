@@ -17,7 +17,7 @@ import java.util.Objects;
         creatorVisibility = JsonAutoDetect.Visibility.ANY)
 @JsonTypeName("ServerSubscribersInfo")
 public class ServerSubscribersInfo {
-    private final int id;
+    private final int serverId;
     private final List<String> subscribers;
 
     public ServerSubscribersInfo(final ServerEntity serverEntity) {
@@ -26,10 +26,10 @@ public class ServerSubscribersInfo {
 
     @JsonCreator
     private ServerSubscribersInfo(
-            @JsonProperty("serverId") final int id,
+            @JsonProperty("serverId") final int serverId,
             @JsonProperty("subscribers") final Collection<String> subscribers
     ) {
-        this.id = id;
+        this.serverId = serverId;
         this.subscribers = ImmutableList.copyOf(subscribers);
     }
 
@@ -38,7 +38,7 @@ public class ServerSubscribersInfo {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ServerSubscribersInfo that = (ServerSubscribersInfo) o;
-        return id == that.id &&
+        return serverId == that.serverId &&
                 that.subscribers.containsAll(subscribers) &&
                 subscribers.containsAll(that.subscribers);
     }
@@ -49,13 +49,13 @@ public class ServerSubscribersInfo {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, subscribers);
+        return Objects.hash(serverId, subscribers);
     }
 
     @Override
     public String toString() {
         return "ServerSubscribersInfo{" +
-                "id=" + id +
+                "id=" + serverId +
                 ", subscribers=" + subscribers +
                 '}';
     }

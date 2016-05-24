@@ -17,11 +17,15 @@ $MARGIN_LEFT: 20px;
 
 
 #subscribtion_holder {
-	margin-bottom: $INNER_ELEMENTS_MARGIN;
-
 	#subscribe_button {
 		@include button(100%, 30px);
 		@include disable();
 	}
 }
 
+#users_holder {
+	.avatar {
+		display: inline-block;
+		@include avatar(50px, $WHITE_SHADOWED);
+	}
+}

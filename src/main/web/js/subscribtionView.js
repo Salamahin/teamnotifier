@@ -115,13 +115,13 @@ function SubscribtionView() {
 		removeChildren(usersHolder);
 
 		for(var i = 0; i<selectedTarget.subscribers.length; i++) {
-			var avatarNode = avatarCreator.createNewAvatar(selectedTarget.subscribers[i]);
+			var avatarNode = that.avatarCreator.getAvatarNode(selectedTarget.subscribers[i]);
 			usersHolder.appendChild(avatarNode);
 		}
 	}
 
 	function updateSubscribtionInfo(subscribtionInfo) {
-		if(selectedTarget == "ServerInfo" && selectedTarget.id == subscribtionsInfo.serverId) {
+		if(selectedTarget.type == "ServerInfo" && selectedTarget.id == subscribtionInfo.serverId) {
 			selectedTarget.subscribers = subscribtionInfo.subscribers;
 			showSubscribers();
 		}
@@ -135,16 +135,23 @@ function SubscribtionView() {
 		var sinceLabel = document.createElement("label");
 		label.value = "Since " + selectedTarget.occupationInfo.occupationTime;
 		
-		var avatar = avatarCreator.createNewAvatar(selectedTarget.occupationInfo.userName);
+		var avatar = avatarCreator.getAvatarNode(selectedTarget.occupationInfo.userName);
 		
 		usersHolder.appendChild(avatar);
 		usersHolder.appendChild(sinceLabel);
 	}
 
+	function showUsersAvatars() {
+		if(selectedTarget.type == "ServerInfo")
+			showSubscribers();
+		else if(selectedTarget.type == "ResourceInfo")
+			showReserver();
+	}
+
 	SubscribtionView.prototype.select = function(target) {
 		selectedTarget = target;
 		installButtonHandler();
-		showReserver();
+		showUsersAvatars();
 		updateButtonState();
 	}
 
@@ -160,11 +167,12 @@ function SubscribtionView() {
 			selectedTarget = extractResourceInformation(selectedTarget, environment);
 
 		installButtonHandler();
-		showSubscribers();
+		showUsersAvatars();
 	}
 
-	SubscribtionView.prototype.subscribtionSuccess = function(subscribtionsInfo) {
-		updateSubscribtionInfo(subscribtionsInfo);
+	SubscribtionView.prototype.subscribtionSuccess = function(subscribtionInfo) {
+		updateSubscribtionInfo(subscribtionInfo);
+		updateButtonState();
 	}
 
 	SubscribtionView.prototype.reservationSuccess = function(resource) {
