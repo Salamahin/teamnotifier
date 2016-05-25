@@ -3,11 +3,15 @@ package com.home.teamnotifier.gateways;
 import com.home.teamnotifier.core.BroadcastInformation;
 import com.home.teamnotifier.core.responses.notification.Reservation;
 import com.home.teamnotifier.core.responses.notification.Subscription;
+import com.home.teamnotifier.core.responses.action.ServerSubscribersInfo;
+import com.home.teamnotifier.db.SubscriptionResult;
 import com.home.teamnotifier.gateways.exceptions.*;
 
 public interface SubscriptionGateway {
-    BroadcastInformation<Subscription> subscribe(final String userName, final int serverId)
+    SubscriptionResult subscribe(final String userName, final int serverId)
             throws NoSuchServer, NoSuchUser, AlreadySubscribed;
+
+    ServerSubscribersInfo getSubscribers(final int serverId);
 
     BroadcastInformation<Subscription> unsubscribe(final String userName, final int serverId)
             throws NoSuchServer, NoSuchUser, NotSubscribed;

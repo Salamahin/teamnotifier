@@ -55,10 +55,6 @@ function onNotifierDisconnect() {
 //     VIEW.authenticationMode();
 }
 
-function onNotifierEvent(event) {
-    console.log("notifier event");
-}
-
 function authenticationError() {
 	VIEW.authenticationMode();
 	VIEW.showAuthenticationError();
@@ -67,6 +63,35 @@ function authenticationError() {
 function showError() {
 	console.log("not implemented");
 }
+
+function parseNotification(notification) {
+	switch(notification.type) {
+		case "ReservationNotification":
+			VIEW.handleReservationNotification(notification);
+			break;
+
+		case "ResourceActionNotification":
+		case "ServerActionNotification":
+			VIEW.handleActionNotification(notification);
+			break;
+
+		case "ServerStateNotification":
+			VIEW.handleServerStateNotification(notification);
+			break;
+
+		case "SubscriptionNotification":
+			VIEW.handleSubscribtionNotification(notification);
+			break;
+
+		default:
+			throw new Error("Unknown notification type: " + notification.type);
+	}
+}
+
+function parseSubscribersInfo(subscribersInfo) {
+	ENVIRONMENT_MONITOR.setSubscribers(subscribersInfo.targetId, subscribersInfo.subscribers);
+}
+
 
 function init() {
     NOTIFIER.requestPermissions();
@@ -91,7 +116,7 @@ function bind() {
     NOTIFIER.connectionSuccessHandler = onNotifierConnected;
     NOTIFIER.connectionCloseHandler = onNotifierDisconnect;
     NOTIFIER.errorHandler = onNotifierError;
-    NOTIFIER.eventHandler = onNotifierEvent;
+    NOTIFIER.eventHandler = parseNotification;
 
     AUTHENTICATOR.authenticationSuccessHandler = onAuthenticationSuccess;
     AUTHENTICATOR.authenticationErrorHandler = authenticationError;
@@ -123,7 +148,7 @@ function bind() {
 
  	WORKBENCH.reserveRequestSuccessHandler = VIEW.showReservationConfirmation;
  	WORKBENCH.freeRequestSuccessHandler = VIEW.showFreeConfirmation;
- 	WORKBENCH.subscribeRequestSuccessHandler = VIEW.showSubscribtionConfirmation;
+ 	WORKBENCH.subscribeRequestSuccessHandler = parseSubscribersInfo;
  	WORKBENCH.unsubscribeRequestSuccessHandler = VIEW.showUnsubscribtionConfirmation;
 	WORKBENCH.serverActionRequestSuccessHandler = VIEW.showServerActionConfirmation;
 	WORKBENCH.resourceActionRequestSuccessHandler = VIEW.showResourceActionConfirmation

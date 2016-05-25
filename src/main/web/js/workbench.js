@@ -6,12 +6,12 @@ function Workbench() {
         if (xhttp.readyState != 4)
             return;
 
-        if(xhttp.status != 204) {
+        if(xhttp.status != 200) {
         	that.requestErrorHandler(xhttp.status);
         	return;
         }
 
-        that.subscribeRequestSuccessHandler(server);
+        that.subscribeRequestSuccessHandler(JSON.parse(xhttp.responseText));
     }
 
 	function unsubscribePrehandler(xhttp, server) {
@@ -140,7 +140,7 @@ function Workbench() {
         xhttp.open("POST", "/teamnotifier/1.0/environment/server/" + server.id + "/subscribe", true);
         xhttp.setRequestHeader("Authorization", "Bearer " + that.token);
         xhttp.onreadystatechange = function () {
-            subscribePrehandler(xhttp, server);
+            subscribePrehandler(xhttp);
         };
         xhttp.send();
     };

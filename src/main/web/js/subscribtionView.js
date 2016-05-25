@@ -12,10 +12,14 @@ function SubscribtionView() {
 	const usersHolder = document.getElementById("users_holder");
 	
 	function disableActionButton() {
-		if(actionButton.classList.contains("disabled"))
+		if(actionButtonIsDisabled())
 			return;
 
 		actionButton.classList.add("disabled");
+	}
+
+	function actionButtonIsDisabled() {
+		return actionButton.classList.contains("disabled");
 	}
 
 	function enableActionButton() {
@@ -25,7 +29,13 @@ function SubscribtionView() {
 	function updateButtonState() {
 		if(!selectedTarget){
 			disableActionButton();
-			actionButton.innerHTML = "selected a target";
+			actionButton.innerHTML = "select a target";
+			return;
+		}
+
+		if(selectedTarget.type == "ResourceInfo" && selectedTarget.occupationInfo &&!currentUserReservedResource(selectedTarget)) {
+			disableActionButton();
+			actionButton.innerHTML = "reserved by other user";
 			return;
 		}
 
@@ -42,29 +52,37 @@ function SubscribtionView() {
 
 	function prepareToSubscribe(target) {
 		actionButton.innerHTML = "subscribe";
-		actionButton.onclick = function() {
-			that.subscribeHandler(target);
+		actionButton.onclick = function(e) {
+			actionButtonIsDisabled() 
+				? e.preventDefault()
+				: that.subscribeHandler(target);
 		}
 	}
 
 	function prepareToUnsubscribe(target) {
 		actionButton.innerHTML = "unsubscribe";
-		actionButton.onclick = function() {
-			that.unsubscribeHandler(target);
+		actionButton.onclick = function(e) {
+			actionButtonIsDisabled() 
+				? e.preventDefault()
+				: that.unsubscribeHandler(target);
 		}
 	}
 
 	function prepareToReserve(target) {
 		actionButton.innerHTML = "reserve";
-		actionButton.onclick = function() {
-			that.reserveHandler(target);
+		actionButton.onclick = function(e) {
+			actionButtonIsDisabled() 
+				? e.preventDefault()
+				: that.reserveHandler(target);
 		}
 	}
 
 	function prepareToFree(target) {
 		actionButton.innerHTML = "free";
-		actionButton.onclick = function() {
-			that.freeHandler(target);
+		actionButton.onclick = function(e) {
+			actionButtonIsDisabled() 
+				? e.preventDefault()
+				: that.freeHandler(target);
 		}
 	}
 
@@ -118,6 +136,7 @@ function SubscribtionView() {
 		}
 		
 		installButtonHandler();
+		updateButtonState();
 	}
 
 
@@ -128,12 +147,8 @@ function SubscribtionView() {
 		updateButtonState();
 	}
 
-	SubscribtionView.prototype.subscribtionSuccess = function(server) {
-		environmentMonitor.addSubscriber(server.id, that.user);
-	}
-
 	SubscribtionView.prototype.unsubcribtionSuccess = function(server) {
-		environmentMonitor.removeSubscriber(server.id, that.user);
+		environmentMonitor.setSubscribers(server.id, []);
 	}
 
 	SubscribtionView.prototype.reservationSuccess = function(resource) {

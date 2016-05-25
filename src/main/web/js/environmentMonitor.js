@@ -167,10 +167,24 @@ function EnvironmentMonitor() {
 		fireOnlineStatusChanged(server);
 	}
 
+	EnvironmentMonitor.prototype.setSubscribers = function(serverId, subscribers) {
+		var server = servers[serverId];
+
+		if(arraysHaveSameContent(server.subscribers, subscribers))
+			return;
+
+		server.subscribers = subscribers.slice(0);
+		fireSubscribersChanged(server);
+	}
+
 	EnvironmentMonitor.prototype.addSubscriber = function(serverId, user) {
 		var server = servers[serverId];
 		if(!server.subscribers)
 			server.subscribers = [];
+
+		if(server.subscribers.includes(user))
+			return;
+
 		server.subscribers.push(user);
 		fireSubscribersChanged(server);
 	}
@@ -179,6 +193,9 @@ function EnvironmentMonitor() {
 		var server = servers[serverId];
 
 		var index = server.subscribers.indexOf(user);
+		if(index < 0)
+			return;
+
 		server.subscribers.splice(index, 1);
 		
 		fireSubscribersChanged(server);

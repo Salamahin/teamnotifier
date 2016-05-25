@@ -30,10 +30,6 @@ function View() {
 		jumpTo("workbench");
     };
 
-	View.prototype.showSubscribtionConfirmation = function(subscribtionInfo) {
-		subscribtionView.subscribtionSuccess(subscribtionInfo);
-	}
-
 	View.prototype.showUnsubscribtionConfirmation = function(server) {
 		subscribtionView.unsubcribtionSuccess(server);
 	}
@@ -119,6 +115,28 @@ function View() {
 		
 		if(subscribtionView)
 			subscribtionView.setEnvironmentMonitor(environmentMonitor);
+	}
+
+	View.prototype.handleActionNotification = function(notification) {
+		chatView.showNotification(notification);
+	}
+
+	View.prototype.handleReservationNotification = function(notification) {
+		if(notification.state)
+			environmentMonitor.reserve(notification.targetId, notification.actor);
+		else
+			environmentMonitor.free(notification.targetId, notification.actor);
+	}
+
+	View.prototype.handleSubscribtionNotification = function(notification) {
+		if(notification.state)
+			environmentMonitor.addSubscriber(notification.targetId, notification.actor);
+		else
+			environmentMonitor.removeSubscriber(notification.targetId, notification.actor);
+	}
+
+	View.prototype.handleServerStateNotification = function(notification) {
+		environmentMonitor.setServerOnline(notification.targetId, notification.state);
 	}
 
 	View.prototype.setAvatarCreator = function(creator) {

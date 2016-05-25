@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import com.home.teamnotifier.core.BroadcastInformation;
 import com.home.teamnotifier.core.responses.notification.Reservation;
 import com.home.teamnotifier.core.responses.notification.Subscription;
+import com.home.teamnotifier.core.responses.action.ServerSubscribersInfo;
 import com.home.teamnotifier.gateways.SubscriptionGateway;
 import com.home.teamnotifier.gateways.exceptions.*;
 import org.hibernate.exception.ConstraintViolationException;
@@ -26,7 +27,7 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
     }
 
     @Override
-    public BroadcastInformation<Subscription> subscribe(final String userName, final int serverId) {
+    public SubscriptionResult subscribe(final String userName, final int serverId) {
         try {
             return transactionHelper.transaction(em -> {
                 final UserEntity u = getUserEntity(userName, em);
@@ -39,13 +40,25 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
                 final Subscription notification = Subscription.subscribe(u, s);
                 final List<String> subscribersButUser = getSubscribersButUser(u.getName(), s);
 
-                return new BroadcastInformation<>(notification, subscribersButUser);
+                final BroadcastInformation<Subscription> messageToOthers = new BroadcastInformation<>(
+                        notification,
+                        subscribersButUser
+                );
+
+                final ServerSubscribersInfo messageToActor = new ServerSubscribersInfo(s);
+
+                return new SubscriptionResult(messageToOthers, messageToActor);
             });
 
         } catch (Exception exc) {
             rethrowConstraintViolation(exc, userName, serverId);
             return null;
         }
+    }
+
+    @Override
+    public ServerSubscribersInfo getSubscribers(final int serverId) {
+        return transactionHelper.transaction(em -> new ServerSubscribersInfo(getServerEntity(serverId, em)));
     }
 
     private void rethrowConstraintViolation(Exception exc, String userName, int serverId) {

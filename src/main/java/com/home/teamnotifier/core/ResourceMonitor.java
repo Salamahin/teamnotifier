@@ -5,6 +5,8 @@ import com.google.inject.Inject;
 import com.home.teamnotifier.core.responses.action.ResourceActionsHistory;
 import com.home.teamnotifier.core.responses.action.ServerActionsHistory;
 import com.home.teamnotifier.core.responses.status.EnvironmentsInfo;
+import com.home.teamnotifier.core.responses.action.ServerSubscribersInfo;
+import com.home.teamnotifier.db.SubscriptionResult;
 import com.home.teamnotifier.gateways.ActionsGateway;
 import com.home.teamnotifier.gateways.EnvironmentGateway;
 import com.home.teamnotifier.gateways.ResourceDescription;
@@ -52,12 +54,14 @@ public class ResourceMonitor {
         notificationManager.pushToClients(information.getSubscribers(), information.getValue());
     }
 
-    public void subscribe(final String userName, final int serverId) {
+    public ServerSubscribersInfo subscribe(final String userName, final int serverId) {
         try {
-            final BroadcastInformation information = subscriptionGateway.subscribe(userName, serverId);
-            fireNotification(information);
+            final SubscriptionResult result = subscriptionGateway.subscribe(userName, serverId);
+            fireNotification(result.getMessageToOthers());
+            return result.getMessageToActor();
         } catch (Exception exc) {
             LOGGER.error("Subscribtion failed", exc);
+            return subscriptionGateway.getSubscribers(serverId);
         }
     }
 
