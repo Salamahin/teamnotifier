@@ -2,6 +2,7 @@ package com.home.teamnotifier.core;
 
 import com.google.common.collect.ImmutableSet;
 import com.home.teamnotifier.core.responses.notification.Notification;
+import com.home.teamnotifier.core.responses.status.ServerInfo;
 import com.home.teamnotifier.db.ServerEntity;
 import com.home.teamnotifier.gateways.ServerGateway;
 import org.eclipse.jetty.server.Request;
@@ -76,6 +77,11 @@ public class ServerAvailabilityCheckerTest {
         @Override
         public Set<ServerEntity> getImmutableSetOfObservableServers() {
             return ImmutableSet.of();
+        }
+
+        @Override
+        public ServerInfo getInfoForServer(int id) {
+            throw new AssertionError("not used for test case");
         }
     }
 

@@ -104,7 +104,7 @@ public class ServerAvailabilityChecker {
         };
     }
 
-    public ImmutableMap<ServerEntity, Boolean> getAvailability() {
+    public Map<ServerEntity, Boolean> getAvailability() {
         synchronized (statuses) {
             return ImmutableMap.copyOf(statuses);
         }

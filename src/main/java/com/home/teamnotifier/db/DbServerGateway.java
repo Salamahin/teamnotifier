@@ -2,6 +2,7 @@ package com.home.teamnotifier.db;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
+import com.home.teamnotifier.core.responses.status.ServerInfo;
 import com.home.teamnotifier.gateways.ServerGateway;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -32,5 +33,10 @@ public class DbServerGateway implements ServerGateway {
         });
 
         return ImmutableSet.copyOf(servers);
+    }
+
+    @Override
+    public ServerInfo getInfoForServer(int id) {
+        return null;
     }
 }

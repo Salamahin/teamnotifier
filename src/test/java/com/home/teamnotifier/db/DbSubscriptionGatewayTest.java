@@ -2,8 +2,8 @@ package com.home.teamnotifier.db;
 
 import com.google.common.collect.Lists;
 import com.home.teamnotifier.core.BroadcastInformation;
-import com.home.teamnotifier.core.responses.action.ServerSubscribersInfo;
 import com.home.teamnotifier.core.responses.notification.Subscription;
+import com.home.teamnotifier.core.responses.status.ServerInfo;
 import com.home.teamnotifier.gateways.UserGateway;
 import com.home.teamnotifier.gateways.exceptions.*;
 import org.junit.Before;
@@ -12,6 +12,7 @@ import org.junit.Test;
 import java.util.List;
 import java.util.UUID;
 
+import static com.home.teamnotifier.db.tools.MockedCheckerProvider.getMockedChecker;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DbSubscriptionGatewayTest {
@@ -24,7 +25,7 @@ public class DbSubscriptionGatewayTest {
         preparer = new DbPreparer();
         preparer.initDataBase();
 
-        gateway = new DbSubscriptionGateway(preparer.getTransactionHelper());
+        gateway = new DbSubscriptionGateway(preparer.getTransactionHelper(), getMockedChecker());
         userGateway = new DbUserGateway(preparer.getTransactionHelper());
     }
 
@@ -105,9 +106,9 @@ public class DbSubscriptionGatewayTest {
             final List<String> subscribersExcludedInBroadcastInfo
     ) {
         final BroadcastInformation<Subscription> broadcastInformation = result.getMessageToOthers();
-        final ServerSubscribersInfo subscribersInfo = result.getMessageToActor();
+        final ServerInfo serverInfo = result.getMessageToActor();
 
-        assertThat(subscribersInfo.getSubscribers())
+        assertThat(serverInfo.getSubscribers())
                 .containsAll(allExpectedSubscribers);
 
         final List<String> expectedSubscribersInBroadcastInfo = Lists.newArrayList(allExpectedSubscribers);

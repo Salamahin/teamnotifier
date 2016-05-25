@@ -8,7 +8,7 @@ import com.home.teamnotifier.core.ResourceMonitor;
 import com.home.teamnotifier.core.responses.action.ResourceActionsHistory;
 import com.home.teamnotifier.core.responses.action.ServerActionsHistory;
 import com.home.teamnotifier.core.responses.status.EnvironmentsInfo;
-import com.home.teamnotifier.core.responses.action.ServerSubscribersInfo;
+import com.home.teamnotifier.core.responses.status.ServerInfo;
 import com.home.teamnotifier.gateways.ResourceDescription;
 import io.dropwizard.auth.Auth;
 import org.slf4j.Logger;
@@ -55,7 +55,7 @@ public class EnvironmentRestService {
 
     @POST
     @Path("/server/{serverId}/subscribe")
-    public ServerSubscribersInfo subscribe(
+    public ServerInfo subscribe(
             @Auth final TokenAuthenticated userPrincipal,
             @PathParam("serverId") final Integer serverId
     ) {

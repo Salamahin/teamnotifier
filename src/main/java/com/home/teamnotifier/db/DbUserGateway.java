@@ -28,7 +28,7 @@ public class DbUserGateway implements UserGateway {
     private final TransactionHelper transactionHelper;
 
     @Inject
-    public DbUserGateway(final TransactionHelper transactionHelper) {
+    DbUserGateway(final TransactionHelper transactionHelper) {
         this.transactionHelper = transactionHelper;
     }
 

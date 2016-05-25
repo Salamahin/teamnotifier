@@ -3,9 +3,10 @@ package com.home.teamnotifier.db;
 import com.google.common.base.Throwables;
 import com.google.inject.Inject;
 import com.home.teamnotifier.core.BroadcastInformation;
+import com.home.teamnotifier.core.ServerAvailabilityChecker;
 import com.home.teamnotifier.core.responses.notification.Reservation;
 import com.home.teamnotifier.core.responses.notification.Subscription;
-import com.home.teamnotifier.core.responses.action.ServerSubscribersInfo;
+import com.home.teamnotifier.core.responses.status.ServerInfo;
 import com.home.teamnotifier.gateways.SubscriptionGateway;
 import com.home.teamnotifier.gateways.exceptions.*;
 import org.hibernate.exception.ConstraintViolationException;
@@ -15,15 +16,16 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import static com.home.teamnotifier.db.DbGatewayCommons.getSubscribersButUser;
-import static com.home.teamnotifier.db.DbGatewayCommons.getUserEntity;
+import static com.home.teamnotifier.db.DbGatewayCommons.*;
 
 public class DbSubscriptionGateway implements SubscriptionGateway {
     private final TransactionHelper transactionHelper;
+    private final ServerAvailabilityChecker availabilityChecker;
 
     @Inject
-    DbSubscriptionGateway(final TransactionHelper transactionHelper) {
+    DbSubscriptionGateway(final TransactionHelper transactionHelper, ServerAvailabilityChecker availabilityChecker) {
         this.transactionHelper = transactionHelper;
+        this.availabilityChecker = availabilityChecker;
     }
 
     @Override
@@ -45,20 +47,18 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
                         subscribersButUser
                 );
 
-                final ServerSubscribersInfo messageToActor = new ServerSubscribersInfo(s);
+                final ServerInfo messageToActor = toServerInfo(s, availabilityChecker.getAvailability());
 
-                return new SubscriptionResult(messageToOthers, messageToActor);
+                return new SubscriptionResult(
+                        messageToOthers,
+                        messageToActor
+                );
             });
 
         } catch (Exception exc) {
             rethrowConstraintViolation(exc, userName, serverId);
             return null;
         }
-    }
-
-    @Override
-    public ServerSubscribersInfo getSubscribers(final int serverId) {
-        return transactionHelper.transaction(em -> new ServerSubscribersInfo(getServerEntity(serverId, em)));
     }
 
     private void rethrowConstraintViolation(Exception exc, String userName, int serverId) {
@@ -79,23 +79,16 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
             Throwables.propagate(exc);
     }
 
-    private ServerEntity getServerEntity(final int serverId, final EntityManager em) {
-        final ServerEntity serverEntity = em.find(ServerEntity.class, serverId);
-        if (serverEntity == null)
-            throw new NoSuchServer(String.format("No server with id %d", serverId));
-        return serverEntity;
-    }
-
 
     @Override
     public BroadcastInformation<Subscription> unsubscribe(final String userName, final int serverId) {
         return transactionHelper.transaction(em -> {
             final UserEntity u = getUserEntity(userName, em);
-
             ServerEntity s = getServerEntity(serverId, em);
 
-            if(!s.unsubscribe(u))
+            if (!s.unsubscribe(u))
                 throw new NotSubscribed(String.format("User %s was not subscribed on server %d", userName, serverId));
+
             s = em.merge(s);
 
             return new BroadcastInformation<>(

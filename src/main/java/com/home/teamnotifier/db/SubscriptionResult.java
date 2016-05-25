@@ -2,14 +2,14 @@ package com.home.teamnotifier.db;
 
 import com.home.teamnotifier.core.BroadcastInformation;
 import com.home.teamnotifier.core.responses.notification.Subscription;
-import com.home.teamnotifier.core.responses.action.ServerSubscribersInfo;
+import com.home.teamnotifier.core.responses.status.ServerInfo;
 
 public class SubscriptionResult {
     private final BroadcastInformation<Subscription> messageToOthers;
-    private final ServerSubscribersInfo messageToActor;
+    private final ServerInfo messageToActor;
 
     SubscriptionResult(final BroadcastInformation<Subscription> messageToOthers,
-                       final ServerSubscribersInfo messageToActor) {
+                       final ServerInfo messageToActor) {
         this.messageToOthers = messageToOthers;
         this.messageToActor = messageToActor;
     }
@@ -18,7 +18,7 @@ public class SubscriptionResult {
         return messageToOthers;
     }
 
-    public ServerSubscribersInfo getMessageToActor() {
+    public ServerInfo getMessageToActor() {
         return messageToActor;
     }
 }

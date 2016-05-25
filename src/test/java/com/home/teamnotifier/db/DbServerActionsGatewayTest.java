@@ -16,6 +16,8 @@ import org.junit.Test;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
+import static com.home.teamnotifier.db.tools.MockedCheckerProvider.getMockedChecker;
+
 public class DbServerActionsGatewayTest {
     private ActionsTester<ServerActionsHistory, ServerAction> tester;
     private DbPreparer preparer;
@@ -57,7 +59,10 @@ public class DbServerActionsGatewayTest {
     @Test
     public void testReturnsSubscribersNamesAfterAction() throws Exception {
         final UserGateway userGateway = new DbUserGateway(preparer.getTransactionHelper());
-        final SubscriptionGateway subscriptionGateway = new DbSubscriptionGateway(preparer.getTransactionHelper());
+        final SubscriptionGateway subscriptionGateway = new DbSubscriptionGateway(
+                preparer.getTransactionHelper(),
+                getMockedChecker()
+        );
 
         tester.testReturnsSubscribersNamesAfterAction(preparer.persistedServerId(), userGateway, subscriptionGateway);
     }

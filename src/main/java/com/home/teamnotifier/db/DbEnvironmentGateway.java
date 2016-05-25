@@ -1,9 +1,9 @@
 package com.home.teamnotifier.db;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import com.home.teamnotifier.core.ServerAvailabilityChecker;
-import com.home.teamnotifier.core.responses.status.*;
+import com.home.teamnotifier.core.responses.status.EnvironmentInfo;
+import com.home.teamnotifier.core.responses.status.EnvironmentsInfo;
 import com.home.teamnotifier.gateways.EnvironmentGateway;
 
 import javax.persistence.TypedQuery;
@@ -11,11 +11,11 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.home.teamnotifier.db.DbGatewayCommons.toServerInfo;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
 
 public class DbEnvironmentGateway implements EnvironmentGateway {
     private final TransactionHelper transactionHelper;
@@ -32,7 +32,7 @@ public class DbEnvironmentGateway implements EnvironmentGateway {
 
     @Override
     public EnvironmentsInfo status() {
-        final ImmutableMap<ServerEntity, Boolean> availabilityMap = serverAvailabilityChecker.getAvailability();
+        final Map<ServerEntity, Boolean> availabilityMap = serverAvailabilityChecker.getAvailability();
         return new EnvironmentsInfo(
                 loadListFromDb().stream()
                         .map(e -> toEnvironment(e, availabilityMap))
@@ -53,40 +53,15 @@ public class DbEnvironmentGateway implements EnvironmentGateway {
         });
     }
 
-    private EnvironmentInfo toEnvironment(final EnvironmentEntity entity, final ImmutableMap<ServerEntity, Boolean> availabilityMap) {
+    private EnvironmentInfo toEnvironment(
+            final EnvironmentEntity entity,
+            final Map<ServerEntity, Boolean> availabilityMap
+    ) {
         return new EnvironmentInfo(
                 entity.getName(),
                 entity.getImmutableSetOfServers().stream()
-                        .map(e -> toSever(e, availabilityMap))
+                        .map(e -> toServerInfo(e, availabilityMap))
                         .collect(toList())
-        );
-    }
-
-    private ServerInfo toSever(final ServerEntity entity, final ImmutableMap<ServerEntity, Boolean> availabilityMap) {
-        final Set<ResourceInfo> resources = entity.getImmutableSetOfResources().stream()
-                .map(this::toResource)
-                .collect(toSet());
-
-        return new ServerInfo(
-                entity,
-                resources,
-                availabilityMap.get(entity)
-        );
-    }
-
-    private ResourceInfo toResource(final ResourceEntity resourceEntity) {
-        final OccupationInfo occupationInfo = resourceEntity.getReservationData()
-                .map(od -> new OccupationInfo(
-                                od.getOccupier().getName(),
-                                od.getOccupationTime()
-                        )
-                )
-                .orElse(null);
-
-        return new ResourceInfo(
-                resourceEntity.getId(),
-                resourceEntity.getName(),
-                occupationInfo
         );
     }
 }

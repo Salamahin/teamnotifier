@@ -33,7 +33,7 @@ function SubscribtionView() {
 			return;
 		}
 
-		if(selectedTarget.type == "ResourceInfo" && selectedTarget.occupationInfo &&!currentUserReservedResource(selectedTarget)) {
+		if(selectedTarget.type == "ResourceInfo" && selectedTarget.occupationInfo && !currentUserReservedResource(selectedTarget)) {
 			disableActionButton();
 			actionButton.innerHTML = "reserved by other user";
 			return;

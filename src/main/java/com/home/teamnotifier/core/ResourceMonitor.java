@@ -5,12 +5,9 @@ import com.google.inject.Inject;
 import com.home.teamnotifier.core.responses.action.ResourceActionsHistory;
 import com.home.teamnotifier.core.responses.action.ServerActionsHistory;
 import com.home.teamnotifier.core.responses.status.EnvironmentsInfo;
-import com.home.teamnotifier.core.responses.action.ServerSubscribersInfo;
+import com.home.teamnotifier.core.responses.status.ServerInfo;
 import com.home.teamnotifier.db.SubscriptionResult;
-import com.home.teamnotifier.gateways.ActionsGateway;
-import com.home.teamnotifier.gateways.EnvironmentGateway;
-import com.home.teamnotifier.gateways.ResourceDescription;
-import com.home.teamnotifier.gateways.SubscriptionGateway;
+import com.home.teamnotifier.gateways.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +19,7 @@ public class ResourceMonitor {
 
     private final EnvironmentGateway environmentGateway;
     private final SubscriptionGateway subscriptionGateway;
+    private final ServerGateway serverGateway;
     private final ActionsGateway actionsGateway;
     private final NotificationManager notificationManager;
 
@@ -30,12 +28,14 @@ public class ResourceMonitor {
     private ResourceMonitor(
             final EnvironmentGateway environmentGateway,
             final SubscriptionGateway subscriptionGateway,
+            final ServerGateway serverGateway,
             final ActionsGateway actionsGateway,
             final NotificationManager notificationManager
     ) {
 
         this.environmentGateway = environmentGateway;
         this.subscriptionGateway = subscriptionGateway;
+        this.serverGateway = serverGateway;
         this.actionsGateway = actionsGateway;
         this.notificationManager = notificationManager;
     }
@@ -54,14 +54,14 @@ public class ResourceMonitor {
         notificationManager.pushToClients(information.getSubscribers(), information.getValue());
     }
 
-    public ServerSubscribersInfo subscribe(final String userName, final int serverId) {
+    public ServerInfo subscribe(final String userName, final int serverId) {
         try {
             final SubscriptionResult result = subscriptionGateway.subscribe(userName, serverId);
             fireNotification(result.getMessageToOthers());
             return result.getMessageToActor();
         } catch (Exception exc) {
             LOGGER.error("Subscribtion failed", exc);
-            return subscriptionGateway.getSubscribers(serverId);
+            return serverGateway.getInfoForServer(serverId);
         }
     }
 

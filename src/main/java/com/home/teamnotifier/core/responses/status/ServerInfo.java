@@ -3,8 +3,8 @@ package com.home.teamnotifier.core.responses.status;
 import com.fasterxml.jackson.annotation.*;
 import com.google.common.collect.ImmutableSet;
 import com.home.teamnotifier.db.ServerEntity;
-import com.sun.corba.se.spi.activation.Server;
 
+import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
 
@@ -28,7 +28,7 @@ public class ServerInfo {
 
     private final Boolean isOnline;
 
-    public ServerInfo(final ServerEntity server, final Set<ResourceInfo> resources, final Boolean isOnline) {
+    public ServerInfo(final ServerEntity server, final Collection<ResourceInfo> resources, final Boolean isOnline) {
         this(
                 server.getId(),
                 server.getName(),
@@ -42,8 +42,8 @@ public class ServerInfo {
     private ServerInfo(
             @JsonProperty("id") final int id,
             @JsonProperty("name") final String name,
-            @JsonProperty("resources") final Set<ResourceInfo> resources,
-            @JsonProperty("subscribers") final Set<String> subscribers,
+            @JsonProperty("resources") final Collection<ResourceInfo> resources,
+            @JsonProperty("subscribers") final Collection<String> subscribers,
             @JsonProperty("isOnline") final Boolean isOnline
     ) {
         this.name = name;
@@ -51,6 +51,10 @@ public class ServerInfo {
         this.isOnline = isOnline;
         this.resources = ImmutableSet.copyOf(resources);
         this.subscribers = ImmutableSet.copyOf(subscribers);
+    }
+
+    public Set<String> getSubscribers() {
+        return subscribers;
     }
 
     @Override

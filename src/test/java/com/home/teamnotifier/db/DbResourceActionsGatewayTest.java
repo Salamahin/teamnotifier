@@ -2,6 +2,7 @@ package com.home.teamnotifier.db;
 
 import com.google.common.collect.Range;
 import com.home.teamnotifier.core.BroadcastInformation;
+import com.home.teamnotifier.core.ServerAvailabilityChecker;
 import com.home.teamnotifier.core.responses.action.ResourceActionsHistory;
 import com.home.teamnotifier.core.responses.notification.ResourceAction;
 import com.home.teamnotifier.gateways.SubscriptionGateway;
@@ -15,6 +16,11 @@ import org.junit.Test;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+
+import static com.home.teamnotifier.db.tools.MockedCheckerProvider.getMockedChecker;
+import static java.util.Collections.emptyMap;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 
 public class DbResourceActionsGatewayTest {
     private ActionsTester<ResourceActionsHistory, ResourceAction> tester;
@@ -57,7 +63,10 @@ public class DbResourceActionsGatewayTest {
     @Test
     public void testReturnsSubscribersNamesAfterAction() throws Exception {
         final UserGateway userGateway = new DbUserGateway(preparer.getTransactionHelper());
-        final SubscriptionGateway subscriptionGateway = new DbSubscriptionGateway(preparer.getTransactionHelper());
+        final SubscriptionGateway subscriptionGateway = new DbSubscriptionGateway(
+                preparer.getTransactionHelper(),
+                getMockedChecker()
+        );
 
         tester.testReturnsSubscribersNamesAfterAction(preparer.persistedServerId(), userGateway, subscriptionGateway);
     }
