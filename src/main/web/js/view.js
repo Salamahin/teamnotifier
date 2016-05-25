@@ -30,10 +30,6 @@ function View() {
 		jumpTo("workbench");
     };
 
-    View.prototype.updateStatus = function (environments) {
-        sideMenuView.setEnvironments(environments);
-    };
-
 	View.prototype.showSubscribtionConfirmation = function(subscribtionInfo) {
 		subscribtionView.subscribtionSuccess(subscribtionInfo);
 	}
@@ -118,6 +114,9 @@ function View() {
 		if(!environmentMonitor)
 			return;
 
+		if(sideMenuView)
+			sideMenuView.setEnvironmentMonitor(environmentMonitor);
+		
 		if(subscribtionView)
 			subscribtionView.setEnvironmentMonitor(environmentMonitor);
 	}
@@ -137,12 +136,12 @@ function View() {
 
 		bindAvatarCreator();
 
-        sideMenuView.serverSelectionHandler = function(environment, server) {
+        sideMenuView.serverSelectionHandler = function(server) {
 			chatView.select(server);
 			subscribtionView.select(server);
         }
 
-        sideMenuView.resourceSelectionHandler = function(environment, server, resource) {
+        sideMenuView.resourceSelectionHandler = function(resource) {
 			chatView.select(resource);
 			subscribtionView.select(resource);
         }

@@ -2,11 +2,28 @@ function EnvironmentMonitor() {
 
 	const servers = [];
 	const resources = [];
-
-	var environments;
-
+	
 	const listeners = [];
 
+	function fireServerAdded(environment, server) {
+		var e = clone(environment);
+		var s = clone(server);
+		for(var i = 0; i<listeners.length; i++) {
+			var l = listeners[i];
+			if(l.onServerAdded)
+				l.onServerAdded(e, s);
+		}
+	}
+
+	function fireResourceAdded(server, resource) {
+		s = clone(server);
+		r = clone(resource);
+		for(var i = 0;i<listeners.length; i++) {
+			var l = listeners[i];
+			if(l.onResourceAdded) 
+				l.onResourceAdded(s, r);
+		}
+	}
 
 	function fireSubscribersChanged(server) {
 		var s = clone(server);
@@ -60,12 +77,6 @@ function EnvironmentMonitor() {
 	}
 
 	function fireServerChanges(oldServer, newServer) {
-		if(!oldServer) {
-			fireOnlineStatusChanged(newServer);
-			fireSubscribersChanged(newServer);
-			return;
-		}
-
 		if(oldServer.isOnline != newServer.isOnline) {
 			fireOnlineStatusChanged(newServer);
 			return;
@@ -86,11 +97,6 @@ function EnvironmentMonitor() {
 	}
 
 	function fireResourceChanges(oldResource, newResource) {
-		if(!oldResource) {
-			fireReservationChanged(newResource);
-			return;
-		}
-
 		if(oldResource.occupationInfo != newResource.occupationInfo) {
 			fireReservationChanged(newResource);
 			return;
@@ -105,18 +111,24 @@ function EnvironmentMonitor() {
 			fireReservationChanged(newResource);
 	}
 
-	function updateServer(newServer) {
+	function updateServer(environment, newServer) {
 		var oldServer = servers[newServer.id];
 		servers[newServer.id] = newServer;
 
-		fireServerChanges(oldServer, newServer);
+		if(!oldServer) 
+			fireServerAdded(environment, newServer);
+		else
+			fireServerChanges(oldServer, newServer);
 	}
 
-	function updateResource(newResource) {
+	function updateResource(server, newResource) {
 		var oldResource = resources[newResource.id];
 		resources[newResource.id] = newResource;
 
-		fireResourceChanges(oldResource, newResource);
+		if(!oldResource)
+			fireResourceAdded(server, newResource);
+		else 
+			fireResourceChanges(oldResource, newResource);
 	}
 
 	function clone(obj) {
@@ -129,19 +141,15 @@ function EnvironmentMonitor() {
 	}
 
 	EnvironmentMonitor.prototype.rebuild = function(actualEnvironments) {
-		environments = [];
-		
 		for(var i = 0; i<actualEnvironments.length; i++) {
 			var env = actualEnvironments[i];
-			environments[i] = clone(env);
-		
 
 			for(var j = 0; j<env.servers.length; j++) {
 				var srv = env.servers[j];
-				updateServer(srv);
+				updateServer(env, srv);
 
 				for(var k = 0; k<srv.resources.length; k++)
-					updateResource(srv.resources[k]);
+					updateResource(srv, srv.resources[k]);
 			}
 		}
 	}
@@ -154,11 +162,6 @@ function EnvironmentMonitor() {
 		return clone(resources[resourceId]);
 	}
 	
-	EnvironmentMonitor.prototype.getEnvironments = function() {
-		return environments;
-	}
-
-
 	EnvironmentMonitor.prototype.setServerOnline = function(serverId, isOnline) {
 		var server = servers[serverId];
 		fireOnlineStatusChanged(server);

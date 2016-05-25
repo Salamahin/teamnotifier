@@ -1,10 +1,10 @@
 function SideMenuView() {
 	const that = this;
 
+	var nodesRoot = document.querySelector("#sidemenu .servers_list:nth-child(1)");
+
 	this.user = undefined;
 	this.avatarCreator = undefined;
-
-	var environmentsMonitor;
 
 	var serverNodes = [];
 	var resourceNodes = [];
@@ -56,24 +56,9 @@ function SideMenuView() {
 		return holders;
 	}
 
-	function buildEnvironments(environments) {
-		serverNodes = [];
-		resourceNodes = [];
-
-		for(var i = 0; i<environments.length; i++)
-			buildServersForEnvironment(environments[i]);
-	}
-
-	function buildServersForEnvironment(environment) {
-		var servers = environment.servers;
-		for(var i = 0; i < servers.length; i++)
-			appendServerNode(environment, servers[i]);
-	}
-
 	function appendServerNode(environment, server) {
 		var node = createNodeForServer(environment, server);
-		var serverList = document.querySelectorAll("#sidemenu .servers_list:nth-child(1)")[0];
-		serverList.appendChild(node);
+		nodesRoot.appendChild(node);
 
 		serverNodes[server.id] = node;
 	}
@@ -83,49 +68,53 @@ function SideMenuView() {
 	}
 
 	function createNodeForServer(environment, server) {
-		var resourcesList = createNodesForResources(server);
+		var node = document.createElement("li");
 
 		var selectionButton = document.createElement("a");
 		selectionButton.href = "#workbench";
 		selectionButton.classList.add("server_selection_button");
 		selectionButton.innerHTML= buildEnverironmentServerListNodeName(environment, server);
 		selectionButton.onclick = function() {
-			showServerSelection(resourcesList);
+			showServerSelection(getResourcesListNode(node));
 			that.serverSelectionHandler(server);
 		};
 
 		var innerDiv = document.createElement("div");
-		if(isUserSubscribedOnServer(server))
-			innerDiv.classList.add("subscribed");
 		innerDiv.appendChild(selectionButton);
 
 		var outerDiv = document.createElement("div");
 		outerDiv.appendChild(innerDiv);
-		outerDiv.appendChild(resourcesList);
 
-		var listElem = document.createElement("li");
-		listElem.appendChild(outerDiv);
+		node.appendChild(outerDiv);
 
-		return listElem;
+		showServerSubscribtion(node, server);	
+		return node;
 	}
 
-	function createNodesForResources(server) { 
-		var list = document.createElement("ul");
-		list.classList.add("resources_list");
+	function getResourcesListNode(serverNode) {
+		var listHolder = serverNode.querySelector("div > div");
+		var list = listHolder.querySelector("ul.resources_list");
 
-		var resources = server.resources;
-		for(var i = 0; i<resources.length; i++) {
-			var res = resources[i];
-			var node = createNewResourceNode(res);
-
-			list.appendChild(node);
-			resourceNodes[res.id] = node; 
+		if(!list) {
+			list = document.createElement("ul");
+			list.classList.add("resources_list");
+			listHolder.appendChild(list);
 		}
-
 		return list;
 	}
 
+	function appendResourceNodeToServerNode(serverNode, resource) {
+		var resourcesList = getResourcesListNode(serverNode);
+		var resourceNode = createNewResourceNode(resource);
+
+		resourcesList.appendChild(resourceNode);
+		resourceNodes[resource.id] = resourceNode;
+	}
+
+
 	function createNewResourceNode(resource) {
+		var node = document.createElement("li");
+
 		var innerDiv = document.createElement("div");
 		var resourceSelectionButton = document.createElement("a");
 
@@ -142,40 +131,58 @@ function SideMenuView() {
 		var outerDiv = document.createElement("div");
 		outerDiv.appendChild(innerDiv);
 
-		var listItem = document.createElement("li");
-		listItem.appendChild(outerDiv);
+		node.appendChild(outerDiv);
+		showResourceReservation(node, resource);
 
-		return listItem;
+		return node;
 	}
 	
 	function showResourceReservation(node, resource) {
-		var avatar = node.querySelector("avatar");
-		node.removeChild(avatar);
+		var avatarHolder = node.querySelector("div > div");
+		var avatar = avatarHolder.querySelector(".avatar");
+
+		if(avatar)
+			avatarHolder.removeChild(avatar);
 
 		if(resource.occupationInfo) {
 			avatar = that.avatarCreator.getAvatarNode(resource.occupationInfo.userName);
-			node.querySelector("li > div(1)").appendChild(avatar);
+			avatarHolder.appendChild(avatar);
 		}
 	}
 
-	function showOnlineStatus(node, server) {
+	function showServerSubscribtion(node, server) {
+		var subscribtionInfoHolder = node.querySelector("div > div");
+		if(isUserSubscribedOnServer(server) && !subscribtionInfoHolder.classList.contains("subscribed"))
+			subscribtionInfoHolder.classList.add("subscribed");
+		else
+			subscribtionInfoHolder.classList.remove("subscribed");
+	
+	}
+
+	SideMenuView.prototype.onServerAdded = function(environment, server) {
+		appendServerNode(environment, server);
+	}
+
+	SideMenuView.prototype.onResourceAdded = function(server, resource) {
+		appendResourceNodeToServerNode(serverNodes[server.id], resource);
 	}
 
 	SideMenuView.prototype.onReservationChanged = function(resource) {
-		//TODO
+		var node = resourceNodes[resource.id];
+		showResourceReservation(node, resource);
 	}
 
 	SideMenuView.prototype.onSubscribersChanged = function(server) {
-		//TODO
+		var node = serverNodes[server.id];
+		showServerSubscribtion(node, server);
 	}
 
 	SideMenuView.prototype.onOnlineStatusChanged = function(server) {
 		//TODO
 	}
 
-	SideMenuView.prototype.setEnvironmentsMonitor = function(monitor) {
-		environmentsMonitor = monitor;
-		environmentsMonitor.addListener(that);
+	SideMenuView.prototype.setEnvironmentMonitor = function(monitor) {
+		monitor.addListener(that);
 	}
 }
 

@@ -129,10 +129,7 @@ function bind() {
 	WORKBENCH.resourceActionRequestSuccessHandler = VIEW.showResourceActionConfirmation
 	WORKBENCH.serverActionsHistoryRequestSuccessHandler = VIEW.showServerActionsHistory;
 	WORKBENCH.resourceActionsHistoryRequestSuccessHandler = VIEW.showResourceActionsHistory;
-	WORKBENCH.statusRequestSuccessHandler = function(envs) {
-		VIEW.updateStatus(envs); //TODO remove here
-		ENVIRONMENT_MONITOR.rebuild(envs);
-	}
+	WORKBENCH.statusRequestSuccessHandler = ENVIRONMENT_MONITOR.rebuild;
 	WORKBENCH.whoAmIErrorHandler = showError;
 	WORKBENCH.requestErrorHandler = onRequestError;
 
