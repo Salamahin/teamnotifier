@@ -2,6 +2,8 @@ package com.home.teamnotifier.core.responses.status;
 
 import com.fasterxml.jackson.annotation.*;
 import com.google.common.collect.ImmutableSet;
+import com.home.teamnotifier.db.ServerEntity;
+import com.sun.corba.se.spi.activation.Server;
 
 import java.util.Objects;
 import java.util.Set;
@@ -26,8 +28,18 @@ public class ServerInfo {
 
     private final Boolean isOnline;
 
+    public ServerInfo(final ServerEntity server, final Set<ResourceInfo> resources, final Boolean isOnline) {
+        this(
+                server.getId(),
+                server.getName(),
+                resources,
+                server.getImmutableSetOfSubscribers(),
+                isOnline
+        );
+    }
+
     @JsonCreator
-    public ServerInfo(
+    private ServerInfo(
             @JsonProperty("id") final int id,
             @JsonProperty("name") final String name,
             @JsonProperty("resources") final Set<ResourceInfo> resources,

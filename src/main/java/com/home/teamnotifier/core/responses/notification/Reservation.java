@@ -38,4 +38,9 @@ public class Reservation extends UserStateChange {
     public static Reservation free(final UserEntity actor, final ResourceEntity resource) {
         return new Reservation(actor, resource, false);
     }
+
+    @Override
+    public String toString() {
+        return "Reservation{} " + super.toString();
+    }
 }

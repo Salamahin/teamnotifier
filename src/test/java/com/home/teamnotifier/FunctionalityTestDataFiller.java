@@ -57,7 +57,7 @@ class FunctionalityTestDataFiller {
         final DataSetBuilder b = new DataSetBuilder(true);
 
         b.newRow("Environment").with("id", 10000).with("name", "eu1").add();
-        b.newRow("Server").with("id", 110000).with("name", "sst").with("environment_id", 10000).add();
+        b.newRow("Server").with("id", 110000).with("name", "sst").with("environment_id", 10000).with("statusUrl", "http://www.google.com").add();
         b.newRow("Resource").with("id", resourceId).with("name", "abr_tivu").with("server_id", 110000).add();
         b.newRow("Resource").with("id", 1120000).with("name", "aei_sks").with("server_id", 110000).add();
         b.newRow("Resource").with("id", 1130000).with("name", "archiv_process").with("server_id", 110000).add();

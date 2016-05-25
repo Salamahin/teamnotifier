@@ -37,4 +37,9 @@ public class Subscription extends UserStateChange {
     public static Subscription unsubscribe(final UserEntity actor, final ServerEntity server) {
         return new Subscription(actor, server, false);
     }
+
+    @Override
+    public String toString() {
+        return "Subscription{} " + super.toString();
+    }
 }

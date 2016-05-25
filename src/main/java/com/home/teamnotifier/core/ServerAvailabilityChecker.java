@@ -10,9 +10,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.BufferedInputStream;
 import java.net.URL;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.*;
 
 import static com.home.teamnotifier.utils.FutureUtils.allAsList;
@@ -92,9 +92,11 @@ public class ServerAvailabilityChecker {
             return ServerState.offline(server);
     }
 
-    private Runnable routine(final Collection<ServerEntity> servers) {
+    private Runnable routine() {
         return () -> {
-            final List<CompletableFuture<Void>> futures = servers.stream()
+            final Set<ServerEntity> observableServers = gateway.getImmutableSetOfObservableServers();
+
+            final List<CompletableFuture<Void>> futures = observableServers.stream()
                     .map(s -> CompletableFuture.runAsync(() -> checkStatusAndNotifyAboutChange(s), executor))
                     .collect(toList());
 
@@ -124,7 +126,7 @@ public class ServerAvailabilityChecker {
         if (routine != null) return;
 
         routine = executor.scheduleWithFixedDelay(
-                routine(gateway.getImmutableSetOfObservableServers()),
+                routine(),
                 initialDelaySec,
                 delayBetweenSeriesSec,
                 TimeUnit.SECONDS

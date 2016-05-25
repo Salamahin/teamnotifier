@@ -33,4 +33,9 @@ public class ResourceAction extends DescribedUserNotification {
                 description
         );
     }
+
+    @Override
+    public String toString() {
+        return "ResourceAction{} " + super.toString();
+    }
 }

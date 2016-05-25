@@ -2,12 +2,15 @@ package com.home.teamnotifier.core.responses.status;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.home.teamnotifier.db.ServerEntity;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.time.Instant;
 
 import static com.home.teamnotifier.core.responses.SerializationTestHelper.testDeserializeFromJson;
 import static com.home.teamnotifier.core.responses.SerializationTestHelper.testSerializesToJson;
+import static org.mockito.Mockito.*;
 
 public class EnvironmentsInfoTest {
     private EnvironmentsInfo createFineInfo() {
@@ -19,11 +22,14 @@ public class EnvironmentsInfoTest {
     }
 
     private ServerInfo createFineServerInfo() {
+        final ServerEntity entity = mock(ServerEntity.class);
+        doReturn(1).when(entity).getId();
+        doReturn("server").when(entity).getName();
+        doReturn(Sets.newHashSet("user")).when(entity).getImmutableSetOfSubscribers();
+
         return new ServerInfo(
-                1,
-                "server",
+                entity,
                 Sets.newHashSet(createFineResourceInfo()),
-                Sets.newHashSet("user"),
                 true
         );
     }

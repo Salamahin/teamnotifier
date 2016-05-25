@@ -63,7 +63,7 @@ function SideMenuView() {
 		serverNodes[server.id] = node;
 	}
 
-	function buildEnverironmentServerListNodeName(environment, server) {
+	function buildEnvironmentServerListNodeName(environment, server) {
 		return environment.name + " " + server.name;
 	}
 
@@ -73,7 +73,7 @@ function SideMenuView() {
 		var selectionButton = document.createElement("a");
 		selectionButton.href = "#workbench";
 		selectionButton.classList.add("server_selection_button");
-		selectionButton.innerHTML= buildEnverironmentServerListNodeName(environment, server);
+		selectionButton.innerHTML= buildEnvironmentServerListNodeName(environment, server);
 		selectionButton.onclick = function() {
 			showServerSelection(getResourcesListNode(node));
 			that.serverSelectionHandler(server);
@@ -87,7 +87,9 @@ function SideMenuView() {
 
 		node.appendChild(outerDiv);
 
-		showServerSubscribtion(node, server);	
+		showServerSubscription(node, server);	
+		showServerOnlineStatus(node, server);
+
 		return node;
 	}
 
@@ -150,13 +152,30 @@ function SideMenuView() {
 		}
 	}
 
-	function showServerSubscribtion(node, server) {
-		var subscribtionInfoHolder = node.querySelector("div > div");
-		if(isUserSubscribedOnServer(server) && !subscribtionInfoHolder.classList.contains("subscribed"))
-			subscribtionInfoHolder.classList.add("subscribed");
+	function showServerSubscription(node, server) {
+		var subscriptionInfoHolder = node.querySelector("div > div");
+		if(isUserSubscribedOnServer(server) && !subscriptionInfoHolder.classList.contains("subscribed"))
+			subscriptionInfoHolder.classList.add("subscribed");
 		else
-			subscribtionInfoHolder.classList.remove("subscribed");
+			subscriptionInfoHolder.classList.remove("subscribed");
 	
+	}
+
+	function showServerOnlineStatus(node, server) {
+		var onlineStatusHolder = node.querySelector("div > div");
+		
+		if(server.isOnline === null) {
+			onlineStatusHolder.classList.remove("online");
+			onlineStatusHolder.classList.remove("offline");	
+			return;
+		}
+
+		if(server.isOnline) {
+			onlineStatusHolder.classList.add("online");
+			return;
+		}
+
+		onlineStatusHolder.classList.add("offline");
 	}
 
 	SideMenuView.prototype.onServerAdded = function(environment, server) {
@@ -174,11 +193,12 @@ function SideMenuView() {
 
 	SideMenuView.prototype.onSubscribersChanged = function(server) {
 		var node = serverNodes[server.id];
-		showServerSubscribtion(node, server);
+		showServerSubscription(node, server);
 	}
 
 	SideMenuView.prototype.onOnlineStatusChanged = function(server) {
-		//TODO
+		var node = serverNodes[server.id];
+		showServerOnlineStatus(node, server);
 	}
 
 	SideMenuView.prototype.setEnvironmentMonitor = function(monitor) {

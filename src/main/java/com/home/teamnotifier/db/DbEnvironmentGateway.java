@@ -68,10 +68,8 @@ public class DbEnvironmentGateway implements EnvironmentGateway {
                 .collect(toSet());
 
         return new ServerInfo(
-                entity.getId(),
-                entity.getName(),
+                entity,
                 resources,
-                entity.getImmutableSetOfSubscribers(),
                 availabilityMap.get(entity)
         );
     }

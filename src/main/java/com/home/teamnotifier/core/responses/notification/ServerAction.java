@@ -33,4 +33,9 @@ public class ServerAction extends DescribedUserNotification {
                 description
         );
     }
+
+    @Override
+    public String toString() {
+        return "ServerAction{} " + super.toString();
+    }
 }
