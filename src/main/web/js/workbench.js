@@ -240,7 +240,7 @@ Workbench.prototype.freeRequestSuccessHandler = function (target) {
     throw new Error("not bound");
 };
 
-Workbench.prototype.subscribeRequestSuccessHandler = function (subscribersInfo) {
+Workbench.prototype.subscribeRequestSuccessHandler = function (serverInfo) {
     throw new Error("not bound");
 };
 

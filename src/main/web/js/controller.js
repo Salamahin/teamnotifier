@@ -88,8 +88,8 @@ function parseNotification(notification) {
 	}
 }
 
-function parseSubscribersInfo(subscribersInfo) {
-	ENVIRONMENT_MONITOR.setSubscribers(subscribersInfo.targetId, subscribersInfo.subscribers);
+function parseServerInfo(serverInfo) {
+	ENVIRONMENT_MONITOR.updateServerInfo(serverInfo);
 }
 
 
@@ -148,7 +148,7 @@ function bind() {
 
  	WORKBENCH.reserveRequestSuccessHandler = VIEW.showReservationConfirmation;
  	WORKBENCH.freeRequestSuccessHandler = VIEW.showFreeConfirmation;
- 	WORKBENCH.subscribeRequestSuccessHandler = parseSubscribersInfo;
+ 	WORKBENCH.subscribeRequestSuccessHandler = parseServerInfo;
  	WORKBENCH.unsubscribeRequestSuccessHandler = VIEW.showUnsubscribtionConfirmation;
 	WORKBENCH.serverActionRequestSuccessHandler = VIEW.showServerActionConfirmation;
 	WORKBENCH.resourceActionRequestSuccessHandler = VIEW.showResourceActionConfirmation

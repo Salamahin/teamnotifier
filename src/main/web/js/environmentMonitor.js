@@ -77,6 +77,7 @@ function EnvironmentMonitor() {
 	}
 
 	function fireServerChanges(oldServer, newServer) {
+		
 		if(oldServer.isOnline != newServer.isOnline) {
 			fireOnlineStatusChanged(newServer);
 			return;
@@ -167,14 +168,29 @@ function EnvironmentMonitor() {
 		fireOnlineStatusChanged(server);
 	}
 
-	EnvironmentMonitor.prototype.setSubscribers = function(serverId, subscribers) {
-		var server = servers[serverId];
+	EnvironmentMonitor.prototype.updateServerInfo = function(server) {
+		var newServer = clone(server);
+		updateServer(undefined, newServer);
+		for(var i = 0; i<newServer.resources.length; i++)
+			updateResource(undefined, clone(newServer.resources[i]));
+	}
 
-		if(arraysHaveSameContent(server.subscribers, subscribers))
-			return;
+	EnvironmentMonitor.prototype.clearServer = function(serverId) {
+		var oldServer = servers[serverId];
 
-		server.subscribers = subscribers.slice(0);
-		fireSubscribersChanged(server);
+		var newServer = clone(oldServer);		
+		newServer.subscribers = [];
+
+		updateServer(undefined, newServer);
+		
+		for(var i = 0; i<oldServer.resources.length; i++) {
+			var oldResource = oldServer.resources[i];
+
+			var newResource = clone(oldResource);
+			newResource.occupationInfo = undefined;
+
+			updateResource(undefined, newResource);
+		}
 	}
 
 	EnvironmentMonitor.prototype.addSubscriber = function(serverId, user) {

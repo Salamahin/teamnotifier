@@ -105,6 +105,8 @@ function SubscribtionView() {
 
 	function showSubscribers() {
 		removeChildren(usersHolder);
+		if(!currentUserSubscribedOnServer(selectedTarget))
+			return;
 
 		for(var i = 0; i<selectedTarget.subscribers.length; i++) {
 			var avatarNode = that.avatarCreator.getAvatarNode(selectedTarget.subscribers[i]);
@@ -148,7 +150,7 @@ function SubscribtionView() {
 	}
 
 	SubscribtionView.prototype.unsubcribtionSuccess = function(server) {
-		environmentMonitor.setSubscribers(server.id, []);
+		environmentMonitor.clearServer(server.id);
 	}
 
 	SubscribtionView.prototype.reservationSuccess = function(resource) {
