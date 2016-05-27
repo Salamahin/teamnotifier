@@ -1,17 +1,14 @@
 function ChatView() {
 	const that = this;
 
-	const serversActions = [];
-	const resourcesActions = [];
-	const serversActionsDates = [];
-	const resourcesActionsDates = [];
-	const serverActionsOnceRequested = [];
-	const resourceActionsOnceRequested=[];
+	var serverHistoryMonitor;
+	var resourceHistoryMonitor;
 
 	this.avatarCreator = undefined;
 	this.currentUser = undefined;
 
 	var selectedTarget;
+	var previousButtonClicks = 0;
 
 	function disable(node) {
 		if(!node.classList.contains("disabled"))
@@ -136,14 +133,12 @@ function ChatView() {
 			parentNode.removeChild(messages[i]);
 	}
 	
-	function scrollMessagesToTop(target) {
-		if(target.id == selectedTarget.id)
-			messagesHolder.scrollTop = 0;
+	function scrollMessagesToTop() {
+		messagesHolder.scrollTop = 0;
 	}
 
-	function scrollMessagesToBottom(target) {
-		if(target.id == selectedTarget.id)
-			messagesHolder.scrollTop = messagesHolder.scrollHeight;
+	function scrollMessagesToBottom() {
+		messagesHolder.scrollTop = messagesHolder.scrollHeight;
 	}
 
 	function rebuildChatForTarget(target) {
@@ -160,54 +155,16 @@ function ChatView() {
 				messagesHolder.appendChild(resourcesActions[target.id][i]);
 	}
 
-	function sortByDate(actions) {
-		actions.sort(function(a, b) {
-			return new Date(a.timestamp) - new Date(b.timestamp);
-		});
+	function idToday(date) {
+		return new Date().toDateString() == date.toDateString();
 	}
 
-	function pushToBufferOneNode(notification, expectedType, buffer) {
-		if(notification.type != expectedType)
-			return;
 
-		if(!buffer[notification.targetId])
-			buffer[notification.targetId] = [];
-
-		var node = getActionInfoNode(notification);
-		buffer[notification.targetId].push(node);
-		sortByDate(buffer[notification.targetId]);
-	}
-
-	function pushToBufferSeveralNodes(notification, expectedType, buffer) {
-		if(notification.type != expectedType)
-			return;
-
-		if(!buffer[notification.targetId])
-			buffer[notification.targetId] = [];
-	
-		if(notification.actions.length == 0)
-			return;		
-
-		for(var i = 0; i< notification.actions.length; i++) {
-			var node = getActionInfoNode(notification.actions[i]);
-			buffer[notification.targetId].push(node);
-		}
-
-		sortByDate(buffer[notification.targetId]);
-	}
-
-	function notificationToNode(notification) {
-		pushToBufferOneNode(notification, "ServerActionNotification", serversActions);
-		pushToBufferOneNode(notification, "ResourceActionNotification", resourcesActions);
-		pushToBufferSeveralNodes(notification, "ServerActionsHistory", serversActions);
-		pushToBufferSeveralNodes(notification, "ResourceActionsHistory", resourcesActions);
-	}
-
-	function callHistoryHandler(target, from, to) {
+	function callHistoryHandler(target, daysBeforeToday) {
 		if(target.type == "ResourceInfo")
-			that.resourceActionsHistoryHandler(target, from, to);
+			resourceHistoryMonitor.loadHistorieForDay(target.id, daysBeforeToday);
 		else if(target.type == "ServerInfo") 
-			that.serverActionsHistoryHandler(target, from, to);
+			serverHistoryMonitor.loadHistorieForDay(target.id, daysBeforeToday);
 	}
 
 	function callActionHandler(from, to) {
@@ -217,20 +174,6 @@ function ChatView() {
 			that.newServerActionHandler(selectedTarget, from, to);
 	}
 
-    function getHistoryIfNoData(target, expectedType, buffer) {
-		if(target.type != expectedType)
-			return;
-
-		if(buffer[target.id])
-			return;
-
-		var lastMoment = lastMomentOfDate(new Date());
-		var firstMoment = firstMomentOfDate(lastMoment);
-
-		callHistoryHandler(target, firstMoment, lastMoment);
-
-		buffer[target.id] = firstMoment;
-	}
 
 	ChatView.prototype.select = function(target) {
 		selectedTarget = target;
@@ -246,75 +189,45 @@ function ChatView() {
 		scrollMessagesToBottom(target);
 	}
 
-	ChatView.prototype.showNotification = function(notification) {
-		notificationToNode(notification);
-		rebuildChatForTarget(selectedTarget);
-	}
-
-	function buildConfirmationNotification(target, description) {
+	function pushConfirmationToHistoryMonitor(target, description) {
 		var confirmation = new Object();
-
-		if(target.type == "ServerInfo")
-			confirmation.type = "ServerActionNotification";
-		else if(target.type == "ResourceInfo")
-			confirmation.type = "ResourceActionNotification";
 
 		confirmation.actor = that.currentUser;
 		confirmation.targetId = target.id;
 		confirmation.timestamp = (new Date()).toISOString();
 		confirmation.description = description;
 
-		return confirmation;
+		if(target.type == "ServerInfo")
+			serverHistoryMonitor.parseActionsNotification(confirmation);
+		else if(target.type == "ResourceInfo")
+			resourceHistoryMonitor.parseActionsNotification(confirmation);
 	}
 
-	ChatView.prototype.showServerAction = function(server, description) {
-		that.showNotification(buildConfirmationNotification(server, description));
-		scrollMessagesToBottom(server);
+
+	ChatView.prototype.setServerHistoryMonitor = function(monitor) {
+		serverHistoryMonitor = monitor;
+
+		serverHistoryMonitor.actionsHandled = function(targetId, from, actions) {
+			if(targetId != selectedTarget.id)
+				return;
+		}
 	}
 
-	ChatView.prototype.showResourceAction = function(resource, description) {
-		that.showNotification(buildConfirmationNotification(resource, description));
-		scrollMessagesToBottom(resource);
-	}
+	ChatView.prototype.setResourceHistoryMonitor = function(monitor) {
+		resourceHistoryMonitor = monitor;
 
-	ChatView.prototype.showServerActionsHistory = function(server, actions) {
-		that.showNotification(actions);
-		
-		if(!serverActionsOnceRequested[server.id]) {
-			scrollMessagesToBottom(server);
-			serverActionsOnceRequested[server.id] = true;
-		} else
-			scrollMessagesToTop(server);
-	}
-
-	ChatView.prototype.showResourceActionsHistory = function(resource, actions) {
-		that.showNotification(actions);
-		
-		if(!resourceActionsOnceRequested[resource.id]) {
-			scrollMessagesToBottom(resource);
-			resourceActionsOnceRequested[resource.id] = true;
-		} else
-			scrollMessagesToTop(resource);
+		resourceHistoryMonitor.actionsHandled = function(targetId, from, actions) {
+			if(targetId != selectedTarget.id)
+				return;
+		}
 	}
 
 	loadMoreButton.onclick = function(e) {
 		if(isDisabled(loadMoreButton))
 			return;
-	
-		var buffer;
 
-		if(selectedTarget.type == "ServerInfo")
-			buffer = serversActionsDates;
-		else
-			buffer = resourcesActionsDates;
-		
-		var prevDate = buffer[selectedTarget.id];
-
-		var fromDate = firstMomentOfDayBefore(prevDate);
-		var toDate = lastMomentOfDate(fromDate);
-		
-		buffer[selectedTarget.id] = fromDate;
-		callHistoryHandler(selectedTarget, fromDate, toDate);
+		previousButtonClicks++;
+			
 	}
 
 	makeActionButton.onclick = function() {
