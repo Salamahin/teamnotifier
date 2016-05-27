@@ -33,6 +33,13 @@ function SubscribtionView() {
 			return;
 		}
 
+		if(!actionsAvailable() && selectedTarget.type == "ResourceInfo") {
+			prepareToSubscribe(environmentMonitor.getServer(selectedTarget.serverId));
+			actionButton.innerHTML = "subscribe on the server first";
+
+			return;
+		}
+
 		if(selectedTarget.type == "ResourceInfo" && selectedTarget.occupationInfo && !currentUserReservedResource(selectedTarget)) {
 			disableActionButton();
 			actionButton.innerHTML = "reserved by other user";
@@ -40,6 +47,18 @@ function SubscribtionView() {
 		}
 
 		enableActionButton();
+
+		if(selectedTarget.type == "ResourceInfo") {
+			currentUserReservedResource(selectedTarget)
+				? prepareToFree(selectedTarget)
+				: prepareToReserve(selectedTarget);
+			
+			return;
+		}
+
+		currentUserSubscribedOnServer(selectedTarget)
+			? prepareToUnsubscribe(selectedTarget)
+			: prepareToSubscribe(selectedTarget);
 	}
 
 	function currentUserReservedResource(target) {
@@ -86,16 +105,12 @@ function SubscribtionView() {
 		}
 	}
 
-	function installButtonHandler() {
-		if(selectedTarget.type == "ServerInfo") {
-			currentUserSubscribedOnServer(selectedTarget) 
-				? prepareToUnsubscribe(selectedTarget) 
-				: prepareToSubscribe(selectedTarget);
-		} else if(selectedTarget.type == "ResourceInfo") {
-			currentUserReservedResource(selectedTarget)
-				? prepareToFree(selectedTarget)
-				: prepareToReserve(selectedTarget);
-		}
+	function actionsAvailable() {
+		if(selectedTarget.type == "ServerInfo") 
+			return true;
+
+		var server = environmentMonitor.getServer(selectedTarget.serverId);
+		return currentUserSubscribedOnServer(server);
 	}
 
 	function removeChildren(parentNode) {
@@ -137,7 +152,6 @@ function SubscribtionView() {
 			showReserver();
 		}
 		
-		installButtonHandler();
 		updateButtonState();
 	}
 
@@ -167,13 +181,11 @@ function SubscribtionView() {
 	}
 
 	SubscribtionView.prototype.onSubscribersChanged = function(server) {
-		if(selectedTarget && server.id == selectedTarget.id)
-			showActualData(selectedTarget);
+		showActualData(selectedTarget);
 	}
 
 	SubscribtionView.prototype.onReservationChanged = function(resource) {
-		if(selectedTarget && resource.id == selectedTarget.id)
-			showActualData(selectedTarget);
+		showActualData(selectedTarget);
 	}
 
 	updateButtonState();

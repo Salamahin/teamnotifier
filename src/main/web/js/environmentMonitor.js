@@ -98,10 +98,14 @@ function EnvironmentMonitor() {
 	}
 
 	function fireResourceChanges(oldResource, newResource) {
-		if(oldResource.occupationInfo != newResource.occupationInfo) {
+
+		if(oldResource.occupationInfo !== newResource.occupationInfo) {
 			fireReservationChanged(newResource);
 			return;
 		}
+
+		if(!newResource.occupationInfo)
+			return;
 
 		if(oldResource.occupationInfo.userName != newResource.occupationInfo.userName) {
 			fireReservationChanged(newResource);
@@ -126,10 +130,14 @@ function EnvironmentMonitor() {
 		var oldResource = resources[newResource.id];
 		resources[newResource.id] = newResource;
 
-		if(!oldResource)
+		if(!oldResource) {
+			newResource.serverId = server.id;
 			fireResourceAdded(server, newResource);
-		else 
+		}
+		else  {
+			newResource.serverId = oldResource.serverId;
 			fireResourceChanges(oldResource, newResource);
+		}
 	}
 
 	function clone(obj) {
