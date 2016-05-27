@@ -26,10 +26,10 @@ function ChatView() {
 		return node.classList.contains("disabled");
 	}
 
-	var makeActionButton = document.getElementById("make_action_button");
-	var loadMoreButton = document.getElementById("load_more_button");
-	var messagesHolder = document.getElementById("messages_holder");
-	var inputBox = document.getElementById("action_input");
+	const makeActionButton = document.getElementById("make_action_button");
+	const loadMoreButton = document.getElementById("load_more_button");
+	const messagesHolder = document.getElementById("messages_holder");
+	const inputBox = document.getElementById("action_input");
 
 	disable(makeActionButton);
 	disable(loadMoreButton);
