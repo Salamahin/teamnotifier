@@ -132,14 +132,17 @@ function ChatView() {
 			scrollMessagesToBottom();
 	}
 
-	function callActionHandler(from, to) {
-		getHistoryMonitor().newResourceActionHandler(selected, from, to);
+	function callActionHandler(details) {
+		if(selectedTarget.type == "ServerInfo")
+			that.newServerActionHandler(selectedTarget, details);
+		else if(selectedTarget.type == "ResourceInfo")
+			that.newResourceActionHandler(selectedTarget, details);
 	}
 
 	ChatView.prototype.select = function(target) {
 		selectedTarget = target;
 
-		getHistoryMonitor().loadHistoryForDay(selectedTarget);
+ 		getHistoryMonitor().loadHistoryForDay(selectedTarget);
 
 		tryEnableMakeActionButton();
 		enable(loadMoreButton);
@@ -176,7 +179,7 @@ function ChatView() {
 		if(isDisabled(loadMoreButton))
 			return;
 
-		getHistoryMonitor().loadMoreHistory(selectedTarget.id);
+		getHistoryMonitor().loadMoreHistory(selectedTarget);
 	}
 
 	makeActionButton.onclick = function() {

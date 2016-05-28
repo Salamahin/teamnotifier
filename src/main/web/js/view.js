@@ -10,11 +10,15 @@ function View() {
 	var serverHistMonitor = undefined;
 	var resourceHistMonitor = undefined;
 
+	var user;
+
 	function jumpTo(anchor){
 		window.location.href = "#"+anchor;
 	}
 
 	View.prototype.setCurrentUser = function(username) {
+		user = username;
+		
 		sideMenuView.user = username;
 		chatView.currentUser = username;
 		subscribtionView.user = username;
@@ -45,11 +49,11 @@ function View() {
 	};
 
 	View.prototype.showServerActionConfirmation = function(server, description) {
-		chatView.showServerAction(server, description);
+		serverHistMonitor.pushConfirmation(server, user, description);
 	}
 
 	View.prototype.showResourceActionConfirmation = function(resource, description) {
-		chatView.showResourceAction(resource, description);
+		resourceHistMonitor.pushConfirmation(resource, user, description);
 	}
 
 	View.prototype.showReservationConfirmation = function(resource) {
@@ -180,7 +184,6 @@ function View() {
 
 		serverHistMonitor.getActions = that.serverActionsHistoryHandler;
 		resourceHistMonitor.getActions = that.resourceActionsHistoryHandler;
-
 		chatView.setServerHistoryMonitor(serverHistMonitor);
 		chatView.setResourceHistoryMonitor(resourceHistMonitor);
 	}

@@ -72,7 +72,7 @@ function HistoryMonitor() {
 		return updatedActionsInCache;
 	}
 
-	HistoryMonitor.prototype.parseActionsNotification = function(actionsNotification) {
+	that.parseActionsNotification = function(actionsNotification) {
 		var actions = actionsNotification.actions;
 		var targetId = actionsNotification.targetId;
 
@@ -80,20 +80,18 @@ function HistoryMonitor() {
 		that.actionsHandled(targetId, allActionsForTarget);
 	}
 
-	HistoryMonitor.prototype.parseActionNotification = function(actionNotification) {
+	that.pushConfirmation = function(target, actor, description) {
 		var action = new Object();
 		action.type = "ActionInfo";
-		action.actor = actionsNotification.actor;
-		action.timestamp = actionsNotification.timestamp;
-		action.description = actionsNotification.description;
+		action.actor = actor;
+		action.timestamp = new Date().toISOString();
+		action.description = description;
 
-		var targetId = actionNotification.targetId;
-
-		var allActionsForTarget = putInCache(targetId, action);
-		that.actionsHandled(targetId, allActionsForTarget);
+		var allActionsForTarget = putInCache(target.id, action);
+		that.actionsHandled(target.id, allActionsForTarget);
 	}
 
-	HistoryMonitor.prototype.loadHistoryForDay = function(target) {
+	that.loadHistoryForDay = function(target) {
 		loadActions(target);
 	}
 
@@ -103,15 +101,15 @@ function HistoryMonitor() {
 		return moreDaysLoaded[targetId]++;
 	}
 
-	HistoryMonitor.prototype.loadMoreHistory = function(target) {
-		var daysLoaded = getDaysLoaded(target.id) + 1;
+	that.loadMoreHistory = function(target) {
+		var daysLoaded = getDaysLoaded(target.id);
 		
 		var today = new Date();
 		var targetDate = subscractDaysFromToday(daysLoaded);
 		var from = firstMomentOfDate(targetDate);
 		var to = lastMomentOfDate(targetDate);
 
-		getActions(target.id, from, to);
+		that.getActions(target, from, to);
 	}
 }
 
