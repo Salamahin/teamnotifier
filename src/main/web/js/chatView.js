@@ -8,7 +8,8 @@ function ChatView() {
 	this.currentUser = undefined;
 
 	var selectedTarget;
-	var previousButtonClicks = 0;
+	const serverActionsDaysLoaded = [];
+	const resourceActionsDaysLoaded = [];
 
 	function disable(node) {
 		if(!node.classList.contains("disabled"))
@@ -31,34 +32,11 @@ function ChatView() {
 	disable(makeActionButton);
 	disable(loadMoreButton);
 
-	function lastMomentOfDate(date) {
-		var d = new Date(date.getTime());
-
-		d.setHours(23);
-		d.setMinutes(59);
-		d.setSeconds(59);
-		d.setMilliseconds(999);
-
-		return d;
-	}
-
-	function firstMomentOfDate(date) {
-		var d = new Date(date.getTime());
-
-		d.setHours(0);
-		d.setMinutes(0);
-		d.setSeconds(0);
-		d.setMilliseconds(0);
-
-		return d;
-	}
-
-	function firstMomentOfDayBefore(date) {
-		var d = firstMomentOfDate(date);
-
-		d.setDate(date.getDate() - 1);
-
-		return d;
+	function getHistoryMonitor() {
+		if(selectedTarget.type == "ResourceInfo")
+			return resourceHistoryMonitor;
+		if(selectedTarget.type == "ServerInfo")
+			return serverHistoryMonitor;
 	}
 
 	function getSummaryText(action) {
@@ -75,7 +53,6 @@ function ChatView() {
 
 		return summary;
 	}
-
 
 	function getActionDescriptionNode(action) {
 		var label = document.createElement("label");
@@ -133,60 +110,39 @@ function ChatView() {
 			parentNode.removeChild(messages[i]);
 	}
 	
-	function scrollMessagesToTop() {
-		messagesHolder.scrollTop = 0;
+	function messagesIsScrolledToBottom() {
+		return messageHolder.scrollTop == messagesHolder.scrollHeight;
 	}
 
 	function scrollMessagesToBottom() {
 		messagesHolder.scrollTop = messagesHolder.scrollHeight;
 	}
 
-	function rebuildChatForTarget(target) {
-		if(target.id != selectedTarget.id)
+	function showActions(targetId, actions) {
+		if(targetId != selectedTarget.id)
 			return;
 
+		var messagesIsScrolledToBottom = messagesIsScrolledToBottom();
 		removeMessagesChildren(messagesHolder);
 
-		if(target.type == "ServerInfo" && serversActions[target.id]) 
-			for(var i = 0; i < serversActions[target.id].length; i++)
-				messagesHolder.appendChild(serversActions[target.id][i]);
-		else if(target.type == "ResourceInfo" && resourcesActions[target.id])
-			for(var i = 0; i < resourcesActions[target.id].length; i++)
-				messagesHolder.appendChild(resourcesActions[target.id][i]);
-	}
+		for(var i = 0; i < actions.length; i++)
+			messagesHolder.appendChild(getActionInfoNode(actions[i]);
 
-	function idToday(date) {
-		return new Date().toDateString() == date.toDateString();
-	}
-
-
-	function callHistoryHandler(target, daysBeforeToday) {
-		if(target.type == "ResourceInfo")
-			resourceHistoryMonitor.loadHistorieForDay(target.id, daysBeforeToday);
-		else if(target.type == "ServerInfo") 
-			serverHistoryMonitor.loadHistorieForDay(target.id, daysBeforeToday);
+		if(messagesIsScrolledToBottom)
+			scrollMessagesToBottom();
 	}
 
 	function callActionHandler(from, to) {
-		if(selectedTarget.type == "ResourceInfo")
-			that.newResourceActionHandler(selectedTarget, from, to);
-		else if(selectedTarget.type == "ServerInfo") 
-			that.newServerActionHandler(selectedTarget, from, to);
+		getHistoryMonitor().newResourceActionHandler(selected, from, to);
 	}
-
 
 	ChatView.prototype.select = function(target) {
 		selectedTarget = target;
 
-		getHistoryIfNoData(target, "ServerInfo", serversActionsDates);
-		getHistoryIfNoData(target, "ResourceInfo", resourcesActionsDates);
-
-		rebuildChatForTarget(target);
+		getHistoryMonitor().loadHistoryForDay(selectedTarget.id);
 
 		tryEnableMakeActionButton();
 		enable(loadMoreButton);
-
-		scrollMessagesToBottom(target);
 	}
 
 	function pushConfirmationToHistoryMonitor(target, description) {
@@ -197,28 +153,22 @@ function ChatView() {
 		confirmation.timestamp = (new Date()).toISOString();
 		confirmation.description = description;
 
-		if(target.type == "ServerInfo")
-			serverHistoryMonitor.parseActionsNotification(confirmation);
-		else if(target.type == "ResourceInfo")
-			resourceHistoryMonitor.parseActionsNotification(confirmation);
+		getHistoryMonitor().parseActionsNotification(confirmation);
 	}
-
 
 	ChatView.prototype.setServerHistoryMonitor = function(monitor) {
 		serverHistoryMonitor = monitor;
 
-		serverHistoryMonitor.actionsHandled = function(targetId, from, actions) {
-			if(targetId != selectedTarget.id)
-				return;
+		serverHistoryMonitor.actionsHandled = function(targetId, actions) {
+			showActions(targetId, actions);
 		}
 	}
 
 	ChatView.prototype.setResourceHistoryMonitor = function(monitor) {
 		resourceHistoryMonitor = monitor;
 
-		resourceHistoryMonitor.actionsHandled = function(targetId, from, actions) {
-			if(targetId != selectedTarget.id)
-				return;
+		resourceHistoryMonitor.actionsHandled = function(targetId, actions) {
+			showActions(targetId, actions);
 		}
 	}
 
@@ -226,14 +176,12 @@ function ChatView() {
 		if(isDisabled(loadMoreButton))
 			return;
 
-		previousButtonClicks++;
-			
+		getHistoryMonitor().loadMoreHistory(selectedTarget.id);
 	}
 
 	makeActionButton.onclick = function() {
-		if(isDisabled(makeActionButton)) {
+		if(isDisabled(makeActionButton)) 
 			return;
-		}
 
 		var details = inputBox.value;
 		callActionHandler(details);

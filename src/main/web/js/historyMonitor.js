@@ -2,7 +2,7 @@ function HistoryMonitor() {
 	const that = this;
 	
 	const cachedActions = [];
-	
+	const moreDaysLoaded = [];
 
 	function lastMomentOfDate(date) {
 		var d = new Date(date.getTime());
@@ -36,11 +36,7 @@ function HistoryMonitor() {
 		return date;
 	}
 
-	function idToday(date) {
-		return new Date().toDateString() == date.toDateString();
-	}
-
-	function allocateCachedActions(targetId, from) {
+	function allocateCachedActions(targetId) {
 		var notLoaded = false;
 
 		if(cachedActions[targetId] === undefined) {
@@ -48,48 +44,40 @@ function HistoryMonitor() {
 			cachedActions[targetId] = [];
 		}
 
-		if(cachedActions[targetId][from] === undefined) {
-			notLoaded = true;
-			cachedActions[targetId][from] = [];
-		}
-
 		return notLoaded;
 	}
 
-	function getActionsForDate(targetId, date) {
-		if(isToday(date)) {
-			that.getActions(firstMomentOfDate(date), lastMomentOfDate(date));
-			return;
-		}
-
-		var from = firstMomentOfDate(date);
-		
-		var notLoaded = allocateCachedActions(targetId, from);
-
+	function loadActions(targetId) {
+		var notLoaded = allocateCachedActions(targetId);
 		if(notLoaded) {
-			var to = lastMomentOfDate(date);
-			that.getActions(from, to);
+			getActionsForDate(new Date());
 			return;
 		}
-
-		return cachedActions[targetId][from];
+		
+		that.actionsHandled(targetId, cachedActions[targetId]);
 	}
 
-	HistoryMonitor.prototype.sortByDate = function(actions) {
+	function sortByDate(actions) {
 		actions.sort(function(a, b) {
 			return new Date(a.timestamp) - new Date(b.timestamp);
 		});
 	}
 
+	function putInCache(targetId, actions) {
+		var actionsInCache = cachedActions[targetId];
+		var updatedActionsInCache.concat(actions);
+		sortByDate(updatedActionsInCache);
+		cachedActions[targetId] = updatedActionsInCache;
+
+		return updatedActionsInCache;
+	}
+
 	HistoryMonitor.prototype.parseActionsNotification = function(actionsNotification) {
 		var actions = actionsNotification.actions;
 		var targetId = actionsNotification.targetId;
-		var from = actionsNotification.from;
 
-		that.sortByDate(actions);
-		cachedActions[targetId][firstMomentOfDate(from)] = actions;
-
-		that.actionsHandled(targetId, from, actions);
+		var allActionsForTarget = putInCache(targetId, actions);
+		that.actionsHandled(targetId, allActionsForTarget);
 	}
 
 	HistoryMonitor.prototype.parseActionNotification = function(actionNotification) {
@@ -99,20 +87,31 @@ function HistoryMonitor() {
 		action.timestamp = actionsNotification.timestamp;
 		action.description = actionsNotification.description;
 
-		var from = firstMomentOfDate(actionsNotification.timestamp));
 		var targetId = actionNotification.targetId;
 
-		allocateCachedActions(targetId, from);
-		
-		var actions = cachedActions[targetId][from];
-		actions.push(action);
-		that.sortByDate(actions);
-
-		that.actionsHandled(targetId, from, actions);
+		var allActionsForTarget = putInCache(targetId, action);
+		that.actionsHandled(targetId, allActionsForTarget);
 	}
 
-	HistoryMonitor.prototype.loadHistorieForDay = function(targetId, daysBeforeToday) {
-		getActionsForDate(targetId, subscractDaysFromToday(daysBeforeToday));
+	HistoryMonitor.prototype.loadHistoryForDay = function(targetId)
+		loadActions(targetId);
+	}
+
+	function getDaysLoaded(targetId) {
+		if(moreDaysLoaded[targetId] === undefined)
+			moreDaysLoaded[targetId] = 0;
+		return moreDaysLoaded[targetId]++;
+	}
+
+	HistoryMonitor.prototype.loadMoreHistory = function(targetId) {
+		var daysLoaded = getDaysLoaded(targetId) + 1;
+		
+		var today = new Date();
+		var targetDate = subscractDaysFromToday(daysLoaded);
+		var from = firstMomentOfDate(targetDate);
+		var to = lastMomentOfDate(targetDate);
+
+		getActions(targetId, from, to);
 	}
 }
 
@@ -120,7 +119,7 @@ HistoryMonitor.prototype.getActions = function(targetId, from, to) {
 	throw new Error("not binded");
 }
 
-HistoryMonitor.prototype.actionsHandled = function(targetId, from, actions) {
+HistoryMonitor.prototype.actionsHandled = function(targetId, actions) {
 	throw new Error("not binded");
 }
 
