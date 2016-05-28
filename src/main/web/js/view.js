@@ -7,6 +7,8 @@ function View() {
 	var chatView = undefined;
 	var avatarCreator = undefined;
 	var environmentMonitor = undefined;
+	var serverHistMonitor = undefined;
+	var resourceHistMonitor = undefined;
 
 	function jumpTo(anchor){
 		window.location.href = "#"+anchor;
@@ -35,11 +37,11 @@ function View() {
 	}
 	
 	View.prototype.showServerActionsHistory = function(server, actions) {
-		chatView.showServerActionsHistory(server, actions);
+		serverHistMonitor.parseActionsNotification(actions);
 	};
 
 	View.prototype.showResourceActionsHistory = function(resource, actions) {
-		chatView.showResourceActionsHistory(resource, actions);
+		resourceHistMonitor.parseActionsNotification(actions);
 	};
 
 	View.prototype.showServerActionConfirmation = function(server, description) {
@@ -168,10 +170,19 @@ function View() {
 	View.prototype.setChatView = function(view) {
 		chatView = view;
 		bindAvatarCreator();
-		chatView.serverActionsHistoryHandler = that.serverActionsHistoryHandler;
-		chatView.resourceActionsHistoryHandler = that.resourceActionsHistoryHandler;
 		chatView.newResourceActionHandler = that.resourceActionHandler;
 		chatView.newServerActionHandler = that.serverActionHandler;
+	}
+
+	View.prototype.setHistoryMonitors = function(serverHistoryMonitor, resourceHistoryMonitor) {
+		resourceHistMonitor = resourceHistoryMonitor;
+		serverHistMonitor = serverHistoryMonitor;
+
+		serverHistMonitor.getActions = that.serverActionsHistoryHandler;
+		resourceHistMonitor.getActions = that.resourceActionsHistoryHandler;
+
+		chatView.setServerHistoryMonitor(serverHistMonitor);
+		chatView.setResourceHistoryMonitor(resourceHistMonitor);
 	}
 }
 

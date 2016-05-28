@@ -26,8 +26,8 @@ function HistoryMonitor() {
 		return d;
 	}
 
-	function getActionsForDay(date) {
-		that.getActions(firstMomentOfDate(date), lastMomentOfDate(date));
+	function getActionsForDay(target, date) {
+		that.getActions(target, firstMomentOfDate(date), lastMomentOfDate(date));
 	}
 
 	function subscractDaysFromToday(days) {
@@ -47,14 +47,14 @@ function HistoryMonitor() {
 		return notLoaded;
 	}
 
-	function loadActions(targetId) {
-		var notLoaded = allocateCachedActions(targetId);
+	function loadActions(target) {
+		var notLoaded = allocateCachedActions(target.id);
 		if(notLoaded) {
-			getActionsForDate(new Date());
+			getActionsForDay(target, new Date());
 			return;
 		}
 		
-		that.actionsHandled(targetId, cachedActions[targetId]);
+		that.actionsHandled(target.id, cachedActions[target.id]);
 	}
 
 	function sortByDate(actions) {
@@ -65,7 +65,7 @@ function HistoryMonitor() {
 
 	function putInCache(targetId, actions) {
 		var actionsInCache = cachedActions[targetId];
-		var updatedActionsInCache.concat(actions);
+		var updatedActionsInCache = actionsInCache.concat(actions);
 		sortByDate(updatedActionsInCache);
 		cachedActions[targetId] = updatedActionsInCache;
 
@@ -93,8 +93,8 @@ function HistoryMonitor() {
 		that.actionsHandled(targetId, allActionsForTarget);
 	}
 
-	HistoryMonitor.prototype.loadHistoryForDay = function(targetId)
-		loadActions(targetId);
+	HistoryMonitor.prototype.loadHistoryForDay = function(target) {
+		loadActions(target);
 	}
 
 	function getDaysLoaded(targetId) {
@@ -103,19 +103,19 @@ function HistoryMonitor() {
 		return moreDaysLoaded[targetId]++;
 	}
 
-	HistoryMonitor.prototype.loadMoreHistory = function(targetId) {
-		var daysLoaded = getDaysLoaded(targetId) + 1;
+	HistoryMonitor.prototype.loadMoreHistory = function(target) {
+		var daysLoaded = getDaysLoaded(target.id) + 1;
 		
 		var today = new Date();
 		var targetDate = subscractDaysFromToday(daysLoaded);
 		var from = firstMomentOfDate(targetDate);
 		var to = lastMomentOfDate(targetDate);
 
-		getActions(targetId, from, to);
+		getActions(target.id, from, to);
 	}
 }
 
-HistoryMonitor.prototype.getActions = function(targetId, from, to) {
+HistoryMonitor.prototype.getActions = function(target, from, to) {
 	throw new Error("not binded");
 }
 

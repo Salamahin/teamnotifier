@@ -22,6 +22,8 @@ var AVATAR_NODE_CREATOR;
 var CHAT_VIEW;
 var SUBSCRIBTION_VIEW;
 var ENVIRONMENT_MONITOR;
+var RESOURCE_HISTORY_MONITOR;
+var SERVER_HISTORY_MONITOR;
 
 function onRequestError(code) {
 	window.alert("Request failed: " + code);
@@ -110,7 +112,9 @@ function bind() {
 		!AVATAR_NODE_CREATOR || 
 		!CHAT_VIEW ||
 		!SUBSCRIBTION_VIEW ||
-		!ENVIRONMENT_MONITOR)
+		!ENVIRONMENT_MONITOR ||
+		!SERVER_HISTORY_MONITOR ||
+		!RESOURCE_HISTORY_MONITOR)
         return;
 
     NOTIFIER.connectionSuccessHandler = onNotifierConnected;
@@ -144,7 +148,7 @@ function bind() {
 	VIEW.setSubcribtionView(SUBSCRIBTION_VIEW);
 	VIEW.setAvatarCreator(AVATAR_NODE_CREATOR);
 	VIEW.setEnvironmentMonitor(ENVIRONMENT_MONITOR);
-
+	VIEW.setHistoryMonitors(SERVER_HISTORY_MONITOR, RESOURCE_HISTORY_MONITOR);
 
  	WORKBENCH.reserveRequestSuccessHandler = VIEW.showReservationConfirmation;
  	WORKBENCH.freeRequestSuccessHandler = VIEW.showFreeConfirmation;
@@ -224,6 +228,11 @@ window.onload = function() {
 	});
 	include("js/environmentMonitor.js", function() {
 		ENVIRONMENT_MONITOR = new EnvironmentMonitor();
+		bind();
+	});
+	include("js/historyMonitor.js", function() {
+		RESOURCE_HISTORY_MONITOR = new HistoryMonitor();
+		SERVER_HISTORY_MONITOR = new HistoryMonitor();
 		bind();
 	});
 };

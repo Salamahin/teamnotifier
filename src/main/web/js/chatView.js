@@ -111,7 +111,7 @@ function ChatView() {
 	}
 	
 	function messagesIsScrolledToBottom() {
-		return messageHolder.scrollTop == messagesHolder.scrollHeight;
+		return messagesHolder.scrollTop == messagesHolder.scrollHeight;
 	}
 
 	function scrollMessagesToBottom() {
@@ -122,13 +122,13 @@ function ChatView() {
 		if(targetId != selectedTarget.id)
 			return;
 
-		var messagesIsScrolledToBottom = messagesIsScrolledToBottom();
+		var scrolled = messagesIsScrolledToBottom();
 		removeMessagesChildren(messagesHolder);
 
 		for(var i = 0; i < actions.length; i++)
-			messagesHolder.appendChild(getActionInfoNode(actions[i]);
+			messagesHolder.appendChild(getActionInfoNode(actions[i]));
 
-		if(messagesIsScrolledToBottom)
+		if(scrolled)
 			scrollMessagesToBottom();
 	}
 
@@ -139,7 +139,7 @@ function ChatView() {
 	ChatView.prototype.select = function(target) {
 		selectedTarget = target;
 
-		getHistoryMonitor().loadHistoryForDay(selectedTarget.id);
+		getHistoryMonitor().loadHistoryForDay(selectedTarget);
 
 		tryEnableMakeActionButton();
 		enable(loadMoreButton);
@@ -201,13 +201,6 @@ function ChatView() {
 	}
 }
 
-ChatView.prototype.serverActionsHistoryHandler = function(server, fromDate, toDate) {
-	throw new Error("not binded");
-}
-
-ChatView.prototype.resourceActionsHistoryHandler = function(resource, fromDate, toDate) {
-	throw new Error("not binded");
-}
 
 ChatView.prototype.newResourceActionHandler = function(resource, details) {
 	throw new Error("not binded");
