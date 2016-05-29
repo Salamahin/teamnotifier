@@ -111,7 +111,7 @@ function ChatView() {
 	}
 	
 	function messagesIsScrolledToBottom() {
-		return messagesHolder.scrollTop == messagesHolder.scrollHeight;
+		return messagesHolder.scrollTop === (messagesHolder.scrollHeight - messagesHolder.offsetHeight);
 	}
 
 	function scrollMessagesToBottom() {
@@ -123,6 +123,8 @@ function ChatView() {
 			return;
 
 		var scrolled = messagesIsScrolledToBottom();
+		var oldScrollHeight = messagesHolder.scrollHeight;
+
 		removeMessagesChildren(messagesHolder);
 
 		for(var i = 0; i < actions.length; i++)
@@ -130,6 +132,8 @@ function ChatView() {
 
 		if(scrolled)
 			scrollMessagesToBottom();
+		else
+			messagesHolder.scrollTop = messagesHolder.scrollHeight - oldScrollHeight;	
 	}
 
 	function callActionHandler(details) {

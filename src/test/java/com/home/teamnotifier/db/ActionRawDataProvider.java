@@ -29,9 +29,9 @@ public final class ActionRawDataProvider {
             final String timestampStr = timestampFormatter.format(timestamp);
             b
                     .newRow(tableName)
-                    .with("actor_id",  userId)
+                    .with("actor_id", userId)
                     .with(targetColumnIdName, targetId)
-                    .with("details", "action")
+                    .with("details", "action" + idGenerator)
                     .with("timestamp", timestampStr)
                     .with("id", idGenerator++)
                     .add();
