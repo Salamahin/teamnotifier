@@ -118,7 +118,7 @@ function ChatView() {
 		messagesHolder.scrollTop = messagesHolder.scrollHeight;
 	}
 
-	function showActions(targetId, actions) {
+	function showActions(targetId, actions, areCurrentActions) {
 		if(targetId != selectedTarget.id)
 			return;
 
@@ -130,7 +130,7 @@ function ChatView() {
 		for(var i = 0; i < actions.length; i++)
 			messagesHolder.appendChild(getActionInfoNode(actions[i]));
 
-		if(scrolled)
+		if(scrolled || areCurrentActions)
 			scrollMessagesToBottom();
 		else
 			messagesHolder.scrollTop = messagesHolder.scrollHeight - oldScrollHeight;	
@@ -166,16 +166,16 @@ function ChatView() {
 	ChatView.prototype.setServerHistoryMonitor = function(monitor) {
 		serverHistoryMonitor = monitor;
 
-		serverHistoryMonitor.actionsHandled = function(targetId, actions) {
-			showActions(targetId, actions);
+		serverHistoryMonitor.actionsHandled = function(targetId, actions, areCurrentActions) {
+			showActions(targetId, actions, areCurrentActions);
 		}
 	}
 
 	ChatView.prototype.setResourceHistoryMonitor = function(monitor) {
 		resourceHistoryMonitor = monitor;
 
-		resourceHistoryMonitor.actionsHandled = function(targetId, actions) {
-			showActions(targetId, actions);
+		resourceHistoryMonitor.actionsHandled = function(targetId, actions, areCurrentActions) {
+			showActions(targetId, actions, areCurrentActions);
 		}
 	}
 

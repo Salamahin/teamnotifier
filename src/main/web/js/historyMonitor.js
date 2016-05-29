@@ -54,7 +54,7 @@ function HistoryMonitor() {
 			return;
 		}
 		
-		that.actionsHandled(target.id, cachedActions[target.id]);
+		that.actionsHandled(target.id, cachedActions[target.id], true);
 	}
 
 	function sortByDate(actions) {
@@ -77,7 +77,7 @@ function HistoryMonitor() {
 		var targetId = actionsNotification.targetId;
 
 		var allActionsForTarget = putInCache(targetId, actions);
-		that.actionsHandled(targetId, allActionsForTarget);
+		that.actionsHandled(targetId, allActionsForTarget, false);
 	}
 
 	that.pushConfirmation = function(target, actor, description) {
@@ -88,7 +88,7 @@ function HistoryMonitor() {
 		action.description = description;
 
 		var allActionsForTarget = putInCache(target.id, action);
-		that.actionsHandled(target.id, allActionsForTarget);
+		that.actionsHandled(target.id, allActionsForTarget, true);
 	}
 
 	that.pushNotification = function(notification) {
@@ -99,7 +99,7 @@ function HistoryMonitor() {
 		action.description = notification.description;
 
 		var allActionsForTarget = putInCache(notification.targetId, action);
-		that.actionsHandled(notification.targetId, allActionsForTarget);
+		that.actionsHandled(notification.targetId, allActionsForTarget, true);
 	}
 
 	that.loadHistoryForDay = function(target) {
@@ -128,7 +128,7 @@ HistoryMonitor.prototype.getActions = function(target, from, to) {
 	throw new Error("not binded");
 }
 
-HistoryMonitor.prototype.actionsHandled = function(targetId, actions) {
+HistoryMonitor.prototype.actionsHandled = function(targetId, actions, areCurrentActions) {
 	throw new Error("not binded");
 }
 
