@@ -124,7 +124,10 @@ function View() {
 	}
 
 	View.prototype.handleActionNotification = function(notification) {
-		chatView.showNotification(notification);
+		if(notification.type == "ResourceActionNotification")
+			resourceHistMonitor.pushNotification(notification);
+		else if(notification.type == "ServerActionNotification")
+			serverHistMonitor.pushNotification(notification);
 	}
 
 	View.prototype.handleReservationNotification = function(notification) {

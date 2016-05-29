@@ -91,6 +91,17 @@ function HistoryMonitor() {
 		that.actionsHandled(target.id, allActionsForTarget);
 	}
 
+	that.pushNotification = function(notification) {
+		var action = new Object();
+		action.type = "ActionInfo";
+		action.actor = notification.actor;
+		action.timestamp = notification.timestamp;
+		action.description = notification.description;
+
+		var allActionsForTarget = putInCache(notification.targetId, action);
+		that.actionsHandled(notification.targetId, allActionsForTarget);
+	}
+
 	that.loadHistoryForDay = function(target) {
 		loadActions(target);
 	}
@@ -98,12 +109,12 @@ function HistoryMonitor() {
 	function getDaysLoaded(targetId) {
 		if(moreDaysLoaded[targetId] === undefined)
 			moreDaysLoaded[targetId] = 0;
-		return moreDaysLoaded[targetId]++;
+		return ++moreDaysLoaded[targetId];
 	}
 
 	that.loadMoreHistory = function(target) {
 		var daysLoaded = getDaysLoaded(target.id);
-		
+
 		var today = new Date();
 		var targetDate = subscractDaysFromToday(daysLoaded);
 		var from = firstMomentOfDate(targetDate);

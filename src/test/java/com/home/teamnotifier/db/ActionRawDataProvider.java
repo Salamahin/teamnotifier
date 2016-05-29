@@ -14,13 +14,20 @@ public final class ActionRawDataProvider {
     private final String tableName;
     private final String targetColumnIdName;
 
-    public ActionRawDataProvider(String tableName, String targetColumnIdName) {
+    public ActionRawDataProvider(final String tableName, final String targetColumnIdName) {
         this.tableName = tableName;
         this.targetColumnIdName = targetColumnIdName;
     }
 
-    public IDataSet newActionPerHour(final int userId, final int targetId, final Range<Instant> timeRange) throws DataSetException {
-        final DateTimeFormatter timestampFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault());
+    public IDataSet newActionPerHour(
+            final int userId,
+            final int targetId,
+            final Range<Instant> timeRange
+    ) throws DataSetException {
+        final DateTimeFormatter timestampFormatter = DateTimeFormatter
+                .ofPattern("yyyy-MM-dd HH:mm:ss")
+                .withZone(ZoneId.systemDefault());
+
         final DataSetBuilder b = new DataSetBuilder(false);
 
         Instant timestamp = timeRange.lowerEndpoint();
