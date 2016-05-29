@@ -124,7 +124,7 @@ function SubscribtionView() {
 			return;
 
 		for(var i = 0; i<selectedTarget.subscribers.length; i++) {
-			var avatarNode = that.avatarCreator.getAvatarNode(selectedTarget.subscribers[i]);
+			var avatarNode = that.avatarCreator.getAvatarNodeWithSusbscribtion(selectedTarget.subscribers[i]);
 			usersHolder.appendChild(avatarNode);
 		}
 	}
@@ -137,7 +137,7 @@ function SubscribtionView() {
 		var sinceLabel = document.createElement("label");
 		sinceLabel.innerHTML = "since " + selectedTarget.occupationInfo.occupationTime;
 		
-		var avatar = that.avatarCreator.getAvatarNode(selectedTarget.occupationInfo.userName);
+		var avatar = that.avatarCreator.getAvatarNodeWithSusbscribtion(selectedTarget.occupationInfo.userName);
 		
 		usersHolder.appendChild(avatar);
 		usersHolder.appendChild(sinceLabel);

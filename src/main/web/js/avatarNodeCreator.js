@@ -17,4 +17,18 @@ function AvatarNodeCreator() {
 	AvatarNodeCreator.prototype.getAvatarNode = function(user) {
 		return createNewAvatar(user);
 	}
+
+	AvatarNodeCreator.prototype.getAvatarNodeWithSusbscribtion = function(user) {
+		var node = createNewAvatar(user);
+
+		var label = document.createElement("label");
+		label.innerHTML = "@" + user;
+		label.classList.add("avatar_subscribtion");
+
+		var holder = document.createElement("div");
+		holder.appendChild(node);
+		holder.appendChild(label);
+
+		return holder;
+	}
 }
