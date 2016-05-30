@@ -31,10 +31,14 @@ $MARGIN_LEFT: 20px;
 
 	.avatar {
 		@include avatar($avatar_size, $WHITE_SHADOWED);
+
+	}
+
+	.avatar_holder {
 		margin-right: $INNER_ELEMENTS_MARGIN/2;
 	}
 
-	label {
+	& > label {
 		color: $WHITE_SHADOWED;
 		font-weight: bold;
 		font-size: 12px;

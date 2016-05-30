@@ -26,6 +26,7 @@ function AvatarNodeCreator() {
 		label.classList.add("avatar_subscribtion");
 
 		var holder = document.createElement("div");
+		holder.classList.add("avatar_holder");
 		holder.appendChild(node);
 		holder.appendChild(label);
 
