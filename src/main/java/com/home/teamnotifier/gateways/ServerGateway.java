@@ -7,5 +7,6 @@ import java.util.Set;
 
 public interface ServerGateway {
     Set<ServerEntity> getImmutableSetOfObservableServers();
-    ServerInfo getInfoForServer(int id);
+
+    ServerInfo getInfoForServer(final int serverId);
 }

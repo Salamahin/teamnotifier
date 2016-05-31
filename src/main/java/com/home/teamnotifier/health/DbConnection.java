@@ -1,10 +1,10 @@
 package com.home.teamnotifier.health;
 
-import com.codahale.metrics.health.HealthCheck;
 import com.google.inject.Inject;
 import com.home.teamnotifier.gateways.EnvironmentGateway;
+import ru.vyarus.dropwizard.guice.module.installer.feature.health.NamedHealthCheck;
 
-public class DbConnection extends HealthCheck {
+public class DbConnection extends NamedHealthCheck {
     private final EnvironmentGateway gateway;
 
     @Inject
@@ -21,5 +21,10 @@ public class DbConnection extends HealthCheck {
         } catch (Exception exc) {
             return Result.unhealthy(exc);
         }
+    }
+
+    @Override
+    public String getName() {
+        return "Database connection";
     }
 }

@@ -154,15 +154,10 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
     }
 
     private void tryFree(final UserEntity user, final ResourceEntity resource, final EntityManager em) {
-        final Optional<ReservationData> reservationData = resource.getReservationData();
-
-        if (!reservationData.isPresent())
-            throw new NotReserved(String.format("Resource id %d is not reserved", resource.getId()));
-
-        final String occupierName = reservationData
+        final String occupierName = resource.getReservationData()
                 .map(ReservationData::getOccupier)
                 .map(UserEntity::getName)
-                .get();
+                .orElseThrow(() -> new NotReserved(String.format("Resource id %d is not reserved", resource.getId())));
 
         if (!Objects.equals(user.getName(), occupierName))
             throw new ReservedByDifferentUser(String.format(
@@ -173,6 +168,5 @@ public class DbSubscriptionGateway implements SubscriptionGateway {
 
         resource.free();
         em.merge(resource);
-
     }
 }

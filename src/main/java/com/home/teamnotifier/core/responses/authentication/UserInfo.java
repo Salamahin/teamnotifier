@@ -13,12 +13,12 @@ import java.util.Objects;
         setterVisibility = JsonAutoDetect.Visibility.NONE,
         creatorVisibility = JsonAutoDetect.Visibility.NONE)
 @JsonTypeName("UserInfo")
-public class UserInfo {
+class UserInfo {
 
     private final String name;
 
     @JsonCreator
-    public UserInfo(@JsonProperty("name") String name) {
+    UserInfo(@JsonProperty("name") String name) {
         this.name = name;
     }
 

@@ -1,6 +1,6 @@
 package com.home.teamnotifier;
 
-import com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenParser;
+import com.github.toastshaman.dropwizard.auth.jwt.JWTAuthFilter;
 import com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenSigner;
 import com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenVerifier;
 import com.github.toastshaman.dropwizard.auth.jwt.hmac.HmacSHA512Signer;
@@ -10,16 +10,17 @@ import com.github.toastshaman.dropwizard.auth.jwt.parser.DefaultJsonWebTokenPars
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
-import com.home.teamnotifier.authentication.BasicAuthenticator;
-import com.home.teamnotifier.authentication.TokenAuthenticator;
-import com.home.teamnotifier.authentication.WebsocketAuthenticator;
-import com.home.teamnotifier.core.ServerAvailabilityChecker;
+import com.home.teamnotifier.authentication.*;
 import com.home.teamnotifier.core.NotificationManager;
 import com.home.teamnotifier.core.ResourceMonitor;
+import com.home.teamnotifier.core.ServerAvailabilityChecker;
 import com.home.teamnotifier.db.*;
 import com.home.teamnotifier.gateways.*;
 import com.home.teamnotifier.web.socket.ClientManager;
+import com.home.teamnotifier.web.socket.NotificationEndpoint;
+import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -28,7 +29,7 @@ import java.util.concurrent.ScheduledExecutorService;
 final class NotifierModule extends AbstractModule {
 
     @Override
-    protected void configure() {
+    public void configure() {
         bind(UserGateway.class)
                 .to(DbUserGateway.class)
                 .in(Singleton.class);
@@ -44,7 +45,6 @@ final class NotifierModule extends AbstractModule {
         bind(SubscriptionGateway.class)
                 .to(DbSubscriptionGateway.class)
                 .in(Singleton.class);
-
 
         bind(ServerGateway.class)
                 .to(DbServerGateway.class)
@@ -71,9 +71,6 @@ final class NotifierModule extends AbstractModule {
 
         bind(TokenAuthenticator.class)
                 .in(Singleton.class);
-
-        bind(JsonWebTokenParser.class)
-                .toInstance(new DefaultJsonWebTokenParser());
 
         bind(WebsocketAuthenticator.class)
                 .to(TokenAuthenticator.class)
@@ -116,4 +113,38 @@ final class NotifierModule extends AbstractModule {
                 new ThreadFactoryBuilder().setNameFormat("url-checker-pool-%d").build()
         );
     }
+
+    @Provides
+    @Singleton
+    @Inject
+    @SuppressWarnings("unused")
+    public JWTAuthFilter<TokenAuthenticated> newTokenAuthorisationFilter(
+            final JsonWebTokenVerifier verifier,
+            final TokenAuthenticator authenticator,
+            final UserAuthorizer<TokenAuthenticated> authorizer
+    ) {
+        return new JWTAuthFilter.Builder<TokenAuthenticated>()
+                .setTokenParser(new DefaultJsonWebTokenParser())
+                .setTokenVerifier(verifier)
+                .setPrefix("Bearer")
+                .setAuthenticator(authenticator)
+                .setAuthorizer(authorizer)
+                .buildAuthFilter();
+    }
+
+    @Provides
+    @Singleton
+    @Inject
+    @SuppressWarnings("unused")
+    public BasicCredentialAuthFilter<BasicAuthenticated> newBasicAuthorizationFilter(
+            final BasicAuthenticator authenticator,
+            final UserAuthorizer<BasicAuthenticated> authorizer
+    ) {
+        return new BasicCredentialAuthFilter.Builder<BasicAuthenticated>()
+                .setAuthenticator(authenticator)
+                .setPrefix("x-Basic")
+                .setAuthorizer(authorizer)
+                .buildAuthFilter();
+    }
+
 }

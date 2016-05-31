@@ -3,7 +3,6 @@ package com.home.teamnotifier.gateways;
 import com.home.teamnotifier.core.BroadcastInformation;
 import com.home.teamnotifier.core.responses.notification.Reservation;
 import com.home.teamnotifier.core.responses.notification.Subscription;
-import com.home.teamnotifier.core.responses.status.ServerInfo;
 import com.home.teamnotifier.db.SubscriptionResult;
 import com.home.teamnotifier.gateways.exceptions.*;
 

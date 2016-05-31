@@ -8,10 +8,11 @@ import com.github.toastshaman.dropwizard.auth.jwt.validator.ExpiryValidator;
 import com.google.common.base.Optional;
 import com.google.inject.Inject;
 import com.home.teamnotifier.db.UserEntity;
-import com.home.teamnotifier.gateways.exceptions.NoSuchUser;
 import com.home.teamnotifier.gateways.UserGateway;
+import com.home.teamnotifier.gateways.exceptions.NoSuchUser;
 import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.Authenticator;
+
 
 public class TokenAuthenticator implements Authenticator<JsonWebToken, TokenAuthenticated>, WebsocketAuthenticator {
 

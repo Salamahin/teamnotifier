@@ -15,6 +15,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.*;
 
+import static com.google.common.collect.ImmutableMap.*;
+import static com.home.teamnotifier.core.responses.notification.ServerState.*;
 import static com.home.teamnotifier.utils.FutureUtils.allAsList;
 import static java.util.stream.Collectors.toList;
 
@@ -87,9 +89,9 @@ public class ServerAvailabilityChecker {
 
     private ServerState buildMessage(final boolean isOnline, final ServerEntity server) {
         if(isOnline)
-            return ServerState.online(server);
+            return online(server);
         else
-            return ServerState.offline(server);
+            return offline(server);
     }
 
     private Runnable routine() {
@@ -106,7 +108,7 @@ public class ServerAvailabilityChecker {
 
     public Map<ServerEntity, Boolean> getAvailability() {
         synchronized (statuses) {
-            return ImmutableMap.copyOf(statuses);
+            return copyOf(statuses);
         }
     }
 

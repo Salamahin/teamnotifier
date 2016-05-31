@@ -2,7 +2,6 @@ package com.home.teamnotifier.db;
 
 import com.google.common.collect.Range;
 import com.home.teamnotifier.core.BroadcastInformation;
-import com.home.teamnotifier.core.ServerAvailabilityChecker;
 import com.home.teamnotifier.core.responses.action.ResourceActionsHistory;
 import com.home.teamnotifier.core.responses.notification.ResourceAction;
 import com.home.teamnotifier.gateways.SubscriptionGateway;
@@ -18,9 +17,6 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
 import static com.home.teamnotifier.db.tools.MockedCheckerProvider.getMockedChecker;
-import static java.util.Collections.emptyMap;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
 
 public class DbResourceActionsGatewayTest {
     private ActionsTester<ResourceActionsHistory, ResourceAction> tester;

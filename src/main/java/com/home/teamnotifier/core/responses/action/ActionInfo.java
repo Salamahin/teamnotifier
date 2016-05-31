@@ -46,10 +46,6 @@ public class ActionInfo implements Serializable {
         return ZonedDateTime.parse(timestamp).toInstant();
     }
 
-    public String getDescription() {
-        return description;
-    }
-
     @Override
     public int hashCode() {
         return Objects.hash(actor, timestamp, description);

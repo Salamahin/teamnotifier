@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.home.teamnotifier.db.ServerEntity;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import java.time.Instant;
 
