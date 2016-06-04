@@ -1,8 +1,27 @@
 @import 'commons.scss';
 
-$HEADER_HEIGHT: 50px;
-
 #header {
     background: $METAL_DARK;
+	display: flex;
+
+	#selected_target {
+		flex: 1;
+		color: $WHITE_SHADOWED_HOVER;
+		font-size: 25px;
+		text-align: center;
+		font-weight: bold;
+		align-self: center;
+	}
+
+	#user_info_holder {
+		align-self: center;
+		font-size: 12px;
+		margin-left: $INNER_ELEMENTS_MARGIN;
+		color: $WHITE_SHADOWED_HOVER;
+	}
+
+	#reserved_resource_holder {
+		align-self: center;
+	}
 }
 
