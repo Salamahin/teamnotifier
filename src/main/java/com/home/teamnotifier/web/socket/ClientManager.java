@@ -9,10 +9,10 @@ import com.google.inject.Inject;
 import com.home.teamnotifier.core.NotificationManager;
 import com.home.teamnotifier.core.responses.notification.Notification;
 import io.dropwizard.jackson.Jackson;
-import org.eclipse.jetty.websocket.api.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.websocket.Session;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
@@ -69,7 +69,7 @@ public class ClientManager implements NotificationManager {
 
     private void pushSync(final Session session, final String message) {
         try {
-            session.getRemote().sendString(message);
+            session.getBasicRemote().sendText(message);
         } catch (IOException e) {
             LOGGER.error(String.format("Failed to push to %s: ", clientSessionsByUsernames.get(session)), e);
         }

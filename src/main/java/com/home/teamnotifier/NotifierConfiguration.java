@@ -8,7 +8,7 @@ import io.dropwizard.Configuration;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-public class NotifierConfiguration extends Configuration implements AssetsBundleConfiguration{
+class NotifierConfiguration extends Configuration implements AssetsBundleConfiguration{
 
     @Valid
     @NotNull
@@ -26,12 +26,12 @@ public class NotifierConfiguration extends Configuration implements AssetsBundle
     private final AssetsConfiguration assets = new AssetsConfiguration();
 
     @JsonProperty(value = "executors")
-    public ExecutorsConfiguration getExecutorsConfiguration() {
+    ExecutorsConfiguration getExecutorsConfiguration() {
         return executorsConfiguration;
     }
 
     @JsonProperty(value = "authentication")
-    public AuthenticationConfiguration getAuthenticationConfiguration() {
+    AuthenticationConfiguration getAuthenticationConfiguration() {
         return authenticationConfiguration;
     }
 
@@ -41,27 +41,27 @@ public class NotifierConfiguration extends Configuration implements AssetsBundle
     }
 
     @SuppressWarnings("unused")
-    public static class AuthenticationConfiguration {
+    static class AuthenticationConfiguration {
         @Valid
         @NotNull
         @SuppressWarnings("unused")
         private String jwtSecret;
 
         @JsonProperty(value = "jwtSecret")
-        public String getJwtSecret() {
+        String getJwtSecret() {
             return jwtSecret;
         }
     }
 
     @SuppressWarnings("unused")
-    public static class ExecutorsConfiguration {
+    static class ExecutorsConfiguration {
         @Valid
         @NotNull
         @SuppressWarnings("unused")
         private Integer poolSize;
 
         @JsonProperty(value = "poolSize")
-        public Integer getPoolSize() {
+        Integer getPoolSize() {
             return poolSize;
         }
     }

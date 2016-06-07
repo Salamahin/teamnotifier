@@ -80,8 +80,8 @@ public class ServerAvailabilityCheckerTest {
         }
 
         @Override
-        public ServerInfo getInfoForServer(int id) {
-            throw new AssertionError("not used for test case");
+        public ServerInfo getInfoForServer(int serverId) {
+            return null;
         }
     }
 

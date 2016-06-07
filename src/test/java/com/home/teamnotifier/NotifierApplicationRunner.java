@@ -1,8 +1,10 @@
 package com.home.teamnotifier;
 
 import com.google.common.io.Resources;
+import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.home.teamnotifier.db.TransactionHelper;
+import org.eclipse.jetty.plus.annotation.Injection;
 
 public class NotifierApplicationRunner {
     public static void main(String[] args) throws Exception {
@@ -10,10 +12,6 @@ public class NotifierApplicationRunner {
         final NotifierApplication application = new NotifierApplication();
         application.run("server", yamlPath);
 
-        final Injector injector = Injection.INJECTION_BUNDLE.getInjector();
-        final TransactionHelper gt = injector.getInstance(TransactionHelper.class);
-
-        final FunctionalityTestDataFiller dataFiller = new FunctionalityTestDataFiller(gt);
-        dataFiller.fillDb();
+        new FunctionalityTestDataFiller(application.getInjector().getInstance(TransactionHelper.class)).fillDb();
     }
-};
+}

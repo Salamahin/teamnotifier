@@ -12,7 +12,7 @@ function Notifier() {
     };
 
     Notifier.prototype.connect = function () {
-        var websocket = ebsocket = new WebSocket("ws://" + location.host + "/state/?token=" + that.token);
+        var websocket = ebsocket = new WebSocket("ws://" + location.host + "/teamnotifier/1.0/state/" + that.token);
 
         websocket.onopen = function () {
             that.connectionSuccessHandler();

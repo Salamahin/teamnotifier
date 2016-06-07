@@ -23,7 +23,7 @@ $BUTTON_BORDER_WIDTH: 1px;
 	border-style: solid;
 	border-color: $background_color;
 	border-width: $border_width;
-	display: flex;
+
 
 	div {
 		width: $avatar_size - $border_width;
@@ -38,6 +38,19 @@ $BUTTON_BORDER_WIDTH: 1px;
 		margin: 0px;
 		text-align: center;
 		display: block;
+	}
+}
+
+.avatar_holder {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+
+	& > label {
+		margin-top: $INNER_ELEMENTS_MARGIN/2;
+		font-weight: bold;
+		color: $WHITE_SHADOWED;
+		font-size: 12px;
 	}
 }
 

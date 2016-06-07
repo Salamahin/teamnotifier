@@ -1,5 +1,6 @@
 package com.home.teamnotifier.db;
 
+import com.home.teamnotifier.db.tools.MockedCheckerProvider;
 import org.dbunit.dataset.builder.DataSetBuilder;
 import org.junit.Before;
 import org.junit.Test;

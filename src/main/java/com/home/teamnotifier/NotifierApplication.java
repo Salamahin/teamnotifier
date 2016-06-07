@@ -1,114 +1,79 @@
 package com.home.teamnotifier;
 
+import be.tomcools.dropwizard.websocket.WebsocketBundle;
 import com.bazaarvoice.dropwizard.assets.ConfiguredAssetsBundle;
-import com.github.toastshaman.dropwizard.auth.jwt.JWTAuthFilter;
-import com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenParser;
-import com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenVerifier;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import com.google.inject.Injector;
-import com.home.teamnotifier.authentication.*;
-import com.home.teamnotifier.health.ServerStates;
 import com.home.teamnotifier.health.DbConnection;
+import com.home.teamnotifier.health.ServerStates;
 import com.home.teamnotifier.health.Sessions;
-import com.home.teamnotifier.repo.PolymorphicAuthDynamicFeature;
-import com.home.teamnotifier.repo.PolymorphicAuthValueFactoryProvider;
 import com.home.teamnotifier.web.lifecycle.ExecutorsManager;
 import com.home.teamnotifier.web.lifecycle.ServerStatusCheckerManager;
 import com.home.teamnotifier.web.lifecycle.TransactionManager;
-import com.home.teamnotifier.web.socket.BroadcastServlet;
-import com.home.teamnotifier.web.socket.ClientManager;
+import com.home.teamnotifier.web.rest.EnvironmentRestService;
+import com.home.teamnotifier.web.rest.UserRestService;
+import com.home.teamnotifier.web.socket.NotificationEndpoint;
 import io.dropwizard.Application;
-import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
+import org.eclipse.jetty.websocket.jsr356.server.BasicServerEndpointConfigurator;
+import ru.vyarus.dropwizard.guice.GuiceBundle;
+import ru.vyarus.dropwizard.guice.module.installer.feature.ManagedInstaller;
+import ru.vyarus.dropwizard.guice.module.installer.feature.health.HealthCheckInstaller;
+import ru.vyarus.dropwizard.guice.module.installer.feature.jersey.JerseyFeatureInstaller;
+import ru.vyarus.dropwizard.guice.module.installer.feature.jersey.ResourceInstaller;
+import ru.vyarus.dropwizard.guice.module.installer.feature.jersey.provider.JerseyProviderInstaller;
 
-import javax.servlet.ServletRegistration;
-
-import static com.home.teamnotifier.Injection.INJECTION_BUNDLE;
+import javax.websocket.server.ServerEndpointConfig;
 
 public class NotifierApplication extends Application<NotifierConfiguration> {
 
-    public static void main(String[] args)
-            throws Exception {
+    private final WebsocketBundle<NotifierConfiguration> websocketBundle = new WebsocketBundle<>();
+    private GuiceBundle<NotifierConfiguration> guiceBundle;
+
+    public static void main(String[] args) throws Exception {
         new NotifierApplication().run(args);
     }
 
     @Override
     public void initialize(final Bootstrap<NotifierConfiguration> bootstrap) {
         bootstrap.addBundle(new ConfiguredAssetsBundle("/src/main/assets", "/"));
-        bootstrap.addBundle(INJECTION_BUNDLE);
+        bootstrap.addBundle(websocketBundle);
+
+        guiceBundle = GuiceBundle.<NotifierConfiguration>builder()
+                .installers(
+                        HealthCheckInstaller.class,
+                        ManagedInstaller.class,
+                        JerseyFeatureInstaller.class,
+                        JerseyProviderInstaller.class,
+                        ResourceInstaller.class
+                )
+                .modules(new NotifierModule())
+                .extensions(DbConnection.class, Sessions.class, ServerStates.class) //healthcheck
+                .extensions(ExecutorsManager.class, TransactionManager.class, ServerStatusCheckerManager.class) //lifecycle
+                .extensions(AuthenticationDynamicFeature.class) //features
+                .extensions(EnvironmentRestService.class, UserRestService.class)
+                .build();
+        bootstrap.addBundle(guiceBundle);
+
+    }
+
+    Injector getInjector() {
+        return guiceBundle.getInjector();
     }
 
     @Override
     public void run(final NotifierConfiguration configuration, final Environment environment) {
-        resisterAuthenticators(environment);
+        ServerEndpointConfig serverEndpointConfig = ServerEndpointConfig.Builder
+                .create(NotificationEndpoint.class, "/teamnotifier/1.0/state/{token}")
+                .configurator(new BasicServerEndpointConfigurator() {
+                    @Override
+                    public <T> T getEndpointInstance(Class<T> endpointClass) throws InstantiationException {
+                        return getInjector().getInstance(endpointClass);
+                    }
+                })
+                .build();
 
-        registerWebsocket(environment);
-
-        addHealthcheks(environment);
-        addLifecycleHooks(environment);
+        websocketBundle.addEndpoint(serverEndpointConfig);
     }
 
-    private void addLifecycleHooks(final Environment environment) {
-        environment.lifecycle().manage(INJECTION_BUNDLE.getInjector().getInstance(ExecutorsManager.class));
-        environment.lifecycle().manage(INJECTION_BUNDLE.getInjector().getInstance(TransactionManager.class));
-        environment.lifecycle().manage(INJECTION_BUNDLE.getInjector().getInstance(ServerStatusCheckerManager.class));
-    }
-
-    private void addHealthcheks(final Environment environment) {
-        final Injector injector = INJECTION_BUNDLE.getInjector();
-
-        environment.healthChecks().register("DbConnection", injector.getInstance(DbConnection.class));
-        environment.healthChecks().register("Sessions", injector.getInstance(Sessions.class));
-        environment.healthChecks().register("ServerStatuses", injector.getInstance(ServerStates.class));
-    }
-
-    private void resisterAuthenticators(final Environment environment) {
-        final Injector injector = INJECTION_BUNDLE.getInjector();
-        final JsonWebTokenParser tokenParser = injector.getInstance(JsonWebTokenParser.class);
-        final JsonWebTokenVerifier tokenVerifier = injector.getInstance(JsonWebTokenVerifier.class);
-        final TokenAuthenticator tokenAuthenticator = injector.getInstance(TokenAuthenticator.class);
-        final BasicAuthenticator basicAuthenticator = injector.getInstance(BasicAuthenticator.class);
-
-        final UserAuthorizer<TokenAuthenticated> tokenUserAuthorizer = new UserAuthorizer<>();
-        final UserAuthorizer<BasicAuthenticated> basicUserAuthorizer = new UserAuthorizer<>();
-
-        final JWTAuthFilter<TokenAuthenticated> jwt = new JWTAuthFilter.Builder<TokenAuthenticated>()
-                .setTokenParser(tokenParser)
-                .setTokenVerifier(tokenVerifier)
-                .setPrefix("Bearer")
-                .setAuthenticator(tokenAuthenticator)
-                .setAuthorizer(tokenUserAuthorizer)
-                .buildAuthFilter();
-
-        final BasicCredentialAuthFilter<BasicAuthenticated> simple = new BasicCredentialAuthFilter.Builder<BasicAuthenticated>()
-                .setAuthenticator(basicAuthenticator)
-                .setPrefix("x-Basic")
-                .setAuthorizer(basicUserAuthorizer)
-                .buildAuthFilter();
-
-
-        environment.jersey().register(new PolymorphicAuthDynamicFeature<>(ImmutableMap.of(TokenAuthenticated.class, jwt, BasicAuthenticated.class, simple)));
-        environment.jersey().register(new PolymorphicAuthValueFactoryProvider.Binder<>(ImmutableSet.of(AnyAuthenticated.class, BasicAuthenticated.class, TokenAuthenticated.class)));
-
-        environment.jersey().register(RolesAllowedDynamicFeature.class);
-    }
-
-    private void registerWebsocket(final Environment environment) {
-
-        final Injector injector = INJECTION_BUNDLE.getInjector();
-
-        final WebsocketAuthenticator websocketAuthenticator = injector.getInstance(WebsocketAuthenticator.class);
-        final ClientManager clientManager = injector.getInstance(ClientManager.class);
-
-
-        final ServletRegistration.Dynamic websocket = environment
-                .servlets()
-                .addServlet("broadcastServlet", new BroadcastServlet(clientManager, websocketAuthenticator));
-
-        websocket.setAsyncSupported(true);
-        websocket.addMapping("/state/*");
-    }
 }

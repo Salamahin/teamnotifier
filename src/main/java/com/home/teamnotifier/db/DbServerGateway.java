@@ -2,6 +2,7 @@ package com.home.teamnotifier.db;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
+import com.home.teamnotifier.core.ServerAvailabilityChecker;
 import com.home.teamnotifier.core.responses.status.ServerInfo;
 import com.home.teamnotifier.gateways.ServerGateway;
 
@@ -12,12 +13,17 @@ import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Set;
 
+import static com.home.teamnotifier.db.DbGatewayCommons.getServerEntity;
+import static com.home.teamnotifier.db.DbGatewayCommons.toServerInfo;
+
 public class DbServerGateway implements ServerGateway {
     private final TransactionHelper transactionHelper;
+//    private final ServerAvailabilityChecker serverAvailabilityChecker;
 
     @Inject
     DbServerGateway(final TransactionHelper transactionHelper) {
         this.transactionHelper = transactionHelper;
+//        this.serverAvailabilityChecker = serverAvailabilityChecker;
     }
 
     @Override
@@ -36,7 +42,11 @@ public class DbServerGateway implements ServerGateway {
     }
 
     @Override
-    public ServerInfo getInfoForServer(int id) {
-        return null;
+    public ServerInfo getInfoForServer(int serverId) {
+        return null; //FIXME
+//        return transactionHelper.transaction(em -> {
+//            final ServerEntity s = getServerEntity(serverId, em);
+//            return toServerInfo(s, serverAvailabilityChecker.getAvailability());
+//        });
     }
 }

@@ -1,6 +1,5 @@
 package com.home.teamnotifier.db;
 
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
 import javax.persistence.*;
