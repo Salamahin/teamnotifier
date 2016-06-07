@@ -3,6 +3,36 @@
 $HEADER_HEIGHT: 50px;
 
 #header {
+	height: $HEADER_HEIGHT;
     background: $METAL_DARK;
+	display: flex;
+
+	#selected_target_info {
+		text-align: center;
+		flex: 1;
+		align-self: center;
+
+		&>label {
+			color: $WHITE_SHADOWED;
+			font-size: 24px;
+			font-weight: bold;
+		}
+	}
+
+	#reservations {
+		float: right;
+		align-self: center;
+		height: 100%;
+
+		&>label {
+			font-size: 12px;
+			color: $SOFT_RED;
+			margin-right: $MAIN_ELEMENTS_MARGIN;
+		}
+
+		&>ul {
+			display: none;
+		}
+	}
 }
 
