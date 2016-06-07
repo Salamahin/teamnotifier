@@ -1,27 +1,69 @@
 @import 'commons.scss';
 
 #header {
+
+	$HEADER_HEIGHT: 50px;
+
     background: $METAL_DARK;
+	text-align: center;
+	height: $HEADER_HEIGHT;
 	display: flex;
 
 	#selected_target {
-		flex: 1;
 		color: $WHITE_SHADOWED_HOVER;
 		font-size: 25px;
-		text-align: center;
 		font-weight: bold;
+		margin: 0 auto;
+		flex: 1;
 		align-self: center;
 	}
 
-	#user_info_holder {
-		align-self: center;
-		font-size: 12px;
-		margin-left: $INNER_ELEMENTS_MARGIN;
-		color: $WHITE_SHADOWED_HOVER;
+
+	#reserved_resources_holder {
+		height: $HEADER_HEIGHT;
+		background: $SOFT_RED;
+		position: absolute;
+		right: 0;
+		top: 0;
+		display: flex;
+
+		&:hover {
+			&>ul {
+				display: block;
+			}
+		}
+
+		&>label {
+			display: block;
+			flex: 1;
+			align-self: center;
+			margin: 0 $INNER_ELEMENTS_MARGIN;
+		}
+
+		&>ul {
+			display: none;
+			position: absolute;
+			z-index: 1;
+			right: 0;
+			top: $HEADER_HEIGHT;
+			padding: 0;
+			margin: 0;
+			list-style-type: none;
+
+			&>li {
+				background: $METAL_DARK;
+				padding: $INNER_ELEMENTS_MARGIN;
+			}
+		}
 	}
 
-	#reserved_resource_holder {
+	#current_user_holder {
+		height: $HEADER_HEIGHT;
 		align-self: center;
+		background: $SOFT_RED;
+		position: absolute;
+		left: 0;
+		top: 0;
 	}
 }
 
