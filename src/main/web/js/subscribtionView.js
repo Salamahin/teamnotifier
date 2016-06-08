@@ -33,7 +33,13 @@ function SubscribtionView() {
 			return;
 		}
 
-		if(!actionsAvailable() && selectedTarget.type == "ResourceInfo") {
+		if(selectedTarget.type == "ServerInfo" && currentUserSubscribedOnServer(selectedTarget) && thereAreUserReservationsOnTheServer()) {
+			disableActionButton();
+			actionButton.innerHTML = "free resources first";
+			return;
+		}
+
+		if(selectedTarget.type == "ResourceInfo" && !userIsSubscribedOnTargetServer()) {
 			prepareToSubscribe(environmentMonitor.getServer(selectedTarget.serverId));
 			actionButton.innerHTML = "subscribe on the server first";
 
@@ -105,10 +111,14 @@ function SubscribtionView() {
 		}
 	}
 
-	function actionsAvailable() {
-		if(selectedTarget.type == "ServerInfo") 
-			return true;
+	function thereAreUserReservationsOnTheServer() {
+		for(var i = 0; i<selectedTarget.resources.length; i++)
+			if(currentUserReservedResource(environmentMonitor.getResource(selectedTarget.resources[i].id)))
+				return true;
+		return false;
+	}
 
+	function userIsSubscribedOnTargetServer() {
 		var server = environmentMonitor.getServer(selectedTarget.serverId);
 		return currentUserSubscribedOnServer(server);
 	}

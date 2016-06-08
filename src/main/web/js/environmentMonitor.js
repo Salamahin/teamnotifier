@@ -1,7 +1,7 @@
 function EnvironmentMonitor() {
 
-	const servers = [];
-	const resources = [];
+	const servers = new Map();
+	const resources = new Map();
 	
 	const listeners = [];
 
@@ -117,8 +117,8 @@ function EnvironmentMonitor() {
 	}
 
 	function updateServer(environment, newServer) {
-		var oldServer = servers[newServer.id];
-		servers[newServer.id] = newServer;
+		var oldServer = servers.get(newServer.id);
+		servers.set(newServer.id, newServer);
 
 		if(!oldServer) 
 			fireServerAdded(environment, newServer);
@@ -127,8 +127,8 @@ function EnvironmentMonitor() {
 	}
 
 	function updateResource(server, newResource) {
-		var oldResource = resources[newResource.id];
-		resources[newResource.id] = newResource;
+		var oldResource = resources.get(newResource.id);
+		resources.set(newResource.id, newResource);
 
 		if(!oldResource) {
 			newResource.serverId = server.id;
@@ -164,15 +164,15 @@ function EnvironmentMonitor() {
 	}
 
 	EnvironmentMonitor.prototype.getServer = function(serverId) {
-		return clone(servers[serverId]);
+		return clone(servers.get(serverId));
 	}
 
 	EnvironmentMonitor.prototype.getResource = function(resourceId) {
-		return clone(resources[resourceId]);
+		return clone(resources.get(resourceId));
 	}
 	
 	EnvironmentMonitor.prototype.setServerOnline = function(serverId, isOnline) {
-		var server = servers[serverId];
+		var server = servers.get(serverId);
 		fireOnlineStatusChanged(server);
 	}
 
@@ -184,7 +184,7 @@ function EnvironmentMonitor() {
 	}
 
 	EnvironmentMonitor.prototype.clearServer = function(serverId) {
-		var oldServer = servers[serverId];
+		var oldServer = servers.get(serverId);
 
 		var newServer = clone(oldServer);		
 		newServer.subscribers = [];
@@ -195,14 +195,14 @@ function EnvironmentMonitor() {
 			var oldResource = oldServer.resources[i];
 
 			var newResource = clone(oldResource);
-			newResource.occupationInfo = undefined;
+			delete newResource.occupationInfo;
 
 			updateResource(undefined, newResource);
 		}
 	}
 
 	EnvironmentMonitor.prototype.addSubscriber = function(serverId, user) {
-		var server = servers[serverId];
+		var server = servers.get(serverId);
 		if(!server.subscribers)
 			server.subscribers = [];
 
@@ -214,7 +214,7 @@ function EnvironmentMonitor() {
 	}
 
 	EnvironmentMonitor.prototype.removeSubscriber = function(serverId, user) {
-		var server = servers[serverId];
+		var server = servers.get(serverId);
 
 		var index = server.subscribers.indexOf(user);
 		if(index < 0)
@@ -226,7 +226,7 @@ function EnvironmentMonitor() {
 	}
 
 	EnvironmentMonitor.prototype.reserve = function(resourceId, user) {
-		var resource = resources[resourceId];
+		var resource = resources.get(resourceId);
 		if(!resource.occupationInfo)
 			resource.occupationInfo = {};
 		resource.occupationInfo.occupationTime = new Date().toISOString();
@@ -236,7 +236,7 @@ function EnvironmentMonitor() {
 	}
 
 	EnvironmentMonitor.prototype.free = function(resourceId, user) {
-		var resource = resources[resourceId];
+		var resource = resources.get(resourceId);
 		resource.occupationInfo = undefined;
 		fireReservationChanged(resource);
 	}

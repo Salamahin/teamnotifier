@@ -1,8 +1,8 @@
 function HistoryMonitor() {
 	const that = this;
 	
-	const cachedActions = [];
-	const moreDaysLoaded = [];
+	const cachedActions = new Map();
+	const moreDaysLoaded = new Map();
 
 	function lastMomentOfDate(date) {
 		var d = new Date(date.getTime());
@@ -39,9 +39,9 @@ function HistoryMonitor() {
 	function allocateCachedActions(targetId) {
 		var notLoaded = false;
 
-		if(cachedActions[targetId] === undefined) {
+		if(!cachedActions.has(targetId)) {
 			notLoaded = true;
-			cachedActions[targetId] = [];
+			cachedActions.set(targetId, []);
 		}
 
 		return notLoaded;
@@ -54,7 +54,7 @@ function HistoryMonitor() {
 			return;
 		}
 		
-		that.actionsHandled(target.id, cachedActions[target.id], true);
+		that.actionsHandled(target.id, cachedActions.get(target.id), true);
 	}
 
 	function sortByDate(actions) {
@@ -64,10 +64,10 @@ function HistoryMonitor() {
 	}
 
 	function putInCache(targetId, actions) {
-		var actionsInCache = cachedActions[targetId];
+		var actionsInCache = cachedActions.get(targetId);
 		var updatedActionsInCache = actionsInCache.concat(actions);
 		sortByDate(updatedActionsInCache);
-		cachedActions[targetId] = updatedActionsInCache;
+		cachedActions.set(targetId, updatedActionsInCache);
 
 		return updatedActionsInCache;
 	}
@@ -107,9 +107,11 @@ function HistoryMonitor() {
 	}
 
 	function getDaysLoaded(targetId) {
-		if(moreDaysLoaded[targetId] === undefined)
-			moreDaysLoaded[targetId] = 0;
-		return ++moreDaysLoaded[targetId];
+		if(!moreDaysLoaded.has(targetId))
+			moreDaysLoaded.set(targetId,  0);
+		var val = moreDaysLoaded.get(targetId);
+		moreDaysLoaded.set(targetId, val + 1);
+		return val;
 	}
 
 	that.loadMoreHistory = function(target) {
