@@ -60,17 +60,20 @@
 
 			&>li {
 				background: $SOFT_RED;
-				padding: $INNER_ELEMENTS_MARGIN;
 				min-width: 200px;
 				cursor: pointer;
 
 				&>a {
 					text-decoration: none;
+					padding: $INNER_ELEMENTS_MARGIN 0;
 					color: $WHITE_SMOKE;
-				}
+					display: block;
+					width: 100%;
+					height: 100%;
 
-				&:hover {
-					background: $SOFT_RED_HOVER;
+					&:hover {
+						background: $SOFT_RED_HOVER;
+					}
 				}
 			}
 		}

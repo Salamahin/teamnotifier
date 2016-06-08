@@ -242,6 +242,7 @@ function EnvironmentMonitor() {
 	}
 
 	EnvironmentMonitor.prototype.addListener = function(listener) {
-		listeners.push(listener);		
+		if(!listeners.includes(listener))
+			listeners.push(listener);		
 	}
 }

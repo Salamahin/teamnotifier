@@ -23,6 +23,7 @@ function View() {
 		sideMenuView.user = username;
 		chatView.currentUser = username;
 		subscribtionView.user = username;
+		header.user = username;
 	}
 
     View.prototype.showAuthenticationError = function () {
@@ -125,6 +126,9 @@ function View() {
 		
 		if(subscribtionView)
 			subscribtionView.setEnvironmentMonitor(environmentMonitor);
+
+		if(header)
+			header.setEnvironmentMonitor(environmentMonitor);
 	}
 
 	View.prototype.handleActionNotification = function(notification) {
@@ -190,6 +194,7 @@ function View() {
 	View.prototype.setHeader = function(headerView) {
 		header = headerView;
 		bindAvatarCreator();
+		bindEnvironmentMonitor();
 	}
 
 	View.prototype.setHistoryMonitors = function(serverHistoryMonitor, resourceHistoryMonitor) {
@@ -203,7 +208,6 @@ function View() {
 	}
 
 	View.prototype.updateEnvironments = function(environments) {
-		header.environments = environments;
 		environmentMonitor.rebuild(environments);
 	}
 }
