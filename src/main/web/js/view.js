@@ -9,6 +9,7 @@ function View() {
 	var environmentMonitor = undefined;
 	var serverHistMonitor = undefined;
 	var resourceHistMonitor = undefined;
+	var header = undefined;
 
 	var user;
 
@@ -110,6 +111,9 @@ function View() {
 
 		if(subscribtionView) 
 			subscribtionView.avatarCreator = avatarCreator;
+
+		if(header)
+			header.avatarCreator = avatarCreator;
 	}
 
 	function bindEnvironmentMonitor() {
@@ -166,11 +170,13 @@ function View() {
         sideMenuView.serverSelectionHandler = function(server) {
 			chatView.select(server);
 			subscribtionView.select(server);
+			header.select(server);
         }
 
         sideMenuView.resourceSelectionHandler = function(resource) {
 			chatView.select(resource);
 			subscribtionView.select(resource);
+			header.select(resource);
         }
     };
 
@@ -181,6 +187,11 @@ function View() {
 		chatView.newServerActionHandler = that.serverActionHandler;
 	}
 
+	View.prototype.setHeader = function(headerView) {
+		header = headerView;
+		bindAvatarCreator();
+	}
+
 	View.prototype.setHistoryMonitors = function(serverHistoryMonitor, resourceHistoryMonitor) {
 		resourceHistMonitor = resourceHistoryMonitor;
 		serverHistMonitor = serverHistoryMonitor;
@@ -189,6 +200,11 @@ function View() {
 		resourceHistMonitor.getActions = that.resourceActionsHistoryHandler;
 		chatView.setServerHistoryMonitor(serverHistMonitor);
 		chatView.setResourceHistoryMonitor(resourceHistMonitor);
+	}
+
+	View.prototype.updateEnvironments = function(environments) {
+		header.environments = environments;
+		environmentMonitor.rebuild(environments);
 	}
 }
 

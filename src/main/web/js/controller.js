@@ -24,6 +24,7 @@ var SUBSCRIBTION_VIEW;
 var ENVIRONMENT_MONITOR;
 var RESOURCE_HISTORY_MONITOR;
 var SERVER_HISTORY_MONITOR;
+var HEADER;
 
 function onRequestError(code) {
 	window.alert("Request failed: " + code);
@@ -114,7 +115,8 @@ function bind() {
 		!SUBSCRIBTION_VIEW ||
 		!ENVIRONMENT_MONITOR ||
 		!SERVER_HISTORY_MONITOR ||
-		!RESOURCE_HISTORY_MONITOR)
+		!RESOURCE_HISTORY_MONITOR ||
+		!HEADER)
         return;
 
     NOTIFIER.connectionSuccessHandler = onNotifierConnected;
@@ -149,6 +151,7 @@ function bind() {
 	VIEW.setAvatarCreator(AVATAR_NODE_CREATOR);
 	VIEW.setEnvironmentMonitor(ENVIRONMENT_MONITOR);
 	VIEW.setHistoryMonitors(SERVER_HISTORY_MONITOR, RESOURCE_HISTORY_MONITOR);
+	VIEW.setHeader(HEADER);
 
  	WORKBENCH.reserveRequestSuccessHandler = VIEW.showReservationConfirmation;
  	WORKBENCH.freeRequestSuccessHandler = VIEW.showFreeConfirmation;
@@ -158,7 +161,7 @@ function bind() {
 	WORKBENCH.resourceActionRequestSuccessHandler = VIEW.showResourceActionConfirmation
 	WORKBENCH.serverActionsHistoryRequestSuccessHandler = VIEW.showServerActionsHistory;
 	WORKBENCH.resourceActionsHistoryRequestSuccessHandler = VIEW.showResourceActionsHistory;
-	WORKBENCH.statusRequestSuccessHandler = ENVIRONMENT_MONITOR.rebuild;
+	WORKBENCH.statusRequestSuccessHandler = VIEW.updateEnvironments;
 	WORKBENCH.whoAmIErrorHandler = showError;
 	WORKBENCH.requestErrorHandler = onRequestError;
 
@@ -233,6 +236,10 @@ window.onload = function() {
 	include("js/historyMonitor.js", function() {
 		RESOURCE_HISTORY_MONITOR = new HistoryMonitor();
 		SERVER_HISTORY_MONITOR = new HistoryMonitor();
+		bind();
+	});
+	include("js/header.js", function() {
+		HEADER = new Header();
 		bind();
 	});
 };

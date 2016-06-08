@@ -20,12 +20,18 @@
 
 
 	#reserved_resources_holder {
+		$width: 100px;
+
 		height: $HEADER_HEIGHT;
-		background: $SOFT_RED;
+		background: $METAL_DARK;
 		position: absolute;
-		right: 0;
 		top: 0;
+		right: calc(50% - #{$WORKBENCH_WIDTH / 2});
 		display: flex;
+
+		&.not_empty {
+			background: $SOFT_RED;
+		}
 
 		&:hover {
 			&>ul {
@@ -38,6 +44,8 @@
 			flex: 1;
 			align-self: center;
 			margin: 0 $INNER_ELEMENTS_MARGIN;
+			color: $WHITE_SMOKE;
+			font-weight: bold;
 		}
 
 		&>ul {
@@ -51,16 +59,24 @@
 			list-style-type: none;
 
 			&>li {
-				background: $METAL_DARK;
+				background: $SOFT_RED;
 				padding: $INNER_ELEMENTS_MARGIN;
+				min-width: 200px;
+				cursor: pointer;
+
+				&>a {
+					text-decoration: none;
+					color: $WHITE_SMOKE;
+				}
+
+				&:hover {
+					background: $SOFT_RED_HOVER;
+				}
 			}
 		}
 	}
 
 	#current_user_holder {
-		height: $HEADER_HEIGHT;
-		align-self: center;
-		background: $SOFT_RED;
 		position: absolute;
 		left: 0;
 		top: 0;
