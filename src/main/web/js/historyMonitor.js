@@ -41,7 +41,7 @@ function HistoryMonitor() {
 
 		if(!cachedActions.has(targetId)) {
 			notLoaded = true;
-			cachedActions.set(targetId, []);
+			cachedActions.set(targetId, new Array());
 		}
 
 		return notLoaded;
@@ -65,6 +65,9 @@ function HistoryMonitor() {
 
 	function putInCache(targetId, actions) {
 		var actionsInCache = cachedActions.get(targetId);
+		if(!actionsInCache)
+			actionsInCache = new Array();
+			
 		var updatedActionsInCache = actionsInCache.concat(actions);
 		sortByDate(updatedActionsInCache);
 		cachedActions.set(targetId, updatedActionsInCache);

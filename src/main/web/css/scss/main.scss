@@ -54,7 +54,6 @@ html, body {
 
 				display: flex;
 				flex-direction: column;
-				margin-bottom: $MAIN_ELEMENTS_MARGIN;
 
 				#messages_holder {
 					flex: 1;
@@ -63,6 +62,20 @@ html, body {
 					margin-bottom: $INNER_ELEMENTS_MARGIN;
 				}
 			}
+
+			#footer_info {
+				display: block;
+				margin: 5px auto;
+				text-align: center;
+				bottom: 0;
+				font-size: 10px;
+				color: $WHITE_SHADOWED;
+				a {
+					text-decoration: none;
+					color: $SOFT_RED;
+				}
+			}
 		}
 	}
 }
+

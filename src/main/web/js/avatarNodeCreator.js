@@ -1,11 +1,13 @@
 function AvatarNodeCreator() {
-	function getAvatarUrl(user) {
+	const that = this;
+
+	AvatarNodeCreator.prototype.getAvatarUrl = function(user) {
 		return "https://robohash.org/teamnotifier_" + user;
 	}
 
 	function createNewAvatar(user) {
 		var innerDiv = document.createElement("div");
-		innerDiv.style.backgroundImage = "url('" + getAvatarUrl(user) + "')";
+		innerDiv.style.backgroundImage = "url('" + that.getAvatarUrl(user) + "')";
 		
 		var outerDiv = document.createElement("div");
 		outerDiv.classList.add("avatar");

@@ -119,6 +119,9 @@ function ChatView() {
 	}
 
 	function showActions(targetId, actions, areCurrentActions) {
+		if(!selectedTarget)
+			return;
+
 		if(targetId != selectedTarget.id)
 			return;
 

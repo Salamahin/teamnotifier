@@ -16,6 +16,8 @@
 		margin: 0 auto;
 		flex: 1;
 		align-self: center;
+		text-shadow: 0px 2px 3px rgba(0,0,0,0.2);
+		background-clip: text;
 	}
 
 
@@ -99,8 +101,12 @@
 
 	#current_user_holder {
 		position: absolute;
-		left: 0;
-		top: 0;
+		left: calc(50% - #{$WORKBENCH_WIDTH / 2});
+
+		.avatar {
+			@include avatar(0.8 * $HEADER_HEIGHT, $WHITE_SHADOWED);
+			margin: 0.1*$HEADER_HEIGHT 0 auto $MAIN_ELEMENTS_MARGIN;
+		}
 	}
 }
 

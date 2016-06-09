@@ -31,7 +31,6 @@ $MARGIN_LEFT: 20px;
 
 	.avatar {
 		@include avatar($avatar_size, $WHITE_SHADOWED);
-
 	}
 
 	.avatar_holder {

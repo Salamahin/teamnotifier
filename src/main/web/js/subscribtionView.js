@@ -154,6 +154,9 @@ function SubscribtionView() {
 	}
 
 	function showActualData() {
+		if(!selectedTarget)
+			return;
+
 		if(selectedTarget.type == "ServerInfo") {
 			selectedTarget = environmentMonitor.getServer(selectedTarget.id);
 			showSubscribers();

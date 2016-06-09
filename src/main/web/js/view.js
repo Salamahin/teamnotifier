@@ -23,7 +23,7 @@ function View() {
 		sideMenuView.user = username;
 		chatView.currentUser = username;
 		subscribtionView.user = username;
-		header.user = username;
+		header.setUser(username);
 	}
 
     View.prototype.showAuthenticationError = function () {
@@ -136,6 +136,40 @@ function View() {
 			resourceHistMonitor.pushNotification(notification);
 		else if(notification.type == "ServerActionNotification")
 			serverHistMonitor.pushNotification(notification);
+
+		fireActionNotification(notification);
+	}
+
+	function getResourceName(resourceId) {
+		var res = environmentMonitor.getResource(resourceId);
+		var serv = environmentMonitor.getServer(res.serverId);
+
+		return serv.environment.toUpperCase() + " " + serv.name.toUpperCase() + " " + res.name;
+	}
+
+	function getServerName(serverId) {
+		var serv = environmentMonitor.getServer(serverId);
+
+		return serv.environment.toUpperCase() + " " + serv.name.toUpperCase();
+	}
+
+	function fireReservationNotification(notification) {
+		var header = "WTF";
+		if(notification.state)
+			header = "reserve by @" + notification.actor;
+		else
+			header = "free by @" + notification.actor;
+
+		spawnNotification(header, avatarCreator.getAvatarUrl(notification.actor), getResourceName(notification.targetId));
+	}
+
+	function fireActionNotification(notification) {
+		var data = notification.type == "ResourceActionNotification"
+			? getResourceName(notification.targetId)
+			: getServerName(notification.targetId);
+
+		var header = "@" + notification.actor + ": " + notification.description;
+		spawnNotification(header, avatarCreator.getAvatarUrl(notification.actor), data);
 	}
 
 	View.prototype.handleReservationNotification = function(notification) {
@@ -143,6 +177,8 @@ function View() {
 			environmentMonitor.reserve(notification.targetId, notification.actor);
 		else
 			environmentMonitor.free(notification.targetId, notification.actor);
+
+		fireReservationNotification(notification);
 	}
 
 	View.prototype.handleSubscribtionNotification = function(notification) {
@@ -164,6 +200,14 @@ function View() {
 	View.prototype.setEnvironmentMonitor = function(monitor) {
 		environmentMonitor = monitor;
 		bindEnvironmentMonitor();
+	}
+
+	function spawnNotification(theBody,theIcon,theTitle) {
+	  var options = {
+		  body: theBody,
+		  icon: theIcon
+	  }
+	  new Notification(theTitle,options);
 	}
 
 	View.prototype.setSideMenuView = function(view) {

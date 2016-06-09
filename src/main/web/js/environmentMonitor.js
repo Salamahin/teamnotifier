@@ -120,10 +120,13 @@ function EnvironmentMonitor() {
 		var oldServer = servers.get(newServer.id);
 		servers.set(newServer.id, newServer);
 
-		if(!oldServer) 
+		if(!oldServer) {
+			newServer.environment = environment.name;
 			fireServerAdded(environment, newServer);
-		else
+		} else {
+			newServer.environment = oldServer.environment;
 			fireServerChanges(oldServer, newServer);
+		}
 	}
 
 	function updateResource(server, newResource) {
@@ -133,8 +136,7 @@ function EnvironmentMonitor() {
 		if(!oldResource) {
 			newResource.serverId = server.id;
 			fireResourceAdded(server, newResource);
-		}
-		else  {
+		} else  {
 			newResource.serverId = oldResource.serverId;
 			fireResourceChanges(oldResource, newResource);
 		}

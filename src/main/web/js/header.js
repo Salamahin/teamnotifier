@@ -4,14 +4,15 @@ function Header() {
 	const resourceSelectionNodesHolder = document.querySelector("#reserved_resources_holder > ul");
 	const reservationSummaryNode = document.querySelector("#reserved_resources_holder > label");
 	const notEmptyIndicatorNode = document.getElementById("reserved_resources_holder");
+	const currentUserHolder = document.getElementById("current_user_holder");
 
 	this.avatarCreator = undefined;
-	this.user = undefined;
 
 	var resourceSelectionNodes = new Map();
 	var reservationNodes = new Map();
 	var serversByResourcesIds = new Map();
 	var environmentsByServersIds = new Map();
+	var user;
 
 	function updateReserationSummary() {
 		var count = resourceSelectionNodes.size;
@@ -23,7 +24,7 @@ function Header() {
 	}
 
 	function currentUserHasResourceReserved(resource) {
-		return resource.occupationInfo.userName == that.user;
+		return resource.occupationInfo.userName == user;
 	}
 
 	function getTextForSelectedResource(resource) {
@@ -97,6 +98,12 @@ function Header() {
 		if(shouldAddResourceSelectionNode(resource))
 			appendResourceSelectionNode(resource);
 
+	}
+
+	Header.prototype.setUser = function(currentUser) {
+		user = currentUser;
+		var avatar = that.avatarCreator.getAvatarNode(user);
+		currentUserHolder.appendChild(avatar);		
 	}
 
 	Header.prototype.setEnvironmentMonitor = function(monitor) {
