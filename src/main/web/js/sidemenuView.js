@@ -6,8 +6,8 @@ function SideMenuView() {
 	this.user = undefined;
 	this.avatarCreator = undefined;
 
-	var serverNodes = [];
-	var resourceNodes = [];
+	var serverNodes = new Map();
+	var resourceNodes = new Map();
 
 	function isUserSubscribedOnServer(server) {
 		return server.subscribers != undefined && server.subscribers.includes(that.user);
@@ -60,7 +60,8 @@ function SideMenuView() {
 		var node = createNodeForServer(environment, server);
 		nodesRoot.appendChild(node);
 
-		serverNodes[server.id] = node;
+		serverNodes.set(server.id, node);
+
 	}
 
 	function buildEnvironmentServerListNodeName(environment, server) {
@@ -110,7 +111,7 @@ function SideMenuView() {
 		var resourceNode = createNewResourceNode(resource);
 
 		resourcesList.appendChild(resourceNode);
-		resourceNodes[resource.id] = resourceNode;
+		resourceNodes.set(resource.id, resourceNode);
 	}
 
 
@@ -183,26 +184,36 @@ function SideMenuView() {
 	}
 
 	SideMenuView.prototype.onResourceAdded = function(server, resource) {
-		appendResourceNodeToServerNode(serverNodes[server.id], resource);
+		appendResourceNodeToServerNode(serverNodes.get(server.id), resource);
 	}
 
 	SideMenuView.prototype.onReservationChanged = function(resource) {
-		var node = resourceNodes[resource.id];
+		var node = resourceNodes.get(resource.id);
 		showResourceReservation(node, resource);
 	}
 
 	SideMenuView.prototype.onSubscribersChanged = function(server) {
-		var node = serverNodes[server.id];
+		var node = serverNodes.get(server.id);
 		showServerSubscription(node, server);
 	}
 
 	SideMenuView.prototype.onOnlineStatusChanged = function(server) {
-		var node = serverNodes[server.id];
+		var node = serverNodes.get(server.id);
 		showServerOnlineStatus(node, server);
 	}
 
 	SideMenuView.prototype.setEnvironmentMonitor = function(monitor) {
 		monitor.addListener(that);
+	}
+
+	SideMenuView.prototype.selectResource = function(resource) {
+		var serverNode = serverNodes.get(resource.serverId);
+		showServerSelection(getResourcesListNode(serverNode));
+
+		var resourceNode = resourceNodes.get(resource.id);
+		var innerDiv = resourceNode.querySelector("div > div");
+		showResourceSelection(innerDiv);
+		that.resourceSelectionHandler(resource);
 	}
 }
 

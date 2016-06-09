@@ -193,6 +193,9 @@ function View() {
 
 	View.prototype.setHeader = function(headerView) {
 		header = headerView;
+		header.resourceSelectedHandler = function(resource) {
+			sideMenuView.selectResource(resource);
+		}
 		bindAvatarCreator();
 		bindEnvironmentMonitor();
 	}
