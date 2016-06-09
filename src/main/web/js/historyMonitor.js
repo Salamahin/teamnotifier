@@ -112,8 +112,8 @@ function HistoryMonitor() {
 	function getDaysLoaded(targetId) {
 		if(!moreDaysLoaded.has(targetId))
 			moreDaysLoaded.set(targetId,  0);
-		var val = moreDaysLoaded.get(targetId);
-		moreDaysLoaded.set(targetId, val + 1);
+		var val = moreDaysLoaded.get(targetId) + 1;
+		moreDaysLoaded.set(targetId, val);
 		return val;
 	}
 
