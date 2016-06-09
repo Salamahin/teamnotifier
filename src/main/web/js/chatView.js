@@ -206,7 +206,11 @@ function ChatView() {
 			disable(makeActionButton);
 	}
 
-	inputBox.onkeyup = function() {
+	inputBox.onkeyup = function(e) {
+		if(e.keyCode == 13) {
+			makeActionButton.click();
+			return;
+		}
 		tryEnableMakeActionButton();
 	}
 }

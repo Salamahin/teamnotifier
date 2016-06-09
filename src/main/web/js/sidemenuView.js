@@ -157,7 +157,7 @@ function SideMenuView() {
 		var subscriptionInfoHolder = node.querySelector("div > div");
 		if(isUserSubscribedOnServer(server) && !subscriptionInfoHolder.classList.contains("subscribed"))
 			subscriptionInfoHolder.classList.add("subscribed");
-		else
+		else if(!isUserSubscribedOnServer(server))
 			subscriptionInfoHolder.classList.remove("subscribed");
 	
 	}
