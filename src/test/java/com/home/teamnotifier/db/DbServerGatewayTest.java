@@ -1,12 +1,12 @@
 package com.home.teamnotifier.db;
 
-import com.home.teamnotifier.db.tools.MockedCheckerProvider;
 import org.dbunit.dataset.builder.DataSetBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
 
+import static com.home.teamnotifier.db.tools.MockedCheckerProvider.getMockedChecker;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -19,7 +19,7 @@ public class DbServerGatewayTest {
         preparer = new DbPreparer();
         preparer.initDataBase();
 
-        gateway = new DbServerGateway(preparer.getTransactionHelper());
+        gateway = new DbServerGateway(preparer.getTransactionHelper(), getMockedChecker());
     }
 
     @Test

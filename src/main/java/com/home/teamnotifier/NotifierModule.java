@@ -14,10 +14,10 @@ import com.home.teamnotifier.authentication.*;
 import com.home.teamnotifier.core.NotificationManager;
 import com.home.teamnotifier.core.ResourceMonitor;
 import com.home.teamnotifier.core.ServerAvailabilityChecker;
+import com.home.teamnotifier.core.ServerAvailabilityCheckerImpl;
 import com.home.teamnotifier.db.*;
 import com.home.teamnotifier.gateways.*;
 import com.home.teamnotifier.web.socket.ClientManager;
-import com.home.teamnotifier.web.socket.NotificationEndpoint;
 import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
 
 import javax.inject.Inject;
@@ -55,6 +55,7 @@ final class NotifierModule extends AbstractModule {
                 .in(Singleton.class);
 
         bind(ServerAvailabilityChecker.class)
+                .to(ServerAvailabilityCheckerImpl.class)
                 .in(Singleton.class);
 
         bind(ClientManager.class)

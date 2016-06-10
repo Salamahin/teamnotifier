@@ -18,12 +18,12 @@ import static com.home.teamnotifier.db.DbGatewayCommons.toServerInfo;
 
 public class DbServerGateway implements ServerGateway {
     private final TransactionHelper transactionHelper;
-//    private final ServerAvailabilityChecker serverAvailabilityChecker;
+    private final ServerAvailabilityChecker serverAvailabilityChecker;
 
     @Inject
-    DbServerGateway(final TransactionHelper transactionHelper) {
+    DbServerGateway(final TransactionHelper transactionHelper, final ServerAvailabilityChecker serverAvailabilityChecker) {
         this.transactionHelper = transactionHelper;
-//        this.serverAvailabilityChecker = serverAvailabilityChecker;
+        this.serverAvailabilityChecker = serverAvailabilityChecker;
     }
 
     @Override
@@ -43,10 +43,9 @@ public class DbServerGateway implements ServerGateway {
 
     @Override
     public ServerInfo getInfoForServer(int serverId) {
-        return null; //FIXME
-//        return transactionHelper.transaction(em -> {
-//            final ServerEntity s = getServerEntity(serverId, em);
-//            return toServerInfo(s, serverAvailabilityChecker.getAvailability());
-//        });
+        return transactionHelper.transaction(em -> {
+            final ServerEntity s = getServerEntity(serverId, em);
+            return toServerInfo(s, serverAvailabilityChecker.getAvailability());
+        });
     }
 }

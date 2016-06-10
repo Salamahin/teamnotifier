@@ -23,7 +23,7 @@ import static org.junit.Assert.assertTrue;
 
 public class ServerAvailabilityCheckerTest {
 
-    private static ServerAvailabilityChecker checker;
+    private static ServerAvailabilityCheckerImpl checker;
     private static Server server;
 
     private static class HelloHandler extends AbstractHandler {
@@ -43,7 +43,7 @@ public class ServerAvailabilityCheckerTest {
 
     @BeforeClass
     public static void preinit() throws Exception {
-        checker = new ServerAvailabilityChecker(
+        checker = new ServerAvailabilityCheckerImpl(
                 Executors.newScheduledThreadPool(10),
                 new DummyServerGateway(),
                 new DummyNotificationManager()

@@ -1,6 +1,7 @@
 package com.home.teamnotifier.db.tools;
 
 import com.home.teamnotifier.core.ServerAvailabilityChecker;
+import com.home.teamnotifier.core.ServerAvailabilityCheckerImpl;
 
 import static java.util.Collections.emptyMap;
 import static org.mockito.Mockito.doReturn;
@@ -12,7 +13,7 @@ public final class MockedCheckerProvider {
     }
 
     public static ServerAvailabilityChecker getMockedChecker() {
-        final ServerAvailabilityChecker c = mock(ServerAvailabilityChecker.class);
+        final ServerAvailabilityChecker c = mock(ServerAvailabilityCheckerImpl.class);
         doReturn(emptyMap()).when(c).getAvailability();
         return c;
     }
