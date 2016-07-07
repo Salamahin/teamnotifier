@@ -28,8 +28,7 @@ public class NotificationEndpoint {
 
     private Optional<String> authenticate(final String token) {
         try {
-            return authenticator.authenticate(token)
-                    .transform(AnyAuthenticated::getName);
+            return authenticator.authenticate(token).transform(AnyAuthenticated::getName);
 
         } catch (AuthenticationException e) {
             LOGGER.error("Failed to extract websocket credentials", e);
