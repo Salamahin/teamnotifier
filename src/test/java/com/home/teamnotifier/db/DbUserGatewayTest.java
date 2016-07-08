@@ -19,6 +19,14 @@ public class DbUserGatewayTest {
         gateway = new DbUserGateway(preparer.getTransactionHelper());
     }
 
+    @Test(expected = EmptyPassword.class)
+    public void testEmptyPasswordThrowsException() {
+        final String userName = "user";
+        final String password = "";
+
+        gateway.newUser(userName, password);
+    }
+
     @Test
     public void testCanCreateNewUser() throws Exception {
         final String userName = "user";

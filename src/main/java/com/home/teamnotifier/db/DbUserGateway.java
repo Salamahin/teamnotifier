@@ -1,5 +1,6 @@
 package com.home.teamnotifier.db;
 
+import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -61,6 +62,9 @@ public class DbUserGateway implements UserGateway {
     @Override
     public void newUser(final String userName, final String password) {
         LOGGER.info("New user {} creation", userName);
+
+        if(Strings.isNullOrEmpty(password))
+            throw new EmptyPassword();
 
         final String salt = UUID.randomUUID().toString();
         final UserEntity entity = new UserEntity(userName, toHash(password, salt), salt);
