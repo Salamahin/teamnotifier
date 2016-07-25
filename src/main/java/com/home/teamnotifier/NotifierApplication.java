@@ -10,6 +10,7 @@ import com.home.teamnotifier.web.lifecycle.ExecutorsManager;
 import com.home.teamnotifier.web.lifecycle.ServerStatusCheckerManager;
 import com.home.teamnotifier.web.lifecycle.TransactionManager;
 import com.home.teamnotifier.web.rest.EnvironmentRestService;
+import com.home.teamnotifier.web.rest.ExternalRestService;
 import com.home.teamnotifier.web.rest.UserRestService;
 import com.home.teamnotifier.web.socket.NotificationEndpoint;
 import io.dropwizard.Application;
@@ -51,10 +52,10 @@ public class NotifierApplication extends Application<NotifierConfiguration> {
                 .extensions(DbConnection.class, Sessions.class, ServerStates.class) //healthcheck
                 .extensions(ExecutorsManager.class, TransactionManager.class, ServerStatusCheckerManager.class) //lifecycle
                 .extensions(AuthenticationDynamicFeature.class) //features
-                .extensions(EnvironmentRestService.class, UserRestService.class)
+                .extensions(EnvironmentRestService.class, UserRestService.class, ExternalRestService.class)
                 .build();
-        bootstrap.addBundle(guiceBundle);
 
+        bootstrap.addBundle(guiceBundle);
     }
 
     Injector getInjector() {

@@ -2,14 +2,12 @@ package com.home.teamnotifier.web.rest;
 
 import com.google.common.collect.Range;
 import com.google.inject.Inject;
-import com.home.teamnotifier.authentication.BasicAuthenticated;
-import com.home.teamnotifier.authentication.TokenAuthenticated;
+import com.home.teamnotifier.authentication.session.SessionTokenPrincipal;
 import com.home.teamnotifier.core.ResourceMonitor;
 import com.home.teamnotifier.core.responses.action.ResourceActionsHistory;
 import com.home.teamnotifier.core.responses.action.ServerActionsHistory;
 import com.home.teamnotifier.core.responses.status.EnvironmentsInfo;
 import com.home.teamnotifier.core.responses.status.ServerInfo;
-import com.home.teamnotifier.gateways.ResourceDescription;
 import io.dropwizard.auth.Auth;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +32,7 @@ public class EnvironmentRestService {
     @POST
     @Path("/application/{applicationId}/reserve")
     public void reserve(
-            @Auth final TokenAuthenticated userPrincipal,
+            @Auth final SessionTokenPrincipal userPrincipal,
             @PathParam("applicationId") final Integer applicationId
     ) {
         final String userName = userPrincipal.getName();
@@ -45,7 +43,7 @@ public class EnvironmentRestService {
     @DELETE
     @Path("/application/{applicationId}/reserve")
     public void free(
-            @Auth final TokenAuthenticated userPrincipal,
+            @Auth final SessionTokenPrincipal userPrincipal,
             @PathParam("applicationId") final Integer applicationId
     ) {
         final String userName = userPrincipal.getName();
@@ -56,7 +54,7 @@ public class EnvironmentRestService {
     @POST
     @Path("/server/{serverId}/subscribe")
     public ServerInfo subscribe(
-            @Auth final TokenAuthenticated userPrincipal,
+            @Auth final SessionTokenPrincipal userPrincipal,
             @PathParam("serverId") final Integer serverId
     ) {
         final String userName = userPrincipal.getName();
@@ -67,7 +65,7 @@ public class EnvironmentRestService {
     @DELETE
     @Path("/server/{serverId}/subscribe")
     public void unsubscribe(
-            @Auth final TokenAuthenticated userPrincipal,
+            @Auth final SessionTokenPrincipal userPrincipal,
             @PathParam("serverId") final Integer serverId) {
         final String userName = userPrincipal.getName();
         LOGGER.info("User {} unsubscribe from server id {} request", userName, serverId);
@@ -77,7 +75,7 @@ public class EnvironmentRestService {
     @POST
     @Path("/application/{applicationId}/action")
     public void newResourceAction(
-            @Auth final TokenAuthenticated userPrincipal,
+            @Auth final SessionTokenPrincipal userPrincipal,
             @PathParam("applicationId") final Integer applicationId,
             @QueryParam("details") final String details
     ) {
@@ -89,7 +87,7 @@ public class EnvironmentRestService {
     @POST
     @Path("/server/{serverId}/action")
     public void newServerAction(
-            @Auth final TokenAuthenticated userPrincipal,
+            @Auth final SessionTokenPrincipal userPrincipal,
             @PathParam("serverId") final Integer serverId,
             @QueryParam("details") final String details
     ) {
@@ -98,29 +96,8 @@ public class EnvironmentRestService {
         resourceMonitor.newServerAction(userName, serverId, details);
     }
 
-    @POST
-    @Path("/application/action/")
-    public void newResourceAction(
-            @Auth final BasicAuthenticated userPrincipal,
-            @QueryParam("environment") final String environmentName,
-            @QueryParam("server") final String serverName,
-            @QueryParam("application") final String resourceName,
-            @QueryParam("details") final String details
-    ) {
-        final String userName = userPrincipal.getName();
-        LOGGER.info("User {} new action on resource {} {} ({}) request", userName, serverName, resourceName, details);
-
-        final ResourceDescription resourceDescription = ResourceDescription.newBuilder()
-                .withResourceName(resourceName)
-                .withServerName(serverName)
-                .withEnvironmentName(environmentName)
-                .build();
-
-        resourceMonitor.newResourceAction(userName, resourceDescription, details);
-    }
-
     @GET
-    public EnvironmentsInfo getServerInfo(@Auth final TokenAuthenticated userPrincipal) {
+    public EnvironmentsInfo getServerInfo(@Auth final SessionTokenPrincipal userPrincipal) {
         LOGGER.info("User {} status request", userPrincipal.getName());
         return resourceMonitor.status();
     }
@@ -128,7 +105,7 @@ public class EnvironmentRestService {
     @GET
     @Path("/application/{applicationId}/action")
     public ResourceActionsHistory getResourceActionsHistory(
-            @Auth final TokenAuthenticated userPrincipal,
+            @Auth final SessionTokenPrincipal userPrincipal,
             @PathParam("applicationId") final Integer applicationId,
             @QueryParam("from") final String fromISO8601,
             @QueryParam("to") final String toISO8601
@@ -149,7 +126,7 @@ public class EnvironmentRestService {
     @GET
     @Path("/server/{serverId}/action")
     public ServerActionsHistory getServerActionsHistory(
-            @Auth final TokenAuthenticated userPrincipal,
+            @Auth final SessionTokenPrincipal userPrincipal,
             @PathParam("serverId") final Integer serverId,
             @QueryParam("from") final String fromISO8601,
             @QueryParam("to") final String toISO8601

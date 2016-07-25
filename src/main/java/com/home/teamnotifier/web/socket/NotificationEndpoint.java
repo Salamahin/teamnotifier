@@ -1,8 +1,8 @@
 package com.home.teamnotifier.web.socket;
 
 import com.google.common.base.Optional;
-import com.home.teamnotifier.authentication.AnyAuthenticated;
-import com.home.teamnotifier.authentication.WebsocketAuthenticator;
+import com.home.teamnotifier.authentication.AnyPrincipal;
+import com.home.teamnotifier.authentication.session.WebsocketAuthenticator;
 import io.dropwizard.auth.AuthenticationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +28,7 @@ public class NotificationEndpoint {
 
     private Optional<String> authenticate(final String token) {
         try {
-            return authenticator.authenticate(token).transform(AnyAuthenticated::getName);
+            return authenticator.authenticate(token).transform(AnyPrincipal::getName);
 
         } catch (AuthenticationException e) {
             LOGGER.error("Failed to extract websocket credentials", e);

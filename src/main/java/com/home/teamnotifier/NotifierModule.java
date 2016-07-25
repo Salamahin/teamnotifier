@@ -1,16 +1,25 @@
 package com.home.teamnotifier;
 
 import com.github.toastshaman.dropwizard.auth.jwt.JWTAuthFilter;
+import com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenParser;
 import com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenSigner;
 import com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenVerifier;
 import com.github.toastshaman.dropwizard.auth.jwt.hmac.HmacSHA512Signer;
 import com.github.toastshaman.dropwizard.auth.jwt.hmac.HmacSHA512Verifier;
+import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebTokenHeader;
 import com.github.toastshaman.dropwizard.auth.jwt.parser.DefaultJsonWebTokenParser;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.inject.AbstractModule;
+import com.google.inject.Provider;
 import com.google.inject.Provides;
-import com.home.teamnotifier.authentication.*;
+import com.home.teamnotifier.authentication.application.AppTokenAuthenticator;
+import com.home.teamnotifier.authentication.application.AppTokenPrincipal;
+import com.home.teamnotifier.authentication.basic.BasicAuthenticator;
+import com.home.teamnotifier.authentication.basic.BasicPrincipal;
+import com.home.teamnotifier.authentication.session.SessionTokenAuthenticator;
+import com.home.teamnotifier.authentication.session.SessionTokenPrincipal;
+import com.home.teamnotifier.authentication.session.WebsocketAuthenticator;
 import com.home.teamnotifier.core.NotificationManager;
 import com.home.teamnotifier.core.ResourceMonitor;
 import com.home.teamnotifier.core.ServerAvailabilityChecker;
@@ -18,10 +27,12 @@ import com.home.teamnotifier.core.ServerAvailabilityCheckerImpl;
 import com.home.teamnotifier.db.*;
 import com.home.teamnotifier.gateways.*;
 import com.home.teamnotifier.web.socket.ClientManager;
+import io.dropwizard.auth.Authenticator;
 import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.servlet.http.HttpServletRequest;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -70,15 +81,18 @@ final class NotifierModule extends AbstractModule {
         bind(BasicAuthenticator.class)
                 .in(Singleton.class);
 
-        bind(TokenAuthenticator.class)
+        bind(SessionTokenAuthenticator.class)
                 .in(Singleton.class);
 
         bind(WebsocketAuthenticator.class)
-                .to(TokenAuthenticator.class)
+                .to(SessionTokenAuthenticator.class)
                 .in(Singleton.class);
 
         bind(JsonWebTokenHeader.class)
                 .toInstance(JsonWebTokenHeader.HS512());
+
+        bind(JsonWebTokenParser.class)
+                .to(DefaultJsonWebTokenParser.class);
     }
 
     @Provides
@@ -110,42 +124,41 @@ final class NotifierModule extends AbstractModule {
     @SuppressWarnings("unused")
     public ScheduledExecutorService newScheduledExecutor(final NotifierConfiguration configuration) {
         return Executors.newScheduledThreadPool(
-                configuration.getExecutorsConfiguration().getPoolSize(),
+                1,
                 new ThreadFactoryBuilder().setNameFormat("url-checker-pool-%d").build()
         );
     }
 
-    @Provides
-    @Singleton
     @Inject
+    @Provides
     @SuppressWarnings("unused")
-    public JWTAuthFilter<TokenAuthenticated> newTokenAuthorisationFilter(
-            final JsonWebTokenVerifier verifier,
-            final TokenAuthenticator authenticator,
-            final UserAuthorizer<TokenAuthenticated> authorizer
+    public Authenticator<JsonWebToken, AppTokenPrincipal> newAppAuthenticator(final Provider<HttpServletRequest> requestProvider,
+                                                                              final UserGateway userGateway
     ) {
-        return new JWTAuthFilter.Builder<TokenAuthenticated>()
-                .setTokenParser(new DefaultJsonWebTokenParser())
-                .setTokenVerifier(verifier)
-                .setPrefix("Bearer")
-                .setAuthenticator(authenticator)
-                .setAuthorizer(authorizer)
-                .buildAuthFilter();
+        return new AppTokenAuthenticator(requestProvider, userGateway);
     }
 
     @Provides
     @Singleton
     @Inject
     @SuppressWarnings("unused")
-    public BasicCredentialAuthFilter<BasicAuthenticated> newBasicAuthorizationFilter(
-            final BasicAuthenticator authenticator,
-            final UserAuthorizer<BasicAuthenticated> authorizer
+    public JWTAuthFilter<SessionTokenPrincipal> newSessionTokenAuthorisationFilter(
+            final JsonWebTokenVerifier verifier,
+            final SessionTokenAuthenticator authenticator,
+            final JsonWebTokenParser webTokenParser
     ) {
-        return new BasicCredentialAuthFilter.Builder<BasicAuthenticated>()
-                .setAuthenticator(authenticator)
-                .setPrefix("x-Basic")
-                .setAuthorizer(authorizer)
-                .buildAuthFilter();
+        return AuthFiltersFactory.newJwtAuthFilter(webTokenParser, verifier, authenticator);
+    }
+
+
+    @Provides
+    @Singleton
+    @Inject
+    @SuppressWarnings("unused")
+    public BasicCredentialAuthFilter<BasicPrincipal> newBasicAuthorizationFilter(
+            final BasicAuthenticator authenticator
+    ) {
+        return AuthFiltersFactory.newBasicAuthFilter(authenticator);
     }
 
 }

@@ -1,13 +1,9 @@
 package com.home.teamnotifier.db;
 
-import com.google.common.collect.Sets;
-
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 @Table(schema = "teamnotifier", name = "User")
@@ -19,11 +15,6 @@ public class UserEntity implements Serializable {
     @Column(nullable = false, unique = true)
     @Size(min = 1)
     private final String name;
-
-    @ElementCollection(targetClass = RoleEntity.class, fetch = FetchType.EAGER)
-    @CollectionTable(name = "UserInRole", schema = "teamnotifier", joinColumns = @JoinColumn(name = "userId"))
-    @Column(name = "RoleId")
-    private final Set<RoleEntity> roles; //todo
 
     @Column(nullable = false, unique = true)
     @Size(min = 1)
@@ -40,7 +31,6 @@ public class UserEntity implements Serializable {
         name = null;
         passHash = null;
         salt = null;
-        roles = new HashSet<>();
     }
 
     public UserEntity(final String name, final String passHash, final String salt) {
@@ -48,7 +38,6 @@ public class UserEntity implements Serializable {
         this.name = name;
         this.passHash = passHash;
         this.salt = salt;
-        roles = Sets.newHashSet(RoleEntity.USER);
     }
 
     public Integer getId() {
@@ -74,13 +63,12 @@ public class UserEntity implements Serializable {
         UserEntity that = (UserEntity) o;
         return Objects.equals(id, that.id) &&
                 Objects.equals(name, that.name) &&
-                Objects.equals(roles, that.roles) &&
                 Objects.equals(passHash, that.passHash) &&
                 Objects.equals(salt, that.salt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, roles, passHash, salt);
+        return Objects.hash(id, name, passHash, salt);
     }
 }

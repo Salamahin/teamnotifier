@@ -3,8 +3,8 @@ package com.home.teamnotifier.web.rest;
 import com.google.common.net.HttpHeaders;
 import com.google.inject.Inject;
 import com.home.teamnotifier.authentication.AuthenticationInfo;
-import com.home.teamnotifier.authentication.BasicAuthenticated;
-import com.home.teamnotifier.authentication.TokenCreator;
+import com.home.teamnotifier.authentication.basic.BasicPrincipal;
+import com.home.teamnotifier.authentication.session.SessionTokenCreator;
 import com.home.teamnotifier.gateways.UserGateway;
 import com.home.teamnotifier.gateways.exceptions.InvalidCredentials;
 import com.home.teamnotifier.gateways.exceptions.SuchUserAlreadyPresent;
@@ -24,23 +24,23 @@ import static com.home.teamnotifier.utils.BasicAuthenticationCredentialExtractor
 public class UserRestService {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserRestService.class);
 
-    private final TokenCreator tokenCreator;
+    private final SessionTokenCreator sessionTokenCreator;
     private final UserGateway userGateway;
 
     @Inject
     public UserRestService(
-            final TokenCreator tokenCreator,
+            final SessionTokenCreator sessionTokenCreator,
             final UserGateway userGateway
     ) {
-        this.tokenCreator = tokenCreator;
+        this.sessionTokenCreator = sessionTokenCreator;
         this.userGateway = userGateway;
     }
 
     @GET
     @Path("/authenticate")
-    public AuthenticationInfo authenticate(@Auth final BasicAuthenticated principal) {
+    public AuthenticationInfo authenticate(@Auth final BasicPrincipal principal) {
         LOGGER.info("{} authenticated", principal.getName());
-        return new AuthenticationInfo(tokenCreator.getTokenFor(principal.getId()));
+        return new AuthenticationInfo(sessionTokenCreator.getTokenFor(principal.getId()));
     }
 
     @POST
