@@ -3,9 +3,7 @@ package com.home.teamnotifier.authentication.application;
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
 import com.github.toastshaman.dropwizard.auth.jwt.validator.ExpiryValidator;
 import com.google.common.base.Optional;
-import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.google.inject.servlet.RequestScoped;
 import com.home.teamnotifier.db.UserEntity;
 import com.home.teamnotifier.gateways.UserGateway;
 import io.dropwizard.auth.AuthenticationException;
@@ -24,7 +22,6 @@ public class AppTokenAuthenticator implements Authenticator<JsonWebToken, AppTok
     private final UserGateway userGateway;
     private final Provider<HttpServletRequest> requestProvider;
 
-    @Inject
     public AppTokenAuthenticator(
             final Provider<HttpServletRequest> requestProvider,
             final UserGateway userGateway

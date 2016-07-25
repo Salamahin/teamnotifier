@@ -1,6 +1,5 @@
 package com.home.teamnotifier;
 
-import com.github.toastshaman.dropwizard.auth.jwt.JWTAuthFilter;
 import com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenParser;
 import com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenSigner;
 import com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenVerifier;
@@ -19,7 +18,7 @@ import com.home.teamnotifier.authentication.basic.BasicAuthenticator;
 import com.home.teamnotifier.authentication.basic.BasicPrincipal;
 import com.home.teamnotifier.authentication.session.SessionTokenAuthenticator;
 import com.home.teamnotifier.authentication.session.SessionTokenPrincipal;
-import com.home.teamnotifier.authentication.session.WebsocketAuthenticator;
+import com.home.teamnotifier.authentication.session.WebSocketSessionAuthenticator;
 import com.home.teamnotifier.core.NotificationManager;
 import com.home.teamnotifier.core.ResourceMonitor;
 import com.home.teamnotifier.core.ServerAvailabilityChecker;
@@ -28,7 +27,7 @@ import com.home.teamnotifier.db.*;
 import com.home.teamnotifier.gateways.*;
 import com.home.teamnotifier.web.socket.ClientManager;
 import io.dropwizard.auth.Authenticator;
-import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
+import io.dropwizard.auth.basic.BasicCredentials;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -78,16 +77,6 @@ final class NotifierModule extends AbstractModule {
         bind(TransactionHelper.class)
                 .in(Singleton.class);
 
-        bind(BasicAuthenticator.class)
-                .in(Singleton.class);
-
-        bind(SessionTokenAuthenticator.class)
-                .in(Singleton.class);
-
-        bind(WebsocketAuthenticator.class)
-                .to(SessionTokenAuthenticator.class)
-                .in(Singleton.class);
-
         bind(JsonWebTokenHeader.class)
                 .toInstance(JsonWebTokenHeader.HS512());
 
@@ -130,24 +119,34 @@ final class NotifierModule extends AbstractModule {
     }
 
     @Inject
+    @Singleton
     @Provides
     @SuppressWarnings("unused")
-    public Authenticator<JsonWebToken, AppTokenPrincipal> newAppAuthenticator(final Provider<HttpServletRequest> requestProvider,
-                                                                              final UserGateway userGateway
+    public Authenticator<JsonWebToken, AppTokenPrincipal> newAppAuthenticator(
+            final Provider<HttpServletRequest> requestProvider,
+            final UserGateway userGateway
     ) {
         return new AppTokenAuthenticator(requestProvider, userGateway);
     }
 
-    @Provides
-    @Singleton
     @Inject
+    @Singleton
+    @Provides
     @SuppressWarnings("unused")
-    public JWTAuthFilter<SessionTokenPrincipal> newSessionTokenAuthorisationFilter(
+    public Authenticator<String, SessionTokenPrincipal> newWebSocketAuthenticator(
             final JsonWebTokenVerifier verifier,
-            final SessionTokenAuthenticator authenticator,
-            final JsonWebTokenParser webTokenParser
+            final JsonWebTokenParser parser,
+            final Authenticator<JsonWebToken, SessionTokenPrincipal> authenticator
     ) {
-        return AuthFiltersFactory.newJwtAuthFilter(webTokenParser, verifier, authenticator);
+        return new WebSocketSessionAuthenticator(verifier, parser, authenticator);
+    }
+
+    @Inject
+    @Singleton
+    @Provides
+    @SuppressWarnings("unused")
+    public Authenticator<JsonWebToken, SessionTokenPrincipal> newSessionAuthenticator(final UserGateway userGateway) {
+        return new SessionTokenAuthenticator(userGateway);
     }
 
 
@@ -155,10 +154,8 @@ final class NotifierModule extends AbstractModule {
     @Singleton
     @Inject
     @SuppressWarnings("unused")
-    public BasicCredentialAuthFilter<BasicPrincipal> newBasicAuthorizationFilter(
-            final BasicAuthenticator authenticator
-    ) {
-        return AuthFiltersFactory.newBasicAuthFilter(authenticator);
+    public Authenticator<BasicCredentials, BasicPrincipal> newBasicAuthenticator(final UserGateway userGateway) {
+        return new BasicAuthenticator(userGateway);
     }
 
 }

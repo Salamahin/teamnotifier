@@ -1,7 +1,6 @@
 package com.home.teamnotifier.authentication.basic;
 
 import com.google.common.base.Optional;
-import com.google.inject.Inject;
 import com.home.teamnotifier.db.UserEntity;
 import com.home.teamnotifier.gateways.UserGateway;
 import com.home.teamnotifier.gateways.exceptions.NoSuchUser;
@@ -16,7 +15,6 @@ import static com.home.teamnotifier.utils.PasswordHasher.toHash;
 public class BasicAuthenticator implements Authenticator<BasicCredentials, BasicPrincipal> {
     private final UserGateway userGateway;
 
-    @Inject
     public BasicAuthenticator(final UserGateway userGateway) {
         this.userGateway = userGateway;
     }
@@ -40,7 +38,7 @@ public class BasicAuthenticator implements Authenticator<BasicCredentials, Basic
         final UserEntity credentials = userGateway.get(basicCredentials.getUsername());
 
         if (providedCredentialsAreCorrect(basicCredentials, credentials))
-            return Optional.of(new BasicPrincipal(credentials.getName(),credentials.getId()));
+            return Optional.of(new BasicPrincipal(credentials.getName(), credentials.getId()));
 
         return Optional.absent();
     }

@@ -2,8 +2,9 @@ package com.home.teamnotifier.web.socket;
 
 import com.google.common.base.Optional;
 import com.home.teamnotifier.authentication.AnyPrincipal;
-import com.home.teamnotifier.authentication.session.WebsocketAuthenticator;
+import com.home.teamnotifier.authentication.session.SessionTokenPrincipal;
 import io.dropwizard.auth.AuthenticationException;
+import io.dropwizard.auth.Authenticator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,10 +19,10 @@ public class NotificationEndpoint {
     private static final Logger LOGGER = LoggerFactory.getLogger(NotificationEndpoint.class);
 
     private final ClientManager clientManager;
-    private final WebsocketAuthenticator authenticator;
+    private final Authenticator<String, SessionTokenPrincipal> authenticator;
 
     @Inject
-    public NotificationEndpoint(final ClientManager clientManager, final WebsocketAuthenticator authenticator) {
+    public NotificationEndpoint(final ClientManager clientManager, final Authenticator<String, SessionTokenPrincipal> authenticator) {
         this.clientManager = clientManager;
         this.authenticator = authenticator;
     }
