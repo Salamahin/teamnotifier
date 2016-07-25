@@ -59,9 +59,9 @@ public class DbUserGatewayTest {
     }
 
     @Test(expected = InvalidCredentials.class)
-    public void testEmptyCredentialsFails() throws Exception {
+    public void testEmptyUserNameFails() throws Exception {
         final String userName = "";
-        final String password = "";
+        final String password = "111";
         gateway.newUser(userName, password);
     }
 
