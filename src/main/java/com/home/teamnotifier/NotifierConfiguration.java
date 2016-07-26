@@ -8,7 +8,7 @@ import io.dropwizard.Configuration;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-class NotifierConfiguration extends Configuration implements AssetsBundleConfiguration{
+public class NotifierConfiguration extends Configuration implements AssetsBundleConfiguration{
 
     @Valid
     @NotNull

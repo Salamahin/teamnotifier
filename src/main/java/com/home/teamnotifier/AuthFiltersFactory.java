@@ -5,7 +5,6 @@ import com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenParser;
 import com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenVerifier;
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
 import com.home.teamnotifier.authentication.AnyPrincipal;
-import com.home.teamnotifier.authentication.basic.BasicPrincipal;
 import io.dropwizard.auth.Authenticator;
 import io.dropwizard.auth.PermitAllAuthorizer;
 import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
