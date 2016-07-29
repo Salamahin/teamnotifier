@@ -237,6 +237,7 @@ function View() {
 
 	View.prototype.setHeader = function(headerView) {
 		header = headerView;
+		header.requestAppToken = that.requestAppTokenHandler;
 		header.resourceSelectedHandler = function(resource) {
 			sideMenuView.selectResource(resource);
 		}
@@ -257,6 +258,21 @@ function View() {
 	View.prototype.updateEnvironments = function(environments) {
 		environmentMonitor.rebuild(environments);
 	}
+
+
+	View.prototype.showAppToken = function(token) {
+		copyTextToClipboard(token);
+	}
+
+	//FIXME should it really be there?
+	function copyTextToClipboard(text) {
+		window.clipboardData.setData('Text', text);
+	}
+
+}
+
+View.prototype.requestAppTokenHandler = function() {
+	throw new Error("not bound");
 }
 
 View.prototype.resourceActionHandler = function(resource, action) {

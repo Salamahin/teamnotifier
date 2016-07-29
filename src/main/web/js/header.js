@@ -53,6 +53,11 @@ function Header() {
 	}
 
 	Header.prototype.select = function(target) {
+		if(target == undefined) {
+			selectionInfoNode.innerHTML = "";
+			return;
+		}
+
 		if(target.type == "ResourceInfo")
 			selectionInfoNode.innerHTML = getTextForSelectedResource(target);
 		else if(target.type == "ServerInfo")
@@ -103,6 +108,9 @@ function Header() {
 	Header.prototype.setUser = function(currentUser) {
 		user = currentUser;
 		var avatar = that.avatarCreator.getAvatarNode(user);
+		avatar.onclick = function() {
+			that.requestAppToken();
+		}
 		currentUserHolder.appendChild(avatar);		
 	}
 
@@ -112,6 +120,10 @@ function Header() {
 
 	selectionInfoNode.innerHTML = "";
 	updateReserationSummary();
+}
+
+Header.prototype.requestAppToken = function() {
+	throw new Error("not binded");
 }
 
 Header.prototype.resourceSelectedHandler = function(resource) {

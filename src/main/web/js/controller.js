@@ -55,7 +55,7 @@ function onNotifierError(error) {
 
 function onNotifierDisconnect() {
     console.log("notifier disconnected");
-//     VIEW.authenticationMode();
+    VIEW.authenticationMode();
 }
 
 function authenticationError() {
@@ -143,6 +143,7 @@ function bind() {
 	VIEW.unsubscribeHandler = WORKBENCH.unsubscribe;
 	VIEW.reserveHandler = WORKBENCH.reserve;
 	VIEW.freeHandler = WORKBENCH.free;
+	VIEW.requestAppTokenHandler = WORKBENCH.getAppToken;
 
     VIEW.setSideMenuView(SIDEMENU_VIEW);
 	VIEW.setAuthenticationView(AUTHENTICATION_VIEW);
@@ -164,6 +165,7 @@ function bind() {
 	WORKBENCH.statusRequestSuccessHandler = VIEW.updateEnvironments;
 	WORKBENCH.whoAmIErrorHandler = showError;
 	WORKBENCH.requestErrorHandler = onRequestError;
+	WORKBENCH.getAppTokenRequestSuccessHandler = VIEW.showAppToken;
 
     init();
 }

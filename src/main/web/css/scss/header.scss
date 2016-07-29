@@ -106,6 +106,10 @@
 		.avatar {
 			@include avatar(0.8 * $HEADER_HEIGHT, $WHITE_SHADOWED);
 			margin: 0.1*$HEADER_HEIGHT 0 auto $MAIN_ELEMENTS_MARGIN;
+
+			& > div {
+				cursor: pointer;
+			}
 		}
 	}
 }

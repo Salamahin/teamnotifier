@@ -13,12 +13,20 @@ function SideMenuView() {
 		return server.subscribers != undefined && server.subscribers.includes(that.user);
 	}
 
+	function isServerSelected(serverResourcesNode) {
+		return serverResourcesNode.classList.contains("opened");
+	}
+
+	function collapseServerSelection(serverResoucesNode) {
+		removeClassFromOthers(getAllResourcesLists(), undefined, "opened");
+		removeClassFromOthers(getAllResourceSelectionButtonHolders(), undefined, "selected_resource");
+	}
+
 	/*
 		Note, that "opened" class affects not the server_selection_button itself but .resources_list
 	*/
 	function showServerSelection(serverResourcesNode) {
-		if(!serverResourcesNode.classList.contains("opened"))
-			serverResourcesNode.classList.add("opened");
+		serverResourcesNode.classList.add("opened");
 		
 		removeClassFromOthers(getAllResourcesLists(), serverResourcesNode, "opened");
 		removeClassFromOthers(getAllResourceSelectionButtonHolders(), undefined, "selected_resource");
@@ -68,6 +76,17 @@ function SideMenuView() {
 		return environment.name + " " + server.name;
 	}
 
+	function toggleServerSelection(node, server) {
+		var serverResourcesNode = getResourcesListNode(node)
+		if(isServerSelected(serverResourcesNode)) {
+			collapseServerSelection(serverResourcesNode);
+			that.serverSelectionHandler(undefined);
+		} else {
+			showServerSelection(serverResourcesNode);
+			that.serverSelectionHandler(server);
+		}
+	}
+
 	function createNodeForServer(environment, server) {
 		var node = document.createElement("li");
 
@@ -76,8 +95,7 @@ function SideMenuView() {
 		selectionButton.classList.add("server_selection_button");
 		selectionButton.innerHTML= buildEnvironmentServerListNodeName(environment, server);
 		selectionButton.onclick = function() {
-			showServerSelection(getResourcesListNode(node));
-			that.serverSelectionHandler(server);
+			toggleServerSelection(node, server);
 		};
 
 		var innerDiv = document.createElement("div");

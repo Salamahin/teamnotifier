@@ -29,8 +29,7 @@ function ChatView() {
 	const messagesHolder = document.getElementById("messages_holder");
 	const inputBox = document.getElementById("action_input");
 
-	disable(makeActionButton);
-	disable(loadMoreButton);
+	resetChat();
 
 	function getHistoryMonitor() {
 		if(selectedTarget.type == "ResourceInfo")
@@ -146,8 +145,19 @@ function ChatView() {
 			that.newResourceActionHandler(selectedTarget, details);
 	}
 
+	function resetChat() {
+		removeMessagesChildren(messagesHolder);
+		disable(makeActionButton);
+		disable(loadMoreButton);
+	}
+
 	ChatView.prototype.select = function(target) {
 		selectedTarget = target;
+
+		if(target == undefined) {
+			resetChat();
+			return;
+		}
 
  		getHistoryMonitor().loadHistoryForDay(selectedTarget);
 

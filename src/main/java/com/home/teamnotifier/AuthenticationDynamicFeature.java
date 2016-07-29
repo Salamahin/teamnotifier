@@ -1,20 +1,17 @@
 package com.home.teamnotifier;
 
-import com.github.toastshaman.dropwizard.auth.jwt.JWTAuthFilter;
 import com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenParser;
 import com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenVerifier;
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.home.teamnotifier.authentication.AnyPrincipal;
-import com.home.teamnotifier.authentication.application.AppTokenAuthenticator;
 import com.home.teamnotifier.authentication.application.AppTokenPrincipal;
 import com.home.teamnotifier.authentication.basic.BasicPrincipal;
 import com.home.teamnotifier.authentication.session.SessionTokenPrincipal;
 import com.home.teamnotifier.repo.PolymorphicAuthDynamicFeature;
 import com.home.teamnotifier.repo.PolymorphicAuthValueFactoryProvider;
 import io.dropwizard.auth.Authenticator;
-import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
 import io.dropwizard.auth.basic.BasicCredentials;
 import io.dropwizard.setup.Environment;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
@@ -22,7 +19,8 @@ import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import javax.inject.Inject;
 import javax.ws.rs.ext.Provider;
 
-import static com.home.teamnotifier.AuthFiltersFactory.*;
+import static com.home.teamnotifier.AuthFiltersFactory.newBasicAuthFilter;
+import static com.home.teamnotifier.AuthFiltersFactory.newJwtAuthFilter;
 
 @Provider
 class AuthenticationDynamicFeature extends PolymorphicAuthDynamicFeature<AnyPrincipal> {

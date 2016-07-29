@@ -2,6 +2,19 @@ function Workbench() {
     this.token = undefined;
 	const that = this;
 
+	function getAppTokenPrehandler(xhttp) {
+		if(xhttp.readyState != 4)
+			return;
+
+		if(xhttp.status != 200) {
+			that.requestErrorHandler(xhttp.status);
+			return;
+		}
+
+		var token = JSON.parse(xhttp.responseText);
+		that.getAppTokenRequestSuccessHandler(token);
+	}
+
     function subscribePrehandler(xhttp, server) {
         if (xhttp.readyState != 4)
             return;
@@ -135,6 +148,16 @@ function Workbench() {
         xhttp.send();
     };
 
+	Workbench.prototype.getAppToken = function() {
+		var xhttp = new XMLHttpRequest();
+		xhttp.open("GET", "/teamnotifier/1.0/external/token");
+        xhttp.setRequestHeader("Authorization", "Bearer " + that.token);
+		xhttp.onreadystatechange = function() {
+			getAppTokenPrehandler(xhttp);
+		};
+		xhttp.send();
+	};
+
     Workbench.prototype.subscribe = function (server) {
         var xhttp = new XMLHttpRequest();
         xhttp.open("POST", "/teamnotifier/1.0/environment/server/" + server.id + "/subscribe", true);
@@ -210,6 +233,10 @@ function Workbench() {
         };
         xhttp.send();
     };
+}
+
+Workbench.prototype.getAppTokenRequestSuccessHandler = function(token) {
+	throw new Error("not binded");
 }
 
 Workbench.prototype.requestErrorHandler = function(code) {
