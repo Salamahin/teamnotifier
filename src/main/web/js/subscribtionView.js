@@ -154,8 +154,10 @@ function SubscribtionView() {
 	}
 
 	function showActualData() {
-		if(!selectedTarget)
+		if(!selectedTarget) {
+			removeChildren(usersHolder);
 			return;
+		}
 
 		if(selectedTarget.type == "ServerInfo") {
 			selectedTarget = environmentMonitor.getServer(selectedTarget.id);

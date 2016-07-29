@@ -11,7 +11,7 @@ function Workbench() {
 			return;
 		}
 
-		var token = JSON.parse(xhttp.responseText);
+		var token = JSON.parse(xhttp.responseText).token;
 		that.getAppTokenRequestSuccessHandler(token);
 	}
 

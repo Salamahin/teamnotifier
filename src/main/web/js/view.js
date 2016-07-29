@@ -259,16 +259,9 @@ function View() {
 		environmentMonitor.rebuild(environments);
 	}
 
-
 	View.prototype.showAppToken = function(token) {
-		copyTextToClipboard(token);
+		window.prompt("Your app token is:", token);
 	}
-
-	//FIXME should it really be there?
-	function copyTextToClipboard(text) {
-		window.clipboardData.setData('Text', text);
-	}
-
 }
 
 View.prototype.requestAppTokenHandler = function() {
