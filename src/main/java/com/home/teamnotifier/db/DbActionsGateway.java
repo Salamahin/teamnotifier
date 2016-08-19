@@ -73,16 +73,17 @@ public class DbActionsGateway implements ActionsGateway {
     public BroadcastInformation<ResourceAction> newResourceAction(
             final String userName,
             final ResourceDescription resourceDescription,
-            final String description
+            final String message
     ) throws NoSuchResource, EmptyDescription, NoSuchUser {
-        final String environmentName = resourceDescription.getEnvironmentName();
-        final String resourceName = resourceDescription.getResourceName();
-        final String serverName = resourceDescription.getServerName();
-
         try {
-            return tryPersistNewActionOnResource(userName, environmentName, serverName, resourceName, description);
+            return tryPersistNewActionOnResource(userName, resourceDescription, message);
         } catch (NoResultException exc) {
-            throw new NoSuchResource(String.format("No resource env=%s srv=%s res=%s", environmentName, serverName, resourceName));
+            throw new NoSuchResource(String.format(
+                    "No resource env=%s srv=%s res=%s",
+                    resourceDescription.getEnvironmentName(),
+                    resourceDescription.getServerName(),
+                    resourceDescription.getResourceName()
+            ));
         } catch (Exception exc) {
             rethrowIfContainsConstraintViolation(exc);
             return null;
@@ -138,16 +139,14 @@ public class DbActionsGateway implements ActionsGateway {
 
     private BroadcastInformation<ResourceAction> tryPersistNewActionOnResource(
             final String userName,
-            final String envName,
-            final String serverName,
-            final String resourceName,
-            final String description
+            final ResourceDescription resourceDescription,
+            final String message
     ) {
         return transactionHelper.transaction(em -> {
-            final ResourceEntity resourceEntity = getResourceEntity(envName, serverName, resourceName, em);
+            final ResourceEntity resourceEntity = getResourceEntity(resourceDescription, em);
             final UserEntity userEntity = getUserEntity(userName, em);
 
-            final ResourceAction action = newResourceAction(userEntity, resourceEntity, description, em);
+            final ResourceAction action = newResourceAction(userEntity, resourceEntity, message, em);
             return new BroadcastInformation<>(action, getSubscribersButUser(userName, resourceEntity.getServer()));
         });
     }
@@ -201,9 +200,7 @@ public class DbActionsGateway implements ActionsGateway {
     }
 
     private ResourceEntity getResourceEntity(
-            final String envName,
-            final String serverName,
-            final String resourceName,
+            final ResourceDescription resourceDescription,
             final EntityManager em
     ) {
 
@@ -217,15 +214,16 @@ public class DbActionsGateway implements ActionsGateway {
         final Root<ServerEntity> rootSrv = srvByName.from(ServerEntity.class);
         final Root<EnvironmentEntity> rootEnv = envByName.from(EnvironmentEntity.class);
 
-        envByName = envByName.select(rootEnv).where(cb.equal(rootEnv.get("name"), envName));
+        envByName = envByName.select(rootEnv).where(
+                cb.equal(rootEnv.get("name"), resourceDescription.getEnvironmentName()));
 
         srvByName = srvByName.select(rootSrv).where(cb.and(
-                cb.equal(rootSrv.get("name"), serverName),
+                cb.equal(rootSrv.get("name"), resourceDescription.getServerName()),
                 cb.equal(rootSrv.get("environment"), envByName)
         ));
 
         cqRes.select(rootRes).where(cb.and(
-                cb.equal(rootRes.get("name"), resourceName),
+                cb.equal(rootRes.get("name"), resourceDescription.getResourceName()),
                 cb.equal(rootRes.get("server"), srvByName)
         ));
 

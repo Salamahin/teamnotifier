@@ -8,7 +8,6 @@ import com.home.teamnotifier.authentication.session.SessionTokenPrincipal;
 import com.home.teamnotifier.core.ResourceMonitor;
 import com.home.teamnotifier.gateways.ResourceDescription;
 import io.dropwizard.auth.Auth;
-import io.dropwizard.jersey.sessions.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,6 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+
+import static com.home.teamnotifier.utils.Base64Decoder.decodeBase64;
 
 @Path("1.0/external")
 @Produces(MediaType.APPLICATION_JSON)
@@ -32,16 +33,18 @@ public class ExternalRestService {
     }
 
     @POST
-    @Path("/action/")
+    @Path("/action")
     public void newResourceAction(
             @Auth final AppTokenPrincipal userPrincipal,
             @QueryParam("environment") final String environmentName,
             @QueryParam("server") final String serverName,
             @QueryParam("application") final String resourceName,
-            @QueryParam("details") final String details
+            @QueryParam("details") final String base64EncodedDetails
     ) {
         final String userName = userPrincipal.getName();
-        LOGGER.info("User {} new action on resource {} {} ({}) request", userName, serverName, resourceName, details);
+        final String decodedDetails = decodeBase64(base64EncodedDetails);
+
+        LOGGER.info("User {} new action on resource {} {} ({}) request", userName, serverName, resourceName, decodedDetails);
 
         final ResourceDescription resourceDescription = ResourceDescription.newBuilder()
                 .withResourceName(resourceName)
@@ -49,7 +52,7 @@ public class ExternalRestService {
                 .withEnvironmentName(environmentName)
                 .build();
 
-        resourceMonitor.newResourceAction(userName, resourceDescription, details);
+        resourceMonitor.newResourceAction(userName, resourceDescription, decodedDetails);
     }
 
     @GET

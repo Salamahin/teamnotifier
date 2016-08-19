@@ -1,5 +1,6 @@
 package com.home.teamnotifier.db;
 
+import com.home.teamnotifier.gateways.ResourceDescription;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.dataset.DataSetException;
@@ -47,14 +48,24 @@ final class DbPreparer {
         return "salt1";
     }
 
+    ResourceDescription getPersistedResourceDescription() {
+        return ResourceDescription.newBuilder()
+                .withEnvironmentName("env1")
+                .withServerName("srv1")
+                .withResourceName("app1")
+                .build();
+    }
+
     private IDataSet buildDataset() throws DataSetException {
         int envId = persistedEnvironmentId();
         int srvId = persistedServerId();
 
+        final ResourceDescription resourceDescription = getPersistedResourceDescription();
+
         final DataSetBuilder b = new DataSetBuilder(true);
-        b.newRow("Environment").with("id", envId).with("name", "env1").add();
-        b.newRow("Server").with("id", srvId).with("name", "srv1").with("environment_id", envId).add();
-        b.newRow("Resource").with("id", persistedResourceId()).with("name", "app1").with("server_id", srvId).add();
+        b.newRow("Environment").with("id", envId).with("name", resourceDescription.getEnvironmentName()).add();
+        b.newRow("Server").with("id", srvId).with("name", resourceDescription.getServerName()).with("environment_id", envId).add();
+        b.newRow("Resource").with("id", persistedResourceId()).with("name", resourceDescription.getResourceName()).with("server_id", srvId).add();
         b.newRow("User").with("id", persistedUserId()).with("name", persistedUserName()).with("passHash", persistedUserPassHash()).with("salt", persistedUserSalt()).add();
 
         return b.build();
