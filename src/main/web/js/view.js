@@ -137,7 +137,8 @@ function View() {
 		else if(notification.type == "ServerActionNotification")
 			serverHistMonitor.pushNotification(notification);
 
-		fireActionNotification(notification);
+        if(notification.actor != user)
+		    fireActionNotification(notification);
 	}
 
 	function getResourceName(resourceId) {

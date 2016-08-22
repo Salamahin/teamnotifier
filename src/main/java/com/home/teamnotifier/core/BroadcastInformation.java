@@ -3,6 +3,7 @@ package com.home.teamnotifier.core;
 import com.google.common.collect.ImmutableList;
 import com.home.teamnotifier.core.responses.notification.Notification;
 
+import java.util.Collection;
 import java.util.List;
 
 public class BroadcastInformation<T extends Notification> {
@@ -11,7 +12,7 @@ public class BroadcastInformation<T extends Notification> {
 
     public BroadcastInformation(
             final T value,
-            final List<String> subscribers
+            final Collection<String> subscribers
     ) {
         this.value = value;
         this.subscribers = ImmutableList.copyOf(subscribers);

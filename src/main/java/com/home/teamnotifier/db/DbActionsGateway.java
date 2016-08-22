@@ -147,7 +147,7 @@ public class DbActionsGateway implements ActionsGateway {
             final UserEntity userEntity = getUserEntity(userName, em);
 
             final ResourceAction action = newResourceAction(userEntity, resourceEntity, message, em);
-            return new BroadcastInformation<>(action, getSubscribersButUser(userName, resourceEntity.getServer()));
+            return new BroadcastInformation<>(action, resourceEntity.getServer().getImmutableSetOfSubscribers());
         });
     }
 
