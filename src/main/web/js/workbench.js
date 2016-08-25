@@ -95,8 +95,28 @@ function Workbench() {
         	that.requestErrorHandler(xhttp.status);
         	return;
         }
-       
-        that.statusRequestSuccessHandler(JSON.parse(xhttp.responseText).environments);
+
+        var environments = JSON.parse(xhttp.responseText).environments;
+        sortEnvironments(environments);
+
+        that.statusRequestSuccessHandler(environments);
+    }
+
+    function sortEnvironments(environments) {
+        sortNamedObject(environments);
+        for(var e = 0; e < environments.length; e++) {
+            sortNamedObject(environments[e]);
+            for (var r = 0; e < environments[e].servers.length; r++)
+                sortNamedObject(environment[e].servers[r]);
+        }
+    }
+
+    function sortNamedObject(objects) {
+        objects.sort(function(a, b){
+            if(a.name < b.name) return -1;
+            if(a.name > b.name) return 1;
+            return 0;
+        })
     }
 
 	function serverActionsHistoryPrehandler(xhttp, server) {
