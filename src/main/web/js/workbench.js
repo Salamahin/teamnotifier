@@ -105,9 +105,9 @@ function Workbench() {
     function sortEnvironments(environments) {
         sortNamedObject(environments);
         for(var e = 0; e < environments.length; e++) {
-            sortNamedObject(environments[e]);
-            for (var r = 0; e < environments[e].servers.length; r++)
-                sortNamedObject(environment[e].servers[r]);
+            sortNamedObject(environments[e].servers);
+            for (var s = 0; s < environments[e].servers.length; s++)
+                sortNamedObject(environments[e].servers[s].resources);
         }
     }
 
