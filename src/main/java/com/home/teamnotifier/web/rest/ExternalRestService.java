@@ -61,7 +61,8 @@ public class ExternalRestService {
             @Context final HttpServletRequest request,
             @Auth final SessionTokenPrincipal principal
     ) {
-        LOGGER.info("{} requested new application token (endpoint %s)", principal.getName());
-        return new AuthenticationInfo(creator.getTokenFor(principal.getId(), request.getRemoteAddr()));
+        final String remoteAddr = request.getRemoteAddr();
+        LOGGER.info("{} requested new application token (endpoint {})", principal.getName(), remoteAddr);
+        return new AuthenticationInfo(creator.getTokenFor(principal.getId(), remoteAddr));
     }
 }
