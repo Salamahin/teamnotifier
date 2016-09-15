@@ -10,7 +10,7 @@ $SIDEMENU_WIDTH: 250px;
 	border: $arrow_height solid transparent;
 	border-top: $arrow_height solid $SOFT_RED; 
 	position: absolute;
-	left: 20px;
+	left: 15px;
 	top: $top;
 }
 
@@ -21,8 +21,8 @@ $SIDEMENU_WIDTH: 250px;
 #sidemenu {
 	display: inline-block;
 	width: $SIDEMENU_WIDTH;
-	$server_name_font_size: 18px;
-	$elem_padding: 10px;
+	$server_name_font_size: 16px;
+	$elem_padding: 8px;
 	margin-right: $MAIN_ELEMENTS_MARGIN;
 
 	li {
@@ -133,9 +133,11 @@ $SIDEMENU_WIDTH: 250px;
 
 			& div:nth-child(1) {
 
+				$font_size : 14px;
+			
 				a {
 					color: $WHITE_SHADOWED;
-					font-size: 14px;
+					font-size: $font_size;
 					padding-left: $basic_offset / 2;
 					text-transform: none;
 					width: 100%;
@@ -149,8 +151,8 @@ $SIDEMENU_WIDTH: 250px;
 					content: "";
 					display: block;
 					width: 7px; 
-					height: 80%;
-					top: 10%;
+					height: 60%; //todo WTF?
+					top: 6px; //todo WTF
 					background: $SOFT_RED;
 					position: absolute;
 				}
