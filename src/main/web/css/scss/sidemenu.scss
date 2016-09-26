@@ -68,17 +68,17 @@ $SIDEMENU_WIDTH: 250px;
 					}
 				}
 
-				$icon_size: 12px;
+				$icon_size: 8px;
 				&.offline {
 					background: url('../img/offline.png') $icon_size $icon_size no-repeat;
 					background-position: left top;
-					background-position: $icon_size $icon_size/2+1;
+					background-position: $icon_size $icon_size/2;
 				}
 
 				&.online {
 					background: url('../img/online.png') $icon_size $icon_size no-repeat;
 					background-position: left top;
-					background-position: $icon_size $icon_size/2+1;
+					background-position: $icon_size $icon_size/2;
 				}
 
 				&.subscribed {
