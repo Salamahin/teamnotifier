@@ -113,7 +113,7 @@ final class NotifierModule extends AbstractModule {
     @SuppressWarnings("unused")
     public ScheduledExecutorService newScheduledExecutor(final NotifierConfiguration configuration) {
         return Executors.newScheduledThreadPool(
-                1,
+                2,
                 new ThreadFactoryBuilder().setNameFormat("url-checker-pool-%d").build()
         );
     }

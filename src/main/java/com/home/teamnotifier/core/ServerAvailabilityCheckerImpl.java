@@ -140,7 +140,7 @@ public class ServerAvailabilityCheckerImpl implements ServerAvailabilityChecker 
 
     @Override
     public void start() {
-        final int initialDelaySec = 0;
+        final int initialDelaySec = 60;
         final int delayBetweenSeriesSec = 30;
 
         if (routine != null) return;
