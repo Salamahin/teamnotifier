@@ -50,9 +50,9 @@ public class NotifierApplication extends Application<NotifierConfiguration> {
                 )
                 .modules(new NotifierModule())
                 .extensions(DbConnection.class, Sessions.class, ServerStates.class) //healthcheck
-                .extensions(ExecutorsManager.class, TransactionManager.class, ServerStatusCheckerManager.class) //lifecycle
                 .extensions(AuthenticationDynamicFeature.class) //features
                 .extensions(EnvironmentRestService.class, UserRestService.class, ExternalRestService.class)
+                .enableAutoConfig(getClass().getPackage().getName())
                 .build();
 
         bootstrap.addBundle(guiceBundle);

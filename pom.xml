@@ -8,8 +8,9 @@
     <artifactId>teamnotifier</artifactId>
     <version>1.0-SNAPSHOT</version>
     <properties>
-        <dropwizard.version>0.9.2</dropwizard.version>
-        <hibernate.version>5.1.0.Final</hibernate.version>
+        <dropwizard.version>0.9.3</dropwizard.version>
+        <hibernate.version>5.2.2.Final</hibernate.version>
+        <hk2.version>2.5.0-b16</hk2.version>
 
         <dist.dir>${basedir}/dist</dist.dir>
         <assets.dist>${dist.dir}/assets</assets.dist>
@@ -29,22 +30,22 @@
         <dependency>
             <groupId>org.glassfish.hk2</groupId>
             <artifactId>hk2-utils</artifactId>
-            <version>2.5.0-b05</version>
+            <version>${hk2.version}</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.hk2</groupId>
             <artifactId>hk2-locator</artifactId>
-            <version>2.5.0-b05</version>
+            <version>${hk2.version}</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.hk2</groupId>
             <artifactId>hk2-api</artifactId>
-            <version>2.5.0-b05</version>
+            <version>${hk2.version}</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.1.1</version>
+            <version>1.1.7</version>
         </dependency>
         <dependency>
             <groupId>io.dropwizard</groupId>
@@ -64,7 +65,7 @@
         <dependency>
             <groupId>ru.vyarus</groupId>
             <artifactId>dropwizard-guicey</artifactId>
-            <version>3.3.0</version>
+            <version>4.0.0</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -122,7 +123,7 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>3.4.1</version>
+            <version>3.5.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -151,7 +152,7 @@
         <dependency>
             <groupId>org.dbunit</groupId>
             <artifactId>dbunit</artifactId>
-            <version>2.5.2</version>
+            <version>2.5.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>

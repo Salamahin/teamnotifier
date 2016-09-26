@@ -8,6 +8,7 @@ import com.google.common.base.Optional;
 import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.Authenticator;
 
+
 public class WebSocketSessionAuthenticator implements Authenticator<String, SessionTokenPrincipal> {
     private final JsonWebTokenVerifier verifier;
     private final JsonWebTokenParser jsonWebTokenParser;

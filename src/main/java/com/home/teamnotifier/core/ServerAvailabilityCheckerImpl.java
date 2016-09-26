@@ -8,14 +8,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedInputStream;
+import java.io.IOException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.*;
 
-import static com.google.common.collect.ImmutableMap.*;
-import static com.home.teamnotifier.core.responses.notification.ServerState.*;
+import static com.google.common.collect.ImmutableMap.copyOf;
+import static com.home.teamnotifier.core.responses.notification.ServerState.offline;
+import static com.home.teamnotifier.core.responses.notification.ServerState.online;
 import static com.home.teamnotifier.utils.FutureUtils.allAsList;
 import static java.util.stream.Collectors.toList;
 
@@ -44,13 +47,20 @@ public class ServerAvailabilityCheckerImpl implements ServerAvailabilityChecker 
 
     boolean isOnline(final String url) {
         try {
-            final URL checkUrl = new URL(url);
-            try (BufferedInputStream r = new BufferedInputStream(checkUrl.openStream())) {
+            try (BufferedInputStream r = new BufferedInputStream(openUrl(url).openStream())) {
                 return r.read() != -1;
             }
         } catch (Exception exc) {
             return false;
         }
+    }
+
+    private URL openUrl(String url) throws IOException {
+        final URL checkUrl = new URL(url);
+        URLConnection con = checkUrl.openConnection();
+        con.setConnectTimeout(100);
+        con.setReadTimeout(100);
+        return checkUrl;
     }
 
     private void checkStatusAndNotifyAboutChange(final ServerEntity serverEntity) {
@@ -87,7 +97,7 @@ public class ServerAvailabilityCheckerImpl implements ServerAvailabilityChecker 
     }
 
     private ServerState buildMessage(final boolean isOnline, final ServerEntity server) {
-        if(isOnline)
+        if (isOnline)
             return online(server);
         else
             return offline(server);
@@ -102,6 +112,12 @@ public class ServerAvailabilityCheckerImpl implements ServerAvailabilityChecker 
                     .collect(toList());
 
             allAsList(futures, executor).join();
+
+            LOGGER.debug("Current server states: " + statuses.entrySet().stream()
+                    .map(e -> String.format("%s\t%s", e.getKey().getName(), e.getValue()))
+                    .reduce((s1, s2) -> s1 + "\n" + s2)
+                    .orElse("")
+            );
         };
     }
 
