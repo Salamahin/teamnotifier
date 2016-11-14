@@ -149,7 +149,6 @@ final class NotifierModule extends AbstractModule {
         return new SessionTokenAuthenticator(userGateway);
     }
 
-
     @Provides
     @Singleton
     @Inject

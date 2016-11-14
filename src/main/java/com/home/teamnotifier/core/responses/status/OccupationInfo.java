@@ -52,4 +52,23 @@ public class OccupationInfo {
         return Objects.equals(userName, that.userName) &&
                 Objects.equals(occupationTime, that.occupationTime);
     }
+
+    private static class Exc1 extends RuntimeException {
+
+    }
+
+    private static class Exc2 extends RuntimeException {
+
+    }
+
+    public static void main(String[] args) {
+        try {
+
+        } catch (Exc1 e) {
+
+        } catch (Exc2 e) {
+
+        }
+
+    }
 }
