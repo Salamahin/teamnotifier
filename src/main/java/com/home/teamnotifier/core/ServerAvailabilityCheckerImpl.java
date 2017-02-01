@@ -44,7 +44,7 @@ public class ServerAvailabilityCheckerImpl implements ServerAvailabilityChecker 
     }
 
     boolean isOnline(final String url) {
-        final int timeout_millis = 30000;
+        final int timeout_millis = 5000;
 
         try {
             final HttpURLConnection httpUrlConn = (HttpURLConnection) new URL(url).openConnection();
