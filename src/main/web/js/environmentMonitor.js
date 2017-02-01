@@ -175,6 +175,7 @@ function EnvironmentMonitor() {
 	
 	EnvironmentMonitor.prototype.setServerOnline = function(serverId, isOnline) {
 		var server = servers.get(serverId);
+		server.isOnline = isOnline;
 		fireOnlineStatusChanged(server);
 	}
 

@@ -183,11 +183,11 @@ function SideMenuView() {
 	function showServerOnlineStatus(node, server) {
 		var onlineStatusHolder = node.querySelector("div > div");
 		
-		if(server.isOnline === null) {
-			onlineStatusHolder.classList.remove("online");
-			onlineStatusHolder.classList.remove("offline");	
+		onlineStatusHolder.classList.remove("online");
+		onlineStatusHolder.classList.remove("offline");	
+		
+		if(server.isOnline === null) 
 			return;
-		}
 
 		if(server.isOnline) {
 			onlineStatusHolder.classList.add("online");

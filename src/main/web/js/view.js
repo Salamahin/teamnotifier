@@ -190,7 +190,7 @@ function View() {
 	}
 
 	View.prototype.handleServerStateNotification = function(notification) {
-		environmentMonitor.setServerOnline(notification.targetId, notification.state);
+		environmentMonitor.setServerOnline(notification.targetId, notification.online);
 	}
 
 	View.prototype.setAvatarCreator = function(creator) {
