@@ -7,10 +7,8 @@ import com.home.teamnotifier.gateways.ServerGateway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -46,21 +44,18 @@ public class ServerAvailabilityCheckerImpl implements ServerAvailabilityChecker 
     }
 
     boolean isOnline(final String url) {
+        final int timeout_millis = 30000;
+
         try {
-            try (BufferedInputStream r = new BufferedInputStream(openUrl(url).openStream())) {
-                return r.read() != -1;
-            }
-        } catch (Exception exc) {
+            final HttpURLConnection httpUrlConn = (HttpURLConnection) new URL(url).openConnection();
+            httpUrlConn.setRequestMethod("HEAD");
+            httpUrlConn.setConnectTimeout(timeout_millis);
+            httpUrlConn.setReadTimeout(timeout_millis);
+
+            return (httpUrlConn.getResponseCode() == HttpURLConnection.HTTP_OK);
+        } catch (Exception e) {
             return false;
         }
-    }
-
-    private URL openUrl(String url) throws IOException {
-        final URL checkUrl = new URL(url);
-        URLConnection con = checkUrl.openConnection();
-        con.setConnectTimeout(100);
-        con.setReadTimeout(100);
-        return checkUrl;
     }
 
     private void checkStatusAndNotifyAboutChange(final ServerEntity serverEntity) {
