@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 
+import static java.util.stream.Collectors.joining;
+
 public class ClientManager implements NotificationManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientManager.class);
 
@@ -48,6 +50,10 @@ public class ClientManager implements NotificationManager {
     public synchronized void pushToClients(final Collection<String> userNames, final Notification message) {
         final BiMap<String, Session> clientsByNames = clientSessionsByUsernames.inverse();
         final String messageString = infoToString(message);
+
+        final String clientsList = clientsByNames.keySet().stream().collect(joining("\n"));
+        LOGGER.debug("Message {} will be send to client list: \n{}", messageString, clientsList);
+
         userNames.stream()
                 .filter(clientsByNames::containsKey)
                 .map(clientsByNames::get)
@@ -68,10 +74,13 @@ public class ClientManager implements NotificationManager {
     }
 
     private void pushSync(final Session session, final String message) {
+        final String userName = clientSessionsByUsernames.get(session);
         try {
+            LOGGER.debug("Pushing message {} to client {}", message, userName);
             session.getBasicRemote().sendText(message);
+            LOGGER.debug("Message {} pushed to {}", message, userName);
         } catch (IOException e) {
-            LOGGER.error(String.format("Failed to push to %s: ", clientSessionsByUsernames.get(session)), e);
+            LOGGER.error(String.format("Failed to push message %s to %s: ", message, userName), e);
         }
     }
 }

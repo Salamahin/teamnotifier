@@ -18,6 +18,7 @@ import static com.google.common.collect.ImmutableMap.copyOf;
 import static com.home.teamnotifier.core.responses.notification.ServerState.offline;
 import static com.home.teamnotifier.core.responses.notification.ServerState.online;
 import static com.home.teamnotifier.utils.FutureUtils.allAsList;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 public class ServerAvailabilityCheckerImpl implements ServerAvailabilityChecker {
@@ -108,10 +109,9 @@ public class ServerAvailabilityCheckerImpl implements ServerAvailabilityChecker 
 
             allAsList(futures, executor).join();
 
-            LOGGER.debug("Current server states: " + statuses.entrySet().stream()
+            LOGGER.debug("Current server states: \n" + statuses.entrySet().stream()
                     .map(e -> String.format("%s\t%s", e.getKey().getName(), e.getValue()))
-                    .reduce((s1, s2) -> s1 + "\n" + s2)
-                    .orElse("")
+                    .collect(joining("\n"))
             );
         };
     }
