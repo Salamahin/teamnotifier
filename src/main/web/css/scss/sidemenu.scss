@@ -118,7 +118,7 @@ $SIDEMENU_WIDTH: 250px;
 		}
 
 		&.opened {
-			max-height: 500px;
+			max-height: 9999px;
 
 			&:before{
 				@include bottom_arrow($arrow_size, 0);
